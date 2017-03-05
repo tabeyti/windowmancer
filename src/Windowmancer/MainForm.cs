@@ -11,29 +11,32 @@ using NLog;
 using Windowmancer.Services;
 using Windowmancer.Models;
 using Newtonsoft.Json;
+using Microsoft.Practices.Unity;
 
 namespace Windowmancer
 {
-  public partial class Form1 : Form
+  public partial class MainForm : Form
   {
     private ManagementEventWatcher _startWatch;
     private ManagementEventWatcher _stopWatch;
     private readonly Dictionary<int, Process> _availableWindowDict = new Dictionary<int, Process>();
+    private readonly IUnityContainer _serviceResolver;
 
     private WindowManager _windowManager;
     private ILogger _logger;
 
-    public Form1()
+
+    public MainForm(IUnityContainer serviceResolver)
     {
+      _serviceResolver = serviceResolver;
+
       InitializeComponent();
-      Initialize();
-      
+      Initialize();      
     }
 
     public void Initialize()
     {
       // TODO: DEBUG
-
 
       //var thing = JsonConvert.SerializeObject(profile);
       var profile = new Profile
