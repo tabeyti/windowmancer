@@ -1,0 +1,92 @@
+﻿using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
+using Windowmancer.Models;
+
+namespace Windowmancer.Services
+{
+  public class WindowManager : IDisposable
+  {
+    #region DLL Imports
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct RECT
+    {
+      public int left;
+      public int top;
+      public int right;
+      public int bottom;
+    }
+
+    [DllImport("user32.dll", EntryPoint = "SetWindowPos")]
+    public static extern IntPtr SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int x, int Y, int cx, int cy, int wFlags);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int Width, int Height, bool Repaint);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    static extern bool GetWindowRect(IntPtr hWnd, ref RECT Rect);
+
+    #endregion DLL Imports
+
+    public Profile CurrentProfile { get; set; }
+
+    #region Constructors
+
+    public WindowManager()
+    {
+    }
+
+    #endregion Constructors
+
+    public void Dispose()
+    {
+    }
+
+    public void LoadProfile(Profile profile)
+    {
+      this.CurrentProfile = profile;
+    }
+
+    public void ApplyWindowInfo(Process process)
+    {
+      var windowInfo = this.CurrentProfile.Windows.Find(p => p.MatchCriteria.IsMatch(process));
+      if (windowInfo == null)
+        return;
+      ApplyWindowInfo(windowInfo, process);
+    }
+
+    public void ApplyWindowInfo(WindowInfo windowInfo, Process process)
+    {
+      var handle = process.MainWindowHandle;
+      if (handle == IntPtr.Zero)
+      {
+        return;
+      }
+      // Get absolute position based on monitor target.
+      var screen = Screen.AllScreens.ToList().Find(s => s.DeviceName == windowInfo.LocationInfo.DisplayName);
+      var x = screen.WorkingArea.Left + windowInfo.LocationInfo.Info.X;
+      var y = screen.WorkingArea.Top + windowInfo.LocationInfo.Info.Y;
+
+      MoveWindow(handle, x, y, windowInfo.SizeInfo.Width, windowInfo.SizeInfo.Height, true);
+    }
+
+    public void RefreshProfile()
+    {
+      var allProcceses = System.Diagnostics.Process.GetProcesses();
+      foreach (var p in allProcceses)
+      {
+        if (p.MainWindowTitle == string.Empty)
+        {
+          continue;
+        }
+        var windowInfo = this.CurrentProfile.Windows.Find(pr => pr.MatchCriteria.IsMatch(p));
+        if (null == windowInfo) continue;
+        ApplyWindowInfo(windowInfo, p);
+      }
+    }
+ 
+  }
+}

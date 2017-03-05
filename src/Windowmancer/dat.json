@@ -1,0 +1,26 @@
+﻿{
+  "Profiles": [  
+   {  
+      "Name":"Profile shmofile",
+      "Windows":[  
+         {  
+            "LocationInfo":{  
+               "DisplayName":"\\\\.\\DISPLAY2",
+               "PrimaryDisplay":false,
+               "Info":{  
+                  "X":300,
+                  "Y":300
+               }
+            },
+            "SizeInfo":{  
+               "Width":800,
+               "Height":800
+            },
+            "MatchCriteria":{  
+               "MatchType":0,
+               "MatchString":".*WMIC.*"
+            }
+         }
+      ]
+   }]
+}
