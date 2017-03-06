@@ -12,6 +12,7 @@ using Windowmancer.Services;
 using Windowmancer.Models;
 using Newtonsoft.Json;
 using Microsoft.Practices.Unity;
+using Windowmancer.Configuration;
 
 namespace Windowmancer
 {
@@ -21,6 +22,7 @@ namespace Windowmancer
     private ManagementEventWatcher _stopWatch;
     private readonly Dictionary<int, Process> _availableWindowDict = new Dictionary<int, Process>();
     private readonly IUnityContainer _serviceResolver;
+    private ProfileManager _profileManager;
 
     private WindowManager _windowManager;
     private ILogger _logger;
@@ -36,34 +38,12 @@ namespace Windowmancer
 
     public void Initialize()
     {
-      // TODO: DEBUG
-
-      //var thing = JsonConvert.SerializeObject(profile);
-      var profile = new Profile
-      {
-        Name = "Profile shmofile",
-        Windows = new List<WindowInfo>
-        {
-          new WindowInfo
-          {
-            LocationInfo = new LocationInfo
-            {
-              DisplayName = "\\\\.\\DISPLAY2",
-              Info = new Position { X = 300, Y = 300 },
-              PrimaryDisplay = false
-            },
-            MatchCriteria = new WindowTitleMatchCreteria(".*WMIC.*"),
-            SizeInfo = new SizeInfo { Height = 800, Width = 800 }
-          }
-        }
-      };
-
-      var list = new List<Profile>();
-      list.Add(profile);
-      var stuff = JsonConvert.SerializeObject(list);
-
+      _profileManager = new ProfileManager(_serviceResolver.Resolve<ProfileManagerConfig>());
       _windowManager = new WindowManager();
-      _windowManager.LoadProfile(profile);
+      _windowManager.LoadProfile(_profileManager.GetActiveProfile());
+
+      this.ProfileListBox.DisplayMember = "Name";
+      this.ProfileListBox.Items.AddRange(_profileManager.Profiles.ToArray());
     }
 
     protected void InternalDispose()

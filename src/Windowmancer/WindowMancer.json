@@ -1,7 +1,7 @@
 ﻿{
   "AppSettings": {
     "ProfileManagerConfig": {
-      "ProfileDatPath":  "dat.json"
+      "ProfileDatPath": "profiles.json"
     }
   }
 }

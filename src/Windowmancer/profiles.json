@@ -1,0 +1,29 @@
+﻿{  
+   "Profiles":[  
+      {  
+         "Id":"cda8050d-9ef4-47fd-8c38-47da50d24d5c",
+         "Name":"Profile shmofile",
+         "Windows":[  
+            {  
+               "LocationInfo":{  
+                  "DisplayName":"\\\\.\\DISPLAY2",
+                  "PrimaryDisplay":false,
+                  "Info":{  
+                     "X":300,
+                     "Y":300
+                  }
+               },
+               "SizeInfo":{  
+                  "Width":800,
+                  "Height":800
+               },
+               "MatchCriteria":{  
+                  "MatchType":0,
+                  "MatchString":".*WMIC.*"
+               }
+            }
+         ]
+      }
+   ],
+   "ActiveProfile":"cda8050d-9ef4-47fd-8c38-47da50d24d5c"
+}

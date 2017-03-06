@@ -8,11 +8,11 @@ namespace Windowmancer.Models
   {
     public LocationInfo LocationInfo { get; set; }
     public SizeInfo SizeInfo { get; set; }
-    public IWindowMatchCreteria MatchCriteria { get; set; }
+    public WindowMatchCriteria MatchCriteria { get; set; }
     
     public bool IsMatch(Process p)
     {
-      return MatchCriteria.IsMatch(p);
+      return WindowMatch.IsMatch(this.MatchCriteria, p);
     }
   }
 
@@ -35,28 +35,26 @@ namespace Windowmancer.Models
     public int Height { get; set; }
   }
 
-  public interface IWindowMatchCreteria
+  public class WindowMatchCriteria
   {
-    WindowMatchCriteriaType MatchType { get; }
-    string MatchString { get; set; }
-    bool IsMatch(Process p);
+    public WindowMatchCriteriaType MatchType { get; }
+    public string MatchString { get; set; }
   }
 
-  public class WindowTitleMatchCreteria : IWindowMatchCreteria
+  public static class WindowMatch
   {
-    public WindowMatchCriteriaType MatchType => WindowMatchCriteriaType.WindowTitle;
-
-    public string MatchString { get; set; }
-    
-    public WindowTitleMatchCreteria(string titleRegex)
+    public static bool IsMatch(WindowMatchCriteria criteria, Process p)
     {
-      MatchString = titleRegex;
-    }
-
-    public bool IsMatch(Process p)
-    {
-      var m = Regex.Match(p.MainWindowTitle, this.MatchString);
-      return m.Success;
+      switch(criteria.MatchType)
+      {
+        case WindowMatchCriteriaType.ProcessName:
+          return false;
+        case WindowMatchCriteriaType.WindowTitle:
+          var m = Regex.Match(p.MainWindowTitle, criteria.MatchString);
+          return m.Success;
+        default:
+          return false;
+      }
     }
   }
 

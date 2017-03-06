@@ -37,7 +37,7 @@
       this.WindowTitle = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.ProcessName = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.Icon = new System.Windows.Forms.DataGridViewImageColumn();
-      this.ProfileListView = new System.Windows.Forms.ListView();
+      this.ProfileListBox = new System.Windows.Forms.ListBox();
       ((System.ComponentModel.ISupportInitialize)(this.ActiveWindowsGridView)).BeginInit();
       this.SuspendLayout();
       // 
@@ -120,25 +120,25 @@
       this.Icon.Resizable = System.Windows.Forms.DataGridViewTriState.True;
       this.Icon.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
       // 
-      // ProfileListView
+      // ProfileListBox
       // 
-      this.ProfileListView.Location = new System.Drawing.Point(12, 12);
-      this.ProfileListView.Name = "ProfileListView";
-      this.ProfileListView.Size = new System.Drawing.Size(495, 345);
-      this.ProfileListView.TabIndex = 4;
-      this.ProfileListView.UseCompatibleStateImageBehavior = false;
+      this.ProfileListBox.FormattingEnabled = true;
+      this.ProfileListBox.Location = new System.Drawing.Point(12, 12);
+      this.ProfileListBox.Name = "ProfileListBox";
+      this.ProfileListBox.Size = new System.Drawing.Size(495, 342);
+      this.ProfileListBox.TabIndex = 4;
       // 
-      // Form1
+      // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(1173, 536);
-      this.Controls.Add(this.ProfileListView);
+      this.Controls.Add(this.ProfileListBox);
       this.Controls.Add(this.ActiveWindowsGridView);
       this.Controls.Add(this.Display);
       this.Controls.Add(this.NLogTextBox);
       this.Controls.Add(this.ProcessButton);
-      this.Name = "Form1";
+      this.Name = "MainForm";
       this.Text = "Form1";
       this.Load += new System.EventHandler(this.Form1_Load);
       ((System.ComponentModel.ISupportInitialize)(this.ActiveWindowsGridView)).EndInit();
@@ -156,7 +156,7 @@
     private System.Windows.Forms.DataGridViewTextBoxColumn WindowTitle;
     private System.Windows.Forms.DataGridViewTextBoxColumn ProcessName;
     private System.Windows.Forms.DataGridViewImageColumn Icon;
-    private System.Windows.Forms.ListView ProfileListView;
+    private System.Windows.Forms.ListBox ProfileListBox;
   }
 }
 

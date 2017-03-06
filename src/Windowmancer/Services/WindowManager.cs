@@ -52,7 +52,7 @@ namespace Windowmancer.Services
 
     public void ApplyWindowInfo(Process process)
     {
-      var windowInfo = this.CurrentProfile.Windows.Find(p => p.MatchCriteria.IsMatch(process));
+      var windowInfo = this.CurrentProfile.Windows.Find(p => p.IsMatch(process));
       if (windowInfo == null)
         return;
       ApplyWindowInfo(windowInfo, process);
@@ -82,7 +82,7 @@ namespace Windowmancer.Services
         {
           continue;
         }
-        var windowInfo = this.CurrentProfile.Windows.Find(pr => pr.MatchCriteria.IsMatch(p));
+        var windowInfo = this.CurrentProfile.Windows.Find(pr => pr.IsMatch(p));
         if (null == windowInfo) continue;
         ApplyWindowInfo(windowInfo, p);
       }

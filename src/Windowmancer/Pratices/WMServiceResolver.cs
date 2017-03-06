@@ -26,8 +26,19 @@ namespace Windowmancer.Pratices
     {
       var container = new UnityContainer();
       var config = GetAssembly();
+
+      // Register configs.
       RegisterConfig<ProfileManagerConfig>(container, config.AppSettings);
+
+      // Register all services.
+      RegisterServices(container);
+
       return container;
+    }
+
+    private static void RegisterServices(IUnityContainer container)
+    {
+      // TODO: Move service registrations here.
     }
 
     public static dynamic GetAssembly()

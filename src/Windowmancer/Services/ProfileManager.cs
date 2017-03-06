@@ -1,53 +1,99 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windowmancer.Configuration;
 using Windowmancer.Models;
 
 namespace Windowmancer.Services
 {
   public class ProfileManager 
   {
-    private readonly List<Profile> _profileList;
+    public List<Profile> Profiles { get; set; }
+    public string ActiveProfile { get; set; }
 
-    public ProfileManager()
+    private readonly ProfileManagerConfig _config;
+
+    public ProfileManager(ProfileManagerConfig config)
     {
-      _profileList = new List<Profile>();
+      _config = config;
+      Profiles = new List<Profile>();
       Initialize();
     }
 
     public void Initialize()
     {
-      //var datPath = "dat.json";
-      //_profileDict.Add(profile);
+      string text;
+      try
+      {
+        text = System.IO.File.ReadAllText(_config.ProfileDatPath);
+      }
+      catch (Exception e)
+      {
+        // TODO: Dialog window with blank profile.
+        throw e;
+      } 
+      
+      try
+      {
+        // TODO: Icky. Like a copy constructor. Need better way of saving 
+        // this instance and re-instance this class from the saved config.
+        dynamic json = JsonConvert.DeserializeObject(text);
+        this.ActiveProfile = json.ActiveProfile.ToString();
+        this.Profiles = JsonConvert.DeserializeObject<List<Profile>>(json.Profiles.ToString());
+      } 
+      catch (Exception e)
+      {
+        // TODO: Dialog window with blank profile.
+        throw e;
+      }
     }
 
     public void Update(Profile profile)
     {      
-      var i = _profileList.FindIndex(p => p.Id == profile.Id);
+      var i = Profiles.FindIndex(p => p.Id == profile.Id);
       if (i < 0)
       {
         throw new Exception($"ProfileManager.Update - Could not find profile {profile.Id}.");
       }
-      _profileList[i] = profile;
+      Profiles[i] = profile;
       WriteToFile();
     }
 
     public bool Add(Profile profile)
     {
-      if (_profileList.Any(p => p.Name == profile.Name))
+      if (Profiles.Any(p => p.Name == profile.Name))
       {
         return false;
       }
-      _profileList.Add(profile);
+      Profiles.Add(profile);
       WriteToFile();
       return true;
     }
 
+    public Profile GetActiveProfile()
+    {
+      if (null == this.ActiveProfile)
+      {
+        return null;
+      }
+      return Profiles.Find(p => p.Id == this.ActiveProfile);
+    }
+
     private void WriteToFile()
     {
-
+      try
+      {
+        var text = JsonConvert.SerializeObject(this);
+        System.IO.File.WriteAllText(_config.ProfileDatPath, text);
+      }
+      catch (Exception e)
+      {
+        // TODO: Dialog window.
+        throw e;
+      }
     }
   }
 }
