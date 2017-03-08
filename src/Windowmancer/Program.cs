@@ -5,12 +5,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Windowmancer.Pratices;
+using Windowmancer.UI;
 
 namespace Windowmancer
 {
   static class Program
   {
-    private static IUnityContainer ServiceResolver = WMServiceResolver.Instance;
+    private static readonly IUnityContainer ServiceResolver = WMServiceResolver.Instance;
 
     /// <summary>
     /// The main entry point for the application.
