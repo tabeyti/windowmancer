@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using Windowmancer.Extensions;
 using Windowmancer.Models;
 
 namespace Windowmancer.Services
@@ -11,23 +12,11 @@ namespace Windowmancer.Services
   {
     #region DLL Imports
 
-    [StructLayout(LayoutKind.Sequential)]
-    public struct RECT
-    {
-      public int left;
-      public int top;
-      public int right;
-      public int bottom;
-    }
-
     [DllImport("user32.dll", EntryPoint = "SetWindowPos")]
     public static extern IntPtr SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int x, int Y, int cx, int cy, int wFlags);
 
     [DllImport("user32.dll", SetLastError = true)]
     static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int Width, int Height, bool Repaint);
-
-    [DllImport("user32.dll", SetLastError = true)]
-    static extern bool GetWindowRect(IntPtr hWnd, ref RECT Rect);
 
     #endregion DLL Imports
 
@@ -87,6 +76,5 @@ namespace Windowmancer.Services
         ApplyWindowInfo(windowInfo, p);
       }
     }
- 
   }
 }

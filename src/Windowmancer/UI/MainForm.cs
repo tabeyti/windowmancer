@@ -1,32 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
 using System.Management;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using NLog;
-using Windowmancer.Services;
-using Windowmancer.Models;
-using Newtonsoft.Json;
 using Microsoft.Practices.Unity;
+using NLog;
 using Windowmancer.Configuration;
+using Windowmancer.Models;
+using Windowmancer.Services;
 
-namespace Windowmancer
+namespace Windowmancer.UI
 {
   public partial class MainForm : Form
   {
     private ManagementEventWatcher _startWatch;
     private ManagementEventWatcher _stopWatch;
-    private readonly Dictionary<int, Process> _availableWindowDict = new Dictionary<int, Process>();
-    private readonly IUnityContainer _serviceResolver;
     private ProfileManager _profileManager;
-
     private WindowManager _windowManager;
     private ILogger _logger;
-
+    private readonly Dictionary<int, Process> _availableWindowDict = new Dictionary<int, Process>();
+    private readonly IUnityContainer _serviceResolver;
 
     public MainForm(IUnityContainer serviceResolver)
     {
@@ -44,6 +38,8 @@ namespace Windowmancer
 
       this.ProfileListBox.DisplayMember = "Name";
       this.ProfileListBox.Items.AddRange(_profileManager.Profiles.ToArray());
+
+      SavedWindowsDataGrid.DataSource = _profileManager.GetActiveProfile().Windows;
     }
 
     protected void InternalDispose()
@@ -102,8 +98,7 @@ namespace Windowmancer
       {
         _availableWindowDict.Remove(proccessId);
 
-        var row = 
-        this.ActiveWindowsGridView.Rows
+        var row = this.ActiveWindowsGridView.Rows
           .Cast<DataGridViewRow>()
           .First(r => int.Parse(r.Cells["PID"].Value.ToString()).Equals(proccessId));
 
@@ -165,31 +160,32 @@ namespace Windowmancer
         // ignore
       }
     }
-    private void button1_Click(object sender, EventArgs e)
-    {
-      _windowManager.RefreshProfile();
-    }
 
-    private void Display_Click(object sender, EventArgs e)
-    {
-      foreach (var screen in Screen.AllScreens)
-      {
-        // For each screen, add the screen properties to a list box.
-        _logger.Debug($"Device Name: " + screen.DeviceName + "\n");
-        _logger.Debug($"Bounds: " + screen.Bounds.ToString() + "\n");
-        _logger.Debug($"Type: " + screen.GetType().ToString() + "\n");
-        _logger.Debug($"Working Area: " + screen.WorkingArea.ToString() + "\n");
-        _logger.Debug($"Primary Screen: " + screen.Primary.ToString() + "\n");
-      }
-    }
+    //private void Display_Click(object sender, EventArgs e)
+    //{
+    //  foreach (var screen in Screen.AllScreens)
+    //  {
+    //    // For each screen, add the screen properties to a list box.
+    //    _logger.Debug($"Device Name: " + screen.DeviceName + "\n");
+    //    _logger.Debug($"Bounds: " + screen.Bounds.ToString() + "\n");
+    //    _logger.Debug($"Type: " + screen.GetType().ToString() + "\n");
+    //    _logger.Debug($"Working Area: " + screen.WorkingArea.ToString() + "\n");
+    //    _logger.Debug($"Primary Screen: " + screen.Primary.ToString() + "\n");
+    //  }
+    //}
 
     private void Form1_Load(object sender, EventArgs e)
     {
       // Create logger class to be bound to the richtextbox.
-      _logger = LogManager.GetCurrentClassLogger();
+      if (null == _logger)
+      {
+        _logger = LogManager.GetCurrentClassLogger();
+      }
 
       // Change default style of no-icon window procs.
-      this.ActiveWindowsGridView.Columns["Icon"].DefaultCellStyle.NullValue = null;
+      var dataGridViewColumn = this.ActiveWindowsGridView.Columns["Icon"];
+      if (dataGridViewColumn != null)
+        dataGridViewColumn.DefaultCellStyle.NullValue = null;
 
       // Add all active window processes.
       var allProcceses = System.Diagnostics.Process.GetProcesses();
@@ -202,6 +198,28 @@ namespace Windowmancer
         AddActiveWindow(p);
       }
       StartProcessMonitor();
+    }
+
+    private void button1_Click(object sender, EventArgs e)
+    {
+      _profileManager.GetActiveProfile().Windows.RemoveAt(0);
+    }
+
+    private void AddWindowConfigButton_Click(object sender, EventArgs e)
+    {
+      ShowWindowConfigDialog();
+    }
+
+    public WindowInfo ShowWindowConfigDialog()
+    {
+      var procRow = this.ActiveWindowsGridView.SelectedRows[0];
+      var proc = Process.GetProcessById((int) procRow.Cells[0].Value);
+      var prompt = new WindowConfigDialog(proc)
+      {
+        StartPosition = FormStartPosition.CenterParent
+      };
+      prompt.ShowDialog();
+      return null;
     }
   }
 }

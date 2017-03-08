@@ -1,10 +1,12 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windowmancer.Configuration;
+using Windowmancer.Extensions;
 using Windowmancer.Models;
 
 namespace Windowmancer.Services
@@ -12,6 +14,8 @@ namespace Windowmancer.Services
   public class ProfileManager 
   {
     public List<Profile> Profiles { get; set; }
+
+    //public List<Profile> Profiles { get; set; }
     public string ActiveProfile { get; set; }
 
     private readonly ProfileManagerConfig _config;
@@ -53,7 +57,7 @@ namespace Windowmancer.Services
 
     public void Update(Profile profile)
     {      
-      var i = Profiles.FindIndex(p => p.Id == profile.Id);
+      var i = this.Profiles.FindIndex(p => p.Id == profile.Id);
       if (i < 0)
       {
         throw new Exception($"ProfileManager.Update - Could not find profile {profile.Id}.");

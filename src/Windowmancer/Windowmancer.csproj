@@ -76,21 +76,30 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\ProfileManagerConfig.cs" />
-    <Compile Include="MainForm.cs">
+    <Compile Include="Extensions\BindingListExtensions.cs" />
+    <Compile Include="Extensions\ControlExtensions.cs" />
+    <Compile Include="Practices\Win32.cs" />
+    <Compile Include="UI\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForm.Designer.cs">
+    <Compile Include="UI\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Profile.cs" />
     <Compile Include="Models\WindowInfo.cs" />
-    <Compile Include="Pratices\WMServiceResolver.cs" />
+    <Compile Include="Practices\WMServiceResolver.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ProcMonitor.cs" />
     <Compile Include="Services\ProfileManager.cs" />
     <Compile Include="Services\WindowManager.cs" />
-    <EmbeddedResource Include="MainForm.resx">
+    <Compile Include="UI\WindowConfigDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\WindowConfigDialog.Designer.cs">
+      <DependentUpon>WindowConfigDialog.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="UI\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -102,6 +111,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="UI\WindowConfigDialog.resx">
+      <DependentUpon>WindowConfigDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="WindowMancer.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
