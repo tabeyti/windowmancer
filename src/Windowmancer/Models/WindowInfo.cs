@@ -1,7 +1,4 @@
-﻿using System.ComponentModel;
-using System.Diagnostics;
-using System.Drawing;
-using System.Text.RegularExpressions;
+﻿using System.Diagnostics;
 
 namespace Windowmancer.Models
 {

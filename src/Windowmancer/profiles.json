@@ -5,11 +5,11 @@
          "Name":"Server",
          "Windows":[
           {
-            "Name":  "Legacy Bnet Chat",
+            "Name":  "WMIC Thinger",
             "LocationInfo": {
               "DisplayName": "\\\\.\\DISPLAY2",
               "PrimaryDisplay": false,
-              "Info": {
+              "PositionInfo": {
                 "X": 300,
                 "Y": 300
               }
@@ -20,7 +20,7 @@
             },
             "MatchCriteria": {
               "MatchType": 0,
-              "MatchString": "Battle.net Server .CHAT.*"
+              "MatchString": ".*WMIC.*"
             }
           }
          ]

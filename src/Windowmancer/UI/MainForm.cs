@@ -66,7 +66,7 @@ namespace Windowmancer.UI
       _stopWatch.Start();
     }
 
-    private void AddActiveWindow(Process process)
+    private void AddToActiveWindows(Process process)
     {
       if (_availableWindowDict.ContainsKey(process.Id))
       {
@@ -159,7 +159,7 @@ namespace Windowmancer.UI
 
       try
       { 
-        AddActiveWindow(proc);
+        AddToActiveWindows(proc);
         _windowManager.ApplyWindowInfo(proc);
       }
       catch (Exception ex)
@@ -216,7 +216,7 @@ namespace Windowmancer.UI
         {
           continue;
         }
-        AddActiveWindow(p);
+        AddToActiveWindows(p);
       }
       StartProcessMonitor();
     }

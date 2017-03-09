@@ -54,10 +54,14 @@ namespace Windowmancer.Services
       {
         return;
       }
+
       // Get absolute position based on monitor target.
-      var screen = Screen.AllScreens.ToList().Find(s => s.DeviceName == windowInfo.LocationInfo.DisplayName);
-      var x = screen.WorkingArea.Left + windowInfo.LocationInfo.PositionInfo.X;
-      var y = screen.WorkingArea.Top + windowInfo.LocationInfo.PositionInfo.Y;
+      //var screen = Screen.AllScreens.ToList().Find(s => s.DeviceName == windowInfo.LocationInfo.DisplayName);
+      //var x = screen.WorkingArea.Left + windowInfo.LocationInfo.PositionInfo.X;
+      //var y = screen.WorkingArea.Top + windowInfo.LocationInfo.PositionInfo.Y;
+
+      var x = windowInfo.LocationInfo.PositionInfo.X;
+      var y = windowInfo.LocationInfo.PositionInfo.X;
 
       MoveWindow(handle, x, y, windowInfo.SizeInfo.Width, windowInfo.SizeInfo.Height, true);
     }
