@@ -36,14 +36,14 @@ namespace Windowmancer.UI
     {
       _profileManager = new ProfileManager(_serviceResolver.Resolve<ProfileManagerConfig>());
       _windowManager = new WindowManager();
-      _windowManager.LoadProfile(_profileManager.GetActiveProfile());
+      _windowManager.LoadProfile(_profileManager.ActiveProfile);
 
       this.ActiveWindowsGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
 
       this.ProfileListBox.DisplayMember = "Name";
       this.ProfileListBox.Items.AddRange(_profileManager.Profiles.ToArray());
 
-      SavedWindowsDataGrid.DataSource = _profileManager.GetActiveProfile().Windows;
+      SavedWindowsDataGrid.DataSource = _profileManager.ActiveProfile.Windows;
     }
 
     protected void InternalDispose()
@@ -228,7 +228,7 @@ namespace Windowmancer.UI
       {
         return;
       }
-      _profileManager.GetActiveProfile().Windows.Add(windowInfo);
+      _profileManager.AddToActiveProfile(windowInfo);
     }
 
     #endregion Events
