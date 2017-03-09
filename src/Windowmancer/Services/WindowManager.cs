@@ -63,7 +63,7 @@ namespace Windowmancer.Services
       var x = windowInfo.LocationInfo.PositionInfo.X;
       var y = windowInfo.LocationInfo.PositionInfo.X;
 
-      MoveWindow(handle, x, y, windowInfo.SizeInfo.Width, windowInfo.SizeInfo.Height, true);
+      MoveWindow(handle, x, y, windowInfo.SizeInfo.Width, windowInfo.SizeInfo.Height, true);      
     }
 
     public void RefreshProfile()

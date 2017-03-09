@@ -16,7 +16,7 @@ namespace Windowmancer.Services
     public List<Profile> Profiles { get; set; }
 
     //public List<Profile> Profiles { get; set; }
-    public string ActiveProfile { get; set; }
+    private string _activeProfile;
 
     private readonly ProfileManagerConfig _config;
 
@@ -45,7 +45,7 @@ namespace Windowmancer.Services
         // TODO: Icky. Like a copy constructor. Need better way of saving 
         // this instance and re-instance this class from the saved config.
         dynamic json = JsonConvert.DeserializeObject(text);
-        this.ActiveProfile = json.ActiveProfile.ToString();
+        _activeProfile = json.ActiveProfile.ToString();
         this.Profiles = JsonConvert.DeserializeObject<List<Profile>>(json.Profiles.ToString());
       } 
       catch (Exception e)
@@ -66,7 +66,7 @@ namespace Windowmancer.Services
       WriteToFile();
     }
 
-    public bool Add(Profile profile)
+    public bool AddProfile(Profile profile)
     {
       if (Profiles.Any(p => p.Name == profile.Name))
       {
@@ -77,21 +77,35 @@ namespace Windowmancer.Services
       return true;
     }
 
-    public Profile GetActiveProfile()
+    public bool AddToActiveProfile(WindowInfo info)
     {
-      if (null == this.ActiveProfile)
+      if (null == info)
       {
-        return null;
+        return false;
       }
-      return Profiles.Find(p => p.Id == this.ActiveProfile);
+
+      this.ActiveProfile.Windows.Add(info);      
+      return true;
+    }
+
+    public Profile ActiveProfile
+    {
+      get
+      {
+        if (null == _activeProfile)
+        {
+          return null;
+        }
+        return Profiles.Find(p => p.Id == _activeProfile);
+      }      
     }
 
     private void WriteToFile()
     {
       try
       {
-        var text = JsonConvert.SerializeObject(this);
-        System.IO.File.WriteAllText(_config.ProfileDatPath, text);
+        //var text = JsonConvert.SerializeObject(this);
+        //System.IO.File.WriteAllText(_config.ProfileDatPath, text);
       }
       catch (Exception e)
       {
