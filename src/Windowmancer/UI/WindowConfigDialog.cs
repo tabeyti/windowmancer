@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using NLog;
 using Windowmancer.Extensions;
@@ -13,7 +14,7 @@ using Windowmancer.Services;
 namespace Windowmancer.UI
 {
   public partial class WindowConfigDialog : Form
-  { 
+  {
     public WindowInfo WindowInfo { get; private set; }
 
     private readonly Process _proc;
@@ -36,8 +37,8 @@ namespace Windowmancer.UI
       }
       this.WindowLocationDisplayComboBox.SelectedIndex = 0;
     }
-    
-    private  void LoadWindowInfo()
+
+    private void LoadWindowInfo()
     {
       var rec = GetWindowRec();
 
@@ -77,7 +78,11 @@ namespace Windowmancer.UI
       return rec;
     }
 
-    private void SaveWindowInfo()
+    /// <summary>
+    /// Extracts user data, populating a window info object.
+    /// </summary>
+    /// <returns>True if successful, false if not.</returns>
+    private bool SaveWindowInfo()
     {
       var matchType = WindowMatchCriteriaType.WindowTitle;
       var radioButton = this.WindowMatchGroupBox.Controls.OfType<RadioButton>().FirstOrDefault(n => n.Checked);
@@ -92,6 +97,19 @@ namespace Windowmancer.UI
       else if (radioButton.Name == "WindowTitleRadioButton")
       {
         matchType = WindowMatchCriteriaType.WindowTitle;
+      }
+
+      // Regex check.
+      try
+      {
+        Regex.Match("", this.WindowMatchStringTextBox.Text);
+      }
+      catch (ArgumentException e)
+      {
+        MessageBox.Show(e.Message, @"Invalid Regex", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        this.WindowMatchStringTextBox.Focus();
+        this.WindowMatchStringTextBox.SelectAll();
+        return false;
       }
 
       this.WindowInfo = new WindowInfo
@@ -109,12 +127,15 @@ namespace Windowmancer.UI
         MatchCriteria = new WindowMatchCriteria(matchType, this.WindowMatchStringTextBox.Text),
         Name = this.WindowConfigNameTextBox.Text,
       };
+      return true;
     }
 
     private void WindowConfigDialogSaveButton_Click(object sender, EventArgs e)
     {
-      SaveWindowInfo();
-      this.Dispose();
+      if (SaveWindowInfo())
+      {
+        this.Dispose();
+      }
     }
 
     private void WindowConfigDialogCancelButton_Click(object sender, EventArgs e)

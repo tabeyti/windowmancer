@@ -1,12 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windowmancer.Configuration;
-using Windowmancer.Extensions;
 using Windowmancer.Models;
 
 namespace Windowmancer.Services
@@ -14,10 +10,6 @@ namespace Windowmancer.Services
   public class ProfileManager 
   {
     public List<Profile> Profiles { get; set; }
-
-    //public List<Profile> Profiles { get; set; }
-    private string _activeProfile;
-
     private readonly ProfileManagerConfig _config;
 
     public ProfileManager(ProfileManagerConfig config)
@@ -45,8 +37,11 @@ namespace Windowmancer.Services
         // TODO: Icky. Like a copy constructor. Need better way of saving 
         // this instance and re-instance this class from the saved config.
         dynamic json = JsonConvert.DeserializeObject(text);
-        _activeProfile = json.ActiveProfile.ToString();
+        var activeProfileId = json.ActiveProfile.ToString();
         this.Profiles = JsonConvert.DeserializeObject<List<Profile>>(json.Profiles.ToString());
+
+        var profile = Profiles.Find(p => p.Id == activeProfileId);
+        this.ActiveProfile = profile ?? Profiles.FirstOrDefault();
       } 
       catch (Exception e)
       {
@@ -88,17 +83,7 @@ namespace Windowmancer.Services
       return true;
     }
 
-    public Profile ActiveProfile
-    {
-      get
-      {
-        if (null == _activeProfile)
-        {
-          return null;
-        }
-        return Profiles.Find(p => p.Id == _activeProfile);
-      }      
-    }
+    public Profile ActiveProfile { get; set; }
 
     private void WriteToFile()
     {
