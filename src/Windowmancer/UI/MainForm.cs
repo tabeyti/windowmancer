@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Management;
 using System.Windows.Forms;
@@ -8,6 +9,7 @@ using Microsoft.Practices.Unity;
 using NLog;
 using Windowmancer.Configuration;
 using Windowmancer.Models;
+using Windowmancer.Practices;
 using Windowmancer.Services;
 
 namespace Windowmancer.UI
@@ -35,6 +37,8 @@ namespace Windowmancer.UI
       _profileManager = new ProfileManager(_serviceResolver.Resolve<ProfileManagerConfig>());
       _windowManager = new WindowManager();
       _windowManager.LoadProfile(_profileManager.GetActiveProfile());
+
+      this.ActiveWindowsGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
 
       this.ProfileListBox.DisplayMember = "Name";
       this.ProfileListBox.Items.AddRange(_profileManager.Profiles.ToArray());
@@ -74,10 +78,12 @@ namespace Windowmancer.UI
       try
       {
         ico = System.Drawing.Icon.ExtractAssociatedIcon(process.MainModule.FileName);
+        ico = Helper.GetSmallIcon(ico);
       }
-      catch (Exception)
+      catch (Exception e)
       {
         // ignore.
+        _logger.Debug(e);
       }
 
       if (this.ActiveWindowsGridView.InvokeRequired)
@@ -119,6 +125,21 @@ namespace Windowmancer.UI
         }
       }
     }
+
+
+    public WindowInfo ShowWindowConfigDialog(int row = -1)
+    {
+      var procRow = row <= 0 ? this.ActiveWindowsGridView.SelectedRows[0] : this.ActiveWindowsGridView.Rows[row];
+      var proc = Process.GetProcessById((int)procRow.Cells[0].Value);
+      var prompt = new WindowConfigDialog(proc)
+      {
+        StartPosition = FormStartPosition.CenterParent
+      };
+      prompt.ShowDialog();
+      return prompt.WindowInfo;
+    }
+
+    #region Events
 
     private void StartWatch_EventArrived(object sender, EventArrivedEventArgs e)
     {
@@ -182,7 +203,7 @@ namespace Windowmancer.UI
         _logger = LogManager.GetCurrentClassLogger();
       }
 
-      // Change default style of no-icon window procs.
+      // Change default style of no-icon windows.
       var dataGridViewColumn = this.ActiveWindowsGridView.Columns["Icon"];
       if (dataGridViewColumn != null)
         dataGridViewColumn.DefaultCellStyle.NullValue = null;
@@ -200,26 +221,16 @@ namespace Windowmancer.UI
       StartProcessMonitor();
     }
 
-    private void button1_Click(object sender, EventArgs e)
+    private void ActiveWindowsGridView_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
     {
-      _profileManager.GetActiveProfile().Windows.RemoveAt(0);
-    }
-
-    private void AddWindowConfigButton_Click(object sender, EventArgs e)
-    {
-      ShowWindowConfigDialog();
-    }
-
-    public WindowInfo ShowWindowConfigDialog()
-    {
-      var procRow = this.ActiveWindowsGridView.SelectedRows[0];
-      var proc = Process.GetProcessById((int) procRow.Cells[0].Value);
-      var prompt = new WindowConfigDialog(proc)
+      var windowInfo = ShowWindowConfigDialog(e.RowIndex);
+      if (null == windowInfo)
       {
-        StartPosition = FormStartPosition.CenterParent
-      };
-      prompt.ShowDialog();
-      return null;
+        return;
+      }
+      _profileManager.GetActiveProfile().Windows.Add(windowInfo);
     }
+
+    #endregion Events
   }
 }

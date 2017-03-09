@@ -56,8 +56,8 @@ namespace Windowmancer.Services
       }
       // Get absolute position based on monitor target.
       var screen = Screen.AllScreens.ToList().Find(s => s.DeviceName == windowInfo.LocationInfo.DisplayName);
-      var x = screen.WorkingArea.Left + windowInfo.LocationInfo.Info.X;
-      var y = screen.WorkingArea.Top + windowInfo.LocationInfo.Info.Y;
+      var x = screen.WorkingArea.Left + windowInfo.LocationInfo.PositionInfo.X;
+      var y = screen.WorkingArea.Top + windowInfo.LocationInfo.PositionInfo.Y;
 
       MoveWindow(handle, x, y, windowInfo.SizeInfo.Width, windowInfo.SizeInfo.Height, true);
     }
