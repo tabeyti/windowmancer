@@ -14,8 +14,14 @@ namespace Windowmancer.Extensions
     /// </summary>
     public static void InvokeControl(this Control c, MethodInvoker mi)
     {
-      c.Invoke(mi);
-      return;
+      try
+      {
+        c.Invoke(mi);
+      }
+      catch (Exception e)
+      {
+        MessageBox.Show(e.Message);
+      }
     }
   }
 }

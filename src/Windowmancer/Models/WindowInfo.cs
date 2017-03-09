@@ -22,15 +22,15 @@ namespace Windowmancer.Models
   {
     public string DisplayName { get; set; }
     public bool PrimaryDisplay { get; set; }
-    public Position Info { get; set; }
+    public PositionInfo PositionInfo { get; set; }
 
     public override string ToString()
     {
-      return $"{this.DisplayName} - {Info}";
+      return $"{this.DisplayName} - {PositionInfo}";
     }
   }
 
-  public class Position
+  public class PositionInfo
   {
     public int X { get; set; }
     public int Y { get; set; }
@@ -49,34 +49,6 @@ namespace Windowmancer.Models
     public override string ToString()
     {
       return $"{this.Width}x{this.Height}";
-    }
-  }
-
-  public class WindowMatchCriteria
-  {
-    public WindowMatchCriteriaType MatchType { get; }
-    public string MatchString { get; set; }
-
-    public override string ToString()
-    {
-      return $"{this.MatchType} - {this.MatchString}";
-    }
-  }
-
-  public static class WindowMatch
-  {
-    public static bool IsMatch(WindowMatchCriteria criteria, Process p)
-    {
-      switch(criteria.MatchType)
-      {
-        case WindowMatchCriteriaType.ProcessName:
-          return false;
-        case WindowMatchCriteriaType.WindowTitle:
-          var m = Regex.Match(p.MainWindowTitle, criteria.MatchString);
-          return m.Success;
-        default:
-          return false;
-      }
     }
   }
 

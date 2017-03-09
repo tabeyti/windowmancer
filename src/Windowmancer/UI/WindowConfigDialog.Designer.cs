@@ -35,20 +35,24 @@ namespace Windowmancer.UI
     private void InitializeComponent()
     {
       this.WindowMatchGroupBox = new System.Windows.Forms.GroupBox();
-      this.ProcessNameRadioButton = new System.Windows.Forms.RadioButton();
+      this.WindowProcessNameRadioButton = new System.Windows.Forms.RadioButton();
       this.WindowTitleRadioButton = new System.Windows.Forms.RadioButton();
       this.WindowSizeGroupBox = new System.Windows.Forms.GroupBox();
       this.WindowSizeBoxHeight = new System.Windows.Forms.NumericUpDown();
       this.WindowSizeBoxWidth = new System.Windows.Forms.NumericUpDown();
       this.WindowPostitionGroupBox = new System.Windows.Forms.GroupBox();
+      this.WindowPositionRelativeRadioButton = new System.Windows.Forms.RadioButton();
+      this.WindowPositionAbsoluteRadioButton = new System.Windows.Forms.RadioButton();
+      this.WindowLocationDisplayComboBox = new System.Windows.Forms.ComboBox();
+      this.DisplayLabel = new System.Windows.Forms.Label();
       this.WindowLocationBoxY = new System.Windows.Forms.NumericUpDown();
       this.WindowLocationBoxX = new System.Windows.Forms.NumericUpDown();
       this.MatchStringGroupBox = new System.Windows.Forms.GroupBox();
-      this.MatchStringTextBox = new System.Windows.Forms.TextBox();
+      this.WindowMatchStringTextBox = new System.Windows.Forms.TextBox();
       this.WindowConfigDialogSaveButton = new System.Windows.Forms.Button();
       this.WindowConfigDialogCancelButton = new System.Windows.Forms.Button();
-      this.DisplayLabel = new System.Windows.Forms.Label();
-      this.WindowLocationDisplayComboBox = new System.Windows.Forms.ComboBox();
+      this.WindowConfigNameGroupBox = new System.Windows.Forms.GroupBox();
+      this.WindowConfigNameTextBox = new System.Windows.Forms.TextBox();
       this.WindowMatchGroupBox.SuspendLayout();
       this.WindowSizeGroupBox.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.WindowSizeBoxHeight)).BeginInit();
@@ -57,36 +61,39 @@ namespace Windowmancer.UI
       ((System.ComponentModel.ISupportInitialize)(this.WindowLocationBoxY)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.WindowLocationBoxX)).BeginInit();
       this.MatchStringGroupBox.SuspendLayout();
+      this.WindowConfigNameGroupBox.SuspendLayout();
       this.SuspendLayout();
       // 
       // WindowMatchGroupBox
       // 
-      this.WindowMatchGroupBox.Controls.Add(this.ProcessNameRadioButton);
+      this.WindowMatchGroupBox.Controls.Add(this.WindowProcessNameRadioButton);
       this.WindowMatchGroupBox.Controls.Add(this.WindowTitleRadioButton);
-      this.WindowMatchGroupBox.Location = new System.Drawing.Point(12, 169);
+      this.WindowMatchGroupBox.Location = new System.Drawing.Point(12, 254);
       this.WindowMatchGroupBox.Name = "WindowMatchGroupBox";
-      this.WindowMatchGroupBox.Size = new System.Drawing.Size(200, 48);
+      this.WindowMatchGroupBox.Size = new System.Drawing.Size(226, 48);
       this.WindowMatchGroupBox.TabIndex = 0;
       this.WindowMatchGroupBox.TabStop = false;
       this.WindowMatchGroupBox.Text = "Match By";
       // 
-      // ProcessNameRadioButton
+      // WindowProcessNameRadioButton
       // 
-      this.ProcessNameRadioButton.AutoSize = true;
-      this.ProcessNameRadioButton.Location = new System.Drawing.Point(100, 20);
-      this.ProcessNameRadioButton.Name = "ProcessNameRadioButton";
-      this.ProcessNameRadioButton.Size = new System.Drawing.Size(94, 17);
-      this.ProcessNameRadioButton.TabIndex = 2;
-      this.ProcessNameRadioButton.TabStop = true;
-      this.ProcessNameRadioButton.Text = "Process Name";
-      this.ProcessNameRadioButton.UseVisualStyleBackColor = true;
+      this.WindowProcessNameRadioButton.AutoSize = true;
+      this.WindowProcessNameRadioButton.Dock = System.Windows.Forms.DockStyle.Right;
+      this.WindowProcessNameRadioButton.Location = new System.Drawing.Point(129, 16);
+      this.WindowProcessNameRadioButton.Name = "WindowProcessNameRadioButton";
+      this.WindowProcessNameRadioButton.Size = new System.Drawing.Size(94, 29);
+      this.WindowProcessNameRadioButton.TabIndex = 2;
+      this.WindowProcessNameRadioButton.TabStop = true;
+      this.WindowProcessNameRadioButton.Text = "Process Name";
+      this.WindowProcessNameRadioButton.UseVisualStyleBackColor = true;
       // 
       // WindowTitleRadioButton
       // 
       this.WindowTitleRadioButton.AutoSize = true;
-      this.WindowTitleRadioButton.Location = new System.Drawing.Point(7, 20);
+      this.WindowTitleRadioButton.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.WindowTitleRadioButton.Location = new System.Drawing.Point(3, 16);
       this.WindowTitleRadioButton.Name = "WindowTitleRadioButton";
-      this.WindowTitleRadioButton.Size = new System.Drawing.Size(87, 17);
+      this.WindowTitleRadioButton.Size = new System.Drawing.Size(220, 29);
       this.WindowTitleRadioButton.TabIndex = 1;
       this.WindowTitleRadioButton.TabStop = true;
       this.WindowTitleRadioButton.Text = "Window Title";
@@ -96,9 +103,9 @@ namespace Windowmancer.UI
       // 
       this.WindowSizeGroupBox.Controls.Add(this.WindowSizeBoxHeight);
       this.WindowSizeGroupBox.Controls.Add(this.WindowSizeBoxWidth);
-      this.WindowSizeGroupBox.Location = new System.Drawing.Point(12, 12);
+      this.WindowSizeGroupBox.Location = new System.Drawing.Point(12, 73);
       this.WindowSizeGroupBox.Name = "WindowSizeGroupBox";
-      this.WindowSizeGroupBox.Size = new System.Drawing.Size(200, 49);
+      this.WindowSizeGroupBox.Size = new System.Drawing.Size(226, 49);
       this.WindowSizeGroupBox.TabIndex = 1;
       this.WindowSizeGroupBox.TabStop = false;
       this.WindowSizeGroupBox.Text = "Window Size";
@@ -106,7 +113,7 @@ namespace Windowmancer.UI
       // WindowSizeBoxHeight
       // 
       this.WindowSizeBoxHeight.Dock = System.Windows.Forms.DockStyle.Right;
-      this.WindowSizeBoxHeight.Location = new System.Drawing.Point(102, 16);
+      this.WindowSizeBoxHeight.Location = new System.Drawing.Point(128, 16);
       this.WindowSizeBoxHeight.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -131,65 +138,119 @@ namespace Windowmancer.UI
       // 
       // WindowPostitionGroupBox
       // 
+      this.WindowPostitionGroupBox.Controls.Add(this.WindowPositionRelativeRadioButton);
+      this.WindowPostitionGroupBox.Controls.Add(this.WindowPositionAbsoluteRadioButton);
       this.WindowPostitionGroupBox.Controls.Add(this.WindowLocationDisplayComboBox);
       this.WindowPostitionGroupBox.Controls.Add(this.DisplayLabel);
       this.WindowPostitionGroupBox.Controls.Add(this.WindowLocationBoxY);
       this.WindowPostitionGroupBox.Controls.Add(this.WindowLocationBoxX);
-      this.WindowPostitionGroupBox.Location = new System.Drawing.Point(12, 67);
+      this.WindowPostitionGroupBox.Location = new System.Drawing.Point(12, 128);
       this.WindowPostitionGroupBox.Name = "WindowPostitionGroupBox";
-      this.WindowPostitionGroupBox.Size = new System.Drawing.Size(200, 96);
+      this.WindowPostitionGroupBox.Size = new System.Drawing.Size(226, 120);
       this.WindowPostitionGroupBox.TabIndex = 2;
       this.WindowPostitionGroupBox.TabStop = false;
-      this.WindowPostitionGroupBox.Text = "Window Position";
+      this.WindowPostitionGroupBox.Text = "Window PositionInfo";
+      // 
+      // WindowPositionRelativeRadioButton
+      // 
+      this.WindowPositionRelativeRadioButton.AutoSize = true;
+      this.WindowPositionRelativeRadioButton.Enabled = false;
+      this.WindowPositionRelativeRadioButton.Location = new System.Drawing.Point(102, 16);
+      this.WindowPositionRelativeRadioButton.Name = "WindowPositionRelativeRadioButton";
+      this.WindowPositionRelativeRadioButton.Size = new System.Drawing.Size(101, 17);
+      this.WindowPositionRelativeRadioButton.TabIndex = 6;
+      this.WindowPositionRelativeRadioButton.TabStop = true;
+      this.WindowPositionRelativeRadioButton.Text = "Display Relative";
+      this.WindowPositionRelativeRadioButton.UseVisualStyleBackColor = true;
+      // 
+      // WindowPositionAbsoluteRadioButton
+      // 
+      this.WindowPositionAbsoluteRadioButton.AutoSize = true;
+      this.WindowPositionAbsoluteRadioButton.Location = new System.Drawing.Point(7, 16);
+      this.WindowPositionAbsoluteRadioButton.Name = "WindowPositionAbsoluteRadioButton";
+      this.WindowPositionAbsoluteRadioButton.Size = new System.Drawing.Size(66, 17);
+      this.WindowPositionAbsoluteRadioButton.TabIndex = 5;
+      this.WindowPositionAbsoluteRadioButton.TabStop = true;
+      this.WindowPositionAbsoluteRadioButton.Text = "Absolute";
+      this.WindowPositionAbsoluteRadioButton.UseVisualStyleBackColor = true;
+      this.WindowPositionAbsoluteRadioButton.CheckedChanged += new System.EventHandler(this.WindowPositionAbsoluteRadioButton_CheckedChanged);
+      // 
+      // WindowLocationDisplayComboBox
+      // 
+      this.WindowLocationDisplayComboBox.Enabled = false;
+      this.WindowLocationDisplayComboBox.FormattingEnabled = true;
+      this.WindowLocationDisplayComboBox.Location = new System.Drawing.Point(7, 89);
+      this.WindowLocationDisplayComboBox.Name = "WindowLocationDisplayComboBox";
+      this.WindowLocationDisplayComboBox.Size = new System.Drawing.Size(188, 21);
+      this.WindowLocationDisplayComboBox.Sorted = true;
+      this.WindowLocationDisplayComboBox.TabIndex = 4;
+      // 
+      // DisplayLabel
+      // 
+      this.DisplayLabel.AutoSize = true;
+      this.DisplayLabel.Location = new System.Drawing.Point(4, 72);
+      this.DisplayLabel.Name = "DisplayLabel";
+      this.DisplayLabel.Size = new System.Drawing.Size(41, 13);
+      this.DisplayLabel.TabIndex = 3;
+      this.DisplayLabel.Text = "Display";
       // 
       // WindowLocationBoxY
       // 
-      this.WindowLocationBoxY.Dock = System.Windows.Forms.DockStyle.Right;
-      this.WindowLocationBoxY.Location = new System.Drawing.Point(102, 16);
+      this.WindowLocationBoxY.Location = new System.Drawing.Point(102, 39);
       this.WindowLocationBoxY.Maximum = new decimal(new int[] {
             10000,
             0,
             0,
             0});
+      this.WindowLocationBoxY.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
       this.WindowLocationBoxY.Name = "WindowLocationBoxY";
       this.WindowLocationBoxY.Size = new System.Drawing.Size(95, 20);
       this.WindowLocationBoxY.TabIndex = 1;
       // 
       // WindowLocationBoxX
       // 
-      this.WindowLocationBoxX.Dock = System.Windows.Forms.DockStyle.Left;
-      this.WindowLocationBoxX.Location = new System.Drawing.Point(3, 16);
+      this.WindowLocationBoxX.Location = new System.Drawing.Point(3, 39);
       this.WindowLocationBoxX.Maximum = new decimal(new int[] {
             10000,
             0,
             0,
             0});
+      this.WindowLocationBoxX.Minimum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            -2147483648});
       this.WindowLocationBoxX.Name = "WindowLocationBoxX";
       this.WindowLocationBoxX.Size = new System.Drawing.Size(86, 20);
       this.WindowLocationBoxX.TabIndex = 0;
       // 
       // MatchStringGroupBox
       // 
-      this.MatchStringGroupBox.Controls.Add(this.MatchStringTextBox);
-      this.MatchStringGroupBox.Location = new System.Drawing.Point(12, 223);
+      this.MatchStringGroupBox.Controls.Add(this.WindowMatchStringTextBox);
+      this.MatchStringGroupBox.Location = new System.Drawing.Point(12, 308);
       this.MatchStringGroupBox.Name = "MatchStringGroupBox";
-      this.MatchStringGroupBox.Size = new System.Drawing.Size(200, 54);
+      this.MatchStringGroupBox.Size = new System.Drawing.Size(226, 54);
       this.MatchStringGroupBox.TabIndex = 3;
       this.MatchStringGroupBox.TabStop = false;
       this.MatchStringGroupBox.Text = "Regex Match String";
       // 
-      // MatchStringTextBox
+      // WindowMatchStringTextBox
       // 
-      this.MatchStringTextBox.Location = new System.Drawing.Point(7, 20);
-      this.MatchStringTextBox.Name = "MatchStringTextBox";
-      this.MatchStringTextBox.Size = new System.Drawing.Size(187, 20);
-      this.MatchStringTextBox.TabIndex = 0;
+      this.WindowMatchStringTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.WindowMatchStringTextBox.Location = new System.Drawing.Point(3, 16);
+      this.WindowMatchStringTextBox.Name = "WindowMatchStringTextBox";
+      this.WindowMatchStringTextBox.Size = new System.Drawing.Size(220, 20);
+      this.WindowMatchStringTextBox.TabIndex = 0;
       // 
       // WindowConfigDialogSaveButton
       // 
       this.WindowConfigDialogSaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.WindowConfigDialogSaveButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.WindowConfigDialogSaveButton.Location = new System.Drawing.Point(412, 254);
+      this.WindowConfigDialogSaveButton.Location = new System.Drawing.Point(412, 339);
       this.WindowConfigDialogSaveButton.Name = "WindowConfigDialogSaveButton";
       this.WindowConfigDialogSaveButton.Size = new System.Drawing.Size(75, 23);
       this.WindowConfigDialogSaveButton.TabIndex = 4;
@@ -200,7 +261,7 @@ namespace Windowmancer.UI
       // WindowConfigDialogCancelButton
       // 
       this.WindowConfigDialogCancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.WindowConfigDialogCancelButton.Location = new System.Drawing.Point(331, 254);
+      this.WindowConfigDialogCancelButton.Location = new System.Drawing.Point(331, 339);
       this.WindowConfigDialogCancelButton.Name = "WindowConfigDialogCancelButton";
       this.WindowConfigDialogCancelButton.Size = new System.Drawing.Size(75, 23);
       this.WindowConfigDialogCancelButton.TabIndex = 5;
@@ -208,30 +269,31 @@ namespace Windowmancer.UI
       this.WindowConfigDialogCancelButton.UseVisualStyleBackColor = true;
       this.WindowConfigDialogCancelButton.Click += new System.EventHandler(this.WindowConfigDialogCancelButton_Click);
       // 
-      // DisplayLabel
+      // WindowConfigNameGroupBox
       // 
-      this.DisplayLabel.AutoSize = true;
-      this.DisplayLabel.Location = new System.Drawing.Point(3, 51);
-      this.DisplayLabel.Name = "DisplayLabel";
-      this.DisplayLabel.Size = new System.Drawing.Size(41, 13);
-      this.DisplayLabel.TabIndex = 3;
-      this.DisplayLabel.Text = "Display";
+      this.WindowConfigNameGroupBox.Controls.Add(this.WindowConfigNameTextBox);
+      this.WindowConfigNameGroupBox.Location = new System.Drawing.Point(12, 13);
+      this.WindowConfigNameGroupBox.Name = "WindowConfigNameGroupBox";
+      this.WindowConfigNameGroupBox.Size = new System.Drawing.Size(223, 54);
+      this.WindowConfigNameGroupBox.TabIndex = 6;
+      this.WindowConfigNameGroupBox.TabStop = false;
+      this.WindowConfigNameGroupBox.Text = "Name";
       // 
-      // WindowLocationDisplayComboBox
+      // WindowConfigNameTextBox
       // 
-      this.WindowLocationDisplayComboBox.FormattingEnabled = true;
-      this.WindowLocationDisplayComboBox.Location = new System.Drawing.Point(6, 68);
-      this.WindowLocationDisplayComboBox.Name = "WindowLocationDisplayComboBox";
-      this.WindowLocationDisplayComboBox.Size = new System.Drawing.Size(188, 21);
-      this.WindowLocationDisplayComboBox.Sorted = true;
-      this.WindowLocationDisplayComboBox.TabIndex = 4;
+      this.WindowConfigNameTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.WindowConfigNameTextBox.Location = new System.Drawing.Point(3, 16);
+      this.WindowConfigNameTextBox.Name = "WindowConfigNameTextBox";
+      this.WindowConfigNameTextBox.Size = new System.Drawing.Size(217, 20);
+      this.WindowConfigNameTextBox.TabIndex = 0;
       // 
       // WindowConfigDialog
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(499, 289);
+      this.ClientSize = new System.Drawing.Size(499, 374);
       this.ControlBox = false;
+      this.Controls.Add(this.WindowConfigNameGroupBox);
       this.Controls.Add(this.WindowConfigDialogCancelButton);
       this.Controls.Add(this.WindowConfigDialogSaveButton);
       this.Controls.Add(this.MatchStringGroupBox);
@@ -255,6 +317,8 @@ namespace Windowmancer.UI
       ((System.ComponentModel.ISupportInitialize)(this.WindowLocationBoxX)).EndInit();
       this.MatchStringGroupBox.ResumeLayout(false);
       this.MatchStringGroupBox.PerformLayout();
+      this.WindowConfigNameGroupBox.ResumeLayout(false);
+      this.WindowConfigNameGroupBox.PerformLayout();
       this.ResumeLayout(false);
 
     }
@@ -268,13 +332,17 @@ namespace Windowmancer.UI
     private GroupBox WindowPostitionGroupBox;
     private NumericUpDown WindowLocationBoxY;
     private NumericUpDown WindowLocationBoxX;
-    private RadioButton ProcessNameRadioButton;
+    private RadioButton WindowProcessNameRadioButton;
     private RadioButton WindowTitleRadioButton;
     private GroupBox MatchStringGroupBox;
-    private TextBox MatchStringTextBox;
+    private TextBox WindowMatchStringTextBox;
     private Button WindowConfigDialogSaveButton;
     private Button WindowConfigDialogCancelButton;
     private Label DisplayLabel;
     private ComboBox WindowLocationDisplayComboBox;
+    private RadioButton WindowPositionAbsoluteRadioButton;
+    private RadioButton WindowPositionRelativeRadioButton;
+    private GroupBox WindowConfigNameGroupBox;
+    private TextBox WindowConfigNameTextBox;
   }
 }
