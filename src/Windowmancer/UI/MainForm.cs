@@ -38,12 +38,12 @@ namespace Windowmancer.UI
       _windowManager = new WindowManager();
       _windowManager.LoadProfile(_profileManager.ActiveProfile);
 
-      this.ActiveWindowsGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-
       this.ProfileListBox.DisplayMember = "Name";
       this.ProfileListBox.Items.AddRange(_profileManager.Profiles.ToArray());
+      this.ProfileListBox.SelectedItem = _profileManager.ActiveProfile;
 
-      SavedWindowsDataGrid.DataSource = _profileManager.ActiveProfile.Windows;
+      this.WindowConfigsDataGrid.DataSource = _profileManager.ActiveProfile.Windows;
+      this.WindowConfigsDataGrid.Columns[this.WindowConfigsDataGrid.ColumnCount-1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
     }
 
     protected void InternalDispose()
@@ -90,11 +90,11 @@ namespace Windowmancer.UI
       {
         this.ActiveWindowsGridView.Invoke(
           new MethodInvoker(
-            () => ActiveWindowsGridView.Rows.Add(process.Id, process.MainWindowTitle, process.ProcessName, ico)));
+            () => ActiveWindowsGridView.Rows.Add(ico, process.Id, process.ProcessName, process.MainWindowTitle)));
       }
       else
       {
-        ActiveWindowsGridView.Rows.Add(process.Id, process.MainWindowTitle, process.ProcessName, ico);
+        ActiveWindowsGridView.Rows.Add(ico, process.Id, process.ProcessName, process.MainWindowTitle);
       }
     }
 
@@ -127,16 +127,18 @@ namespace Windowmancer.UI
     }
 
 
-    public WindowInfo ShowWindowConfigDialog(int row = -1)
+    public WindowInfo ShowWindowConfigDialog(Process process)
     {
-      var procRow = row <= 0 ? this.ActiveWindowsGridView.SelectedRows[0] : this.ActiveWindowsGridView.Rows[row];
-      var proc = Process.GetProcessById((int)procRow.Cells[0].Value);
-      var prompt = new WindowConfigDialog(proc)
-      {
-        StartPosition = FormStartPosition.CenterParent
-      };
-      prompt.ShowDialog();
-      return prompt.WindowInfo;
+      var dialog = new WindowConfigDialog(process);
+      dialog.ShowDialog();
+      return dialog.WindowInfo;
+    }
+
+    public WindowInfo ShowWindowConfigDialog(WindowInfo windowInfo)
+    {
+      var dialog =  new WindowConfigDialog(windowInfo);
+      dialog.ShowDialog();
+      return dialog.WindowInfo;
     }
 
     #region Events
@@ -182,19 +184,6 @@ namespace Windowmancer.UI
       }
     }
 
-    //private void Display_Click(object sender, EventArgs e)
-    //{
-    //  foreach (var screen in Screen.AllScreens)
-    //  {
-    //    // For each screen, add the screen properties to a list box.
-    //    _logger.Debug($"Device Name: " + screen.DeviceName + "\n");
-    //    _logger.Debug($"Bounds: " + screen.Bounds.ToString() + "\n");
-    //    _logger.Debug($"Type: " + screen.GetType().ToString() + "\n");
-    //    _logger.Debug($"Working Area: " + screen.WorkingArea.ToString() + "\n");
-    //    _logger.Debug($"Primary Screen: " + screen.Primary.ToString() + "\n");
-    //  }
-    //}
-
     private void Form1_Load(object sender, EventArgs e)
     {
       // Create logger class to be bound to the richtextbox.
@@ -223,7 +212,9 @@ namespace Windowmancer.UI
 
     private void ActiveWindowsGridView_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
     {
-      var windowInfo = ShowWindowConfigDialog(e.RowIndex);
+      var procRow = e.RowIndex <= 0 ? this.ActiveWindowsGridView.SelectedRows[0] : this.ActiveWindowsGridView.Rows[e.RowIndex];
+      var proc = Process.GetProcessById((int)procRow.Cells[0].Value);
+      var windowInfo = ShowWindowConfigDialog(proc);
       if (null == windowInfo)
       {
         return;
@@ -232,5 +223,12 @@ namespace Windowmancer.UI
     }
 
     #endregion Events
+
+    private void SavedWindowsDataGrid_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+    {
+      var procRow = e.RowIndex <= 0 ? this.WindowConfigsDataGrid.SelectedRows[0] : this.WindowConfigsDataGrid.Rows[e.RowIndex];
+      var windowInfo = ShowWindowConfigDialog((WindowInfo)procRow.DataBoundItem);
+      _profileManager.ActiveProfile.Windows[e.RowIndex] = windowInfo;
+    }
   }
 }

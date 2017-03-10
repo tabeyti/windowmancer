@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using NLog;
 using Windowmancer.Extensions;
 using Windowmancer.Models;
 using Windowmancer.Practices;
-using Windowmancer.Pratices;
-using Windowmancer.Services;
 
 namespace Windowmancer.UI
 {
@@ -25,6 +22,15 @@ namespace Windowmancer.UI
       _proc = proc;
       InitializeComponent();
       Initialize();
+      this.StartPosition = FormStartPosition.CenterParent;
+    }
+
+    public WindowConfigDialog(WindowInfo windowInfo)
+    {
+      this.WindowInfo = windowInfo;
+      InitializeComponent();
+      Initialize();
+      this.StartPosition = FormStartPosition.CenterParent;
     }
 
     private void Initialize()
@@ -38,7 +44,7 @@ namespace Windowmancer.UI
       this.WindowLocationDisplayComboBox.SelectedIndex = 0;
     }
 
-    private void LoadWindowInfo()
+    private void LoadProcessWindowInfo()
     {
       var rec = GetWindowRec();
 
@@ -59,6 +65,26 @@ namespace Windowmancer.UI
       // Display process is on.
       var screen = Screen.FromHandle(_proc.MainWindowHandle);
       this.WindowLocationDisplayComboBox.SelectedItem = screen;
+    }
+
+    private void LoadWindowInfo()
+    {
+      // Size.
+      this.InvokeControl(() => this.WindowSizeBoxWidth.Value = this.WindowInfo.SizeInfo.Width);
+      this.InvokeControl(() => this.WindowSizeBoxHeight.Value = this.WindowInfo.SizeInfo.Height);
+
+      // PositionInfo.
+      this.InvokeControl(() => this.WindowLocationBoxX.Value = this.WindowInfo.LocationInfo.PositionInfo.X);
+      this.InvokeControl(() => this.WindowLocationBoxY.Value = this.WindowInfo.LocationInfo.PositionInfo.Y);
+
+      // Config name defaults to window title.
+      this.WindowConfigNameTextBox.Text = this.WindowInfo.Name;
+
+      // Match text defaults to window title.
+      this.WindowMatchStringTextBox.Text = this.WindowInfo.MatchCriteria.MatchString;
+
+      // Display process is on.
+      this.WindowLocationDisplayComboBox.SelectedItem = this.WindowInfo.LocationInfo.DisplayName;
     }
 
     private Win32.RECT GetWindowRec()
@@ -147,7 +173,14 @@ namespace Windowmancer.UI
     private void WindowConfigDialog_Load(object sender, EventArgs e)
     {
       _logger = LogManager.GetCurrentClassLogger();
-      LoadWindowInfo();
+      if (null == this.WindowInfo)
+      {
+        LoadProcessWindowInfo();
+      }
+      else
+      {
+        LoadWindowInfo();
+      }
     }
 
     private void WindowPositionAbsoluteRadioButton_CheckedChanged(object sender, EventArgs e)
