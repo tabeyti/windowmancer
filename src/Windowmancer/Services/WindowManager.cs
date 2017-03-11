@@ -37,6 +37,7 @@ namespace Windowmancer.Services
     public void LoadProfile(Profile profile)
     {
       this.CurrentProfile = profile;
+      RefreshProfile();
     }
 
     public void ApplyWindowInfo(Process process)

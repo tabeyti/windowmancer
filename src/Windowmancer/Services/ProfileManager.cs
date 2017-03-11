@@ -7,10 +7,11 @@ using Windowmancer.Models;
 
 namespace Windowmancer.Services
 {
-  public class ProfileManager 
+  public class ProfileManager : IDisposable
   {
     public List<Profile> Profiles { get; set; }
     private readonly ProfileManagerConfig _config;
+    public Profile ActiveProfile { get; set; }
 
     public ProfileManager(ProfileManagerConfig config)
     {
@@ -83,8 +84,6 @@ namespace Windowmancer.Services
       return true;
     }
 
-    public Profile ActiveProfile { get; set; }
-
     private void WriteToFile()
     {
       try
@@ -97,6 +96,10 @@ namespace Windowmancer.Services
         // TODO: Dialog window.
         throw e;
       }
+    }
+
+    public void Dispose()
+    {
     }
   }
 }

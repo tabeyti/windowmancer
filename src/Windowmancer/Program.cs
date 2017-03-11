@@ -21,7 +21,7 @@ namespace Windowmancer
     {
       Application.EnableVisualStyles();
       Application.SetCompatibleTextRenderingDefault(false);
-      Application.Run(new MainForm(ServiceResolver));
+      Application.Run(new UI.Windowmancer(ServiceResolver));
     }
   }
 }
