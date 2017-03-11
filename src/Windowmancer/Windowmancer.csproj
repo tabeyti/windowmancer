@@ -53,9 +53,13 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>icon.ico</ApplicationIcon>
+    <ApplicationIcon>app_icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Gma.System.MouseKeyHook, Version=5.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MouseKeyHook.5.4.0\lib\net40\Gma.System.MouseKeyHook.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
       <Private>True</Private>
@@ -105,6 +109,7 @@
     <Compile Include="Models\WindowMatchCriteria.cs" />
     <Compile Include="Practices\Helper.cs" />
     <Compile Include="Practices\Win32.cs" />
+    <Compile Include="Services\KeyHookManager.cs" />
     <Compile Include="UI\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -125,6 +130,7 @@
     <Compile Include="UI\WindowConfigDialog.Designer.cs">
       <DependentUpon>WindowConfigDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Windowmancer.cs" />
     <EmbeddedResource Include="UI\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -136,6 +142,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="UI\WindowConfigDialog.resx">
       <DependentUpon>WindowConfigDialog.cs</DependentUpon>
@@ -165,7 +172,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="app_icon.ico" />
     <Content Include="icon.ico" />
+    <None Include="Resources\app_icon.ico" />
+    <None Include="Resources\icon.ico" />
+    <None Include="Resources\FormIcon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

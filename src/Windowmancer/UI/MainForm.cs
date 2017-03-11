@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Management;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.Practices.Unity;
 using NLog;
@@ -24,9 +25,11 @@ namespace Windowmancer.UI
     private readonly Dictionary<int, Process> _availableWindowDict = new Dictionary<int, Process>();
     private readonly IUnityContainer _serviceResolver;
 
-    public MainForm(IUnityContainer serviceResolver)
+    public MainForm(IUnityContainer serviceResolver, ProfileManager profileManager, WindowManager windowManager)
     {
       _serviceResolver = serviceResolver;
+      _profileManager = profileManager;
+      _windowManager = windowManager;
 
       InitializeComponent();
       Initialize();      
@@ -34,10 +37,6 @@ namespace Windowmancer.UI
 
     public void Initialize()
     {
-      _profileManager = new ProfileManager(_serviceResolver.Resolve<ProfileManagerConfig>());
-      _windowManager = new WindowManager();
-      _windowManager.LoadProfile(_profileManager.ActiveProfile);
-
       this.ProfileListBox.DisplayMember = "Name";
       this.ProfileListBox.Items.AddRange(_profileManager.Profiles.ToArray());
       this.ProfileListBox.SelectedItem = _profileManager.ActiveProfile;
@@ -230,5 +229,34 @@ namespace Windowmancer.UI
       var windowInfo = ShowWindowConfigDialog((WindowInfo)procRow.DataBoundItem);
       _profileManager.ActiveProfile.Windows[e.RowIndex] = windowInfo;
     }
+
+    [DllImport("user32.dll")]
+    static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
+
+    [DllImport("User32.dll")]
+
+    private static extern IntPtr GetWindowDC(IntPtr hWnd);
+
+    protected override void WndProc(ref System.Windows.Forms.Message m)
+    {
+      const int WM_NCPAINT = 0x85;
+      base.WndProc(ref m);
+
+      if (m.Msg == WM_NCPAINT)
+      {
+
+        IntPtr hdc = GetWindowDC(m.HWnd);
+        if ((int)hdc != 0)
+        {
+          Graphics g = Graphics.FromHdc(hdc);
+          g.DrawLine(Pens.Green, 10, 10, 100, 10);
+          g.Flush();
+          ReleaseDC(m.HWnd, hdc);
+        }
+
+      }
+
+    }
+
   }
 }
