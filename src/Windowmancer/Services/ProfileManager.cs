@@ -84,6 +84,15 @@ namespace Windowmancer.Services
       return true;
     }
 
+    public void RemoveFromActiveProfile(WindowInfo info)
+    {
+      if (null == info)
+      {
+        return;
+      }
+      this.ActiveProfile.Windows.Remove(info);
+    }
+
     private void WriteToFile()
     {
       try

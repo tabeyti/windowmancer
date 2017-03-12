@@ -29,6 +29,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+      this.components = new System.ComponentModel.Container();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
       this.ActiveWindowsGridView = new System.Windows.Forms.DataGridView();
       this.IconHeader = new System.Windows.Forms.DataGridViewImageColumn();
@@ -47,6 +48,9 @@
       this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.documentationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.WindowConfigsContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       ((System.ComponentModel.ISupportInitialize)(this.ActiveWindowsGridView)).BeginInit();
       this.ProfileGroupBox.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.ProfileSplitContainer)).BeginInit();
@@ -60,6 +64,7 @@
       this.MainFormSplitContainer.Panel2.SuspendLayout();
       this.MainFormSplitContainer.SuspendLayout();
       this.menuStrip1.SuspendLayout();
+      this.WindowConfigsContextMenu.SuspendLayout();
       this.SuspendLayout();
       // 
       // ActiveWindowsGridView
@@ -84,7 +89,7 @@
       this.ActiveWindowsGridView.RowHeadersVisible = false;
       this.ActiveWindowsGridView.RowTemplate.Height = 30;
       this.ActiveWindowsGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-      this.ActiveWindowsGridView.Size = new System.Drawing.Size(886, 292);
+      this.ActiveWindowsGridView.Size = new System.Drawing.Size(886, 280);
       this.ActiveWindowsGridView.TabIndex = 3;
       this.ActiveWindowsGridView.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ActiveWindowsGridView_CellMouseDoubleClick);
       // 
@@ -129,7 +134,7 @@
       this.ProfileListBox.ItemHeight = 18;
       this.ProfileListBox.Location = new System.Drawing.Point(3, 16);
       this.ProfileListBox.Name = "ProfileListBox";
-      this.ProfileListBox.Size = new System.Drawing.Size(247, 282);
+      this.ProfileListBox.Size = new System.Drawing.Size(130, 282);
       this.ProfileListBox.TabIndex = 4;
       // 
       // ProfileGroupBox
@@ -139,7 +144,7 @@
       this.ProfileGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
       this.ProfileGroupBox.Location = new System.Drawing.Point(0, 0);
       this.ProfileGroupBox.Name = "ProfileGroupBox";
-      this.ProfileGroupBox.Size = new System.Drawing.Size(253, 301);
+      this.ProfileGroupBox.Size = new System.Drawing.Size(136, 301);
       this.ProfileGroupBox.TabIndex = 5;
       this.ProfileGroupBox.TabStop = false;
       this.ProfileGroupBox.Text = "Profiles";
@@ -158,7 +163,7 @@
       // 
       this.ProfileSplitContainer.Panel2.Controls.Add(this.WindowConfigsGroupBox);
       this.ProfileSplitContainer.Size = new System.Drawing.Size(892, 301);
-      this.ProfileSplitContainer.SplitterDistance = 253;
+      this.ProfileSplitContainer.SplitterDistance = 136;
       this.ProfileSplitContainer.TabIndex = 6;
       // 
       // WindowConfigsGroupBox
@@ -168,7 +173,7 @@
       this.WindowConfigsGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
       this.WindowConfigsGroupBox.Location = new System.Drawing.Point(0, 0);
       this.WindowConfigsGroupBox.Name = "WindowConfigsGroupBox";
-      this.WindowConfigsGroupBox.Size = new System.Drawing.Size(635, 301);
+      this.WindowConfigsGroupBox.Size = new System.Drawing.Size(752, 301);
       this.WindowConfigsGroupBox.TabIndex = 0;
       this.WindowConfigsGroupBox.TabStop = false;
       this.WindowConfigsGroupBox.Text = "Window Configs";
@@ -180,6 +185,7 @@
       this.WindowConfigsDataGrid.AllowUserToResizeRows = false;
       this.WindowConfigsDataGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
       this.WindowConfigsDataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+      this.WindowConfigsDataGrid.ContextMenuStrip = this.WindowConfigsContextMenu;
       this.WindowConfigsDataGrid.Dock = System.Windows.Forms.DockStyle.Fill;
       this.WindowConfigsDataGrid.Location = new System.Drawing.Point(3, 16);
       this.WindowConfigsDataGrid.MultiSelect = false;
@@ -187,7 +193,7 @@
       this.WindowConfigsDataGrid.ReadOnly = true;
       this.WindowConfigsDataGrid.RowHeadersVisible = false;
       this.WindowConfigsDataGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-      this.WindowConfigsDataGrid.Size = new System.Drawing.Size(629, 282);
+      this.WindowConfigsDataGrid.Size = new System.Drawing.Size(746, 282);
       this.WindowConfigsDataGrid.TabIndex = 0;
       this.WindowConfigsDataGrid.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.SavedWindowsDataGrid_CellDoubleClick);
       this.WindowConfigsDataGrid.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.WindowConfigsDataGrid_CellMouseDown);
@@ -259,6 +265,28 @@
       this.aboutToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
       this.aboutToolStripMenuItem.Text = "About";
       // 
+      // WindowConfigsContextMenu
+      // 
+      this.WindowConfigsContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.editToolStripMenuItem,
+            this.deleteToolStripMenuItem});
+      this.WindowConfigsContextMenu.Name = "WindowConfigsContextMenu";
+      this.WindowConfigsContextMenu.Size = new System.Drawing.Size(108, 48);
+      // 
+      // editToolStripMenuItem
+      // 
+      this.editToolStripMenuItem.Name = "editToolStripMenuItem";
+      this.editToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+      this.editToolStripMenuItem.Text = "Edit";
+      this.editToolStripMenuItem.Click += new System.EventHandler(this.editToolStripMenuItem_Click);
+      // 
+      // deleteToolStripMenuItem
+      // 
+      this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+      this.deleteToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+      this.deleteToolStripMenuItem.Text = "Delete";
+      this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
+      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -287,6 +315,7 @@
       this.MainFormSplitContainer.ResumeLayout(false);
       this.menuStrip1.ResumeLayout(false);
       this.menuStrip1.PerformLayout();
+      this.WindowConfigsContextMenu.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -310,6 +339,9 @@
     private System.Windows.Forms.DataGridViewTextBoxColumn PID;
     private System.Windows.Forms.DataGridViewTextBoxColumn ProcessName;
     private System.Windows.Forms.DataGridViewTextBoxColumn WindowTitle;
+    private System.Windows.Forms.ContextMenuStrip WindowConfigsContextMenu;
+    private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
   }
 }
 
