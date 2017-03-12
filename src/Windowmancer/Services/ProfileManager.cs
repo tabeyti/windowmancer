@@ -12,7 +12,7 @@ namespace Windowmancer.Services
   public class ProfileManager : IDisposable
   {
     public BindingList<Profile> Profiles { get; set; }
-    private readonly ProfileManagerConfig _config;
+    private readonly UserData _userData;
     private Profile _activeProfile;
     public Profile ActiveProfile
     {
@@ -36,43 +36,21 @@ namespace Windowmancer.Services
 
     private readonly WindowManager _windowManager;
 
-    public ProfileManager(ProfileManagerConfig config, WindowManager windowManager)
+    public ProfileManager(
+      UserData userData, 
+      WindowManager windowManager)
     {
       _windowManager = windowManager;
-      _config = config;
-      Profiles = new BindingList<Profile>();
+      _userData = userData;
       Initialize();
     }
 
     public void Initialize()
     {
-      string text;
-      try
-      {
-        text = System.IO.File.ReadAllText(_config.ProfileDatPath);
-      }
-      catch (Exception e)
-      {
-        // TODO: Dialog window with blank profile.
-        throw e;
-      } 
-      
-      try
-      {
-        // TODO: Icky. Like a copy constructor. Need better way of saving 
-        // this instance and re-instance this class from the saved config.
-        dynamic json = JsonConvert.DeserializeObject(text);
-        var activeProfileId = json.ActiveProfile.ToString();
-        this.Profiles = JsonConvert.DeserializeObject<BindingList<Profile>>(json.Profiles.ToString());
-
-        var profile = Profiles.Find(p => p.Id == activeProfileId);
-        this.ActiveProfile = profile ?? Profiles.FirstOrDefault();
-      } 
-      catch (Exception e)
-      {
-        // TODO: Dialog window with blank profile.
-        throw e;
-      }
+      this.Profiles = _userData.Profiles;
+      var profile = Profiles.Find(p => p.Id == _userData.ActiveProfile);
+      this.ActiveProfile = profile ?? Profiles.FirstOrDefault();
+      _windowManager.ActiveProfile = this.ActiveProfile;
     }
 
     public void UpdateActiveProfile(int index)
@@ -110,7 +88,7 @@ namespace Windowmancer.Services
       };
       Profiles.Add(profile);
       this.ActiveProfile = profile;
-      WriteToFile();
+      _userData.Save();
       return true;
     }
 
@@ -120,7 +98,6 @@ namespace Windowmancer.Services
       {
         return false;
       }
-
       this.ActiveProfile.Windows.Add(info);      
       return true;
     }
@@ -132,20 +109,6 @@ namespace Windowmancer.Services
         return;
       }
       this.ActiveProfile.Windows.Remove(info);
-    }
-
-    private void WriteToFile()
-    {
-      try
-      {
-        //var text = JsonConvert.SerializeObject(this);
-        //System.IO.File.WriteAllText(_config.ProfileDatPath, text);
-      }
-      catch (Exception e)
-      {
-        // TODO: Dialog window.
-        throw e;
-      }
     }
 
     public void Dispose()

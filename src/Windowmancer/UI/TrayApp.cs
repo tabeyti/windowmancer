@@ -10,7 +10,7 @@ using System.Reflection;
 
 namespace Windowmancer.UI
 {
-  public class Windowmancer : ApplicationContext
+  public class TrayApp : ApplicationContext
   {
     private readonly IUnityContainer _serviceResolver;
     private NotifyIcon _trayIcon;
@@ -20,11 +20,12 @@ namespace Windowmancer.UI
     private ContextMenu _trayContextMenu;
     private MainForm _editor;
 
-    public Windowmancer(IUnityContainer serviceResolver)
+    public TrayApp(IUnityContainer serviceResolver)
     {
       _serviceResolver = serviceResolver;
-      _windowManager = new WindowManager();
-      _profileManager = new ProfileManager(_serviceResolver.Resolve<ProfileManagerConfig>(), _windowManager);
+      _profileManager = serviceResolver.Resolve<ProfileManager>();
+      _windowManager = serviceResolver.Resolve<WindowManager>();      
+      _keyHookManager = serviceResolver.Resolve<KeyHookManager>();
       Initialize();
     }
 
@@ -36,10 +37,7 @@ namespace Windowmancer.UI
 
     private void Initialize()
     {
-      _keyHookManager = new KeyHookManager(OnKeyCombinationSuccess);
-
-      // TODO: DEBUG CODE
-      _keyHookManager.LoadKeyHookConfig(new KeyComboConfig(new[] { Keys.LControlKey, Keys.LShiftKey, Keys.K }));
+      _keyHookManager.OnKeyCombinationSuccess += OnKeyCombinationSuccess;
 
       var menuItems = GetProfileMenuItems();
       menuItems.Add(new MenuItem("-"));
@@ -58,15 +56,13 @@ namespace Windowmancer.UI
       };
       _trayIcon.MouseUp += (s, e) =>
       {
+        // Force showing context menu on left click.
         if (e.Button == MouseButtons.Left)
         {
           MethodInfo mi = typeof(NotifyIcon).GetMethod("ShowContextMenu", BindingFlags.Instance | BindingFlags.NonPublic);
           mi.Invoke(_trayIcon, null);
         }
       };
-
-      // TODO: DEBUG CODE
-
     }
 
     private List<MenuItem> GetProfileMenuItems()

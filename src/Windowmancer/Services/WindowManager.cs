@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
 using Windowmancer.Extensions;
 using Windowmancer.Models;
 using Windowmancer.Practices;
-using static Windowmancer.Practices.Win32;
 
 namespace Windowmancer.Services
 {

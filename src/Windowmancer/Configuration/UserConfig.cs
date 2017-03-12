@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Windowmancer.Configuration
 {
-  public class ProfileManagerConfig
+  public class UserConfig
   {
-    public string ProfileDatPath { get; set; }
+    public string UserDataPath { get; set; }
   }
 }

@@ -94,7 +94,7 @@
       this.ActiveWindowsGridView.RowHeadersVisible = false;
       this.ActiveWindowsGridView.RowTemplate.Height = 30;
       this.ActiveWindowsGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-      this.ActiveWindowsGridView.Size = new System.Drawing.Size(886, 280);
+      this.ActiveWindowsGridView.Size = new System.Drawing.Size(886, 293);
       this.ActiveWindowsGridView.TabIndex = 3;
       this.ActiveWindowsGridView.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ActiveWindowsGridView_CellMouseDoubleClick);
       // 
@@ -140,7 +140,7 @@
       this.ProfileListBox.ItemHeight = 18;
       this.ProfileListBox.Location = new System.Drawing.Point(3, 16);
       this.ProfileListBox.Name = "ProfileListBox";
-      this.ProfileListBox.Size = new System.Drawing.Size(130, 282);
+      this.ProfileListBox.Size = new System.Drawing.Size(130, 269);
       this.ProfileListBox.TabIndex = 4;
       this.ProfileListBox.SelectedIndexChanged += new System.EventHandler(this.ProfileListBox_SelectedIndexChanged);
       this.ProfileListBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ProfileListBox_MouseDown);
@@ -152,7 +152,7 @@
       this.ProfileGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
       this.ProfileGroupBox.Location = new System.Drawing.Point(0, 0);
       this.ProfileGroupBox.Name = "ProfileGroupBox";
-      this.ProfileGroupBox.Size = new System.Drawing.Size(136, 301);
+      this.ProfileGroupBox.Size = new System.Drawing.Size(136, 288);
       this.ProfileGroupBox.TabIndex = 5;
       this.ProfileGroupBox.TabStop = false;
       this.ProfileGroupBox.Text = "Profiles";
@@ -170,7 +170,7 @@
       // ProfileSplitContainer.Panel2
       // 
       this.ProfileSplitContainer.Panel2.Controls.Add(this.WindowConfigsGroupBox);
-      this.ProfileSplitContainer.Size = new System.Drawing.Size(892, 301);
+      this.ProfileSplitContainer.Size = new System.Drawing.Size(892, 288);
       this.ProfileSplitContainer.SplitterDistance = 136;
       this.ProfileSplitContainer.TabIndex = 6;
       // 
@@ -181,7 +181,7 @@
       this.WindowConfigsGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
       this.WindowConfigsGroupBox.Location = new System.Drawing.Point(0, 0);
       this.WindowConfigsGroupBox.Name = "WindowConfigsGroupBox";
-      this.WindowConfigsGroupBox.Size = new System.Drawing.Size(752, 301);
+      this.WindowConfigsGroupBox.Size = new System.Drawing.Size(752, 288);
       this.WindowConfigsGroupBox.TabIndex = 0;
       this.WindowConfigsGroupBox.TabStop = false;
       this.WindowConfigsGroupBox.Text = "Window Configs";
@@ -201,7 +201,7 @@
       this.WindowConfigsDataGrid.ReadOnly = true;
       this.WindowConfigsDataGrid.RowHeadersVisible = false;
       this.WindowConfigsDataGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-      this.WindowConfigsDataGrid.Size = new System.Drawing.Size(746, 282);
+      this.WindowConfigsDataGrid.Size = new System.Drawing.Size(746, 269);
       this.WindowConfigsDataGrid.TabIndex = 0;
       this.WindowConfigsDataGrid.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.SavedWindowsDataGrid_CellDoubleClick);
       this.WindowConfigsDataGrid.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.WindowConfigsDataGrid_CellMouseDown);
@@ -212,20 +212,20 @@
             this.editToolStripMenuItem,
             this.deleteToolStripMenuItem});
       this.WindowConfigsContextMenu.Name = "WindowConfigsContextMenu";
-      this.WindowConfigsContextMenu.Size = new System.Drawing.Size(153, 70);
+      this.WindowConfigsContextMenu.Size = new System.Drawing.Size(108, 48);
       this.WindowConfigsContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.WindowConfigsContextMenu_Opening);
       // 
       // editToolStripMenuItem
       // 
       this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-      this.editToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.editToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
       this.editToolStripMenuItem.Text = "Edit";
       this.editToolStripMenuItem.Click += new System.EventHandler(this.editToolStripMenuItem_Click);
       // 
       // deleteToolStripMenuItem
       // 
       this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-      this.deleteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.deleteToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
       this.deleteToolStripMenuItem.Text = "Delete";
       this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
       // 
@@ -245,7 +245,7 @@
       // 
       this.MainFormSplitContainer.Panel2.Controls.Add(this.ActiveWindowsGridView);
       this.MainFormSplitContainer.Size = new System.Drawing.Size(892, 603);
-      this.MainFormSplitContainer.SplitterDistance = 301;
+      this.MainFormSplitContainer.SplitterDistance = 288;
       this.MainFormSplitContainer.TabIndex = 7;
       // 
       // menuStrip1
@@ -271,8 +271,8 @@
       // preferencesToolStripMenuItem1
       // 
       this.preferencesToolStripMenuItem1.Name = "preferencesToolStripMenuItem1";
-      this.preferencesToolStripMenuItem1.Size = new System.Drawing.Size(153, 22);
-      this.preferencesToolStripMenuItem1.Text = "Profile Settings";
+      this.preferencesToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+      this.preferencesToolStripMenuItem1.Text = "Settings";
       this.preferencesToolStripMenuItem1.Click += new System.EventHandler(this.preferencesToolStripMenuItem1_Click);
       // 
       // helpToolStripMenuItem
@@ -309,6 +309,7 @@
             this.deleteToolStripMenuItem1});
       this.ProfileListBoxContextMenu.Name = "ProfileListBoxContextMenu";
       this.ProfileListBoxContextMenu.Size = new System.Drawing.Size(108, 48);
+      this.ProfileListBoxContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.ProfileListBoxContextMenu_Opening);
       // 
       // addToolStripMenuItem
       // 
