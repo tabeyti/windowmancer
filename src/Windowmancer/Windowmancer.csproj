@@ -91,6 +91,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Management" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -103,13 +104,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\ProfileManagerConfig.cs" />
+    <Compile Include="Configuration\ProfileSettingsConfig.cs" />
     <Compile Include="Extensions\BindingListExtensions.cs" />
+    <Compile Include="Extensions\BoolExtensions.cs" />
     <Compile Include="Extensions\ControlExtensions.cs" />
     <Compile Include="Models\ExceptionBox.cs" />
+    <Compile Include="Models\KeyInfo.cs" />
     <Compile Include="Models\WindowMatchCriteria.cs" />
     <Compile Include="Practices\Helper.cs" />
     <Compile Include="Practices\Win32.cs" />
     <Compile Include="Services\KeyHookManager.cs" />
+    <Compile Include="UI\HotKeyInputBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -124,6 +131,12 @@
     <Compile Include="Services\ProcMonitor.cs" />
     <Compile Include="Services\ProfileManager.cs" />
     <Compile Include="Services\WindowManager.cs" />
+    <Compile Include="UI\SettingsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\SettingsDialog.Designer.cs">
+      <DependentUpon>SettingsDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\WindowConfigDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -144,6 +157,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="UI\SettingsDialog.resx">
+      <DependentUpon>SettingsDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\WindowConfigDialog.resx">
       <DependentUpon>WindowConfigDialog.cs</DependentUpon>
     </EmbeddedResource>

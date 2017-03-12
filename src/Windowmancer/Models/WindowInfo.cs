@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel;
+using System.Diagnostics;
 
 namespace Windowmancer.Models
 {
@@ -8,6 +9,8 @@ namespace Windowmancer.Models
     public LocationInfo LocationInfo { get; set; }
     public SizeInfo SizeInfo { get; set; }
     public WindowMatchCriteria MatchCriteria { get; set; }
+    public bool BringToFront { get; set; }
+    public bool BringUpFromTaskbar { get; set; }
 
     public bool IsMatch(Process p)
     {

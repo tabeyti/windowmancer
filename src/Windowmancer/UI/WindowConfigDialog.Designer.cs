@@ -53,6 +53,10 @@ namespace Windowmancer.UI
       this.WindowConfigDialogCancelButton = new System.Windows.Forms.Button();
       this.WindowConfigNameGroupBox = new System.Windows.Forms.GroupBox();
       this.WindowConfigNameTextBox = new System.Windows.Forms.TextBox();
+      this.label1 = new System.Windows.Forms.Label();
+      this.label2 = new System.Windows.Forms.Label();
+      this.BringToFrontCheckBox = new System.Windows.Forms.CheckBox();
+      this.BringUpFromTaskbarCheckBox = new System.Windows.Forms.CheckBox();
       this.WindowMatchGroupBox.SuspendLayout();
       this.WindowSizeGroupBox.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.WindowSizeBoxHeight)).BeginInit();
@@ -138,6 +142,8 @@ namespace Windowmancer.UI
       // 
       // WindowPostitionGroupBox
       // 
+      this.WindowPostitionGroupBox.Controls.Add(this.label2);
+      this.WindowPostitionGroupBox.Controls.Add(this.label1);
       this.WindowPostitionGroupBox.Controls.Add(this.WindowPositionRelativeRadioButton);
       this.WindowPostitionGroupBox.Controls.Add(this.WindowPositionAbsoluteRadioButton);
       this.WindowPostitionGroupBox.Controls.Add(this.WindowLocationDisplayComboBox);
@@ -196,7 +202,7 @@ namespace Windowmancer.UI
       // 
       // WindowLocationBoxY
       // 
-      this.WindowLocationBoxY.Location = new System.Drawing.Point(102, 39);
+      this.WindowLocationBoxY.Location = new System.Drawing.Point(130, 39);
       this.WindowLocationBoxY.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -208,12 +214,12 @@ namespace Windowmancer.UI
             0,
             -2147483648});
       this.WindowLocationBoxY.Name = "WindowLocationBoxY";
-      this.WindowLocationBoxY.Size = new System.Drawing.Size(95, 20);
+      this.WindowLocationBoxY.Size = new System.Drawing.Size(65, 20);
       this.WindowLocationBoxY.TabIndex = 1;
       // 
       // WindowLocationBoxX
       // 
-      this.WindowLocationBoxX.Location = new System.Drawing.Point(3, 39);
+      this.WindowLocationBoxX.Location = new System.Drawing.Point(24, 39);
       this.WindowLocationBoxX.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -225,7 +231,7 @@ namespace Windowmancer.UI
             0,
             -2147483648});
       this.WindowLocationBoxX.Name = "WindowLocationBoxX";
-      this.WindowLocationBoxX.Size = new System.Drawing.Size(86, 20);
+      this.WindowLocationBoxX.Size = new System.Drawing.Size(65, 20);
       this.WindowLocationBoxX.TabIndex = 0;
       // 
       // MatchStringGroupBox
@@ -250,7 +256,7 @@ namespace Windowmancer.UI
       // 
       this.WindowConfigDialogSaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.WindowConfigDialogSaveButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.WindowConfigDialogSaveButton.Location = new System.Drawing.Point(412, 339);
+      this.WindowConfigDialogSaveButton.Location = new System.Drawing.Point(412, 406);
       this.WindowConfigDialogSaveButton.Name = "WindowConfigDialogSaveButton";
       this.WindowConfigDialogSaveButton.Size = new System.Drawing.Size(75, 23);
       this.WindowConfigDialogSaveButton.TabIndex = 4;
@@ -261,7 +267,7 @@ namespace Windowmancer.UI
       // WindowConfigDialogCancelButton
       // 
       this.WindowConfigDialogCancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.WindowConfigDialogCancelButton.Location = new System.Drawing.Point(331, 339);
+      this.WindowConfigDialogCancelButton.Location = new System.Drawing.Point(331, 406);
       this.WindowConfigDialogCancelButton.Name = "WindowConfigDialogCancelButton";
       this.WindowConfigDialogCancelButton.Size = new System.Drawing.Size(75, 23);
       this.WindowConfigDialogCancelButton.TabIndex = 5;
@@ -287,12 +293,56 @@ namespace Windowmancer.UI
       this.WindowConfigNameTextBox.Size = new System.Drawing.Size(217, 20);
       this.WindowConfigNameTextBox.TabIndex = 0;
       // 
+      // label1
+      // 
+      this.label1.AutoSize = true;
+      this.label1.Location = new System.Drawing.Point(4, 41);
+      this.label1.Name = "label1";
+      this.label1.Size = new System.Drawing.Size(17, 13);
+      this.label1.TabIndex = 7;
+      this.label1.Text = "X:";
+      // 
+      // label2
+      // 
+      this.label2.AutoSize = true;
+      this.label2.Location = new System.Drawing.Point(107, 41);
+      this.label2.Name = "label2";
+      this.label2.Size = new System.Drawing.Size(17, 13);
+      this.label2.TabIndex = 8;
+      this.label2.Text = "Y:";
+      // 
+      // BringToFrontCheckBox
+      // 
+      this.BringToFrontCheckBox.AutoSize = true;
+      this.BringToFrontCheckBox.Checked = true;
+      this.BringToFrontCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.BringToFrontCheckBox.Location = new System.Drawing.Point(12, 368);
+      this.BringToFrontCheckBox.Name = "BringToFrontCheckBox";
+      this.BringToFrontCheckBox.Size = new System.Drawing.Size(86, 17);
+      this.BringToFrontCheckBox.TabIndex = 7;
+      this.BringToFrontCheckBox.Text = "Bring to front";
+      this.BringToFrontCheckBox.UseVisualStyleBackColor = true;
+      // 
+      // BringUpFromTaskbarCheckBox
+      // 
+      this.BringUpFromTaskbarCheckBox.AutoSize = true;
+      this.BringUpFromTaskbarCheckBox.Checked = true;
+      this.BringUpFromTaskbarCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+      this.BringUpFromTaskbarCheckBox.Location = new System.Drawing.Point(104, 368);
+      this.BringUpFromTaskbarCheckBox.Name = "BringUpFromTaskbarCheckBox";
+      this.BringUpFromTaskbarCheckBox.Size = new System.Drawing.Size(126, 17);
+      this.BringUpFromTaskbarCheckBox.TabIndex = 8;
+      this.BringUpFromTaskbarCheckBox.Text = "Bring up from taskbar";
+      this.BringUpFromTaskbarCheckBox.UseVisualStyleBackColor = true;
+      // 
       // WindowConfigDialog
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(499, 374);
+      this.ClientSize = new System.Drawing.Size(499, 441);
       this.ControlBox = false;
+      this.Controls.Add(this.BringUpFromTaskbarCheckBox);
+      this.Controls.Add(this.BringToFrontCheckBox);
       this.Controls.Add(this.WindowConfigNameGroupBox);
       this.Controls.Add(this.WindowConfigDialogCancelButton);
       this.Controls.Add(this.WindowConfigDialogSaveButton);
@@ -320,6 +370,7 @@ namespace Windowmancer.UI
       this.WindowConfigNameGroupBox.ResumeLayout(false);
       this.WindowConfigNameGroupBox.PerformLayout();
       this.ResumeLayout(false);
+      this.PerformLayout();
 
     }
 
@@ -344,5 +395,9 @@ namespace Windowmancer.UI
     private RadioButton WindowPositionRelativeRadioButton;
     private GroupBox WindowConfigNameGroupBox;
     private TextBox WindowConfigNameTextBox;
+    private Label label2;
+    private Label label1;
+    private CheckBox BringToFrontCheckBox;
+    private CheckBox BringUpFromTaskbarCheckBox;
   }
 }
