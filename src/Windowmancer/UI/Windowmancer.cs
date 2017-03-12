@@ -1,6 +1,4 @@
-﻿// TODO: Prevent multiple MainForm from being spawned
-
-using System;
+﻿using System;
 using System.Windows.Forms;
 using Microsoft.Practices.Unity;
 using Windowmancer.Configuration;
