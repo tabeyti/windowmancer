@@ -240,12 +240,32 @@ namespace Windowmancer.UI
 
     private void WindowConfigsDataGrid_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
     {
-      if (e.Button == MouseButtons.Right)
+      if (e.Button != MouseButtons.Right)
       {
-        this.WindowConfigsDataGrid.CurrentCell = this.WindowConfigsDataGrid.Rows[e.RowIndex].Cells[e.ColumnIndex];
-        this.WindowConfigsDataGrid.Rows[e.RowIndex].Selected = true;
-        this.WindowConfigsDataGrid.Focus();
+        return;
       }
+      this.WindowConfigsDataGrid.CurrentCell = this.WindowConfigsDataGrid.Rows[e.RowIndex].Cells[e.ColumnIndex];
+      this.WindowConfigsDataGrid.Rows[e.RowIndex].Selected = true;
+      this.WindowConfigsDataGrid.Focus();
+    }
+
+    private void editToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      var procRow = this.ActiveWindowsGridView.SelectedRows[0];
+      var proc = Process.GetProcessById((int)procRow.Cells[1].Value);
+      var windowInfo = ShowWindowConfigDialog(proc);
+      if (null == windowInfo)
+      {
+        return;
+      }
+      _profileManager.AddToActiveProfile(windowInfo);
+    }
+
+    private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      var procRow = this.WindowConfigsDataGrid.SelectedRows[0];
+      var item = (WindowInfo)procRow.DataBoundItem;
+      _profileManager.RemoveFromActiveProfile(item);      
     }
   }
 }
