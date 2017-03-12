@@ -296,7 +296,7 @@ namespace Windowmancer.UI
 
     private void deleteToolStripMenuItem1_Click(object sender, EventArgs e)
     {
-
+      
     }
 
     private void ProfileListBox_MouseDown(object sender, MouseEventArgs e)
