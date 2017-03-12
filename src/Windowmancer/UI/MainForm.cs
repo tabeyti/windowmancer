@@ -251,14 +251,14 @@ namespace Windowmancer.UI
 
     private void editToolStripMenuItem_Click(object sender, EventArgs e)
     {
-      var procRow = this.ActiveWindowsGridView.SelectedRows[0];
-      var proc = Process.GetProcessById((int)procRow.Cells[1].Value);
-      var windowInfo = ShowWindowConfigDialog(proc);
+      var procRow = this.WindowConfigsDataGrid.SelectedRows[0];
+      var item = (WindowInfo)procRow.DataBoundItem;
+      var windowInfo = ShowWindowConfigDialog(item);
       if (null == windowInfo)
       {
         return;
       }
-      _profileManager.AddToActiveProfile(windowInfo);
+      _profileManager.ActiveProfile.Windows[procRow.Index] = windowInfo;
     }
 
     private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
