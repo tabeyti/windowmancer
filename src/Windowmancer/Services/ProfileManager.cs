@@ -1,15 +1,17 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Windowmancer.Configuration;
+using Windowmancer.Extensions;
 using Windowmancer.Models;
 
 namespace Windowmancer.Services
 {
   public class ProfileManager : IDisposable
   {
-    public List<Profile> Profiles { get; set; }
+    public BindingList<Profile> Profiles { get; set; }
     private readonly ProfileManagerConfig _config;
     private Profile _activeProfile;
     public Profile ActiveProfile
@@ -38,7 +40,7 @@ namespace Windowmancer.Services
     {
       _windowManager = windowManager;
       _config = config;
-      Profiles = new List<Profile>();
+      Profiles = new BindingList<Profile>();
       Initialize();
     }
 
@@ -61,7 +63,7 @@ namespace Windowmancer.Services
         // this instance and re-instance this class from the saved config.
         dynamic json = JsonConvert.DeserializeObject(text);
         var activeProfileId = json.ActiveProfile.ToString();
-        this.Profiles = JsonConvert.DeserializeObject<List<Profile>>(json.Profiles.ToString());
+        this.Profiles = JsonConvert.DeserializeObject<BindingList<Profile>>(json.Profiles.ToString());
 
         var profile = Profiles.Find(p => p.Id == activeProfileId);
         this.ActiveProfile = profile ?? Profiles.FirstOrDefault();

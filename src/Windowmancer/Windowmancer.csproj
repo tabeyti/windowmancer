@@ -131,6 +131,12 @@
     <Compile Include="Services\ProcMonitor.cs" />
     <Compile Include="Services\ProfileManager.cs" />
     <Compile Include="Services\WindowManager.cs" />
+    <Compile Include="UI\ProfileConfigDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\ProfileConfigDialog.Designer.cs">
+      <DependentUpon>ProfileConfigDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\SettingsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -157,6 +163,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="UI\ProfileConfigDialog.resx">
+      <DependentUpon>ProfileConfigDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\SettingsDialog.resx">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </EmbeddedResource>

@@ -38,7 +38,7 @@ namespace Windowmancer.UI
     public void Initialize()
     {
       this.ProfileListBox.DisplayMember = "Name";
-      this.ProfileListBox.Items.AddRange(_profileManager.Profiles.ToArray());
+      this.ProfileListBox.DataSource = _profileManager.Profiles;
       this.ProfileListBox.SelectedItem = _profileManager.ActiveProfile;
 
       this.WindowConfigsDataGrid.DataSource = _profileManager.ActiveProfile.Windows;
@@ -146,6 +146,12 @@ namespace Windowmancer.UI
       var dialog =  new WindowConfigDialog(windowInfo);
       dialog.ShowDialog();
       return dialog.WindowInfo;
+    }
+
+    public void HandleProfileConfigDialog()
+    {
+      var dialog = new ProfileConfigDialog(_profileManager);
+      dialog.ShowDialog();
     }
 
     #region Events
@@ -281,6 +287,54 @@ namespace Windowmancer.UI
     {
       _profileManager.UpdateActiveProfile(this.ProfileListBox.SelectedIndex);
       this.WindowConfigsDataGrid.DataSource = _profileManager.ActiveProfile.Windows;
+    }
+
+    private void addToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      HandleProfileConfigDialog();
+    }
+
+    private void deleteToolStripMenuItem1_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void ProfileListBox_MouseDown(object sender, MouseEventArgs e)
+    {
+      if (e.Button != MouseButtons.Right)
+      {
+        return;
+      }
+      var rowIndex = this.ProfileListBox.IndexFromPoint(e.X, e.Y);
+      if (rowIndex < 0)
+      {
+        return;
+      }
+      this.ProfileListBox.SelectedIndex = rowIndex;
+      this.ProfileListBox.Focus();
+    }
+
+    private void WindowConfigsContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+    {      
+      var cms = sender as ContextMenuStrip;
+      var mousepos = Control.MousePosition;
+      if (cms != null)
+      {
+        var rel_mousePos = cms.PointToClient(mousepos);
+        if (cms.ClientRectangle.Contains(rel_mousePos))
+        {
+          var dgv_rel_mousePos = this.WindowConfigsDataGrid.PointToClient(mousepos);
+          var hti = this.WindowConfigsDataGrid.HitTest(dgv_rel_mousePos.X, dgv_rel_mousePos.Y);
+          if (hti.RowIndex == -1)
+          {
+            e.Cancel = true;
+          }
+        }
+        else
+        {
+          e.Cancel = true;
+        }
+      }      
     }
   }
 }
