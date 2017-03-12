@@ -12,7 +12,7 @@ namespace Windowmancer.Services
 {
   public class WindowManager : IDisposable
   {
-    public Profile CurrentProfile { get; set; }
+    public Profile ActiveProfile { get; set; }
 
     #region Constructors
 
@@ -26,15 +26,9 @@ namespace Windowmancer.Services
     {
     }
 
-    public void LoadProfile(Profile profile)
-    {
-      this.CurrentProfile = profile;
-      RefreshProfile();
-    }
-
     public void ApplyWindowInfo(Process process)
     {
-      var windowInfo = this.CurrentProfile.Windows.Find(p => p.IsMatch(process));
+      var windowInfo = this.ActiveProfile.Windows.Find(p => p.IsMatch(process));
       if (windowInfo == null)
         return;
       ApplyWindowInfo(windowInfo, process);
@@ -70,7 +64,7 @@ namespace Windowmancer.Services
         {
           continue;
         }
-        var windowInfo = this.CurrentProfile.Windows.Find(pr => pr.IsMatch(p));
+        var windowInfo = this.ActiveProfile.Windows.Find(pr => pr.IsMatch(p));
         if (null == windowInfo) continue;
         ApplyWindowInfo(windowInfo, p);
       }

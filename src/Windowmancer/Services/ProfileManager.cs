@@ -11,10 +11,32 @@ namespace Windowmancer.Services
   {
     public List<Profile> Profiles { get; set; }
     private readonly ProfileManagerConfig _config;
-    public Profile ActiveProfile { get; set; }
-
-    public ProfileManager(ProfileManagerConfig config)
+    private Profile _activeProfile;
+    public Profile ActiveProfile
     {
+      get
+      {
+        return _activeProfile;
+      }
+      set
+      {
+        _activeProfile = value;
+        _windowManager.ActiveProfile = _activeProfile;
+      }
+    }
+    public string ActiveProfileName
+    {
+      get
+      {
+        return (this.ActiveProfile == null) ? "None" : this.ActiveProfile.Name;
+      }
+    }
+
+    private readonly WindowManager _windowManager;
+
+    public ProfileManager(ProfileManagerConfig config, WindowManager windowManager)
+    {
+      _windowManager = windowManager;
       _config = config;
       Profiles = new List<Profile>();
       Initialize();
@@ -51,24 +73,41 @@ namespace Windowmancer.Services
       }
     }
 
-    public void Update(Profile profile)
-    {      
-      var i = this.Profiles.FindIndex(p => p.Id == profile.Id);
-      if (i < 0)
+    public void UpdateActiveProfile(int index)
+    {
+      if (index < 0 || index >= this.Profiles.Count)
       {
-        throw new Exception($"ProfileManager.Update - Could not find profile {profile.Id}.");
+        throw new ExceptionBox($"{this} - Index {index} out of range.");
       }
-      Profiles[i] = profile;
-      WriteToFile();
+      this.ActiveProfile = this.Profiles[index];
+      _windowManager.ActiveProfile = this.ActiveProfile;
     }
 
-    public bool AddProfile(Profile profile)
+    public void UpdateActiveProfile(string id)
     {
-      if (Profiles.Any(p => p.Name == profile.Name))
+      var profile = this.Profiles.Find(p => p.Id == id);
+      if (null == profile)
+      {
+        throw new ExceptionBox($"{this} - Could not find profile from id {id}.");
+      }
+      this.ActiveProfile = profile;
+      _windowManager.ActiveProfile = this.ActiveProfile;
+    }
+
+    public bool AddNewProfile(string name)
+    {
+      if (Profiles.Any(p => p.Name == name))
       {
         return false;
       }
+      var profile = new Profile
+      {
+        Id = Guid.NewGuid().ToString(),
+        Name = name,
+        Windows = new System.ComponentModel.BindingList<WindowInfo>()
+      };
       Profiles.Add(profile);
+      this.ActiveProfile = profile;
       WriteToFile();
       return true;
     }

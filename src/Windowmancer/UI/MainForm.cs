@@ -65,6 +65,15 @@ namespace Windowmancer.UI
       _stopWatch.Start();
     }
 
+    public void UpdateActiveProfile(Profile profile)
+    {
+      if (null == profile)
+      {
+        throw new ExceptionBox($"{this} - Cannot update with null profile");
+      }
+      this.ProfileListBox.SelectedItem = profile;
+    }
+
     private void AddToActiveWindows(Process process)
     {
       if (_availableWindowDict.ContainsKey(process.Id))
@@ -266,6 +275,12 @@ namespace Windowmancer.UI
       var procRow = this.WindowConfigsDataGrid.SelectedRows[0];
       var item = (WindowInfo)procRow.DataBoundItem;
       _profileManager.RemoveFromActiveProfile(item);      
+    }
+
+    private void ProfileListBox_SelectedIndexChanged(object sender, EventArgs e)
+    {
+      _profileManager.UpdateActiveProfile(this.ProfileListBox.SelectedIndex);
+      this.WindowConfigsDataGrid.DataSource = _profileManager.ActiveProfile.Windows;
     }
   }
 }

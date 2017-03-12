@@ -190,6 +190,7 @@
   <ItemGroup>
     <Content Include="app_icon.ico" />
     <Content Include="icon.ico" />
+    <None Include="Resources\app_icon2.ico" />
     <None Include="Resources\app_icon.ico" />
     <None Include="Resources\icon.ico" />
     <None Include="Resources\FormIcon.ico" />

@@ -1,5 +1,6 @@
 ﻿{
-  "Profiles": [{
+  "Profiles": [
+    {
       "Id": "cda8050d-9ef4-47fd-8c38-47da50d24d5c",
       "Name": "Server",
       "Windows": [
@@ -22,9 +23,9 @@
             "MatchString": ".*WMIC.*"
           },
           "BringToFront": true,
-          "BringUpFromTaskbar":  true
+          "BringUpFromTaskbar": true
         },
-         {
+        {
           "Name": "Notepad++ Jammer",
           "LocationInfo": {
             "DisplayName": "\\\\.\\DISPLAY2",
@@ -43,13 +44,38 @@
             "MatchString": ".*Notepad.*"
           },
           "BringToFront": true,
-          "BringUpFromTaskbar":  true
+          "BringUpFromTaskbar": true
+        }
+      ]
+    },
+    {
+      "Id": "880699fc-fd34-4703-a064-62ab51e4fb93",
+      "Name": "Misc",
+      "Windows": [
+        {
+          "Name": "Pickles",
+          "LocationInfo": {
+            "DisplayName": "\\\\.\\DISPLAY2",
+            "PrimaryDisplay": false,
+            "PositionInfo": {
+              "X": 0,
+              "Y": 0
+            }
+          },
+          "SizeInfo": {
+            "Width": 1024,
+            "Height": 768
+          },
+          "MatchCriteria": {
+            "MatchType": 0,
+            "MatchString": ".*nslookup.*"
+          },
+          "BringToFront": true,
+          "BringUpFromTaskbar": true
         }
       ]
     }
   ],
-  "ActiveProfile": "cda8050d-9ef4-47fd-8c38-47da50d24d5c",
-  "Settings": {
-    "ApplyOnProcessCreate": true
-  }
+  //"ActiveProfile": "cda8050d-9ef4-47fd-8c38-47da50d24d5c"
+  "ActiveProfile":  "880699fc-fd34-4703-a064-62ab51e4fb93"
 }

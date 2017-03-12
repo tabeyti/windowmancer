@@ -41,16 +41,17 @@
       this.ProfileSplitContainer = new System.Windows.Forms.SplitContainer();
       this.WindowConfigsGroupBox = new System.Windows.Forms.GroupBox();
       this.WindowConfigsDataGrid = new System.Windows.Forms.DataGridView();
+      this.WindowConfigsContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.MainFormSplitContainer = new System.Windows.Forms.SplitContainer();
       this.menuStrip1 = new System.Windows.Forms.MenuStrip();
       this.preferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.preferencesToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
       this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.documentationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
       this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.WindowConfigsContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-      this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       ((System.ComponentModel.ISupportInitialize)(this.ActiveWindowsGridView)).BeginInit();
       this.ProfileGroupBox.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.ProfileSplitContainer)).BeginInit();
@@ -59,12 +60,12 @@
       this.ProfileSplitContainer.SuspendLayout();
       this.WindowConfigsGroupBox.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.WindowConfigsDataGrid)).BeginInit();
+      this.WindowConfigsContextMenu.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.MainFormSplitContainer)).BeginInit();
       this.MainFormSplitContainer.Panel1.SuspendLayout();
       this.MainFormSplitContainer.Panel2.SuspendLayout();
       this.MainFormSplitContainer.SuspendLayout();
       this.menuStrip1.SuspendLayout();
-      this.WindowConfigsContextMenu.SuspendLayout();
       this.SuspendLayout();
       // 
       // ActiveWindowsGridView
@@ -136,6 +137,7 @@
       this.ProfileListBox.Name = "ProfileListBox";
       this.ProfileListBox.Size = new System.Drawing.Size(130, 282);
       this.ProfileListBox.TabIndex = 4;
+      this.ProfileListBox.SelectedIndexChanged += new System.EventHandler(this.ProfileListBox_SelectedIndexChanged);
       // 
       // ProfileGroupBox
       // 
@@ -198,6 +200,28 @@
       this.WindowConfigsDataGrid.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.SavedWindowsDataGrid_CellDoubleClick);
       this.WindowConfigsDataGrid.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.WindowConfigsDataGrid_CellMouseDown);
       // 
+      // WindowConfigsContextMenu
+      // 
+      this.WindowConfigsContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.editToolStripMenuItem,
+            this.deleteToolStripMenuItem});
+      this.WindowConfigsContextMenu.Name = "WindowConfigsContextMenu";
+      this.WindowConfigsContextMenu.Size = new System.Drawing.Size(108, 48);
+      // 
+      // editToolStripMenuItem
+      // 
+      this.editToolStripMenuItem.Name = "editToolStripMenuItem";
+      this.editToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+      this.editToolStripMenuItem.Text = "Edit";
+      this.editToolStripMenuItem.Click += new System.EventHandler(this.editToolStripMenuItem_Click);
+      // 
+      // deleteToolStripMenuItem
+      // 
+      this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+      this.deleteToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+      this.deleteToolStripMenuItem.Text = "Delete";
+      this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
+      // 
       // MainFormSplitContainer
       // 
       this.MainFormSplitContainer.BackColor = System.Drawing.SystemColors.Control;
@@ -248,6 +272,7 @@
       // 
       this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.documentationToolStripMenuItem,
+            this.toolStripSeparator1,
             this.aboutToolStripMenuItem});
       this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
       this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
@@ -259,33 +284,16 @@
       this.documentationToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
       this.documentationToolStripMenuItem.Text = "Documentation";
       // 
+      // toolStripSeparator1
+      // 
+      this.toolStripSeparator1.Name = "toolStripSeparator1";
+      this.toolStripSeparator1.Size = new System.Drawing.Size(154, 6);
+      // 
       // aboutToolStripMenuItem
       // 
       this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
       this.aboutToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
       this.aboutToolStripMenuItem.Text = "About";
-      // 
-      // WindowConfigsContextMenu
-      // 
-      this.WindowConfigsContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.editToolStripMenuItem,
-            this.deleteToolStripMenuItem});
-      this.WindowConfigsContextMenu.Name = "WindowConfigsContextMenu";
-      this.WindowConfigsContextMenu.Size = new System.Drawing.Size(108, 48);
-      // 
-      // editToolStripMenuItem
-      // 
-      this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-      this.editToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
-      this.editToolStripMenuItem.Text = "Edit";
-      this.editToolStripMenuItem.Click += new System.EventHandler(this.editToolStripMenuItem_Click);
-      // 
-      // deleteToolStripMenuItem
-      // 
-      this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-      this.deleteToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
-      this.deleteToolStripMenuItem.Text = "Delete";
-      this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
       // 
       // MainForm
       // 
@@ -309,13 +317,13 @@
       this.ProfileSplitContainer.ResumeLayout(false);
       this.WindowConfigsGroupBox.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.WindowConfigsDataGrid)).EndInit();
+      this.WindowConfigsContextMenu.ResumeLayout(false);
       this.MainFormSplitContainer.Panel1.ResumeLayout(false);
       this.MainFormSplitContainer.Panel2.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.MainFormSplitContainer)).EndInit();
       this.MainFormSplitContainer.ResumeLayout(false);
       this.menuStrip1.ResumeLayout(false);
       this.menuStrip1.PerformLayout();
-      this.WindowConfigsContextMenu.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -323,7 +331,6 @@
 
         #endregion
     private System.Windows.Forms.DataGridView ActiveWindowsGridView;
-    private System.Windows.Forms.ListBox ProfileListBox;
     private System.Windows.Forms.GroupBox ProfileGroupBox;
     private System.Windows.Forms.SplitContainer ProfileSplitContainer;
     private System.Windows.Forms.SplitContainer MainFormSplitContainer;
@@ -342,6 +349,8 @@
     private System.Windows.Forms.ContextMenuStrip WindowConfigsContextMenu;
     private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
+    private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+    public System.Windows.Forms.ListBox ProfileListBox;
   }
 }
 
