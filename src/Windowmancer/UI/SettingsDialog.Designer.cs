@@ -69,7 +69,7 @@
       this.Controls.Add(this.SaveButton);
       this.Controls.Add(this.HotKeyGroupBox);
       this.Name = "SettingsDialog";
-      this.Text = "Profile Settings";
+      this.Text = "Settings";
       this.ResumeLayout(false);
 
     }

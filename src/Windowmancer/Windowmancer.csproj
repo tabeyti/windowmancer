@@ -103,13 +103,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\ProfileManagerConfig.cs" />
+    <Compile Include="Configuration\UserConfig.cs" />
     <Compile Include="Configuration\ProfileSettingsConfig.cs" />
     <Compile Include="Extensions\BindingListExtensions.cs" />
     <Compile Include="Extensions\BoolExtensions.cs" />
     <Compile Include="Extensions\ControlExtensions.cs" />
     <Compile Include="Models\ExceptionBox.cs" />
     <Compile Include="Models\KeyInfo.cs" />
+    <Compile Include="Models\UserData.cs" />
     <Compile Include="Models\WindowMatchCriteria.cs" />
     <Compile Include="Practices\Helper.cs" />
     <Compile Include="Practices\Win32.cs" />
@@ -125,7 +126,7 @@
     </Compile>
     <Compile Include="Models\Profile.cs" />
     <Compile Include="Models\WindowInfo.cs" />
-    <Compile Include="Practices\WMServiceResolver.cs" />
+    <Compile Include="Practices\ServiceResolver.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ProcMonitor.cs" />
@@ -149,7 +150,7 @@
     <Compile Include="UI\WindowConfigDialog.Designer.cs">
       <DependentUpon>WindowConfigDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Windowmancer.cs" />
+    <Compile Include="UI\TrayApp.cs" />
     <EmbeddedResource Include="UI\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -172,10 +173,10 @@
     <EmbeddedResource Include="UI\WindowConfigDialog.resx">
       <DependentUpon>WindowConfigDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="WindowMancer.json">
+    <None Include="Windowmancer.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="profiles.json">
+    <None Include="user.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config">

@@ -8,6 +8,8 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Windowmancer.Configuration;
+using Windowmancer.Models;
+using Windowmancer.Services;
 
 namespace Windowmancer.Pratices
 {
@@ -28,7 +30,7 @@ namespace Windowmancer.Pratices
       var config = GetAssembly();
 
       // Register configs.
-      RegisterConfig<ProfileManagerConfig>(container, config.AppSettings);
+      RegisterConfig<UserConfig>(container, config.AppSettings);
 
       // Register all services.
       RegisterServices(container);
@@ -38,7 +40,14 @@ namespace Windowmancer.Pratices
 
     private static void RegisterServices(IUnityContainer container)
     {
-      // TODO: Move service registrations here.
+      var userConfig = container.Resolve<UserConfig>();
+      var text = File.ReadAllText(userConfig.UserDataPath);
+      var userData = JsonConvert.DeserializeObject<UserData>(text);
+      container.RegisterInstance(userData);
+
+      container.RegisterType<WindowManager>(new ContainerControlledLifetimeManager());
+      container.RegisterType<ProfileManager>(new ContainerControlledLifetimeManager());
+      container.RegisterType<KeyHookManager>(new ContainerControlledLifetimeManager());
     }
 
     public static dynamic GetAssembly()

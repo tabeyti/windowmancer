@@ -43,6 +43,8 @@ namespace Windowmancer.UI
 
       this.WindowConfigsDataGrid.DataSource = _profileManager.ActiveProfile.Windows;
       this.WindowConfigsDataGrid.Columns[this.WindowConfigsDataGrid.ColumnCount-1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+
+      RemoveToolStripMenuMargins();
     }
 
     protected void InternalDispose()
@@ -103,6 +105,14 @@ namespace Windowmancer.UI
       else
       {
         ActiveWindowsGridView.Rows.Add(ico, process.Id, process.ProcessName, process.MainWindowTitle);
+      }
+    }
+
+    private void RemoveToolStripMenuMargins()
+    {
+      foreach (ToolStripMenuItem menuItem in menuStrip1.Items)
+      {
+        ((ToolStripDropDownMenu)menuItem.DropDown).ShowImageMargin = false;
       }
     }
 
@@ -335,6 +345,16 @@ namespace Windowmancer.UI
           e.Cancel = true;
         }
       }      
+    }
+
+    private void ProfileListBoxContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+    {
+      var mp = this.ProfileListBox.PointToClient(Control.MousePosition);
+      var index = this.ProfileListBox.IndexFromPoint(mp.X, mp.Y);
+      if (index < 0)
+      {
+        e.Cancel = true;
+      }
     }
   }
 }

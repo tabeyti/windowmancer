@@ -11,18 +11,21 @@ namespace Windowmancer.Services
 {
   public class KeyHookManager
   {
+    public event Action OnKeyCombinationSuccess;
     private IKeyboardEvents _globalHook;
     private KeyComboConfig _keyComboConfig;
-    private event Action OnKeyCombinationSuccess;
+    private readonly UserData _userData;
 
-    public KeyHookManager(Action onKeyCombinationSuccess)
+    public KeyHookManager(UserData userData)
     {
-      OnKeyCombinationSuccess = onKeyCombinationSuccess;
+      _userData = userData;
       Initialize();
     }
 
     public void Initialize()
     {
+      _keyComboConfig = _userData.GlobalHotKeyCombo;
+
       _globalHook = Hook.GlobalEvents();
       _globalHook.KeyDown += (s, e) =>
       {
@@ -45,12 +48,16 @@ namespace Windowmancer.Services
 
   public class KeyComboConfig
   {
-    private readonly List<KeyInfo> _keyCombination;
+    public List<KeyInfo> KeyCombination;
+
+    public KeyComboConfig()
+    {
+    }
 
     public KeyComboConfig(IEnumerable<Keys> keys)
     {
-      _keyCombination = new List<KeyInfo>();
-      keys.ToList().ForEach(k => _keyCombination.Add(
+      this.KeyCombination = new List<KeyInfo>();
+      keys.ToList().ForEach(k => this.KeyCombination.Add(
         new KeyInfo { Key = k, IsDown = false }));
     }
 
@@ -60,14 +67,14 @@ namespace Windowmancer.Services
     /// </summary>
     public bool Update(Keys key, bool isDown)
     {
-      var keyConfig = _keyCombination.Find(k => k.Key == key);
+      var keyConfig = this.KeyCombination.Find(k => k.Key == key);
       if (null == keyConfig)
       {
         return false;
       }
 
       keyConfig.IsDown = isDown;
-      return _keyCombination.TrueForAll(k => k.IsDown);
+      return this.KeyCombination.TrueForAll(k => k.IsDown);
     }
   }
 }

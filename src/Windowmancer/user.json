@@ -76,6 +76,21 @@
       ]
     }
   ],
-  //"ActiveProfile": "cda8050d-9ef4-47fd-8c38-47da50d24d5c"
-  "ActiveProfile":  "880699fc-fd34-4703-a064-62ab51e4fb93"
+  "ActiveProfile": "880699fc-fd34-4703-a064-62ab51e4fb93",
+  "GlobalHotKeyCombo": {
+    "KeyCombination": [
+      {
+        "Key": 162,
+        "IsDown": false
+      },
+      {
+        "Key": 160,
+        "IsDown": false
+      },
+      {
+        "Key": 75,
+        "IsDown": false
+      }
+    ]
+  }
 }
