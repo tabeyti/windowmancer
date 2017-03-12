@@ -122,9 +122,9 @@
       // 
       // ProfileListBox
       // 
-      this.ProfileListBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+      this.ProfileListBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
       this.ProfileListBox.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.ProfileListBox.Font = new System.Drawing.Font("Consolas", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.ProfileListBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.ProfileListBox.FormattingEnabled = true;
       this.ProfileListBox.ItemHeight = 18;
       this.ProfileListBox.Location = new System.Drawing.Point(3, 16);
@@ -190,6 +190,7 @@
       this.WindowConfigsDataGrid.Size = new System.Drawing.Size(629, 282);
       this.WindowConfigsDataGrid.TabIndex = 0;
       this.WindowConfigsDataGrid.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.SavedWindowsDataGrid_CellDoubleClick);
+      this.WindowConfigsDataGrid.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.WindowConfigsDataGrid_CellMouseDown);
       // 
       // MainFormSplitContainer
       // 
@@ -233,8 +234,9 @@
       // preferencesToolStripMenuItem1
       // 
       this.preferencesToolStripMenuItem1.Name = "preferencesToolStripMenuItem1";
-      this.preferencesToolStripMenuItem1.Size = new System.Drawing.Size(135, 22);
-      this.preferencesToolStripMenuItem1.Text = "Preferences";
+      this.preferencesToolStripMenuItem1.Size = new System.Drawing.Size(153, 22);
+      this.preferencesToolStripMenuItem1.Text = "Profile Settings";
+      this.preferencesToolStripMenuItem1.Click += new System.EventHandler(this.preferencesToolStripMenuItem1_Click);
       // 
       // helpToolStripMenuItem
       // 

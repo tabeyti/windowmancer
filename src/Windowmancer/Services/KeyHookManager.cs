@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Windowmancer.Models;
 
 namespace Windowmancer.Services
 {
@@ -44,13 +45,13 @@ namespace Windowmancer.Services
 
   public class KeyComboConfig
   {
-    private readonly List<KeyConfig> _keyCombination;
+    private readonly List<KeyInfo> _keyCombination;
 
     public KeyComboConfig(IEnumerable<Keys> keys)
     {
-      _keyCombination = new List<KeyConfig>();
+      _keyCombination = new List<KeyInfo>();
       keys.ToList().ForEach(k => _keyCombination.Add(
-        new KeyConfig { Key = k, IsDown = false }));
+        new KeyInfo { Key = k, IsDown = false }));
     }
 
     /// <summary>
@@ -68,11 +69,5 @@ namespace Windowmancer.Services
       keyConfig.IsDown = isDown;
       return _keyCombination.TrueForAll(k => k.IsDown);
     }
-  }
-
-  public class KeyConfig
-  {
-    public Keys Key { get; set; }
-    public bool IsDown { get; set; }
   }
 }

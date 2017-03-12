@@ -65,6 +65,7 @@ namespace Windowmancer.UI
       // Display process is on.
       var screen = Screen.FromHandle(_proc.MainWindowHandle);
       this.WindowLocationDisplayComboBox.SelectedItem = screen;
+      this.WindowPositionAbsoluteRadioButton.Checked = true;
     }
 
     private void LoadWindowInfo()
@@ -85,6 +86,10 @@ namespace Windowmancer.UI
 
       // Display process is on.
       this.WindowLocationDisplayComboBox.SelectedItem = this.WindowInfo.LocationInfo.DisplayName;
+      this.WindowPositionAbsoluteRadioButton.Checked = true;
+
+      this.BringToFrontCheckBox.Checked = this.WindowInfo.BringToFront;
+      this.BringUpFromTaskbarCheckBox.Checked = this.WindowInfo.BringUpFromTaskbar;
     }
 
     private Win32.RECT GetWindowRec()
@@ -143,7 +148,7 @@ namespace Windowmancer.UI
         LocationInfo = new LocationInfo
         {
           DisplayName = this.WindowLocationDisplayComboBox.Text,
-          PositionInfo = new PositionInfo { X = (int)this.WindowLocationBoxX.Value, Y = (int)this.WindowLocationBoxY.Value}
+          PositionInfo = new PositionInfo { X = (int)this.WindowLocationBoxX.Value, Y = (int)this.WindowLocationBoxY.Value }
         },
         SizeInfo = new SizeInfo
         {
@@ -152,6 +157,8 @@ namespace Windowmancer.UI
         },
         MatchCriteria = new WindowMatchCriteria(matchType, this.WindowMatchStringTextBox.Text),
         Name = this.WindowConfigNameTextBox.Text,
+        BringToFront = this.BringToFrontCheckBox.Checked,
+        BringUpFromTaskbar = this.BringUpFromTaskbarCheckBox.Checked
       };
       return true;
     }

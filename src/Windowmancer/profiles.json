@@ -1,30 +1,55 @@
-﻿{  
-   "Profiles":[  
-      {  
-         "Id":"cda8050d-9ef4-47fd-8c38-47da50d24d5c",
-         "Name":"Server",
-         "Windows":[
-          {
-            "Name":  "WMIC Thinger",
-            "LocationInfo": {
-              "DisplayName": "\\\\.\\DISPLAY2",
-              "PrimaryDisplay": false,
-              "PositionInfo": {
-                "X": 300,
-                "Y": 300
-              }
-            },
-            "SizeInfo": {
-              "Width": 800,
-              "Height": 800
-            },
-            "MatchCriteria": {
-              "MatchType": 0,
-              "MatchString": ".*WMIC.*"
+﻿{
+  "Profiles": [{
+      "Id": "cda8050d-9ef4-47fd-8c38-47da50d24d5c",
+      "Name": "Server",
+      "Windows": [
+        {
+          "Name": "WMIC Thinger",
+          "LocationInfo": {
+            "DisplayName": "\\\\.\\DISPLAY2",
+            "PrimaryDisplay": false,
+            "PositionInfo": {
+              "X": 300,
+              "Y": 300
             }
-          }
-         ]
-      }
-   ],
-   "ActiveProfile":"cda8050d-9ef4-47fd-8c38-47da50d24d5c"
+          },
+          "SizeInfo": {
+            "Width": 800,
+            "Height": 800
+          },
+          "MatchCriteria": {
+            "MatchType": 0,
+            "MatchString": ".*WMIC.*"
+          },
+          "BringToFront": true,
+          "BringUpFromTaskbar":  true
+        },
+         {
+          "Name": "Notepad++ Jammer",
+          "LocationInfo": {
+            "DisplayName": "\\\\.\\DISPLAY2",
+            "PrimaryDisplay": false,
+            "PositionInfo": {
+              "X": 450,
+              "Y": 10
+            }
+          },
+          "SizeInfo": {
+            "Width": 640,
+            "Height": 480
+          },
+          "MatchCriteria": {
+            "MatchType": 0,
+            "MatchString": ".*Notepad.*"
+          },
+          "BringToFront": true,
+          "BringUpFromTaskbar":  true
+        }
+      ]
+    }
+  ],
+  "ActiveProfile": "cda8050d-9ef4-47fd-8c38-47da50d24d5c",
+  "Settings": {
+    "ApplyOnProcessCreate": true
+  }
 }

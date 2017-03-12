@@ -15,6 +15,8 @@ namespace Windowmancer.UI
     private readonly ProfileManager _profileManager;
     private readonly WindowManager _windowManager;
 
+    private ContextMenu _traContextMenu;
+
     public Windowmancer(IUnityContainer serviceResolver)
     {
       _serviceResolver = serviceResolver;
@@ -37,14 +39,18 @@ namespace Windowmancer.UI
       // TODO: DEBUG CODE
       _keyHookManager.LoadKeyHookConfig(new KeyComboConfig(new[] { Keys.LControlKey, Keys.LShiftKey, Keys.K }));
 
+      _traContextMenu = new ContextMenu(new[]
+        {
+          new MenuItem("Profile Settings", TrayContextMenu_OnProfileSettings),
+          new MenuItem("-"),
+          new MenuItem("Open", Open),
+          new MenuItem("Exit", Exit),
+        });
+
       _trayIcon = new NotifyIcon
       {
         Icon = Resources.app_icon,
-        ContextMenu = new ContextMenu(new[]
-        {
-          new MenuItem("Open", Open),
-          new MenuItem("Exit", Exit)
-        }),
+        ContextMenu = _traContextMenu,
         Visible = true
       };
     }
@@ -65,5 +71,15 @@ namespace Windowmancer.UI
       var editor = new MainForm(_serviceResolver, _profileManager, _windowManager);
       editor.Show();
     }
+
+    #region Events
+
+    public void TrayContextMenu_OnProfileSettings(object sender, EventArgs e)
+    {
+      var settings = new SettingsDialog();
+      settings.Show();
+    }
+
+    #endregion Events
   }
 }

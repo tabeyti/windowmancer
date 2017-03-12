@@ -5,21 +5,13 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Windowmancer.Extensions;
 using Windowmancer.Models;
+using Windowmancer.Practices;
+using static Windowmancer.Practices.Win32;
 
 namespace Windowmancer.Services
 {
   public class WindowManager : IDisposable
   {
-    #region DLL Imports
-
-    [DllImport("user32.dll", EntryPoint = "SetWindowPos")]
-    public static extern IntPtr SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int x, int Y, int cx, int cy, int wFlags);
-
-    [DllImport("user32.dll", SetLastError = true)]
-    static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int Width, int Height, bool Repaint);
-
-    #endregion DLL Imports
-
     public Profile CurrentProfile { get; set; }
 
     #region Constructors
@@ -64,7 +56,9 @@ namespace Windowmancer.Services
       var x = windowInfo.LocationInfo.PositionInfo.X;
       var y = windowInfo.LocationInfo.PositionInfo.Y;
 
-      MoveWindow(handle, x, y, windowInfo.SizeInfo.Width, windowInfo.SizeInfo.Height, true);      
+      windowInfo.BringUpFromTaskbar.RunIfTrue(() => Win32.ShowWindow(handle, Win32.ShowWindowCommands.Maximize));
+      windowInfo.BringToFront.RunIfTrue(() => Win32.SetForegroundWindow(handle));
+      Win32.MoveWindow(handle, x, y, windowInfo.SizeInfo.Width, windowInfo.SizeInfo.Height, true);      
     }
 
     public void RefreshProfile()
