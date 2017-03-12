@@ -6,6 +6,7 @@ using Windowmancer.Properties;
 using Windowmancer.Services;
 using System.Collections.Generic;
 using Windowmancer.Models;
+using System.Reflection;
 
 namespace Windowmancer.UI
 {
@@ -16,7 +17,7 @@ namespace Windowmancer.UI
     private KeyHookManager _keyHookManager;
     private readonly ProfileManager _profileManager;
     private readonly WindowManager _windowManager;
-    private ContextMenu _traContextMenu;
+    private ContextMenu _trayContextMenu;
     private MainForm _editor;
 
     public Windowmancer(IUnityContainer serviceResolver)
@@ -42,20 +43,30 @@ namespace Windowmancer.UI
 
       var menuItems = GetProfileMenuItems();
       menuItems.Add(new MenuItem("-"));
-      menuItems.Add(new MenuItem("Open", Open));
+      menuItems.Add(new MenuItem("Open", (s,e) => OpenEditor()));
       menuItems.Add(new MenuItem("-"));
       menuItems.Add(new MenuItem("Profile Settings", TrayContextMenu_OnProfileSettings));
       menuItems.Add(new MenuItem("-"));
-      menuItems.Add(new MenuItem("Exit", Exit));
-
-      _traContextMenu = new ContextMenu(menuItems.ToArray());
+      menuItems.Add(new MenuItem("Exit", (s,e) => ExitApplication()));
+      _trayContextMenu = new ContextMenu(menuItems.ToArray());
 
       _trayIcon = new NotifyIcon
       {
         Icon = Resources.app_icon,
-        ContextMenu = _traContextMenu,
+        ContextMenu = _trayContextMenu,
         Visible = true
       };
+      _trayIcon.MouseUp += (s, e) =>
+      {
+        if (e.Button == MouseButtons.Left)
+        {
+          MethodInfo mi = typeof(NotifyIcon).GetMethod("ShowContextMenu", BindingFlags.Instance | BindingFlags.NonPublic);
+          mi.Invoke(_trayIcon, null);
+        }
+      };
+
+      // TODO: DEBUG CODE
+
     }
 
     private List<MenuItem> GetProfileMenuItems()
@@ -74,18 +85,7 @@ namespace Windowmancer.UI
       return list;
     }
 
-    private void OnKeyCombinationSuccess()
-    {
-      _windowManager.RefreshProfile();
-    }
-
-    private void Exit(object sender, EventArgs e)
-    {
-      _trayIcon.Visible = false;
-      Application.Exit();
-    }
-
-    private void Open(object sender, EventArgs e)
+    private void OpenEditor()
     {
       _editor = new MainForm(_serviceResolver, _profileManager, _windowManager);
       // Update our context menu profile selection on profile change
@@ -94,7 +94,7 @@ namespace Windowmancer.UI
       {
         var profile = (Profile)_editor.ProfileListBox.SelectedItem;
         UncheckCheckedMenuItem();
-        foreach (MenuItem m in _traContextMenu.MenuItems)
+        foreach (MenuItem m in _trayContextMenu.MenuItems)
         {
           if (m.Tag == profile)
           {
@@ -107,9 +107,20 @@ namespace Windowmancer.UI
       _editor = null;
     }
 
+    private void OnKeyCombinationSuccess()
+    {
+      _windowManager.RefreshProfile();
+    }
+
+    private void ExitApplication()
+    {
+      _trayIcon.Visible = false;
+      Application.Exit();
+    }
+
     private void UncheckCheckedMenuItem()
     {
-      foreach (MenuItem m in _traContextMenu.MenuItems)
+      foreach (MenuItem m in _trayContextMenu.MenuItems)
       {
         if (m.Checked)
         {
