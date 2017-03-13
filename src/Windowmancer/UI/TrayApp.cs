@@ -18,11 +18,13 @@ namespace Windowmancer.UI
     private readonly ProfileManager _profileManager;
     private readonly WindowManager _windowManager;
     private ContextMenu _trayContextMenu;
+    private readonly UserData _userData;
     private MainForm _editor;
 
     public TrayApp(IUnityContainer serviceResolver)
     {
       _serviceResolver = serviceResolver;
+      _userData = serviceResolver.Resolve<UserData>();
       _profileManager = serviceResolver.Resolve<ProfileManager>();
       _windowManager = serviceResolver.Resolve<WindowManager>();      
       _keyHookManager = serviceResolver.Resolve<KeyHookManager>();
@@ -143,7 +145,7 @@ namespace Windowmancer.UI
 
     public void TrayContextMenu_OnProfileSettings(object sender, EventArgs e)
     {
-      var settings = new SettingsDialog();
+      var settings = new SettingsDialog(_userData);
       settings.Show();
     }
 

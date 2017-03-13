@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Windowmancer.Models;
 
 namespace Windowmancer.UI
 {
@@ -15,8 +16,11 @@ namespace Windowmancer.UI
   {
     public HotKeyInputBox HotKeyInputBox { get; set; }
 
-    public SettingsDialog()
+    public readonly UserData _userData;
+
+    public SettingsDialog(UserData userData)
     {
+      _userData = userData;
       InitializeComponent();
       Initialize();
     }
@@ -25,6 +29,7 @@ namespace Windowmancer.UI
     {
       this.HotKeyInputBox = new HotKeyInputBox();
       this.HotKeyInputBox.Dock = DockStyle.Fill;
+      this.HotKeyInputBox.SetHotkey(_userData.GlobalHotKeyCombo.KeyCombination.Select(k => k.Key).ToList());
       this.HotKeyGroupBox.Controls.Add(this.HotKeyInputBox);
     }
   }

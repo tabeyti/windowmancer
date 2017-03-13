@@ -80,11 +80,11 @@
   "GlobalHotKeyCombo": {
     "KeyCombination": [
       {
-        "Key": 162,
+        "Key": 131072,
         "IsDown": false
       },
       {
-        "Key": 160,
+        "Key": 65536,
         "IsDown": false
       },
       {
