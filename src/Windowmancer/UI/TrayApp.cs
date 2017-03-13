@@ -56,14 +56,9 @@ namespace Windowmancer.UI
         ContextMenu = _trayContextMenu,
         Visible = true
       };
-      _trayIcon.MouseUp += (s, e) =>
+      _trayIcon.DoubleClick += (s, e) =>
       {
-        // Force showing context menu on left click.
-        if (e.Button == MouseButtons.Left)
-        {
-          MethodInfo mi = typeof(NotifyIcon).GetMethod("ShowContextMenu", BindingFlags.Instance | BindingFlags.NonPublic);
-          mi.Invoke(_trayIcon, null);
-        }
+        OpenEditor();
       };
     }
 
