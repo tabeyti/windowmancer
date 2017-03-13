@@ -39,11 +39,6 @@ namespace Windowmancer.Services
         _keyComboConfig.Update(e.KeyCode, false);
       };
     }
-
-    public void LoadKeyHookConfig(KeyComboConfig config)
-    {
-      _keyComboConfig = config;
-    }
   }
 
   public class KeyComboConfig

@@ -104,7 +104,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\UserConfig.cs" />
-    <Compile Include="Configuration\ProfileSettingsConfig.cs" />
     <Compile Include="Extensions\BindingListExtensions.cs" />
     <Compile Include="Extensions\BoolExtensions.cs" />
     <Compile Include="Extensions\ControlExtensions.cs" />
@@ -200,8 +199,8 @@
   <ItemGroup>
     <Content Include="app_icon.ico" />
     <Content Include="icon.ico" />
-    <None Include="Resources\app_icon2.ico" />
     <None Include="Resources\app_icon.ico" />
+    <None Include="Resources\app_icon2.ico" />
     <None Include="Resources\icon.ico" />
     <None Include="Resources\FormIcon.ico" />
   </ItemGroup>

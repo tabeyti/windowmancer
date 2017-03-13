@@ -58,28 +58,52 @@ namespace Windowmancer.UI
     public bool Alt { get { return _hotkey.Alt; } set { _hotkey.Alt = value; } }
     public bool Shift { get { return _hotkey.Shift; } set { _hotkey.Shift = value; } }
 
-    public void SetHotkey(SortKey hotkey)
+    public void SetHotkey(List<Keys> keys)
     {
-      _hotkey = new HotKey();
-        
+      var hotKey = new HotKey();
+      foreach (var k in keys)
+      {
+        switch (k)
+        {
+          case Keys.Shift:
+            hotKey.Shift = true;
+            break;
+          case Keys.Alt:
+            hotKey.Alt = true;
+            break;
+          case Keys.Control:
+            hotKey.Control = true;
+            break;
+          default:
+            hotKey.KeyCode = k;
+            break;
+        }
+      }
+      _hotkey = hotKey;
+      RefreshText();
     }
-    public void SetHotkey(string jsonSerializedHotkey)
-    {
-      _hotkey = JsonConvert.DeserializeObject<HotKey>(jsonSerializedHotkey);
-    }
+
     public HotKey GetHotkey()
     {
       return _hotkey.Clone();
     }
-    public string GetJsonHotkey()
+    
+    public List<Keys> GetHotKeys()
     {
-      return JsonConvert.SerializeObject(_hotkey);
-    }
-
-    public List<KeyInfo> GetKeyInfo()
-    {
-      var keyInfo = new List<KeyInfo>();
-
+      var keyInfo = new List<Keys>();
+      if (_hotkey.Alt)
+      {
+        keyInfo.Add(Keys.Alt);
+      }
+      if (_hotkey.Shift)
+      {
+        keyInfo.Add(Keys.Shift);
+      }
+      if (_hotkey.Control)
+      {
+        keyInfo.Add(Keys.Control);
+      }
+      keyInfo.Add(_hotkey.KeyCode);
       return keyInfo;
     }
 
@@ -153,16 +177,21 @@ namespace Windowmancer.UI
 
             //if (e.KeyCode )
             //    this.Windows = true;
-
+            
             this.Control = e.Control;
             this.Shift = e.Shift;
-            this.Alt = e.Alt; // e.Alt || (this.Control && !e.Shift); // Ctrl + Alt as default
+            this.Alt = e.Alt;
 
-            if (e.KeyCode != Keys.ShiftKey
-                && e.KeyCode != Keys.ControlKey
-                && e.KeyCode != Keys.Menu)
-              this.KeyCode = e.KeyCode;
-
+            switch (e.KeyCode)
+            {
+              case Keys.ShiftKey:
+              case Keys.ControlKey:
+              case Keys.Alt:
+                break;
+              default:
+                this.KeyCode = e.KeyCode;
+                break;
+            }
             _keysPressed++;
           }
         }

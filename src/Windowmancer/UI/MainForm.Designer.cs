@@ -37,6 +37,9 @@
       this.ProcessName = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.WindowTitle = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.ProfileListBox = new System.Windows.Forms.ListBox();
+      this.ProfileListBoxContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.deleteToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
       this.ProfileGroupBox = new System.Windows.Forms.GroupBox();
       this.ProfileSplitContainer = new System.Windows.Forms.SplitContainer();
       this.WindowConfigsGroupBox = new System.Windows.Forms.GroupBox();
@@ -52,10 +55,8 @@
       this.documentationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
       this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.ProfileListBoxContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-      this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.deleteToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
       ((System.ComponentModel.ISupportInitialize)(this.ActiveWindowsGridView)).BeginInit();
+      this.ProfileListBoxContextMenu.SuspendLayout();
       this.ProfileGroupBox.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.ProfileSplitContainer)).BeginInit();
       this.ProfileSplitContainer.Panel1.SuspendLayout();
@@ -69,7 +70,6 @@
       this.MainFormSplitContainer.Panel2.SuspendLayout();
       this.MainFormSplitContainer.SuspendLayout();
       this.menuStrip1.SuspendLayout();
-      this.ProfileListBoxContextMenu.SuspendLayout();
       this.SuspendLayout();
       // 
       // ActiveWindowsGridView
@@ -144,6 +144,29 @@
       this.ProfileListBox.TabIndex = 4;
       this.ProfileListBox.SelectedIndexChanged += new System.EventHandler(this.ProfileListBox_SelectedIndexChanged);
       this.ProfileListBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ProfileListBox_MouseDown);
+      // 
+      // ProfileListBoxContextMenu
+      // 
+      this.ProfileListBoxContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addToolStripMenuItem,
+            this.deleteToolStripMenuItem1});
+      this.ProfileListBoxContextMenu.Name = "ProfileListBoxContextMenu";
+      this.ProfileListBoxContextMenu.Size = new System.Drawing.Size(108, 48);
+      this.ProfileListBoxContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.ProfileListBoxContextMenu_Opening);
+      // 
+      // addToolStripMenuItem
+      // 
+      this.addToolStripMenuItem.Name = "addToolStripMenuItem";
+      this.addToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+      this.addToolStripMenuItem.Text = "Add";
+      this.addToolStripMenuItem.Click += new System.EventHandler(this.addToolStripMenuItem_Click);
+      // 
+      // deleteToolStripMenuItem1
+      // 
+      this.deleteToolStripMenuItem1.Name = "deleteToolStripMenuItem1";
+      this.deleteToolStripMenuItem1.Size = new System.Drawing.Size(107, 22);
+      this.deleteToolStripMenuItem1.Text = "Delete";
+      this.deleteToolStripMenuItem1.Click += new System.EventHandler(this.deleteToolStripMenuItem1_Click);
       // 
       // ProfileGroupBox
       // 
@@ -271,7 +294,7 @@
       // preferencesToolStripMenuItem1
       // 
       this.preferencesToolStripMenuItem1.Name = "preferencesToolStripMenuItem1";
-      this.preferencesToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+      this.preferencesToolStripMenuItem1.Size = new System.Drawing.Size(116, 22);
       this.preferencesToolStripMenuItem1.Text = "Settings";
       this.preferencesToolStripMenuItem1.Click += new System.EventHandler(this.preferencesToolStripMenuItem1_Click);
       // 
@@ -302,29 +325,6 @@
       this.aboutToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
       this.aboutToolStripMenuItem.Text = "About";
       // 
-      // ProfileListBoxContextMenu
-      // 
-      this.ProfileListBoxContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addToolStripMenuItem,
-            this.deleteToolStripMenuItem1});
-      this.ProfileListBoxContextMenu.Name = "ProfileListBoxContextMenu";
-      this.ProfileListBoxContextMenu.Size = new System.Drawing.Size(108, 48);
-      this.ProfileListBoxContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.ProfileListBoxContextMenu_Opening);
-      // 
-      // addToolStripMenuItem
-      // 
-      this.addToolStripMenuItem.Name = "addToolStripMenuItem";
-      this.addToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
-      this.addToolStripMenuItem.Text = "Add";
-      this.addToolStripMenuItem.Click += new System.EventHandler(this.addToolStripMenuItem_Click);
-      // 
-      // deleteToolStripMenuItem1
-      // 
-      this.deleteToolStripMenuItem1.Name = "deleteToolStripMenuItem1";
-      this.deleteToolStripMenuItem1.Size = new System.Drawing.Size(107, 22);
-      this.deleteToolStripMenuItem1.Text = "Delete";
-      this.deleteToolStripMenuItem1.Click += new System.EventHandler(this.deleteToolStripMenuItem1_Click);
-      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -340,6 +340,7 @@
       this.Text = "Windowmancer";
       this.Load += new System.EventHandler(this.Form1_Load);
       ((System.ComponentModel.ISupportInitialize)(this.ActiveWindowsGridView)).EndInit();
+      this.ProfileListBoxContextMenu.ResumeLayout(false);
       this.ProfileGroupBox.ResumeLayout(false);
       this.ProfileSplitContainer.Panel1.ResumeLayout(false);
       this.ProfileSplitContainer.Panel2.ResumeLayout(false);
@@ -354,7 +355,6 @@
       this.MainFormSplitContainer.ResumeLayout(false);
       this.menuStrip1.ResumeLayout(false);
       this.menuStrip1.PerformLayout();
-      this.ProfileListBoxContextMenu.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
