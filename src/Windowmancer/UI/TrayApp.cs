@@ -10,7 +10,7 @@ using System.Reflection;
 
 namespace Windowmancer.UI
 {
-  public class TrayApp : ApplicationContext
+  public class TrayApp : ApplicationContext, IDisposable
   {
     private readonly IUnityContainer _serviceResolver;
     private NotifyIcon _trayIcon;

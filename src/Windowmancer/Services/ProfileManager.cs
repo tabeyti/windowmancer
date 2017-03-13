@@ -26,13 +26,8 @@ namespace Windowmancer.Services
         _windowManager.ActiveProfile = _activeProfile;
       }
     }
-    public string ActiveProfileName
-    {
-      get
-      {
-        return (this.ActiveProfile == null) ? "None" : this.ActiveProfile.Name;
-      }
-    }
+    public string ActiveProfileName => 
+      (this.ActiveProfile == null) ? "None" : this.ActiveProfile.Name;
 
     private readonly WindowManager _windowManager;
 

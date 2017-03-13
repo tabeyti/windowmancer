@@ -38,8 +38,12 @@ namespace Windowmancer.UI
     public void Initialize()
     {
       this.ProfileListBox.DisplayMember = "Name";
+      // Need to save the current active profile because once we data
+      // bind to the list box, the selected index will automatically change
+      // to the first profile.
+      var activeProfile = _profileManager.ActiveProfile;
       this.ProfileListBox.DataSource = _profileManager.Profiles;
-      this.ProfileListBox.SelectedItem = _profileManager.ActiveProfile;
+      this.ProfileListBox.SelectedItem  = _profileManager.ActiveProfile = activeProfile;
 
       this.WindowConfigsDataGrid.DataSource = _profileManager.ActiveProfile.Windows;
       this.WindowConfigsDataGrid.Columns[this.WindowConfigsDataGrid.ColumnCount-1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
