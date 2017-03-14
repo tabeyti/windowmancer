@@ -22,8 +22,7 @@
             "MatchType": 0,
             "MatchString": ".*WMIC.*"
           },
-          "BringToFront": true,
-          "BringUpFromTaskbar": true
+          "BringToFront": true
         },
         {
           "Name": "Notepad++ Jammer",

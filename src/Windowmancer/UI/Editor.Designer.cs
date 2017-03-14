@@ -151,20 +151,19 @@
             this.addToolStripMenuItem,
             this.deleteToolStripMenuItem1});
       this.ProfileListBoxContextMenu.Name = "ProfileListBoxContextMenu";
-      this.ProfileListBoxContextMenu.Size = new System.Drawing.Size(108, 48);
-      this.ProfileListBoxContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.ProfileListBoxContextMenu_Opening);
+      this.ProfileListBoxContextMenu.Size = new System.Drawing.Size(153, 70);
       // 
       // addToolStripMenuItem
       // 
       this.addToolStripMenuItem.Name = "addToolStripMenuItem";
-      this.addToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+      this.addToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
       this.addToolStripMenuItem.Text = "Add";
       this.addToolStripMenuItem.Click += new System.EventHandler(this.addToolStripMenuItem_Click);
       // 
       // deleteToolStripMenuItem1
       // 
       this.deleteToolStripMenuItem1.Name = "deleteToolStripMenuItem1";
-      this.deleteToolStripMenuItem1.Size = new System.Drawing.Size(107, 22);
+      this.deleteToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
       this.deleteToolStripMenuItem1.Text = "Delete";
       this.deleteToolStripMenuItem1.Click += new System.EventHandler(this.deleteToolStripMenuItem1_Click);
       // 
@@ -325,7 +324,7 @@
       this.aboutToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
       this.aboutToolStripMenuItem.Text = "About";
       // 
-      // MainForm
+      // Editor
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -336,7 +335,7 @@
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.MainMenuStrip = this.menuStrip1;
-      this.Name = "MainForm";
+      this.Name = "Editor";
       this.Text = "Windowmancer";
       this.Load += new System.EventHandler(this.Form1_Load);
       ((System.ComponentModel.ISupportInitialize)(this.ActiveWindowsGridView)).EndInit();

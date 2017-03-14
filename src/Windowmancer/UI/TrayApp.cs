@@ -84,6 +84,11 @@ namespace Windowmancer.UI
 
     private void OpenEditor()
     {
+      if (_editor != null)
+      {
+        return;
+      }
+
       _editor = new Editor(_profileManager, _windowManager, _keyHookManager);
       // Update our context menu profile selection on profile change
       // in the editor.

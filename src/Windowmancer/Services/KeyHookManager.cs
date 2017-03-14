@@ -13,11 +13,7 @@ namespace Windowmancer.Services
   {
     public event Action OnKeyCombinationSuccess;
 
-    public KeyComboConfig KeyComboConfig
-    {
-      get { return _userData.KeyComboConfig; }
-      set { _userData.KeyComboConfig = value; }
-    }
+    public KeyComboConfig KeyComboConfig => _userData.KeyComboConfig;
 
     private IKeyboardEvents _globalHook;
     private readonly UserData _userData;
@@ -50,6 +46,16 @@ namespace Windowmancer.Services
       };
     }
 
+    public void UpdateKeyComboConfig(KeyComboConfig config)
+    {
+      if (null == config)
+      {
+        throw new ExceptionBox($"{this} - Invalid config provided for update.");
+      }
+      _userData.KeyComboConfig = config;
+      _userData.Save();
+    }
+
     /// <summary>
     /// We don't handle shift/ctrl/atl position keys (left and right).
     /// If we get one, assign it to it's generic key type.
@@ -75,7 +81,7 @@ namespace Windowmancer.Services
 
   public class KeyComboConfig
   {
-    public List<KeyInfo> KeyCombination;
+    public List<KeyInfo> KeyCombination { get; set; }
 
     public KeyComboConfig()
     {

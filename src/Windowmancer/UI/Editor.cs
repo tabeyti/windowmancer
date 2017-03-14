@@ -264,7 +264,7 @@ namespace Windowmancer.UI
     private void preferencesToolStripMenuItem1_Click(object sender, EventArgs e)
     {
       var dialog = new SettingsDialog(_keyHookManager);
-      dialog.Show();
+      dialog.ShowDialog();
     }
 
     private void WindowConfigsDataGrid_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
@@ -310,7 +310,12 @@ namespace Windowmancer.UI
 
     private void deleteToolStripMenuItem1_Click(object sender, EventArgs e)
     {
-      
+      var index = this.ProfileListBox.SelectedIndex;
+      if (index < 0)
+      {
+        return;
+      }
+      _profileManager.DeleteActiveProfile();
     }
 
     private void ProfileListBox_MouseDown(object sender, MouseEventArgs e)
@@ -322,8 +327,10 @@ namespace Windowmancer.UI
       var rowIndex = this.ProfileListBox.IndexFromPoint(e.X, e.Y);
       if (rowIndex < 0)
       {
+        ProfileListBoxContextMenu.Items[1].Enabled = false;
         return;
       }
+      ProfileListBoxContextMenu.Items[1].Enabled = true;
       this.ProfileListBox.SelectedIndex = rowIndex;
       this.ProfileListBox.Focus();
     }
@@ -351,14 +358,14 @@ namespace Windowmancer.UI
       }      
     }
 
-    private void ProfileListBoxContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
-    {
-      var mp = this.ProfileListBox.PointToClient(Control.MousePosition);
-      var index = this.ProfileListBox.IndexFromPoint(mp.X, mp.Y);
-      if (index < 0)
-      {
-        e.Cancel = true;
-      }
-    }
+    //private void ProfileListBoxContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+    //{
+      //var mp = this.ProfileListBox.PointToClient(Control.MousePosition);
+      //var index = this.ProfileListBox.IndexFromPoint(mp.X, mp.Y);
+      //if (index < 0)
+      //{
+      //  e.Cancel = true;
+      //}
+    //}
   }
 }
