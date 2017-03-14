@@ -19,9 +19,9 @@ namespace Windowmancer.UI
   {
     private ManagementEventWatcher _startWatch;
     private ManagementEventWatcher _stopWatch;
-    private ProfileManager _profileManager;
-    private WindowManager _windowManager;
     private ILogger _logger;
+    private readonly ProfileManager _profileManager;
+    private readonly WindowManager _windowManager;
     private readonly Dictionary<int, Process> _availableWindowDict = new Dictionary<int, Process>();
     private readonly IUnityContainer _serviceResolver;
 

@@ -12,8 +12,14 @@ namespace Windowmancer.Services
   public class KeyHookManager
   {
     public event Action OnKeyCombinationSuccess;
+
+    public KeyComboConfig KeyComboConfig
+    {
+      get { return _userData.KeyComboConfig; }
+      set { _userData.KeyComboConfig = value; }
+    }
+
     private IKeyboardEvents _globalHook;
-    private KeyComboConfig _keyComboConfig;
     private readonly UserData _userData;
 
     public KeyHookManager(UserData userData)
@@ -24,19 +30,35 @@ namespace Windowmancer.Services
 
     public void Initialize()
     {
-      _keyComboConfig = _userData.GlobalHotKeyCombo;
-
       _globalHook = Hook.GlobalEvents();
       _globalHook.KeyDown += (s, e) =>
       {
-        if (_keyComboConfig.Update(e.KeyCode, true))
+        var keyCode = e.KeyCode;
+        // We don't handle shift/ctrl/atl position keys (left and right).
+        // If we get one, assign it to it's generic key type.
+        switch (keyCode)
+        {
+          case Keys.LShiftKey:
+          case Keys.RShiftKey:
+            keyCode = Keys.Shift;
+            break;
+          case Keys.LControlKey:
+          case Keys.RControlKey:
+            keyCode = Keys.Control;
+            break;
+          case Keys.LMenu:
+          case Keys.RMenu:
+            keyCode = Keys.Alt;
+            break;
+        }
+        if (_userData.KeyComboConfig.Update(keyCode, true))
         {
           OnKeyCombinationSuccess?.Invoke();
         }
       };
       _globalHook.KeyUp += (s, e) =>
       {
-        _keyComboConfig.Update(e.KeyCode, false);
+        _userData.KeyComboConfig.Update(e.KeyCode, false);
       };
     }
   }
@@ -69,7 +91,12 @@ namespace Windowmancer.Services
       }
 
       keyConfig.IsDown = isDown;
-      return this.KeyCombination.TrueForAll(k => k.IsDown);
+      if (this.KeyCombination.TrueForAll(k => k.IsDown))
+      {
+        this.KeyCombination.ForEach(k => k.IsDown = false);
+        return true;
+      }
+      return false;
     }
   }
 }
