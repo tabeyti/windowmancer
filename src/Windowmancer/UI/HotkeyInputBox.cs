@@ -1,7 +1,4 @@
-﻿// HotkeyInputBox 0.1 (c) 2011 Richard Z.H. Wang
-// MIT licensed.
-
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
