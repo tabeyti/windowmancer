@@ -117,11 +117,11 @@
     <Compile Include="UI\HotKeyInputBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="UI\MainForm.cs">
+    <Compile Include="UI\Editor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
+    <Compile Include="UI\Editor.Designer.cs">
+      <DependentUpon>Editor.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Profile.cs" />
     <Compile Include="Models\WindowInfo.cs" />
@@ -150,8 +150,8 @@
       <DependentUpon>WindowConfigDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\TrayApp.cs" />
-    <EmbeddedResource Include="UI\MainForm.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
+    <EmbeddedResource Include="UI\Editor.resx">
+      <DependentUpon>Editor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

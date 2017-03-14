@@ -31,26 +31,14 @@ namespace Windowmancer.Services
     public void Initialize()
     {
       _globalHook = Hook.GlobalEvents();
+      _globalHook.KeyUp += (s, e) =>
+      {
+        var keyCode = GetActualKeyCode(e.KeyCode);
+        _userData.KeyComboConfig.Update(keyCode, false);
+      };
       _globalHook.KeyDown += (s, e) =>
       {
-        var keyCode = e.KeyCode;
-        // We don't handle shift/ctrl/atl position keys (left and right).
-        // If we get one, assign it to it's generic key type.
-        switch (keyCode)
-        {
-          case Keys.LShiftKey:
-          case Keys.RShiftKey:
-            keyCode = Keys.Shift;
-            break;
-          case Keys.LControlKey:
-          case Keys.RControlKey:
-            keyCode = Keys.Control;
-            break;
-          case Keys.LMenu:
-          case Keys.RMenu:
-            keyCode = Keys.Alt;
-            break;
-        }
+        var keyCode = GetActualKeyCode(e.KeyCode);
         if (_userData.KeyComboConfig.Update(keyCode, true))
         {
           OnKeyCombinationSuccess?.Invoke();
@@ -60,6 +48,28 @@ namespace Windowmancer.Services
       {
         _userData.KeyComboConfig.Update(e.KeyCode, false);
       };
+    }
+
+    /// <summary>
+    /// We don't handle shift/ctrl/atl position keys (left and right).
+    /// If we get one, assign it to it's generic key type.
+    /// </summary>
+    public Keys GetActualKeyCode(Keys keyCode)
+    {
+      switch (keyCode)
+      {
+        case Keys.LShiftKey:
+        case Keys.RShiftKey:
+          return Keys.Shift;
+        case Keys.LControlKey:
+        case Keys.RControlKey:
+          return Keys.Control;
+        case Keys.LMenu:
+        case Keys.RMenu:
+          return Keys.Alt;
+        default:
+          return keyCode;
+      }
     }
   }
 
@@ -89,7 +99,6 @@ namespace Windowmancer.Services
       {
         return false;
       }
-
       keyConfig.IsDown = isDown;
       if (this.KeyCombination.TrueForAll(k => k.IsDown))
       {

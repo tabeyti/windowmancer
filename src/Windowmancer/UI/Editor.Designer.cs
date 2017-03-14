@@ -1,6 +1,6 @@
 ﻿namespace Windowmancer.UI
 {
-    partial class MainForm
+    partial class Editor
     {
         /// <summary>
         /// Required designer variable.
@@ -30,7 +30,7 @@
         private void InitializeComponent()
         {
       this.components = new System.ComponentModel.Container();
-      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Editor));
       this.ActiveWindowsGridView = new System.Windows.Forms.DataGridView();
       this.IconHeader = new System.Windows.Forms.DataGridViewImageColumn();
       this.PID = new System.Windows.Forms.DataGridViewTextBoxColumn();

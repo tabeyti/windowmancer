@@ -41,6 +41,8 @@ namespace Windowmancer.UI
       this.WindowSizeBoxHeight = new System.Windows.Forms.NumericUpDown();
       this.WindowSizeBoxWidth = new System.Windows.Forms.NumericUpDown();
       this.WindowPostitionGroupBox = new System.Windows.Forms.GroupBox();
+      this.label2 = new System.Windows.Forms.Label();
+      this.label1 = new System.Windows.Forms.Label();
       this.WindowPositionRelativeRadioButton = new System.Windows.Forms.RadioButton();
       this.WindowPositionAbsoluteRadioButton = new System.Windows.Forms.RadioButton();
       this.WindowLocationDisplayComboBox = new System.Windows.Forms.ComboBox();
@@ -53,10 +55,7 @@ namespace Windowmancer.UI
       this.WindowConfigDialogCancelButton = new System.Windows.Forms.Button();
       this.WindowConfigNameGroupBox = new System.Windows.Forms.GroupBox();
       this.WindowConfigNameTextBox = new System.Windows.Forms.TextBox();
-      this.label1 = new System.Windows.Forms.Label();
-      this.label2 = new System.Windows.Forms.Label();
       this.BringToFrontCheckBox = new System.Windows.Forms.CheckBox();
-      this.BringUpFromTaskbarCheckBox = new System.Windows.Forms.CheckBox();
       this.WindowMatchGroupBox.SuspendLayout();
       this.WindowSizeGroupBox.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.WindowSizeBoxHeight)).BeginInit();
@@ -156,6 +155,24 @@ namespace Windowmancer.UI
       this.WindowPostitionGroupBox.TabIndex = 2;
       this.WindowPostitionGroupBox.TabStop = false;
       this.WindowPostitionGroupBox.Text = "Window PositionInfo";
+      // 
+      // label2
+      // 
+      this.label2.AutoSize = true;
+      this.label2.Location = new System.Drawing.Point(107, 41);
+      this.label2.Name = "label2";
+      this.label2.Size = new System.Drawing.Size(17, 13);
+      this.label2.TabIndex = 8;
+      this.label2.Text = "Y:";
+      // 
+      // label1
+      // 
+      this.label1.AutoSize = true;
+      this.label1.Location = new System.Drawing.Point(4, 41);
+      this.label1.Name = "label1";
+      this.label1.Size = new System.Drawing.Size(17, 13);
+      this.label1.TabIndex = 7;
+      this.label1.Text = "X:";
       // 
       // WindowPositionRelativeRadioButton
       // 
@@ -293,24 +310,6 @@ namespace Windowmancer.UI
       this.WindowConfigNameTextBox.Size = new System.Drawing.Size(217, 20);
       this.WindowConfigNameTextBox.TabIndex = 0;
       // 
-      // label1
-      // 
-      this.label1.AutoSize = true;
-      this.label1.Location = new System.Drawing.Point(4, 41);
-      this.label1.Name = "label1";
-      this.label1.Size = new System.Drawing.Size(17, 13);
-      this.label1.TabIndex = 7;
-      this.label1.Text = "X:";
-      // 
-      // label2
-      // 
-      this.label2.AutoSize = true;
-      this.label2.Location = new System.Drawing.Point(107, 41);
-      this.label2.Name = "label2";
-      this.label2.Size = new System.Drawing.Size(17, 13);
-      this.label2.TabIndex = 8;
-      this.label2.Text = "Y:";
-      // 
       // BringToFrontCheckBox
       // 
       this.BringToFrontCheckBox.AutoSize = true;
@@ -323,25 +322,12 @@ namespace Windowmancer.UI
       this.BringToFrontCheckBox.Text = "Bring to front";
       this.BringToFrontCheckBox.UseVisualStyleBackColor = true;
       // 
-      // BringUpFromTaskbarCheckBox
-      // 
-      this.BringUpFromTaskbarCheckBox.AutoSize = true;
-      this.BringUpFromTaskbarCheckBox.Checked = true;
-      this.BringUpFromTaskbarCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-      this.BringUpFromTaskbarCheckBox.Location = new System.Drawing.Point(104, 368);
-      this.BringUpFromTaskbarCheckBox.Name = "BringUpFromTaskbarCheckBox";
-      this.BringUpFromTaskbarCheckBox.Size = new System.Drawing.Size(126, 17);
-      this.BringUpFromTaskbarCheckBox.TabIndex = 8;
-      this.BringUpFromTaskbarCheckBox.Text = "Bring up from taskbar";
-      this.BringUpFromTaskbarCheckBox.UseVisualStyleBackColor = true;
-      // 
       // WindowConfigDialog
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(499, 441);
       this.ControlBox = false;
-      this.Controls.Add(this.BringUpFromTaskbarCheckBox);
       this.Controls.Add(this.BringToFrontCheckBox);
       this.Controls.Add(this.WindowConfigNameGroupBox);
       this.Controls.Add(this.WindowConfigDialogCancelButton);
@@ -398,6 +384,5 @@ namespace Windowmancer.UI
     private Label label2;
     private Label label1;
     private CheckBox BringToFrontCheckBox;
-    private CheckBox BringUpFromTaskbarCheckBox;
   }
 }
