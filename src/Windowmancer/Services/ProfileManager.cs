@@ -78,7 +78,7 @@ namespace Windowmancer.Services
         Name = name,
         Windows = new System.ComponentModel.BindingList<WindowInfo>()
       };
-      Profiles.Add(profile);
+      this.Profiles.Add(profile);
       this.ActiveProfile = profile;
       _userData.Save();
       return true;

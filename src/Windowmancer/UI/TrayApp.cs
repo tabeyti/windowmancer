@@ -47,9 +47,10 @@ namespace Windowmancer.UI
         ContextMenu = _trayContextMenu,
         Visible = true
       };
-      _trayIcon.DoubleClick += (s, e) =>
+      _trayIcon.DoubleClick += (s, e) => OpenEditor();
+      _trayIcon.MouseDown += (s, e) =>
       {
-        OpenEditor();
+        _trayIcon.ContextMenu = BuildContextMenu();
       };
     }
 

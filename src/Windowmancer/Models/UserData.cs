@@ -12,9 +12,8 @@ namespace Windowmancer.Models
   public class UserData
   {
     public BindingList<Profile> Profiles { get; set; }
-    public string ActiveProfile { get; set; }    
+    public string ActiveProfile { get; set; }
     public KeyComboConfig KeyComboConfig { get; set; }
-
     private readonly UserConfig _config;
 
     public UserData(UserConfig config)
