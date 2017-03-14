@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
+using Newtonsoft.Json;
 using Windowmancer.Configuration;
 using Windowmancer.Services;
 
@@ -14,9 +12,14 @@ namespace Windowmancer.Models
     public BindingList<Profile> Profiles { get; set; }
     public string ActiveProfile { get; set; }
     public KeyComboConfig KeyComboConfig { get; set; }
-    private readonly UserConfig _config;
+    private UserConfig _config;
 
     public UserData(UserConfig config)
+    {
+      _config = config;
+    }
+
+    public void SetUserConfig(UserConfig config)
     {
       _config = config;
     }
@@ -25,13 +28,12 @@ namespace Windowmancer.Models
     {
       try
       {
-        //var text = JsonConvert.SerializeObject(this);
-        //System.IO.File.WriteAllText(_config.UserDatPath, text);
+        var text = JsonConvert.SerializeObject(this, Formatting.Indented);
+        System.IO.File.WriteAllText(_config.UserDataPath, text);
       }
       catch (Exception e)
       {
-        // TODO: Dialog window.
-        throw e;
+        throw new ExceptionBox(e);
       }
     }
   }

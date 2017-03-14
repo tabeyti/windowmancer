@@ -1,13 +1,7 @@
 ﻿using Microsoft.Practices.Unity;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Windowmancer.Pratices;
-using Windowmancer.Services;
-using Windowmancer.UI;
 
 namespace Windowmancer
 {
@@ -21,11 +15,6 @@ namespace Windowmancer
     [STAThread]
     static void Main()
     {
-      //var stuff = new KeyComboConfig(new[] { Keys.LControlKey, Keys.LShiftKey, Keys.K });
-      //var str = JsonConvert.SerializeObject(stuff);
-
-      //var thing = JsonConvert.DeserializeObject<Keys[]>(str);
-
       Application.EnableVisualStyles();
       Application.SetCompatibleTextRenderingDefault(false);
       Application.Run(new UI.TrayApp(ServiceResolver));

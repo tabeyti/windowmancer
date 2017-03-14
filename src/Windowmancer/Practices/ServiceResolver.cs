@@ -16,13 +16,7 @@ namespace Windowmancer.Pratices
   public static class WMServiceResolver
   {
     private static IUnityContainer _instance;
-    public static IUnityContainer Instance
-    {
-      get
-      {
-        return _instance == null ? _instance = CreateResolver() : _instance;
-      }
-    }
+    public static IUnityContainer Instance => _instance ?? (_instance = CreateResolver());
 
     private static IUnityContainer CreateResolver()
     {
@@ -43,7 +37,8 @@ namespace Windowmancer.Pratices
       var userConfig = container.Resolve<UserConfig>();
       var text = File.ReadAllText(userConfig.UserDataPath);
       var userData = JsonConvert.DeserializeObject<UserData>(text);
-      container.RegisterInstance(userData);
+      userData.SetUserConfig(userConfig);
+      container.RegisterInstance(userData, new ContainerControlledLifetimeManager());
 
       container.RegisterType<WindowManager>(new ContainerControlledLifetimeManager());
       container.RegisterType<ProfileManager>(new ContainerControlledLifetimeManager());

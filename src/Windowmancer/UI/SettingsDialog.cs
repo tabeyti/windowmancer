@@ -33,7 +33,7 @@ namespace Windowmancer.UI
     private void SaveButton_Click(object sender, EventArgs e)
     {
       var keys = this.HotKeyInputBox.GetHotKeys();
-      _keyHookManager.KeyComboConfig = new KeyComboConfig(keys);
+      _keyHookManager.UpdateKeyComboConfig(new KeyComboConfig(keys));
       this.Dispose();
     }
   }

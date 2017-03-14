@@ -53,6 +53,7 @@ namespace Windowmancer.Services
       }
       this.ActiveProfile = this.Profiles[index];
       _windowManager.ActiveProfile = this.ActiveProfile;
+      _userData.Save();
     }
 
     public void UpdateActiveProfile(string id)
@@ -64,6 +65,7 @@ namespace Windowmancer.Services
       }
       this.ActiveProfile = profile;
       _windowManager.ActiveProfile = this.ActiveProfile;
+      _userData.Save();
     }
 
     public bool AddNewProfile(string name)
@@ -84,13 +86,41 @@ namespace Windowmancer.Services
       return true;
     }
 
+    /// <summary>
+    /// Deletes the current active profile, returning the index of the new
+    /// active profile.
+    /// </summary>
+    /// <returns></returns>
+    public int DeleteActiveProfile()
+    {
+      if (null == this.ActiveProfile)
+      {
+        return -1;
+      }
+      // Get the index of the new active profile since we are deleting this one.
+      var index = this.Profiles.IndexOf(this.ActiveProfile);
+      if (index == 0 && this.Profiles.Count == 1)
+      {
+        index = -1;
+      }
+      else if (index == this.Profiles.Count - 1)
+      {
+        index--;
+      }
+      
+      this.Profiles.Remove(this.ActiveProfile);
+      this.ActiveProfile = this.Profiles[index];
+      return index;
+    }
+
     public bool AddToActiveProfile(WindowInfo info)
     {
       if (null == info)
       {
         return false;
       }
-      this.ActiveProfile.Windows.Add(info);      
+      this.ActiveProfile.Windows.Add(info);
+      _userData.Save();
       return true;
     }
 
@@ -101,6 +131,7 @@ namespace Windowmancer.Services
         return;
       }
       this.ActiveProfile.Windows.Remove(info);
+      _userData.Save();
     }
 
     public void Dispose()
