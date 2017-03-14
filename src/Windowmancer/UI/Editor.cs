@@ -1,35 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
 using System.Management;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using Microsoft.Practices.Unity;
 using NLog;
-using Windowmancer.Configuration;
 using Windowmancer.Models;
 using Windowmancer.Practices;
 using Windowmancer.Services;
 
 namespace Windowmancer.UI
 {
-  public partial class MainForm : Form
+  public partial class Editor : Form
   {
     private ManagementEventWatcher _startWatch;
     private ManagementEventWatcher _stopWatch;
     private ILogger _logger;
     private readonly ProfileManager _profileManager;
     private readonly WindowManager _windowManager;
+    private readonly KeyHookManager _keyHookManager;
     private readonly Dictionary<int, Process> _availableWindowDict = new Dictionary<int, Process>();
-    private readonly IUnityContainer _serviceResolver;
 
-    public MainForm(IUnityContainer serviceResolver, ProfileManager profileManager, WindowManager windowManager)
+    public Editor(
+      ProfileManager profileManager, 
+      WindowManager windowManager,
+      KeyHookManager keyHookManager)
     {
-      _serviceResolver = serviceResolver;
       _profileManager = profileManager;
       _windowManager = windowManager;
+      _keyHookManager = keyHookManager;
 
       InitializeComponent();
       Initialize();      
@@ -264,7 +263,8 @@ namespace Windowmancer.UI
 
     private void preferencesToolStripMenuItem1_Click(object sender, EventArgs e)
     {
-
+      var dialog = new SettingsDialog(_keyHookManager);
+      dialog.Show();
     }
 
     private void WindowConfigsDataGrid_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)

@@ -19,7 +19,7 @@ namespace Windowmancer.UI
     private readonly WindowManager _windowManager;
     private ContextMenu _trayContextMenu;
     private readonly UserData _userData;
-    private MainForm _editor;
+    private Editor _editor;
 
     public TrayApp(IUnityContainer serviceResolver)
     {
@@ -40,16 +40,7 @@ namespace Windowmancer.UI
     private void Initialize()
     {
       _keyHookManager.OnKeyCombinationSuccess += OnKeyCombinationSuccess;
-
-      var menuItems = GetProfileMenuItems();
-      menuItems.Add(new MenuItem("-"));
-      menuItems.Add(new MenuItem("Open", (s,e) => OpenEditor()));
-      menuItems.Add(new MenuItem("-"));
-      menuItems.Add(new MenuItem("Settings", TrayContextMenu_OnProfileSettings));
-      menuItems.Add(new MenuItem("-"));
-      menuItems.Add(new MenuItem("Exit", (s,e) => ExitApplication()));
-      _trayContextMenu = new ContextMenu(menuItems.ToArray());
-
+      _trayContextMenu = BuildContextMenu();
       _trayIcon = new NotifyIcon
       {
         Icon = Resources.app_icon,
@@ -60,6 +51,18 @@ namespace Windowmancer.UI
       {
         OpenEditor();
       };
+    }
+
+    private ContextMenu BuildContextMenu()
+    {
+      var menuItems = GetProfileMenuItems();
+      menuItems.Add(new MenuItem("-"));
+      menuItems.Add(new MenuItem("Open", (s, e) => OpenEditor()));
+      menuItems.Add(new MenuItem("-"));
+      menuItems.Add(new MenuItem("Settings", TrayContextMenu_OnProfileSettings));
+      menuItems.Add(new MenuItem("-"));
+      menuItems.Add(new MenuItem("Exit", (s, e) => ExitApplication()));
+      return new ContextMenu(menuItems.ToArray());
     }
 
     private List<MenuItem> GetProfileMenuItems()
@@ -80,7 +83,7 @@ namespace Windowmancer.UI
 
     private void OpenEditor()
     {
-      _editor = new MainForm(_serviceResolver, _profileManager, _windowManager);
+      _editor = new Editor(_profileManager, _windowManager, _keyHookManager);
       // Update our context menu profile selection on profile change
       // in the editor.
       _editor.ProfileListBox.SelectedIndexChanged += (s, ev) =>
@@ -132,10 +135,7 @@ namespace Windowmancer.UI
       var mi = ((MenuItem)sender);
       mi.Checked = true;
       _profileManager.UpdateActiveProfile(((Profile)mi.Tag).Id);
-      if (null != _editor)
-      {
-        _editor.UpdateActiveProfile(((Profile)mi.Tag));
-      }
+      _editor?.UpdateActiveProfile(((Profile)mi.Tag));
     }
 
     public void TrayContextMenu_OnProfileSettings(object sender, EventArgs e)

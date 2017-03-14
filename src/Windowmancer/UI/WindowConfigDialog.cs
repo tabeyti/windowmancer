@@ -89,7 +89,6 @@ namespace Windowmancer.UI
       this.WindowPositionAbsoluteRadioButton.Checked = true;
 
       this.BringToFrontCheckBox.Checked = this.WindowInfo.BringToFront;
-      this.BringUpFromTaskbarCheckBox.Checked = this.WindowInfo.BringUpFromTaskbar;
     }
 
     private Win32.RECT GetWindowRec()
@@ -158,7 +157,6 @@ namespace Windowmancer.UI
         MatchCriteria = new WindowMatchCriteria(matchType, this.WindowMatchStringTextBox.Text),
         Name = this.WindowConfigNameTextBox.Text,
         BringToFront = this.BringToFrontCheckBox.Checked,
-        BringUpFromTaskbar = this.BringUpFromTaskbarCheckBox.Checked
       };
       return true;
     }

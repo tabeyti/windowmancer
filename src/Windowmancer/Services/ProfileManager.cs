@@ -11,15 +11,10 @@ namespace Windowmancer.Services
 {
   public class ProfileManager : IDisposable
   {
-    public BindingList<Profile> Profiles { get; set; }
-    private readonly UserData _userData;
-    private Profile _activeProfile;
+    public BindingList<Profile> Profiles => _userData.Profiles;
     public Profile ActiveProfile
     {
-      get
-      {
-        return _activeProfile;
-      }
+      get { return _activeProfile; }
       set
       {
         _userData.ActiveProfile = value.Id;
@@ -30,6 +25,8 @@ namespace Windowmancer.Services
     public string ActiveProfileName => 
       (this.ActiveProfile == null) ? "None" : this.ActiveProfile.Name;
 
+    private Profile _activeProfile;
+    private readonly UserData _userData;
     private readonly WindowManager _windowManager;
 
     public ProfileManager(
@@ -43,7 +40,6 @@ namespace Windowmancer.Services
 
     public void Initialize()
     {
-      this.Profiles = _userData.Profiles;
       var profile = Profiles.Find(p => p.Id == _userData.ActiveProfile);
       this.ActiveProfile = profile ?? Profiles.FirstOrDefault();
       _windowManager.ActiveProfile = this.ActiveProfile;

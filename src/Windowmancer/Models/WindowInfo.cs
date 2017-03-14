@@ -10,8 +10,6 @@ namespace Windowmancer.Models
     public SizeInfo SizeInfo { get; set; }
     public WindowMatchCriteria MatchCriteria { get; set; }
     public bool BringToFront { get; set; }
-    public bool BringUpFromTaskbar { get; set; }
-
     public bool IsMatch(Process p)
     {
       return WindowMatch.IsMatch(this.MatchCriteria, p);

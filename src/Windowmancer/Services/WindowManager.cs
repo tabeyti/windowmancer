@@ -46,8 +46,11 @@ namespace Windowmancer.Services
       var x = windowInfo.LocationInfo.PositionInfo.X;
       var y = windowInfo.LocationInfo.PositionInfo.Y;
 
-      windowInfo.BringUpFromTaskbar.RunIfTrue(() => Win32.ShowWindow(handle, Win32.ShowWindowCommands.Maximize));
-      windowInfo.BringToFront.RunIfTrue(() => Win32.SetForegroundWindow(handle));
+      windowInfo.BringToFront.RunIfTrue(() =>
+      {
+        Win32.ShowWindow(handle, Win32.ShowWindowCommands.Maximize);
+        Win32.SetForegroundWindow(handle);
+      });
       Win32.MoveWindow(handle, x, y, windowInfo.SizeInfo.Width, windowInfo.SizeInfo.Height, true);      
     }
 
