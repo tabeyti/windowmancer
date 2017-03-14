@@ -45,7 +45,7 @@ namespace Windowmancer.UI
       menuItems.Add(new MenuItem("-"));
       menuItems.Add(new MenuItem("Open", (s,e) => OpenEditor()));
       menuItems.Add(new MenuItem("-"));
-      menuItems.Add(new MenuItem("Profile Settings", TrayContextMenu_OnProfileSettings));
+      menuItems.Add(new MenuItem("Settings", TrayContextMenu_OnProfileSettings));
       menuItems.Add(new MenuItem("-"));
       menuItems.Add(new MenuItem("Exit", (s,e) => ExitApplication()));
       _trayContextMenu = new ContextMenu(menuItems.ToArray());
@@ -140,7 +140,7 @@ namespace Windowmancer.UI
 
     public void TrayContextMenu_OnProfileSettings(object sender, EventArgs e)
     {
-      var settings = new SettingsDialog(_userData);
+      var settings = new SettingsDialog(_keyHookManager);
       settings.Show();
     }
 

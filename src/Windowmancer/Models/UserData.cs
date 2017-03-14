@@ -13,7 +13,7 @@ namespace Windowmancer.Models
   {
     public BindingList<Profile> Profiles { get; set; }
     public string ActiveProfile { get; set; }    
-    public KeyComboConfig GlobalHotKeyCombo { get; set; }
+    public KeyComboConfig KeyComboConfig { get; set; }
 
     private readonly UserConfig _config;
 

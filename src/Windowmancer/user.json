@@ -77,7 +77,7 @@
     }
   ],
   "ActiveProfile": "880699fc-fd34-4703-a064-62ab51e4fb93",
-  "GlobalHotKeyCombo": {
+  "KeyComboConfig": {
     "KeyCombination": [
       {
         "Key": 131072,

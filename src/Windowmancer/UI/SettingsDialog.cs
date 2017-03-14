@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Windowmancer.Models;
+using Windowmancer.Services;
 
 namespace Windowmancer.UI
 {
@@ -16,21 +9,32 @@ namespace Windowmancer.UI
   {
     public HotKeyInputBox HotKeyInputBox { get; set; }
 
-    public readonly UserData _userData;
+    public readonly KeyHookManager _keyHookManager;
 
-    public SettingsDialog(UserData userData)
+    public SettingsDialog(KeyHookManager keyHookManager)
     {
-      _userData = userData;
+      _keyHookManager = keyHookManager;
       InitializeComponent();
       Initialize();
     }
 
     public void Initialize()
     {
-      this.HotKeyInputBox = new HotKeyInputBox();
-      this.HotKeyInputBox.Dock = DockStyle.Fill;
-      this.HotKeyInputBox.SetHotkey(_userData.GlobalHotKeyCombo.KeyCombination.Select(k => k.Key).ToList());
+      this.HotKeyInputBox = new HotKeyInputBox { Dock = DockStyle.Fill };
+      this.HotKeyInputBox.SetHotkey(_keyHookManager.KeyComboConfig.KeyCombination.Select(k => k.Key).ToList());
       this.HotKeyGroupBox.Controls.Add(this.HotKeyInputBox);
+    }
+
+    private void CancelButton_Click(object sender, EventArgs e)
+    {
+      this.Dispose();
+    }
+
+    private void SaveButton_Click(object sender, EventArgs e)
+    {
+      var keys = this.HotKeyInputBox.GetHotKeys();
+      _keyHookManager.KeyComboConfig = new KeyComboConfig(keys);
+      this.Dispose();
     }
   }
 }

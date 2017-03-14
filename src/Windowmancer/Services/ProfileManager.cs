@@ -22,6 +22,7 @@ namespace Windowmancer.Services
       }
       set
       {
+        _userData.ActiveProfile = value.Id;
         _activeProfile = value;
         _windowManager.ActiveProfile = _activeProfile;
       }
