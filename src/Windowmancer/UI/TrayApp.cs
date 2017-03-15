@@ -17,7 +17,7 @@ namespace Windowmancer.UI
     private KeyHookManager _keyHookManager;
     private readonly ProfileManager _profileManager;
     private readonly WindowManager _windowManager;
-    private ContextMenu _trayContextMenu;
+    private ContextMenuStrip _trayContextMenu;
     private readonly UserData _userData;
     private Editor _editor;
 
@@ -44,34 +44,39 @@ namespace Windowmancer.UI
       _trayIcon = new NotifyIcon
       {
         Icon = Resources.app_icon,
-        ContextMenu = _trayContextMenu,
+        ContextMenuStrip = _trayContextMenu,
         Visible = true
       };
       _trayIcon.DoubleClick += (s, e) => OpenEditor();
       _trayIcon.MouseDown += (s, e) =>
       {
-        _trayIcon.ContextMenu = BuildContextMenu();
+        _trayIcon.ContextMenuStrip = BuildContextMenu();
       };
     }
 
-    private ContextMenu BuildContextMenu()
+    private ContextMenuStrip BuildContextMenu()
     {
       var menuItems = GetProfileMenuItems();
-      menuItems.Add(new MenuItem("-"));
-      menuItems.Add(new MenuItem("Open", (s, e) => OpenEditor()));
-      menuItems.Add(new MenuItem("-"));
-      menuItems.Add(new MenuItem("Settings", TrayContextMenu_OnProfileSettings));
-      menuItems.Add(new MenuItem("-"));
-      menuItems.Add(new MenuItem("Exit", (s, e) => ExitApplication()));
-      return new ContextMenu(menuItems.ToArray());
+      menuItems.Add(new ToolStripSeparator());
+      menuItems.Add(new ToolStripMenuItem("Open", null, (s, e) => OpenEditor()));
+      menuItems.Add(new ToolStripMenuItem("Settings", null, TrayContextMenu_OnProfileSettings));
+      menuItems.Add(new ToolStripSeparator());
+      menuItems.Add(new ToolStripMenuItem("Exit", null,  (s, e) => ExitApplication()));
+      var cms = new ContextMenuStrip();
+      cms.Items.AddRange(menuItems.ToArray());
+      return cms;
     }
 
-    private List<MenuItem> GetProfileMenuItems()
+    private List<ToolStripItem> GetProfileMenuItems()
     {
-      var list = new List<MenuItem>();
+      var list = new List<ToolStripItem>();
+      var headerMenuItem = new ToolStripLabel("Profiles");
+      headerMenuItem.Font = new System.Drawing.Font(headerMenuItem.Font, System.Drawing.FontStyle.Bold);
+      list.Add(headerMenuItem);
+      list.Add(new ToolStripSeparator());
       foreach (var p in _profileManager.Profiles)
       {
-        var m = new MenuItem(p.Name, TrayContextMenu_OnProfileSelect);
+        var m = new ToolStripMenuItem(p.Name, null, TrayContextMenu_OnProfileSelect);
         if (p.Id == _profileManager.ActiveProfile.Id)
         {
           m.Checked = true;
@@ -96,7 +101,7 @@ namespace Windowmancer.UI
       {
         var profile = (Profile)_editor.ProfileListBox.SelectedItem;
         UncheckCheckedMenuItem();
-        foreach (MenuItem m in _trayContextMenu.MenuItems)
+        foreach (ToolStripMenuItem m in _trayContextMenu.Items)
         {
           if (m.Tag == profile)
           {
@@ -122,7 +127,7 @@ namespace Windowmancer.UI
 
     private void UncheckCheckedMenuItem()
     {
-      foreach (MenuItem m in _trayContextMenu.MenuItems)
+      foreach (MenuItem m in _trayContextMenu.Items)
       {
         if (m.Checked)
         {
