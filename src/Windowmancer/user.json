@@ -1,87 +1,181 @@
 ﻿{
   "Profiles": [
     {
-      "Id": "cda8050d-9ef4-47fd-8c38-47da50d24d5c",
+      "Id": "9c4e4ecf-2547-4b5a-8e22-afc85f482017",
       "Name": "Server",
       "Windows": [
         {
-          "Name": "WMIC Thinger",
+          "Name": "btf_agent",
           "LocationInfo": {
             "DisplayName": "\\\\.\\DISPLAY2",
             "PrimaryDisplay": false,
             "PositionInfo": {
-              "X": 300,
-              "Y": 300
+              "X": 3520,
+              "Y": 585
             }
           },
           "SizeInfo": {
-            "Width": 800,
-            "Height": 800
+            "Width": 960,
+            "Height": 585
           },
           "MatchCriteria": {
             "MatchType": 0,
-            "MatchString": ".*WMIC.*"
+            "MatchString": ".*classic_btf_agent.exe"
           },
           "BringToFront": true
         },
         {
-          "Name": "Notepad++ Jammer",
+          "Name": "BN-CG-CLIENT02",
           "LocationInfo": {
-            "DisplayName": "\\\\.\\DISPLAY2",
+            "DisplayName": "\\\\.\\DISPLAY3",
             "PrimaryDisplay": false,
             "PositionInfo": {
-              "X": 450,
-              "Y": 10
+              "X": -1197,
+              "Y": 770
             }
           },
           "SizeInfo": {
-            "Width": 640,
-            "Height": 480
+            "Width": 1201,
+            "Height": 432
           },
           "MatchCriteria": {
             "MatchType": 0,
-            "MatchString": ".*Notepad.*"
+            "MatchString": "BN-CG-CLIENT02"
           },
           "BringToFront": true
-        }
-      ]
-    },
-    {
-      "Id": "880699fc-fd34-4703-a064-62ab51e4fb93",
-      "Name": "Misc",
-      "Windows": [
+        },
         {
-          "Name": "Pickles",
+          "Name": "BN-CG-DATASTORE01",
           "LocationInfo": {
             "DisplayName": "\\\\.\\DISPLAY2",
             "PrimaryDisplay": false,
             "PositionInfo": {
-              "X": 0,
+              "X": 2560,
+              "Y": 585
+            }
+          },
+          "SizeInfo": {
+            "Width": 960,
+            "Height": 585
+          },
+          "MatchCriteria": {
+            "MatchType": 0,
+            "MatchString": "BN-CG-DATASTORE01"
+          },
+          "BringToFront": true
+        },
+        {
+          "Name": "BN-CG-FAKEAURORA01",
+          "LocationInfo": {
+            "DisplayName": "\\\\.\\DISPLAY2",
+            "PrimaryDisplay": false,
+            "PositionInfo": {
+              "X": 3520,
               "Y": 0
             }
           },
           "SizeInfo": {
-            "Width": 1024,
-            "Height": 768
+            "Width": 960,
+            "Height": 585
           },
           "MatchCriteria": {
             "MatchType": 0,
-            "MatchString": ".*nslookup.*"
+            "MatchString": "BN-CG-FAKEAURORA01"
+          },
+          "BringToFront": true
+        },
+        {
+          "Name": "BN-CG-GAMEPROXY01",
+          "LocationInfo": {
+            "DisplayName": "\\\\.\\DISPLAY3",
+            "PrimaryDisplay": false,
+            "PositionInfo": {
+              "X": -1197,
+              "Y": 1202
+            }
+          },
+          "SizeInfo": {
+            "Width": 1196,
+            "Height": 448
+          },
+          "MatchCriteria": {
+            "MatchType": 0,
+            "MatchString": "BN-CG-GAMEPROXY01"
+          },
+          "BringToFront": true
+        },
+        {
+          "Name": "BN-CG-GATEWAY01",
+          "LocationInfo": {
+            "DisplayName": "\\\\.\\DISPLAY2",
+            "PrimaryDisplay": false,
+            "PositionInfo": {
+              "X": 2560,
+              "Y": 0
+            }
+          },
+          "SizeInfo": {
+            "Width": 960,
+            "Height": 585
+          },
+          "MatchCriteria": {
+            "MatchType": 0,
+            "MatchString": "BN-CG-GATEWAY01"
+          },
+          "BringToFront": true
+        },
+        {
+          "Name": "Battle.net Server [ACCT]",
+          "LocationInfo": {
+            "DisplayName": "\\\\.\\DISPLAY1",
+            "PrimaryDisplay": false,
+            "PositionInfo": {
+              "X": -1200,
+              "Y": -232
+            }
+          },
+          "SizeInfo": {
+            "Width": 1205,
+            "Height": 519
+          },
+          "MatchCriteria": {
+            "MatchType": 0,
+            "MatchString": "Battle.net Server .ACCT."
+          },
+          "BringToFront": true
+        },
+        {
+          "Name": "Battle.net Server [CHAT]",
+          "LocationInfo": {
+            "DisplayName": "\\\\.\\DISPLAY3",
+            "PrimaryDisplay": false,
+            "PositionInfo": {
+              "X": -1198,
+              "Y": 284
+            }
+          },
+          "SizeInfo": {
+            "Width": 1204,
+            "Height": 487
+          },
+          "MatchCriteria": {
+            "MatchType": 0,
+            "MatchString": "Battle.net Server .CHAT."
           },
           "BringToFront": true
         }
       ]
     }
   ],
-  "ActiveProfile": "880699fc-fd34-4703-a064-62ab51e4fb93",
+  "ActiveProfile": "9c4e4ecf-2547-4b5a-8e22-afc85f482017",
   "KeyComboConfig": {
     "KeyCombination": [
       {
-        "Key": 131072,
+        "Key": 65536,
         "IsDown": false
       },
       {
-        "Key": 65536,
+        "Key": 131072,
         "IsDown": false
       },
       {

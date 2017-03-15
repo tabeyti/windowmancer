@@ -1,9 +1,6 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel;
 using System.Linq;
-using Windowmancer.Configuration;
 using Windowmancer.Extensions;
 using Windowmancer.Models;
 
