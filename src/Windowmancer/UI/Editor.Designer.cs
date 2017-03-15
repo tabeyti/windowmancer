@@ -81,6 +81,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.ActiveWindowsGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+      this.ActiveWindowsGridView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
       this.ActiveWindowsGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
       this.ActiveWindowsGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.IconHeader,
@@ -151,19 +152,19 @@
             this.addToolStripMenuItem,
             this.deleteToolStripMenuItem1});
       this.ProfileListBoxContextMenu.Name = "ProfileListBoxContextMenu";
-      this.ProfileListBoxContextMenu.Size = new System.Drawing.Size(153, 70);
+      this.ProfileListBoxContextMenu.Size = new System.Drawing.Size(108, 48);
       // 
       // addToolStripMenuItem
       // 
       this.addToolStripMenuItem.Name = "addToolStripMenuItem";
-      this.addToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.addToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
       this.addToolStripMenuItem.Text = "Add";
       this.addToolStripMenuItem.Click += new System.EventHandler(this.addToolStripMenuItem_Click);
       // 
       // deleteToolStripMenuItem1
       // 
       this.deleteToolStripMenuItem1.Name = "deleteToolStripMenuItem1";
-      this.deleteToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+      this.deleteToolStripMenuItem1.Size = new System.Drawing.Size(107, 22);
       this.deleteToolStripMenuItem1.Text = "Delete";
       this.deleteToolStripMenuItem1.Click += new System.EventHandler(this.deleteToolStripMenuItem1_Click);
       // 
@@ -214,6 +215,7 @@
       this.WindowConfigsDataGrid.AllowUserToDeleteRows = false;
       this.WindowConfigsDataGrid.AllowUserToResizeRows = false;
       this.WindowConfigsDataGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+      this.WindowConfigsDataGrid.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
       this.WindowConfigsDataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
       this.WindowConfigsDataGrid.ContextMenuStrip = this.WindowConfigsContextMenu;
       this.WindowConfigsDataGrid.Dock = System.Windows.Forms.DockStyle.Fill;

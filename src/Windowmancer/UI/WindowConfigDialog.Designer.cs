@@ -340,6 +340,7 @@ namespace Windowmancer.UI
       this.MaximizeBox = false;
       this.MinimizeBox = false;
       this.Name = "WindowConfigDialog";
+      this.ShowIcon = false;
       this.Text = "Window Configuration";
       this.Load += new System.EventHandler(this.WindowConfigDialog_Load);
       this.WindowMatchGroupBox.ResumeLayout(false);

@@ -88,6 +88,7 @@
       this.MinimizeBox = false;
       this.Name = "ProfileConfigDialog";
       this.RightToLeftLayout = true;
+      this.ShowIcon = false;
       this.Text = "Profile";
       this.NameGroupBox.ResumeLayout(false);
       this.NameGroupBox.PerformLayout();

@@ -71,6 +71,7 @@
       this.Controls.Add(this.SaveButton);
       this.Controls.Add(this.HotKeyGroupBox);
       this.Name = "SettingsDialog";
+      this.ShowIcon = false;
       this.Text = "Settings";
       this.ResumeLayout(false);
 
