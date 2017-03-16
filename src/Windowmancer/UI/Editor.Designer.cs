@@ -40,6 +40,7 @@
       this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.deleteToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
       this.ProfileGroupBox = new System.Windows.Forms.GroupBox();
+      this.ProfileListDataGridView = new System.Windows.Forms.DataGridView();
       this.ProfileSplitContainer = new System.Windows.Forms.SplitContainer();
       this.WindowConfigsGroupBox = new System.Windows.Forms.GroupBox();
       this.WindowConfigsDataGrid = new System.Windows.Forms.DataGridView();
@@ -55,10 +56,10 @@
       this.documentationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
       this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.ProfileListDataGridView = new System.Windows.Forms.DataGridView();
       ((System.ComponentModel.ISupportInitialize)(this.ActiveWindowsGridView)).BeginInit();
       this.ProfileListBoxContextMenu.SuspendLayout();
       this.ProfileGroupBox.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.ProfileListDataGridView)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.ProfileSplitContainer)).BeginInit();
       this.ProfileSplitContainer.Panel1.SuspendLayout();
       this.ProfileSplitContainer.Panel2.SuspendLayout();
@@ -72,7 +73,6 @@
       this.MainFormSplitContainer.SuspendLayout();
       this.ActiveWindowsGroupBox.SuspendLayout();
       this.menuStrip1.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.ProfileListDataGridView)).BeginInit();
       this.SuspendLayout();
       // 
       // ActiveWindowsGridView
@@ -165,6 +165,29 @@
       this.ProfileGroupBox.TabIndex = 5;
       this.ProfileGroupBox.TabStop = false;
       this.ProfileGroupBox.Text = "Profiles";
+      // 
+      // ProfileListDataGridView
+      // 
+      this.ProfileListDataGridView.AllowUserToAddRows = false;
+      this.ProfileListDataGridView.AllowUserToDeleteRows = false;
+      this.ProfileListDataGridView.AllowUserToResizeRows = false;
+      this.ProfileListDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+      this.ProfileListDataGridView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+      this.ProfileListDataGridView.BackgroundColor = System.Drawing.SystemColors.Window;
+      this.ProfileListDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+      this.ProfileListDataGridView.ColumnHeadersVisible = false;
+      this.ProfileListDataGridView.ContextMenuStrip = this.ProfileListBoxContextMenu;
+      this.ProfileListDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.ProfileListDataGridView.EnableHeadersVisualStyles = false;
+      this.ProfileListDataGridView.Location = new System.Drawing.Point(3, 16);
+      this.ProfileListDataGridView.MultiSelect = false;
+      this.ProfileListDataGridView.Name = "ProfileListDataGridView";
+      this.ProfileListDataGridView.ReadOnly = true;
+      this.ProfileListDataGridView.RowHeadersVisible = false;
+      this.ProfileListDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+      this.ProfileListDataGridView.Size = new System.Drawing.Size(217, 269);
+      this.ProfileListDataGridView.TabIndex = 5;
+      this.ProfileListDataGridView.CurrentCellChanged += new System.EventHandler(this.ProfileListBox_SelectedIndexChanged);
       // 
       // ProfileSplitContainer
       // 
@@ -325,27 +348,6 @@
       this.aboutToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
       this.aboutToolStripMenuItem.Text = "About";
       // 
-      // ProfileListDataGridView
-      // 
-      this.ProfileListDataGridView.AllowUserToAddRows = false;
-      this.ProfileListDataGridView.AllowUserToDeleteRows = false;
-      this.ProfileListDataGridView.AllowUserToResizeRows = false;
-      this.ProfileListDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
-      this.ProfileListDataGridView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
-      this.ProfileListDataGridView.BackgroundColor = System.Drawing.SystemColors.Window;
-      this.ProfileListDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-      this.ProfileListDataGridView.ColumnHeadersVisible = false;
-      this.ProfileListDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.ProfileListDataGridView.EnableHeadersVisualStyles = false;
-      this.ProfileListDataGridView.Location = new System.Drawing.Point(3, 16);
-      this.ProfileListDataGridView.MultiSelect = false;
-      this.ProfileListDataGridView.Name = "ProfileListDataGridView";
-      this.ProfileListDataGridView.ReadOnly = true;
-      this.ProfileListDataGridView.RowHeadersVisible = false;
-      this.ProfileListDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-      this.ProfileListDataGridView.Size = new System.Drawing.Size(217, 269);
-      this.ProfileListDataGridView.TabIndex = 5;
-      // 
       // Editor
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -364,6 +366,7 @@
       ((System.ComponentModel.ISupportInitialize)(this.ActiveWindowsGridView)).EndInit();
       this.ProfileListBoxContextMenu.ResumeLayout(false);
       this.ProfileGroupBox.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.ProfileListDataGridView)).EndInit();
       this.ProfileSplitContainer.Panel1.ResumeLayout(false);
       this.ProfileSplitContainer.Panel2.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.ProfileSplitContainer)).EndInit();
@@ -378,7 +381,6 @@
       this.ActiveWindowsGroupBox.ResumeLayout(false);
       this.menuStrip1.ResumeLayout(false);
       this.menuStrip1.PerformLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.ProfileListDataGridView)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
