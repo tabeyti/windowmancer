@@ -82,6 +82,7 @@
       this.ActiveWindowsGridView.AllowUserToResizeRows = false;
       this.ActiveWindowsGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
       this.ActiveWindowsGridView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+      this.ActiveWindowsGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
       this.ActiveWindowsGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
       this.ActiveWindowsGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.IconHeader,
@@ -174,6 +175,7 @@
       this.ProfileListDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
       this.ProfileListDataGridView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
       this.ProfileListDataGridView.BackgroundColor = System.Drawing.SystemColors.Window;
+      this.ProfileListDataGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
       this.ProfileListDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
       this.ProfileListDataGridView.ColumnHeadersVisible = false;
       this.ProfileListDataGridView.ContextMenuStrip = this.ProfileListBoxContextMenu;
@@ -187,7 +189,8 @@
       this.ProfileListDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
       this.ProfileListDataGridView.Size = new System.Drawing.Size(217, 269);
       this.ProfileListDataGridView.TabIndex = 5;
-      this.ProfileListDataGridView.CurrentCellChanged += new System.EventHandler(this.ProfileListBox_SelectedIndexChanged);
+      this.ProfileListDataGridView.SelectionChanged += new System.EventHandler(this.ProfileListDataGridView_SelectedIndexChanged);
+      this.ProfileListDataGridView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ProfileListDataGridView_MouseDown);
       // 
       // ProfileSplitContainer
       // 
@@ -226,6 +229,7 @@
       this.WindowConfigsDataGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
       this.WindowConfigsDataGrid.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
       this.WindowConfigsDataGrid.BackgroundColor = System.Drawing.SystemColors.Window;
+      this.WindowConfigsDataGrid.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
       this.WindowConfigsDataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
       this.WindowConfigsDataGrid.ContextMenuStrip = this.WindowConfigsContextMenu;
       this.WindowConfigsDataGrid.Dock = System.Windows.Forms.DockStyle.Fill;

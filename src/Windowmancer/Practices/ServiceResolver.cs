@@ -43,6 +43,7 @@ namespace Windowmancer.Pratices
       container.RegisterType<WindowManager>(new ContainerControlledLifetimeManager());
       container.RegisterType<ProfileManager>(new ContainerControlledLifetimeManager());
       container.RegisterType<KeyHookManager>(new ContainerControlledLifetimeManager());
+      container.RegisterType<ProcMonitor>(new ContainerControlledLifetimeManager());
     }
 
     public static dynamic GetAssembly()

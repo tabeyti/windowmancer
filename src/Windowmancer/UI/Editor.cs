@@ -14,22 +14,22 @@ namespace Windowmancer.UI
 {
   public partial class Editor : Form
   {
-    private ManagementEventWatcher _startWatch;
-    private ManagementEventWatcher _stopWatch;
     private ILogger _logger;
     private readonly ProfileManager _profileManager;
     private readonly WindowManager _windowManager;
     private readonly KeyHookManager _keyHookManager;
-    private readonly Dictionary<int, Process> _availableWindowDict = new Dictionary<int, Process>();
+    private readonly ProcMonitor _procMonitor;
 
     public Editor(
       ProfileManager profileManager, 
       WindowManager windowManager,
-      KeyHookManager keyHookManager)
+      KeyHookManager keyHookManager,
+      ProcMonitor procMonitor)
     {
       _profileManager = profileManager;
       _windowManager = windowManager;
       _keyHookManager = keyHookManager;
+      _procMonitor = procMonitor;
 
       InitializeComponent();
       Initialize();      
@@ -37,51 +37,29 @@ namespace Windowmancer.UI
 
     public void Initialize()
     {
-      //this.ProfileListBox.DisplayMember = "Name";
-      //this.ProfileListBox.DataSource = _profileManager.Profiles;
-      //this.ProfileListBox.SelectedItem  = _profileManager.ActiveProfile = activeProfile;
-
       this.ProfileListDataGridView.DataSource = _profileManager.Profiles;
       this.ProfileListDataGridView.Columns[this.ProfileListDataGridView.ColumnCount - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-      ProfileListSelectRow(_profileManager.ActiveProfile);
-
+      
       this.WindowConfigsDataGrid.DataSource = _profileManager.ActiveProfile.Windows;
       this.WindowConfigsDataGrid.Columns[this.WindowConfigsDataGrid.ColumnCount-1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
       RemoveToolStripMenuMargins();
     }
 
-    private void ProfileListSelectRow(Profile profile)
+    private void ProfileListSelectActiveProfile()
     {
       foreach (DataGridViewRow row in this.ProfileListDataGridView.Rows)
       {
         var p = (Profile)row.DataBoundItem;
-        if (p == profile)
-        {
-          row.Selected = true;
-          break;
-        }       
+        if (p != _profileManager.ActiveProfile) continue;
+        row.Selected = true;
+        break;
       }
     }
 
     protected void InternalDispose()
     {
       _windowManager.Dispose();
-      _startWatch?.Stop();
-      _stopWatch?.Stop();
-    }
-
-    public void StartProcessMonitor()
-    {
-      _startWatch = new ManagementEventWatcher(
-        new WqlEventQuery("SELECT * FROM Win32_ProcessStartTrace"));
-      _startWatch.EventArrived += StartWatch_EventArrived;
-      _startWatch.Start();
-
-      _stopWatch = new ManagementEventWatcher(
-        new WqlEventQuery("SELECT * FROM Win32_ProcessStopTrace "));
-      _stopWatch.EventArrived += StopWatch_EventArrived;
-      _stopWatch.Start();
     }
 
     public void UpdateActiveProfile(Profile profile)
@@ -90,17 +68,13 @@ namespace Windowmancer.UI
       {
         throw new ExceptionBox($"{this} - Cannot update with null profile");
       }
-      //this.ProfileListBox.SelectedItem = profile;
+      _profileManager.ActiveProfile = profile;
+      ProfileListSelectActiveProfile();
+      this.WindowConfigsDataGrid.DataSource = profile.Windows;
     }
 
     private void AddToActiveWindows(Process process)
     {
-      if (_availableWindowDict.ContainsKey(process.Id))
-      {
-        return;
-      }
-      _availableWindowDict.Add(process.Id, process);
-
       System.Drawing.Icon ico = null;
       try
       {
@@ -135,94 +109,49 @@ namespace Windowmancer.UI
 
     private void RemoveActiveProcess(int proccessId)
     {
-      if (_availableWindowDict.ContainsKey(proccessId))
+      var row = this.ActiveWindowsGridView.Rows
+        .Cast<DataGridViewRow>()
+        .First(r => int.Parse(r.Cells["PID"].Value.ToString()).Equals(proccessId));
+
+      if (null == row)
       {
-        _availableWindowDict.Remove(proccessId);
+        return;
+      }
 
-        var row = this.ActiveWindowsGridView.Rows
-          .Cast<DataGridViewRow>()
-          .First(r => int.Parse(r.Cells["PID"].Value.ToString()).Equals(proccessId));
-
-        if (null == row)
-        {
-          return;
-        }
-
-        if (this.ActiveWindowsGridView.InvokeRequired)
-        {
-          this.ActiveWindowsGridView.Invoke(
-            new MethodInvoker(
-              () => this.ActiveWindowsGridView.Rows.RemoveAt(row.Index)));
-        }
-        else
-        {
-          this.ActiveWindowsGridView.Rows.RemoveAt(row.Index);
-        }
+      if (this.ActiveWindowsGridView.InvokeRequired)
+      {
+        this.ActiveWindowsGridView.Invoke(
+          new MethodInvoker(
+            () => this.ActiveWindowsGridView.Rows.RemoveAt(row.Index)));
+      }
+      else
+      {
+        this.ActiveWindowsGridView.Rows.RemoveAt(row.Index);
       }
     }
 
-    public WindowInfo ShowWindowConfigDialog(Process process)
+    private WindowInfo ShowWindowConfigDialog(Process process)
     {
       var dialog = new WindowConfigDialog(process);
       dialog.ShowDialog();
       return dialog.WindowInfo;
     }
 
-    public WindowInfo ShowWindowConfigDialog(WindowInfo windowInfo)
+    private WindowInfo ShowWindowConfigDialog(WindowInfo windowInfo)
     {
       var dialog =  new WindowConfigDialog(windowInfo);
       dialog.ShowDialog();
       return dialog.WindowInfo;
     }
 
-    public void HandleProfileConfigDialog()
+    private void HandleProfileConfigDialog()
     {
       var dialog = new ProfileConfigDialog(_profileManager);
       dialog.ShowDialog();
+      ProfileListSelectActiveProfile();
     }
 
     #region Events
-
-    private void StartWatch_EventArrived(object sender, EventArrivedEventArgs e)
-    {
-      var procProps = e.NewEvent.Properties;
-      var procId = int.Parse(procProps["ProcessId"].Value.ToString());
-      Process proc = null;
-      try
-      {
-        proc = Process.GetProcessById(procId);
-        if (proc.MainWindowTitle == string.Empty)
-          return;
-      }
-      catch (Exception)
-      {
-        return;
-      }
-
-      try
-      { 
-        AddToActiveWindows(proc);
-        _windowManager.ApplyWindowInfo(proc);
-      }
-      catch (Exception ex)
-      {
-        _logger.Error(ex.Message);
-      }
-    }
-
-    private void StopWatch_EventArrived(object sender, EventArrivedEventArgs e)
-    {
-      var procProps = e.NewEvent.Properties;
-      var procId = int.Parse(procProps["ProcessId"].Value.ToString());
-      try
-      {
-        RemoveActiveProcess(procId);
-      }
-      catch (Exception)
-      {
-        // ignore
-      }
-    }
 
     private void Form1_Load(object sender, EventArgs e)
     {
@@ -247,7 +176,10 @@ namespace Windowmancer.UI
         }
         AddToActiveWindows(p);
       }
-      StartProcessMonitor();
+      _procMonitor.OnNewWindowProcess += AddToActiveWindows;
+      _procMonitor.OnWindowProcessRemove += RemoveActiveProcess;
+      _procMonitor.StartProcessMonitor();
+      ProfileListSelectActiveProfile();
     }
 
     private void ActiveWindowsGridView_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -308,12 +240,16 @@ namespace Windowmancer.UI
     {
       var procRow = this.WindowConfigsDataGrid.SelectedRows[0];
       var item = (WindowInfo)procRow.DataBoundItem;
-      _profileManager.RemoveFromActiveProfile(item);      
+      _profileManager.RemoveFromActiveProfile(item);
     }
 
-    private void ProfileListBox_SelectedIndexChanged(object sender, EventArgs e)
+    private void ProfileListDataGridView_SelectedIndexChanged(object sender, EventArgs e)
     {
-      //_profileManager.UpdateActiveProfile(this.ProfileListBox.SelectedIndex);
+      if (!this.ProfileListDataGridView.Focused)
+      {
+        return;
+      }
+
       if (this.ProfileListDataGridView.SelectedRows.Count > 0)
       {
         _profileManager.UpdateActiveProfile(this.ProfileListDataGridView.SelectedRows[0].Index);
@@ -335,26 +271,7 @@ namespace Windowmancer.UI
         return;
       }
       _profileManager.DeleteActiveProfile();
-    }
-
-    private void ProfileListBox_MouseDown(object sender, MouseEventArgs e)
-    {
-      if (e.Button != MouseButtons.Right)
-      {
-        return;
-      }
-      //var rowIndex = this.ProfileListBox.IndexFromPoint(e.X, e.Y);
-      var rowIndex = this.ProfileListDataGridView.SelectedRows[0].Index;
-      if (rowIndex < 0)
-      {
-        ProfileListBoxContextMenu.Items[1].Enabled = false;
-        return;
-      }
-      ProfileListBoxContextMenu.Items[1].Enabled = true;
-      //this.ProfileListBox.SelectedIndex = rowIndex;
-      //this.ProfileListBox.Focus();
-      this.ProfileListDataGridView.CurrentCell = this.ProfileListDataGridView.Rows[rowIndex].Cells[0];
-      this.ProfileListDataGridView.Focus();
+      ProfileListSelectActiveProfile();
     }
 
     private void WindowConfigsContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
@@ -380,14 +297,24 @@ namespace Windowmancer.UI
       }      
     }
 
-    //private void ProfileListBoxContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
-    //{
-      //var mp = this.ProfileListBox.PointToClient(Control.MousePosition);
-      //var index = this.ProfileListBox.IndexFromPoint(mp.X, mp.Y);
-      //if (index < 0)
-      //{
-      //  e.Cancel = true;
-      //}
-    //}
+    private void ProfileListDataGridView_MouseDown(object sender, MouseEventArgs e)
+    {
+      if (e.Button != MouseButtons.Right)
+      {
+        return;
+      }
+
+      var mousepos = Control.MousePosition;
+      var dgv_rel_mousePos = this.ProfileListDataGridView.PointToClient(mousepos);
+      var hti = this.ProfileListDataGridView.HitTest(dgv_rel_mousePos.X, dgv_rel_mousePos.Y);
+        if (hti.RowIndex == -1)
+      {
+        this.ProfileListBoxContextMenu.Items[1].Enabled = false;
+        return;
+      }
+      this.ProfileListBoxContextMenu.Items[1].Enabled = true;
+      this.ProfileListDataGridView.Rows[hti.RowIndex].Selected = true;
+      this.ProfileListDataGridView.Focus();
+    }
   }
 }
