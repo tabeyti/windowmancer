@@ -77,6 +77,7 @@ namespace Windowmancer.UI
       foreach (var p in _profileManager.Profiles)
       {
         var m = new ToolStripMenuItem(p.Name, null, TrayContextMenu_OnProfileSelect);
+        m.Tag = p;
         if (p.Id == _profileManager.ActiveProfile.Id)
         {
           m.Checked = true;
@@ -95,28 +96,6 @@ namespace Windowmancer.UI
       }
 
       _editor = new Editor(_profileManager, _windowManager, _keyHookManager);
-      // Update our context menu profile selection on profile change
-      // in the editor.
-      //_editor.ProfileListBox.SelectedIndexChanged += (s, ev) =>
-      _editor.ProfileListDataGridView.CurrentCellChanged += (s, ev) =>
-      {
-        var profile = (Profile) _editor.ProfileListDataGridView.CurrentRow.DataBoundItem;
-        UncheckCheckedMenuItem();
-        foreach (ToolStripItem m in _trayContextMenu.Items)
-        {
-          if (m.GetType() != typeof(ToolStripMenuItem))
-          {
-            continue;
-          }
-
-          var item = m as ToolStripMenuItem;
-          if (item.Tag == profile)
-          {
-            item.Checked = true;
-            break;
-          }
-        }
-      };
       _editor.ShowDialog();
       _editor = null;
     }

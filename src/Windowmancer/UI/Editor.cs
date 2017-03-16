@@ -43,11 +43,25 @@ namespace Windowmancer.UI
 
       this.ProfileListDataGridView.DataSource = _profileManager.Profiles;
       this.ProfileListDataGridView.Columns[this.ProfileListDataGridView.ColumnCount - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+      ProfileListSelectRow(_profileManager.ActiveProfile);
 
       this.WindowConfigsDataGrid.DataSource = _profileManager.ActiveProfile.Windows;
       this.WindowConfigsDataGrid.Columns[this.WindowConfigsDataGrid.ColumnCount-1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
       RemoveToolStripMenuMargins();
+    }
+
+    private void ProfileListSelectRow(Profile profile)
+    {
+      foreach (DataGridViewRow row in this.ProfileListDataGridView.Rows)
+      {
+        var p = (Profile)row.DataBoundItem;
+        if (p == profile)
+        {
+          row.Selected = true;
+          break;
+        }       
+      }
     }
 
     protected void InternalDispose()
@@ -300,8 +314,11 @@ namespace Windowmancer.UI
     private void ProfileListBox_SelectedIndexChanged(object sender, EventArgs e)
     {
       //_profileManager.UpdateActiveProfile(this.ProfileListBox.SelectedIndex);
-      _profileManager.UpdateActiveProfile(this.ProfileListDataGridView.SelectedRows[0].Index);
-      this.WindowConfigsDataGrid.DataSource = _profileManager.ActiveProfile.Windows;
+      if (this.ProfileListDataGridView.SelectedRows.Count > 0)
+      {
+        _profileManager.UpdateActiveProfile(this.ProfileListDataGridView.SelectedRows[0].Index);
+        this.WindowConfigsDataGrid.DataSource = _profileManager.ActiveProfile.Windows;
+      }      
     }
 
     private void addToolStripMenuItem_Click(object sender, EventArgs e)
