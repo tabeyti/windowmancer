@@ -36,7 +36,6 @@
       this.PID = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.ProcessName = new System.Windows.Forms.DataGridViewTextBoxColumn();
       this.WindowTitle = new System.Windows.Forms.DataGridViewTextBoxColumn();
-      this.ProfileListBox = new System.Windows.Forms.ListBox();
       this.ProfileListBoxContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.deleteToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -48,6 +47,7 @@
       this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.MainFormSplitContainer = new System.Windows.Forms.SplitContainer();
+      this.ActiveWindowsGroupBox = new System.Windows.Forms.GroupBox();
       this.menuStrip1 = new System.Windows.Forms.MenuStrip();
       this.preferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.preferencesToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -55,7 +55,7 @@
       this.documentationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
       this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.ActiveWindowsGroupBox = new System.Windows.Forms.GroupBox();
+      this.ProfileListDataGridView = new System.Windows.Forms.DataGridView();
       ((System.ComponentModel.ISupportInitialize)(this.ActiveWindowsGridView)).BeginInit();
       this.ProfileListBoxContextMenu.SuspendLayout();
       this.ProfileGroupBox.SuspendLayout();
@@ -70,8 +70,9 @@
       this.MainFormSplitContainer.Panel1.SuspendLayout();
       this.MainFormSplitContainer.Panel2.SuspendLayout();
       this.MainFormSplitContainer.SuspendLayout();
-      this.menuStrip1.SuspendLayout();
       this.ActiveWindowsGroupBox.SuspendLayout();
+      this.menuStrip1.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.ProfileListDataGridView)).BeginInit();
       this.SuspendLayout();
       // 
       // ActiveWindowsGridView
@@ -97,7 +98,6 @@
       this.ActiveWindowsGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
       this.ActiveWindowsGridView.Size = new System.Drawing.Size(886, 292);
       this.ActiveWindowsGridView.TabIndex = 3;
-      this.ActiveWindowsGridView.UseWaitCursor = true;
       this.ActiveWindowsGridView.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ActiveWindowsGridView_CellMouseDoubleClick);
       // 
       // IconHeader
@@ -132,22 +132,6 @@
       this.WindowTitle.Name = "WindowTitle";
       this.WindowTitle.ReadOnly = true;
       // 
-      // ProfileListBox
-      // 
-      this.ProfileListBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-      this.ProfileListBox.ContextMenuStrip = this.ProfileListBoxContextMenu;
-      this.ProfileListBox.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.ProfileListBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.ProfileListBox.FormattingEnabled = true;
-      this.ProfileListBox.ItemHeight = 16;
-      this.ProfileListBox.Location = new System.Drawing.Point(3, 16);
-      this.ProfileListBox.Name = "ProfileListBox";
-      this.ProfileListBox.Size = new System.Drawing.Size(130, 269);
-      this.ProfileListBox.TabIndex = 4;
-      this.ProfileListBox.UseWaitCursor = true;
-      this.ProfileListBox.SelectedIndexChanged += new System.EventHandler(this.ProfileListBox_SelectedIndexChanged);
-      this.ProfileListBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ProfileListBox_MouseDown);
-      // 
       // ProfileListBoxContextMenu
       // 
       this.ProfileListBoxContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -173,15 +157,14 @@
       // ProfileGroupBox
       // 
       this.ProfileGroupBox.BackColor = System.Drawing.SystemColors.Control;
-      this.ProfileGroupBox.Controls.Add(this.ProfileListBox);
+      this.ProfileGroupBox.Controls.Add(this.ProfileListDataGridView);
       this.ProfileGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
       this.ProfileGroupBox.Location = new System.Drawing.Point(0, 0);
       this.ProfileGroupBox.Name = "ProfileGroupBox";
-      this.ProfileGroupBox.Size = new System.Drawing.Size(136, 288);
+      this.ProfileGroupBox.Size = new System.Drawing.Size(223, 288);
       this.ProfileGroupBox.TabIndex = 5;
       this.ProfileGroupBox.TabStop = false;
       this.ProfileGroupBox.Text = "Profiles";
-      this.ProfileGroupBox.UseWaitCursor = true;
       // 
       // ProfileSplitContainer
       // 
@@ -192,16 +175,13 @@
       // ProfileSplitContainer.Panel1
       // 
       this.ProfileSplitContainer.Panel1.Controls.Add(this.ProfileGroupBox);
-      this.ProfileSplitContainer.Panel1.UseWaitCursor = true;
       // 
       // ProfileSplitContainer.Panel2
       // 
       this.ProfileSplitContainer.Panel2.Controls.Add(this.WindowConfigsGroupBox);
-      this.ProfileSplitContainer.Panel2.UseWaitCursor = true;
       this.ProfileSplitContainer.Size = new System.Drawing.Size(892, 288);
-      this.ProfileSplitContainer.SplitterDistance = 136;
+      this.ProfileSplitContainer.SplitterDistance = 223;
       this.ProfileSplitContainer.TabIndex = 6;
-      this.ProfileSplitContainer.UseWaitCursor = true;
       // 
       // WindowConfigsGroupBox
       // 
@@ -210,11 +190,10 @@
       this.WindowConfigsGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
       this.WindowConfigsGroupBox.Location = new System.Drawing.Point(0, 0);
       this.WindowConfigsGroupBox.Name = "WindowConfigsGroupBox";
-      this.WindowConfigsGroupBox.Size = new System.Drawing.Size(752, 288);
+      this.WindowConfigsGroupBox.Size = new System.Drawing.Size(665, 288);
       this.WindowConfigsGroupBox.TabIndex = 0;
       this.WindowConfigsGroupBox.TabStop = false;
       this.WindowConfigsGroupBox.Text = "Window Configs";
-      this.WindowConfigsGroupBox.UseWaitCursor = true;
       // 
       // WindowConfigsDataGrid
       // 
@@ -223,18 +202,19 @@
       this.WindowConfigsDataGrid.AllowUserToResizeRows = false;
       this.WindowConfigsDataGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
       this.WindowConfigsDataGrid.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+      this.WindowConfigsDataGrid.BackgroundColor = System.Drawing.SystemColors.Window;
       this.WindowConfigsDataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
       this.WindowConfigsDataGrid.ContextMenuStrip = this.WindowConfigsContextMenu;
       this.WindowConfigsDataGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.WindowConfigsDataGrid.EnableHeadersVisualStyles = false;
       this.WindowConfigsDataGrid.Location = new System.Drawing.Point(3, 16);
       this.WindowConfigsDataGrid.MultiSelect = false;
       this.WindowConfigsDataGrid.Name = "WindowConfigsDataGrid";
       this.WindowConfigsDataGrid.ReadOnly = true;
       this.WindowConfigsDataGrid.RowHeadersVisible = false;
       this.WindowConfigsDataGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-      this.WindowConfigsDataGrid.Size = new System.Drawing.Size(746, 269);
+      this.WindowConfigsDataGrid.Size = new System.Drawing.Size(659, 269);
       this.WindowConfigsDataGrid.TabIndex = 0;
-      this.WindowConfigsDataGrid.UseWaitCursor = true;
       this.WindowConfigsDataGrid.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.SavedWindowsDataGrid_CellDoubleClick);
       this.WindowConfigsDataGrid.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.WindowConfigsDataGrid_CellMouseDown);
       // 
@@ -272,16 +252,24 @@
       // MainFormSplitContainer.Panel1
       // 
       this.MainFormSplitContainer.Panel1.Controls.Add(this.ProfileSplitContainer);
-      this.MainFormSplitContainer.Panel1.UseWaitCursor = true;
       // 
       // MainFormSplitContainer.Panel2
       // 
       this.MainFormSplitContainer.Panel2.Controls.Add(this.ActiveWindowsGroupBox);
-      this.MainFormSplitContainer.Panel2.UseWaitCursor = true;
       this.MainFormSplitContainer.Size = new System.Drawing.Size(892, 603);
       this.MainFormSplitContainer.SplitterDistance = 288;
       this.MainFormSplitContainer.TabIndex = 7;
-      this.MainFormSplitContainer.UseWaitCursor = true;
+      // 
+      // ActiveWindowsGroupBox
+      // 
+      this.ActiveWindowsGroupBox.Controls.Add(this.ActiveWindowsGridView);
+      this.ActiveWindowsGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.ActiveWindowsGroupBox.Location = new System.Drawing.Point(0, 0);
+      this.ActiveWindowsGroupBox.Name = "ActiveWindowsGroupBox";
+      this.ActiveWindowsGroupBox.Size = new System.Drawing.Size(892, 311);
+      this.ActiveWindowsGroupBox.TabIndex = 4;
+      this.ActiveWindowsGroupBox.TabStop = false;
+      this.ActiveWindowsGroupBox.Text = "Active Windows";
       // 
       // menuStrip1
       // 
@@ -294,7 +282,6 @@
       this.menuStrip1.Size = new System.Drawing.Size(892, 24);
       this.menuStrip1.TabIndex = 8;
       this.menuStrip1.Text = "menuStrip1";
-      this.menuStrip1.UseWaitCursor = true;
       // 
       // preferencesToolStripMenuItem
       // 
@@ -307,7 +294,7 @@
       // preferencesToolStripMenuItem1
       // 
       this.preferencesToolStripMenuItem1.Name = "preferencesToolStripMenuItem1";
-      this.preferencesToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+      this.preferencesToolStripMenuItem1.Size = new System.Drawing.Size(116, 22);
       this.preferencesToolStripMenuItem1.Text = "Settings";
       this.preferencesToolStripMenuItem1.Click += new System.EventHandler(this.preferencesToolStripMenuItem1_Click);
       // 
@@ -338,16 +325,26 @@
       this.aboutToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
       this.aboutToolStripMenuItem.Text = "About";
       // 
-      // ActiveWindowsGroupBox
+      // ProfileListDataGridView
       // 
-      this.ActiveWindowsGroupBox.Controls.Add(this.ActiveWindowsGridView);
-      this.ActiveWindowsGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.ActiveWindowsGroupBox.Location = new System.Drawing.Point(0, 0);
-      this.ActiveWindowsGroupBox.Name = "ActiveWindowsGroupBox";
-      this.ActiveWindowsGroupBox.Size = new System.Drawing.Size(892, 311);
-      this.ActiveWindowsGroupBox.TabIndex = 4;
-      this.ActiveWindowsGroupBox.TabStop = false;
-      this.ActiveWindowsGroupBox.Text = "Active Windows";
+      this.ProfileListDataGridView.AllowUserToAddRows = false;
+      this.ProfileListDataGridView.AllowUserToDeleteRows = false;
+      this.ProfileListDataGridView.AllowUserToResizeRows = false;
+      this.ProfileListDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+      this.ProfileListDataGridView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+      this.ProfileListDataGridView.BackgroundColor = System.Drawing.SystemColors.Window;
+      this.ProfileListDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+      this.ProfileListDataGridView.ColumnHeadersVisible = false;
+      this.ProfileListDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.ProfileListDataGridView.EnableHeadersVisualStyles = false;
+      this.ProfileListDataGridView.Location = new System.Drawing.Point(3, 16);
+      this.ProfileListDataGridView.MultiSelect = false;
+      this.ProfileListDataGridView.Name = "ProfileListDataGridView";
+      this.ProfileListDataGridView.ReadOnly = true;
+      this.ProfileListDataGridView.RowHeadersVisible = false;
+      this.ProfileListDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+      this.ProfileListDataGridView.Size = new System.Drawing.Size(217, 269);
+      this.ProfileListDataGridView.TabIndex = 5;
       // 
       // Editor
       // 
@@ -357,12 +354,12 @@
       this.ClientSize = new System.Drawing.Size(892, 627);
       this.Controls.Add(this.MainFormSplitContainer);
       this.Controls.Add(this.menuStrip1);
+      this.Cursor = System.Windows.Forms.Cursors.Arrow;
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.MainMenuStrip = this.menuStrip1;
       this.Name = "Editor";
       this.Text = "Windowmancer";
-      this.UseWaitCursor = true;
       this.Load += new System.EventHandler(this.Form1_Load);
       ((System.ComponentModel.ISupportInitialize)(this.ActiveWindowsGridView)).EndInit();
       this.ProfileListBoxContextMenu.ResumeLayout(false);
@@ -378,9 +375,10 @@
       this.MainFormSplitContainer.Panel2.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.MainFormSplitContainer)).EndInit();
       this.MainFormSplitContainer.ResumeLayout(false);
+      this.ActiveWindowsGroupBox.ResumeLayout(false);
       this.menuStrip1.ResumeLayout(false);
       this.menuStrip1.PerformLayout();
-      this.ActiveWindowsGroupBox.ResumeLayout(false);
+      ((System.ComponentModel.ISupportInitialize)(this.ProfileListDataGridView)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -389,7 +387,6 @@
         #endregion
     private System.Windows.Forms.DataGridView ActiveWindowsGridView;
     private System.Windows.Forms.GroupBox ProfileGroupBox;
-    private System.Windows.Forms.SplitContainer ProfileSplitContainer;
     private System.Windows.Forms.SplitContainer MainFormSplitContainer;
     private System.Windows.Forms.GroupBox WindowConfigsGroupBox;
     private System.Windows.Forms.DataGridView WindowConfigsDataGrid;
@@ -407,11 +404,12 @@
     private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-    public System.Windows.Forms.ListBox ProfileListBox;
     private System.Windows.Forms.ContextMenuStrip ProfileListBoxContextMenu;
     private System.Windows.Forms.ToolStripMenuItem addToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem1;
     private System.Windows.Forms.GroupBox ActiveWindowsGroupBox;
+    private System.Windows.Forms.SplitContainer ProfileSplitContainer;
+    public System.Windows.Forms.DataGridView ProfileListDataGridView;
   }
 }
 

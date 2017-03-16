@@ -13,12 +13,12 @@ namespace Windowmancer.UI
   public class TrayApp : ApplicationContext, IDisposable
   {
     private readonly IUnityContainer _serviceResolver;
-    private NotifyIcon _trayIcon;
-    private KeyHookManager _keyHookManager;
+    private readonly KeyHookManager _keyHookManager;
     private readonly ProfileManager _profileManager;
     private readonly WindowManager _windowManager;
-    private ContextMenuStrip _trayContextMenu;
     private readonly UserData _userData;
+    private NotifyIcon _trayIcon;
+    private ContextMenuStrip _trayContextMenu;
     private Editor _editor;
 
     public TrayApp(IUnityContainer serviceResolver)
@@ -97,15 +97,22 @@ namespace Windowmancer.UI
       _editor = new Editor(_profileManager, _windowManager, _keyHookManager);
       // Update our context menu profile selection on profile change
       // in the editor.
-      _editor.ProfileListBox.SelectedIndexChanged += (s, ev) =>
+      //_editor.ProfileListBox.SelectedIndexChanged += (s, ev) =>
+      _editor.ProfileListDataGridView.CurrentCellChanged += (s, ev) =>
       {
-        var profile = (Profile)_editor.ProfileListBox.SelectedItem;
+        var profile = (Profile) _editor.ProfileListDataGridView.CurrentRow.DataBoundItem;
         UncheckCheckedMenuItem();
-        foreach (ToolStripMenuItem m in _trayContextMenu.Items)
+        foreach (ToolStripItem m in _trayContextMenu.Items)
         {
-          if (m.Tag == profile)
+          if (m.GetType() != typeof(ToolStripMenuItem))
           {
-            m.Checked = true;
+            continue;
+          }
+
+          var item = m as ToolStripMenuItem;
+          if (item.Tag == profile)
+          {
+            item.Checked = true;
             break;
           }
         }
@@ -127,11 +134,17 @@ namespace Windowmancer.UI
 
     private void UncheckCheckedMenuItem()
     {
-      foreach (MenuItem m in _trayContextMenu.Items)
+      foreach (ToolStripItem m in _trayContextMenu.Items)
       {
-        if (m.Checked)
+        if (m.GetType() != typeof(ToolStripMenuItem))
         {
-          m.Checked = false;
+          continue;
+        }
+
+        var item = m as ToolStripMenuItem;
+        if (item.Checked)
+        {
+          item.Checked = false;
           break;
         }
       }
@@ -143,7 +156,7 @@ namespace Windowmancer.UI
     {
       // Uncheck previous item.
       UncheckCheckedMenuItem();
-      var mi = ((MenuItem)sender);
+      var mi = ((ToolStripMenuItem)sender);
       mi.Checked = true;
       _profileManager.UpdateActiveProfile(((Profile)mi.Tag).Id);
       _editor?.UpdateActiveProfile(((Profile)mi.Tag));

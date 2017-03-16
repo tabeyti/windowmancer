@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Management;
 using System.Windows.Forms;
+using BrightIdeasSoftware;
 using NLog;
 using Windowmancer.Models;
 using Windowmancer.Practices;
@@ -36,13 +37,12 @@ namespace Windowmancer.UI
 
     public void Initialize()
     {
-      this.ProfileListBox.DisplayMember = "Name";
-      // Need to save the current active profile because once we data
-      // bind to the list box, the selected index will automatically change
-      // to the first profile.
-      var activeProfile = _profileManager.ActiveProfile;
-      this.ProfileListBox.DataSource = _profileManager.Profiles;
-      this.ProfileListBox.SelectedItem  = _profileManager.ActiveProfile = activeProfile;
+      //this.ProfileListBox.DisplayMember = "Name";
+      //this.ProfileListBox.DataSource = _profileManager.Profiles;
+      //this.ProfileListBox.SelectedItem  = _profileManager.ActiveProfile = activeProfile;
+
+      this.ProfileListDataGridView.DataSource = _profileManager.Profiles;
+      this.ProfileListDataGridView.Columns[this.ProfileListDataGridView.ColumnCount - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
       this.WindowConfigsDataGrid.DataSource = _profileManager.ActiveProfile.Windows;
       this.WindowConfigsDataGrid.Columns[this.WindowConfigsDataGrid.ColumnCount-1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
@@ -76,7 +76,7 @@ namespace Windowmancer.UI
       {
         throw new ExceptionBox($"{this} - Cannot update with null profile");
       }
-      this.ProfileListBox.SelectedItem = profile;
+      //this.ProfileListBox.SelectedItem = profile;
     }
 
     private void AddToActiveWindows(Process process)
@@ -299,7 +299,8 @@ namespace Windowmancer.UI
 
     private void ProfileListBox_SelectedIndexChanged(object sender, EventArgs e)
     {
-      _profileManager.UpdateActiveProfile(this.ProfileListBox.SelectedIndex);
+      //_profileManager.UpdateActiveProfile(this.ProfileListBox.SelectedIndex);
+      _profileManager.UpdateActiveProfile(this.ProfileListDataGridView.SelectedRows[0].Index);
       this.WindowConfigsDataGrid.DataSource = _profileManager.ActiveProfile.Windows;
     }
 
@@ -310,7 +311,8 @@ namespace Windowmancer.UI
 
     private void deleteToolStripMenuItem1_Click(object sender, EventArgs e)
     {
-      var index = this.ProfileListBox.SelectedIndex;
+      //var index = this.ProfileListBox.SelectedIndex;
+      var index = this.ProfileListDataGridView.SelectedRows[0].Index;
       if (index < 0)
       {
         return;
@@ -324,15 +326,18 @@ namespace Windowmancer.UI
       {
         return;
       }
-      var rowIndex = this.ProfileListBox.IndexFromPoint(e.X, e.Y);
+      //var rowIndex = this.ProfileListBox.IndexFromPoint(e.X, e.Y);
+      var rowIndex = this.ProfileListDataGridView.SelectedRows[0].Index;
       if (rowIndex < 0)
       {
         ProfileListBoxContextMenu.Items[1].Enabled = false;
         return;
       }
       ProfileListBoxContextMenu.Items[1].Enabled = true;
-      this.ProfileListBox.SelectedIndex = rowIndex;
-      this.ProfileListBox.Focus();
+      //this.ProfileListBox.SelectedIndex = rowIndex;
+      //this.ProfileListBox.Focus();
+      this.ProfileListDataGridView.CurrentCell = this.ProfileListDataGridView.Rows[rowIndex].Cells[0];
+      this.ProfileListDataGridView.Focus();
     }
 
     private void WindowConfigsContextMenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
