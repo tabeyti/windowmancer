@@ -40,10 +40,10 @@ namespace Windowmancer.Pratices
       userData.SetUserConfig(userConfig);
       container.RegisterInstance(userData, new ContainerControlledLifetimeManager());
 
+      container.RegisterType<ProcMonitor>(new ContainerControlledLifetimeManager());
       container.RegisterType<WindowManager>(new ContainerControlledLifetimeManager());
       container.RegisterType<ProfileManager>(new ContainerControlledLifetimeManager());
       container.RegisterType<KeyHookManager>(new ContainerControlledLifetimeManager());
-      container.RegisterType<ProcMonitor>(new ContainerControlledLifetimeManager());
     }
 
     public static dynamic GetAssembly()

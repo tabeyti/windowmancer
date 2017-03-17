@@ -36,13 +36,13 @@ namespace Windowmancer.UI
 
     public new void Dispose()
     {
-      _windowManager?.Dispose();
-      _profileManager?.Dispose();
+      _serviceResolver.Dispose();
     }
 
     private void Initialize()
     {
       _keyHookManager.OnKeyCombinationSuccess += OnKeyCombinationSuccess;
+      _procMonitor.Start();
       _trayContextMenu = BuildContextMenu();
       _trayIcon = new NotifyIcon
       {
@@ -105,12 +105,6 @@ namespace Windowmancer.UI
       _windowManager.RefreshProfile();
     }
 
-    private void ExitApplication()
-    {
-      _trayIcon.Visible = false;
-      Application.Exit();
-    }
-
     private void UncheckCheckedMenuItem()
     {
       foreach (ToolStripItem m in _trayContextMenu.Items)
@@ -130,6 +124,13 @@ namespace Windowmancer.UI
     }
 
     #region Events
+
+    private void ExitApplication()
+    {
+      _trayIcon.Visible = false;
+      this.Dispose();
+      Application.Exit();
+    }
 
     public void TrayContextMenu_OnProfileSelect(object sender, EventArgs e)
     {

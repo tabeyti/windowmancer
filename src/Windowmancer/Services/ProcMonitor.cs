@@ -22,16 +22,18 @@ namespace Windowmancer.Services
       _windowManager = windowManager;
     }
 
-    public void StartProcessMonitor()
+    public void Start()
     {
       _startWatch = new ManagementEventWatcher(
         new WqlEventQuery("SELECT * FROM Win32_ProcessStartTrace"));
-      _startWatch.EventArrived += StartWatch_EventArrived;
+      var startWatchEvent = new EventArrivedEventHandler(StartWatch_EventArrived);
+      _startWatch.EventArrived += startWatchEvent;
       _startWatch.Start();
 
       _stopWatch = new ManagementEventWatcher(
         new WqlEventQuery("SELECT * FROM Win32_ProcessStopTrace "));
-      _stopWatch.EventArrived += StopWatch_EventArrived;
+      var stopWatchEvent = new EventArrivedEventHandler(StopWatch_EventArrived);
+      _stopWatch.EventArrived += stopWatchEvent;
       _stopWatch.Start();
     }
 
