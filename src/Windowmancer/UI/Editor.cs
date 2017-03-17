@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Management;
 using System.Windows.Forms;
-using BrightIdeasSoftware;
 using NLog;
 using Windowmancer.Models;
 using Windowmancer.Practices;
@@ -178,7 +175,6 @@ namespace Windowmancer.UI
       }
       _procMonitor.OnNewWindowProcess += AddToActiveWindows;
       _procMonitor.OnWindowProcessRemove += RemoveActiveProcess;
-      _procMonitor.StartProcessMonitor();
       ProfileListSelectActiveProfile();
     }
 
@@ -264,7 +260,6 @@ namespace Windowmancer.UI
 
     private void deleteToolStripMenuItem1_Click(object sender, EventArgs e)
     {
-      //var index = this.ProfileListBox.SelectedIndex;
       var index = this.ProfileListDataGridView.SelectedRows[0].Index;
       if (index < 0)
       {
@@ -280,11 +275,11 @@ namespace Windowmancer.UI
       var mousepos = Control.MousePosition;
       if (cms != null)
       {
-        var rel_mousePos = cms.PointToClient(mousepos);
-        if (cms.ClientRectangle.Contains(rel_mousePos))
+        var relMousePos = cms.PointToClient(mousepos);
+        if (cms.ClientRectangle.Contains(relMousePos))
         {
-          var dgv_rel_mousePos = this.WindowConfigsDataGrid.PointToClient(mousepos);
-          var hti = this.WindowConfigsDataGrid.HitTest(dgv_rel_mousePos.X, dgv_rel_mousePos.Y);
+          var dgvRelMousePos = this.WindowConfigsDataGrid.PointToClient(mousepos);
+          var hti = this.WindowConfigsDataGrid.HitTest(dgvRelMousePos.X, dgvRelMousePos.Y);
           if (hti.RowIndex == -1)
           {
             e.Cancel = true;
@@ -305,8 +300,8 @@ namespace Windowmancer.UI
       }
 
       var mousepos = Control.MousePosition;
-      var dgv_rel_mousePos = this.ProfileListDataGridView.PointToClient(mousepos);
-      var hti = this.ProfileListDataGridView.HitTest(dgv_rel_mousePos.X, dgv_rel_mousePos.Y);
+      var dgvRelMousePos = this.ProfileListDataGridView.PointToClient(mousepos);
+      var hti = this.ProfileListDataGridView.HitTest(dgvRelMousePos.X, dgvRelMousePos.Y);
         if (hti.RowIndex == -1)
       {
         this.ProfileListBoxContextMenu.Items[1].Enabled = false;

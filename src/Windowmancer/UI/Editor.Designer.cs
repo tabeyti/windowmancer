@@ -82,6 +82,7 @@
       this.ActiveWindowsGridView.AllowUserToResizeRows = false;
       this.ActiveWindowsGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
       this.ActiveWindowsGridView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+      this.ActiveWindowsGridView.BackgroundColor = System.Drawing.SystemColors.Window;
       this.ActiveWindowsGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
       this.ActiveWindowsGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
       this.ActiveWindowsGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
