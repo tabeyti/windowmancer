@@ -90,13 +90,6 @@ namespace Windowmancer.Practices
     public static extern bool SetForegroundWindow(IntPtr hWnd);
 
     [DllImport("user32.dll")]
-    public static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
-
-    [DllImport("User32.dll")]
-
-    public static extern IntPtr GetWindowDC(IntPtr hWnd);
-
-    [DllImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
     public static extern bool ShowWindow(IntPtr hWnd, ShowWindowCommands nCmdShow);
 

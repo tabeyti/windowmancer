@@ -108,7 +108,7 @@ namespace Windowmancer.UI
     {
       var row = this.ActiveWindowsGridView.Rows
         .Cast<DataGridViewRow>()
-        .First(r => int.Parse(r.Cells["PID"].Value.ToString()).Equals(proccessId));
+        .FirstOrDefault(r => int.Parse(r.Cells["PID"].Value.ToString()).Equals(proccessId));
 
       if (null == row)
       {
@@ -141,11 +141,12 @@ namespace Windowmancer.UI
       return dialog.WindowInfo;
     }
 
-    private void HandleProfileConfigDialog()
+    private void HandleProfileConfigDialog(Profile profile = null)
     {
-      var dialog = new ProfileConfigDialog(_profileManager);
+      var dialog = new ProfileConfigDialog(_profileManager, profile);
       dialog.ShowDialog();
       ProfileListSelectActiveProfile();
+      this.ProfileListDataGridView.Refresh();
     }
 
     #region Events
@@ -258,6 +259,11 @@ namespace Windowmancer.UI
       HandleProfileConfigDialog();
     }
 
+    private void editToolStripMenuItem1_Click(object sender, EventArgs e)
+    {
+      HandleProfileConfigDialog(_profileManager.ActiveProfile);
+    }
+
     private void deleteToolStripMenuItem1_Click(object sender, EventArgs e)
     {
       var index = this.ProfileListDataGridView.SelectedRows[0].Index;
@@ -305,9 +311,11 @@ namespace Windowmancer.UI
         if (hti.RowIndex == -1)
       {
         this.ProfileListBoxContextMenu.Items[1].Enabled = false;
+        this.ProfileListBoxContextMenu.Items[2].Enabled = false;
         return;
       }
       this.ProfileListBoxContextMenu.Items[1].Enabled = true;
+      this.ProfileListBoxContextMenu.Items[2].Enabled = true;
       this.ProfileListDataGridView.Rows[hti.RowIndex].Selected = true;
       this.ProfileListDataGridView.Focus();
     }

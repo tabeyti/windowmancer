@@ -56,6 +56,7 @@
       this.documentationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
       this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.editToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
       ((System.ComponentModel.ISupportInitialize)(this.ActiveWindowsGridView)).BeginInit();
       this.ProfileListBoxContextMenu.SuspendLayout();
       this.ProfileGroupBox.SuspendLayout();
@@ -138,21 +139,22 @@
       // 
       this.ProfileListBoxContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.addToolStripMenuItem,
+            this.editToolStripMenuItem1,
             this.deleteToolStripMenuItem1});
       this.ProfileListBoxContextMenu.Name = "ProfileListBoxContextMenu";
-      this.ProfileListBoxContextMenu.Size = new System.Drawing.Size(108, 48);
+      this.ProfileListBoxContextMenu.Size = new System.Drawing.Size(153, 92);
       // 
       // addToolStripMenuItem
       // 
       this.addToolStripMenuItem.Name = "addToolStripMenuItem";
-      this.addToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+      this.addToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
       this.addToolStripMenuItem.Text = "Add";
       this.addToolStripMenuItem.Click += new System.EventHandler(this.addToolStripMenuItem_Click);
       // 
       // deleteToolStripMenuItem1
       // 
       this.deleteToolStripMenuItem1.Name = "deleteToolStripMenuItem1";
-      this.deleteToolStripMenuItem1.Size = new System.Drawing.Size(107, 22);
+      this.deleteToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
       this.deleteToolStripMenuItem1.Text = "Delete";
       this.deleteToolStripMenuItem1.Click += new System.EventHandler(this.deleteToolStripMenuItem1_Click);
       // 
@@ -353,6 +355,13 @@
       this.aboutToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
       this.aboutToolStripMenuItem.Text = "About";
       // 
+      // editToolStripMenuItem1
+      // 
+      this.editToolStripMenuItem1.Name = "editToolStripMenuItem1";
+      this.editToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+      this.editToolStripMenuItem1.Text = "Edit";
+      this.editToolStripMenuItem1.Click += new System.EventHandler(this.editToolStripMenuItem1_Click);
+      // 
       // Editor
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -417,6 +426,7 @@
     private System.Windows.Forms.GroupBox ActiveWindowsGroupBox;
     private System.Windows.Forms.SplitContainer ProfileSplitContainer;
     public System.Windows.Forms.DataGridView ProfileListDataGridView;
+    private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem1;
   }
 }
 
