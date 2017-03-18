@@ -272,7 +272,7 @@ namespace Windowmancer.UI
       // WindowConfigDialogSaveButton
       // 
       this.WindowConfigDialogSaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.WindowConfigDialogSaveButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.WindowConfigDialogSaveButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.WindowConfigDialogSaveButton.Location = new System.Drawing.Point(412, 406);
       this.WindowConfigDialogSaveButton.Name = "WindowConfigDialogSaveButton";
       this.WindowConfigDialogSaveButton.Size = new System.Drawing.Size(75, 23);
@@ -324,6 +324,7 @@ namespace Windowmancer.UI
       // 
       // WindowConfigDialog
       // 
+      this.AcceptButton = this.WindowConfigDialogSaveButton;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(499, 441);
