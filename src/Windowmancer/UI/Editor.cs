@@ -6,6 +6,7 @@ using NLog;
 using Windowmancer.Models;
 using Windowmancer.Practices;
 using Windowmancer.Services;
+using Windowmancer.Properties;
 
 namespace Windowmancer.UI
 {
@@ -34,12 +35,12 @@ namespace Windowmancer.UI
 
     public void Initialize()
     {
+      this.Icon = Resources.AppIcon;
       this.ProfileListDataGridView.DataSource = _profileManager.Profiles;
       this.ProfileListDataGridView.Columns[this.ProfileListDataGridView.ColumnCount - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-      
       this.WindowConfigsDataGrid.DataSource = _profileManager.ActiveProfile.Windows;
-      this.WindowConfigsDataGrid.Columns[this.WindowConfigsDataGrid.ColumnCount-1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-
+      this.WindowConfigsDataGrid.Columns[this.WindowConfigsDataGrid.ColumnCount - 1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+      
       RemoveToolStripMenuMargins();
     }
 
@@ -130,21 +131,21 @@ namespace Windowmancer.UI
     private WindowInfo ShowWindowConfigDialog(Process process)
     {
       var dialog = new WindowConfigDialog(process);
-      dialog.ShowDialog();
+      dialog.ShowDialog(this);
       return dialog.WindowInfo;
     }
 
     private WindowInfo ShowWindowConfigDialog(WindowInfo windowInfo)
     {
       var dialog =  new WindowConfigDialog(windowInfo);
-      dialog.ShowDialog();
+      dialog.ShowDialog(this);
       return dialog.WindowInfo;
     }
 
     private void HandleProfileConfigDialog(Profile profile = null)
     {
       var dialog = new ProfileConfigDialog(_profileManager, profile);
-      dialog.ShowDialog();
+      dialog.ShowDialog(this);
       ProfileListSelectActiveProfile();
       this.ProfileListDataGridView.Refresh();
     }
@@ -207,7 +208,7 @@ namespace Windowmancer.UI
     private void preferencesToolStripMenuItem1_Click(object sender, EventArgs e)
     {
       var dialog = new SettingsDialog(_keyHookManager);
-      dialog.ShowDialog();
+      dialog.ShowDialog(this);
     }
 
     private void WindowConfigsDataGrid_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
@@ -318,6 +319,12 @@ namespace Windowmancer.UI
       this.ProfileListBoxContextMenu.Items[2].Enabled = true;
       this.ProfileListDataGridView.Rows[hti.RowIndex].Selected = true;
       this.ProfileListDataGridView.Focus();
+    }
+
+    private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      var dialog = new AboutBox();
+      dialog.ShowDialog(this);
     }
   }
 }

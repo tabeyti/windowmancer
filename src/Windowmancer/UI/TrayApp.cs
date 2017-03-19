@@ -46,7 +46,7 @@ namespace Windowmancer.UI
       _trayContextMenu = BuildContextMenu();
       _trayIcon = new NotifyIcon
       {
-        Icon = Resources.app_icon,
+        Icon = Resources.AppIcon,
         ContextMenuStrip = _trayContextMenu,
         Visible = true
       };
