@@ -35,6 +35,10 @@ namespace Windowmancer.Pratices
     private static void RegisterServices(IUnityContainer container)
     {
       var userConfig = container.Resolve<UserConfig>();
+      if (!File.Exists(userConfig.UserDataPath))
+      {
+        File.WriteAllText(userConfig.UserDataPath, JsonConvert.SerializeObject(new UserData(null)));
+      }          
       var text = File.ReadAllText(userConfig.UserDataPath);
       var userData = JsonConvert.DeserializeObject<UserData>(text);
       userData.SetUserConfig(userConfig);

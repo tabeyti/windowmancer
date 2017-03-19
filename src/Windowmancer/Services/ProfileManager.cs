@@ -14,6 +14,10 @@ namespace Windowmancer.Services
       get { return _activeProfile; }
       set
       {
+        if (value == null)
+        {
+          return;
+        }
         _userData.ActiveProfile = value.Id;
         _activeProfile = value;
         _windowManager.ActiveProfile = _activeProfile;
