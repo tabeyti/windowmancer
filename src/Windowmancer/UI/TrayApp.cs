@@ -21,7 +21,7 @@ namespace Windowmancer.UI
     private readonly UserData _userData;
     private NotifyIcon _trayIcon;
     private ContextMenuStrip _trayContextMenu;
-    private Editor _editor;
+    private EditorForm _editor;
 
     public TrayApp(IUnityContainer serviceResolver)
     {
@@ -95,7 +95,7 @@ namespace Windowmancer.UI
         return;
       }
 
-      _editor = new Editor(_profileManager, _windowManager, _keyHookManager, _procMonitor);
+      _editor = new EditorForm(_profileManager, _windowManager, _keyHookManager, _procMonitor);
       _editor.ShowDialog();
       _editor = null;
     }

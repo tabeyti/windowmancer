@@ -128,11 +128,11 @@
     <Compile Include="UI\HotKeyInputBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="UI\Editor.cs">
+    <Compile Include="UI\EditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\Editor.Designer.cs">
-      <DependentUpon>Editor.cs</DependentUpon>
+    <Compile Include="UI\EditorForm.Designer.cs">
+      <DependentUpon>EditorForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Profile.cs" />
     <Compile Include="Models\WindowInfo.cs" />
@@ -161,11 +161,17 @@
       <DependentUpon>WindowConfigDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\TrayApp.cs" />
+    <Compile Include="UI\WindowConfigDisplayDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\WindowConfigDisplayDialog.Designer.cs">
+      <DependentUpon>WindowConfigDisplayDialog.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="UI\AboutBox.resx">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Editor.resx">
-      <DependentUpon>Editor.cs</DependentUpon>
+    <EmbeddedResource Include="UI\EditorForm.resx">
+      <DependentUpon>EditorForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -185,6 +191,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\WindowConfigDialog.resx">
       <DependentUpon>WindowConfigDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\WindowConfigDisplayDialog.resx">
+      <DependentUpon>WindowConfigDisplayDialog.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.manifest">
       <SubType>Designer</SubType>

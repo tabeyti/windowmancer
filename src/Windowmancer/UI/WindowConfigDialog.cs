@@ -7,6 +7,7 @@ using NLog;
 using Windowmancer.Extensions;
 using Windowmancer.Models;
 using Windowmancer.Practices;
+using System.Drawing;
 
 namespace Windowmancer.UI
 {
@@ -191,6 +192,12 @@ namespace Windowmancer.UI
     private void WindowPositionAbsoluteRadioButton_CheckedChanged(object sender, EventArgs e)
     {
       
+    }
+
+    private void button1_Click(object sender, EventArgs e)
+    {
+      var d = new WindowConfigDisplayDialog();
+      d.ShowDialog();
     }
   }
 }
