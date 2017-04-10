@@ -56,6 +56,7 @@ namespace Windowmancer.UI
       this.WindowConfigNameGroupBox = new System.Windows.Forms.GroupBox();
       this.WindowConfigNameTextBox = new System.Windows.Forms.TextBox();
       this.BringToFrontCheckBox = new System.Windows.Forms.CheckBox();
+      this.button1 = new System.Windows.Forms.Button();
       this.WindowMatchGroupBox.SuspendLayout();
       this.WindowSizeGroupBox.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.WindowSizeBoxHeight)).BeginInit();
@@ -322,6 +323,16 @@ namespace Windowmancer.UI
       this.BringToFrontCheckBox.Text = "Bring to front";
       this.BringToFrontCheckBox.UseVisualStyleBackColor = true;
       // 
+      // button1
+      // 
+      this.button1.Location = new System.Drawing.Point(258, 13);
+      this.button1.Name = "button1";
+      this.button1.Size = new System.Drawing.Size(75, 23);
+      this.button1.TabIndex = 8;
+      this.button1.Text = "button1";
+      this.button1.UseVisualStyleBackColor = true;
+      this.button1.Click += new System.EventHandler(this.button1_Click);
+      // 
       // WindowConfigDialog
       // 
       this.AcceptButton = this.WindowConfigDialogSaveButton;
@@ -329,6 +340,7 @@ namespace Windowmancer.UI
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(499, 441);
       this.ControlBox = false;
+      this.Controls.Add(this.button1);
       this.Controls.Add(this.BringToFrontCheckBox);
       this.Controls.Add(this.WindowConfigNameGroupBox);
       this.Controls.Add(this.WindowConfigDialogCancelButton);
@@ -386,5 +398,6 @@ namespace Windowmancer.UI
     private Label label2;
     private Label label1;
     private CheckBox BringToFrontCheckBox;
+    private Button button1;
   }
 }

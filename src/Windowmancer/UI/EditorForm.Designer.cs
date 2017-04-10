@@ -1,6 +1,6 @@
 ﻿namespace Windowmancer.UI
 {
-    partial class Editor
+    partial class EditorForm
     {
         /// <summary>
         /// Required designer variable.

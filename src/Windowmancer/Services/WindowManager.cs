@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Drawing;
 using Windowmancer.Extensions;
 using Windowmancer.Models;
 using Windowmancer.Practices;
@@ -51,7 +52,7 @@ namespace Windowmancer.Services
         Win32.ShowWindow(handle, Win32.ShowWindowCommands.Maximize);
         Win32.SetForegroundWindow(handle);
       });
-      Win32.MoveWindow(handle, x, y, windowInfo.SizeInfo.Width, windowInfo.SizeInfo.Height, true);      
+      Win32.MoveWindow(handle, x, y, windowInfo.SizeInfo.Width, windowInfo.SizeInfo.Height, true);
     }
 
     public void RefreshProfile()

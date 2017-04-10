@@ -1,4 +1,6 @@
-﻿using System;
+﻿// http://stackoverflow.com/questions/13408422/how-do-you-modify-another-windows-background-color
+
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
@@ -10,7 +12,7 @@ using Windowmancer.Properties;
 
 namespace Windowmancer.UI
 {
-  public partial class Editor : Form
+  public partial class EditorForm : Form
   {
     private ILogger _logger;
     private readonly ProfileManager _profileManager;
@@ -18,7 +20,7 @@ namespace Windowmancer.UI
     private readonly KeyHookManager _keyHookManager;
     private readonly ProcMonitor _procMonitor;
 
-    public Editor(
+    public EditorForm(
       ProfileManager profileManager, 
       WindowManager windowManager,
       KeyHookManager keyHookManager,
