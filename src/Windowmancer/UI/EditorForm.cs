@@ -209,7 +209,7 @@ namespace Windowmancer.UI
 
     private void preferencesToolStripMenuItem1_Click(object sender, EventArgs e)
     {
-      var dialog = new SettingsDialog(_keyHookManager);
+      var dialog = new SettingsDialog(_keyHookManager) { StartPosition = FormStartPosition.CenterParent };
       dialog.ShowDialog(this);
     }
 
