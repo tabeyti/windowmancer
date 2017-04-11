@@ -148,6 +148,12 @@
     <Compile Include="UI\ProfileConfigDialog.Designer.cs">
       <DependentUpon>ProfileConfigDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\ScreenHighlight.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\ScreenHighlight.Designer.cs">
+      <DependentUpon>ScreenHighlight.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\SettingsDialog.cs">
       <SubType>Form</SubType>
     </Compile>

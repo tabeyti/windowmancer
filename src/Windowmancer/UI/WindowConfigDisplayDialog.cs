@@ -15,6 +15,7 @@ namespace Windowmancer.UI
     private readonly List<Button> _displaySectionButtons = new List<Button>();
     private Screen _currentScreen;
     private DisplaySection _currentDisplaySection;
+    private ScreenHighlight _screenHighlight;
 
     public WindowConfigDisplayDialog()
     {
@@ -40,8 +41,8 @@ namespace Windowmancer.UI
 
         this.DisplayComboBox.Items.Add(screen);
       }
-
       this.DisplayComboBox.SelectedItem = _currentScreen = primaryScreen;
+      RefreshScreenHighlight();
     }
 
     private void FillMonitorDisplaySections()
@@ -93,6 +94,13 @@ namespace Windowmancer.UI
       }
     }
 
+    private void RefreshScreenHighlight()
+    {
+      _screenHighlight?.Dispose();
+      _screenHighlight = new ScreenHighlight();
+      _screenHighlight.Highlight(_currentScreen);
+    }
+
     private void ApplyWindowInfo(bool withSave = false)
     {
       var screen = _currentScreen;
@@ -138,16 +146,6 @@ namespace Windowmancer.UI
       };
     }
 
-    protected override void OnPaint(PaintEventArgs e)
-    {
-      //base.OnPaint(e);
-      //Graphics g = e.Graphics;
-      //using (Pen selPen = new Pen(Color.Blue))
-      //{
-      //  g.DrawRectangle(selPen, 10, 10, 50, 50);
-      //}
-    }
-
     private void DisplaySectionButtong_OnClick(object sender, EventArgs e)
     {
       // Reset color on all display section buttons.
@@ -157,7 +155,6 @@ namespace Windowmancer.UI
       var button = ((Button) sender);
       button.BackColor = Color.Gold;
       _currentDisplaySection = (DisplaySection)button.Tag;
-
       ApplyWindowInfo();
     }
 
@@ -181,12 +178,25 @@ namespace Windowmancer.UI
       _currentScreen = (Screen)this.DisplayComboBox.SelectedItem;
       this.groupBox1.Text = _currentScreen.DeviceName;
       ApplyWindowInfo();
+
+      RefreshScreenHighlight();
     }
 
     private void SaveButton_Click(object sender, EventArgs e)
     {
       ApplyWindowInfo(true);
+      DisposeEverything();
+    }
+
+    public void DisposeEverything()
+    {
+      _screenHighlight?.Dispose();
       this.Dispose();
+    }
+
+    private void CancelButton_Click(object sender, EventArgs e)
+    {
+      DisposeEverything();
     }
   }
 
