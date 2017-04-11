@@ -86,6 +86,11 @@ namespace Windowmancer.UI
       // Make first section button the default selection.
       _displaySectionButtons.First().PerformClick();
       this.groupBox1.Controls.Add(tp);
+
+      if (null != _currentScreen)
+      {
+        this.groupBox1.Text = _currentScreen.DeviceName;
+      }
     }
 
     private void ApplyWindowInfo(bool withSave = false)
@@ -101,11 +106,11 @@ namespace Windowmancer.UI
       var totalRows = _currentDisplaySection.TotalRows;
       var totalCols = _currentDisplaySection.TotalColumns;
       
-      var x = (screenWidth / totalRows) * row;
-      var y = (screenHeight / totalCols) * col;
+      var x = (screenWidth / totalCols) * col  + screen.Bounds.X;
+      var y = (screenHeight / totalRows) * row + screen.Bounds.Y;
 
-      var width = (screenWidth / totalRows);
-      var height = (screenHeight / totalCols);
+      var width = (screenWidth / totalCols);
+      var height = (screenHeight / totalRows);
 
       this.WidthTextBox.Text = width.ToString();
       this.HeightTextBox.Text = height.ToString();
