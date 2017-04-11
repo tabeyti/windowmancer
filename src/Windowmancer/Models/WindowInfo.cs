@@ -24,7 +24,7 @@ namespace Windowmancer.Models
 
     public override string ToString()
     {
-      return $"{this.DisplayName} - {PositionInfo}";
+      return PositionInfo.ToString();
     }
   }
 
@@ -35,7 +35,7 @@ namespace Windowmancer.Models
 
     public override string ToString()
     {
-      return $"{this.X},{this.Y}";
+      return $"x:{this.X}  y:{this.Y}";
     }
   }
 
