@@ -36,13 +36,6 @@ namespace Windowmancer.UI
 
     private void Initialize()
     {
-      // Displays.
-      this.WindowLocationDisplayComboBox.DisplayMember = "DeviceName";
-      foreach (var s in Screen.AllScreens)
-      {
-        this.WindowLocationDisplayComboBox.Items.Add(s);
-      }
-      this.WindowLocationDisplayComboBox.SelectedIndex = 0;
     }
 
     private void LoadProcessWindowInfo()
@@ -65,8 +58,6 @@ namespace Windowmancer.UI
 
       // Display process is on.
       var screen = Screen.FromHandle(_proc.MainWindowHandle);
-      this.WindowLocationDisplayComboBox.SelectedItem = screen;
-      this.WindowPositionAbsoluteRadioButton.Checked = true;
     }
 
     private void LoadWindowInfo()
@@ -75,7 +66,7 @@ namespace Windowmancer.UI
       this.InvokeControl(() => this.WindowSizeBoxWidth.Value = this.WindowInfo.SizeInfo.Width);
       this.InvokeControl(() => this.WindowSizeBoxHeight.Value = this.WindowInfo.SizeInfo.Height);
 
-      // PositionInfo.
+      // Position info.
       this.InvokeControl(() => this.WindowLocationBoxX.Value = this.WindowInfo.LocationInfo.PositionInfo.X);
       this.InvokeControl(() => this.WindowLocationBoxY.Value = this.WindowInfo.LocationInfo.PositionInfo.Y);
 
@@ -84,11 +75,6 @@ namespace Windowmancer.UI
 
       // Match text defaults to window title.
       this.WindowMatchStringTextBox.Text = this.WindowInfo.MatchCriteria.MatchString;
-
-      // Display process is on.
-      this.WindowLocationDisplayComboBox.SelectedItem = this.WindowInfo.LocationInfo.DisplayName;
-      this.WindowPositionAbsoluteRadioButton.Checked = true;
-
       this.BringToFrontCheckBox.Checked = this.WindowInfo.BringToFront;
     }
 
@@ -147,7 +133,6 @@ namespace Windowmancer.UI
       {
         LocationInfo = new LocationInfo
         {
-          DisplayName = this.WindowLocationDisplayComboBox.Text,
           PositionInfo = new PositionInfo { X = (int)this.WindowLocationBoxX.Value, Y = (int)this.WindowLocationBoxY.Value }
         },
         SizeInfo = new SizeInfo
@@ -189,15 +174,19 @@ namespace Windowmancer.UI
       }
     }
 
-    private void WindowPositionAbsoluteRadioButton_CheckedChanged(object sender, EventArgs e)
-    {
-      
-    }
-
     private void button1_Click(object sender, EventArgs e)
     {
       var d = new WindowConfigDisplayDialog();
-      d.ShowDialog();
+      d.ShowDialog(this);
+      if (null == d.LocationInfo || null == d.SizeInfo)
+      {
+        return;
+      }
+      // Update position and size info based on display helper result.
+      this.InvokeControl(() => this.WindowSizeBoxWidth.Value = d.SizeInfo.Width);
+      this.InvokeControl(() => this.WindowSizeBoxHeight.Value = d.SizeInfo.Height);
+      this.InvokeControl(() => this.WindowLocationBoxX.Value = d.LocationInfo.PositionInfo.X);
+      this.InvokeControl(() => this.WindowLocationBoxY.Value = d.LocationInfo.PositionInfo.Y);
     }
   }
 }
