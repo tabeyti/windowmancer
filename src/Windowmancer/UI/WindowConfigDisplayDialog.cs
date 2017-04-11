@@ -1,12 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
+using Windowmancer.Models;
 
 namespace Windowmancer.UI
 {
   public partial class WindowConfigDisplayDialog : Form
   {
+    public LocationInfo LocationInfo { get; private set; }
+    public SizeInfo SizeInfo { get; private set; }
+
     private readonly List<Button> _displaySectionButtons = new List<Button>();
+    private Screen _currentScreen;
+    private DisplaySection _currentDisplaySection;
 
     public WindowConfigDisplayDialog()
     {
@@ -15,10 +23,28 @@ namespace Windowmancer.UI
 
     private void WindowConfigDisplayDialog_Load(object sender, EventArgs e)
     {
-      FillDisplaySections();
+      InitializeDisplayDropDown();
+      FillMonitorDisplaySections();
     }
 
-    private void FillDisplaySections()
+    private void InitializeDisplayDropDown()
+    {
+      this.DisplayComboBox.DisplayMember = "DeviceName";
+      Screen primaryScreen = null;
+      foreach (var screen in Screen.AllScreens)
+      {
+        if (screen.Primary)
+        {
+          primaryScreen = screen;
+        }
+
+        this.DisplayComboBox.Items.Add(screen);
+      }
+
+      this.DisplayComboBox.SelectedItem = _currentScreen = primaryScreen;
+    }
+
+    private void FillMonitorDisplaySections()
     {
       if (this.groupBox1.Controls.Count > 0)
       {
@@ -34,6 +60,7 @@ namespace Windowmancer.UI
       };
 
       var colsComplete = false;
+      var num = 0;
       for (int r = 0; r < tp.RowCount; ++r)
       {
         tp.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
@@ -45,17 +72,65 @@ namespace Windowmancer.UI
           }
           var button = new Button
           {
-            Text = "",
+            Text = num++.ToString(),
             Dock = DockStyle.Fill,
-            AutoSize = true
+            AutoSize = true,
+            Tag = new DisplaySection(r, c, tp.RowCount, tp.ColumnCount)
           };
-          
+          button.Click += DisplaySectionButtong_OnClick;
           tp.Controls.Add(button);
           _displaySectionButtons.Add(button);
         }
         colsComplete = true;
       }
+      // Make first section button the default selection.
+      _displaySectionButtons.First().PerformClick();
       this.groupBox1.Controls.Add(tp);
+    }
+
+    private void ApplyWindowInfo(bool withSave = false)
+    {
+      var screen = _currentScreen;
+
+      var screenWidth = screen.Bounds.Width;
+      var screenHeight = screen.Bounds.Height;
+
+      var row = _currentDisplaySection.RowIndex;
+      var col = _currentDisplaySection.ColumnIndex;
+
+      var totalRows = _currentDisplaySection.TotalRows;
+      var totalCols = _currentDisplaySection.TotalColumns;
+      
+      var x = (screenWidth / totalRows) * row;
+      var y = (screenHeight / totalCols) * col;
+
+      var width = (screenWidth / totalRows);
+      var height = (screenHeight / totalCols);
+
+      this.WidthTextBox.Text = width.ToString();
+      this.HeightTextBox.Text = height.ToString();
+      this.XTextBox.Text = x.ToString();
+      this.YTextBox.Text = y.ToString();
+
+      if (!withSave)
+      {
+        return;
+      }
+
+      this.LocationInfo = new LocationInfo
+      {
+        PositionInfo = new PositionInfo
+        {
+          X = x,
+          Y = y,
+        },
+        DisplayName = _currentScreen.DeviceName
+      };
+      this.SizeInfo = new SizeInfo
+      {
+        Width = width,
+        Height = height
+      };
     }
 
     protected override void OnPaint(PaintEventArgs e)
@@ -68,14 +143,65 @@ namespace Windowmancer.UI
       //}
     }
 
+    private void DisplaySectionButtong_OnClick(object sender, EventArgs e)
+    {
+      // Reset color on all display section buttons.
+      _displaySectionButtons.ForEach(b => b.BackColor = SystemColors.Control);
+
+      // Make the selected button have custom color for visibility.
+      var button = ((Button) sender);
+      button.BackColor = Color.Gold;
+      _currentDisplaySection = (DisplaySection)button.Tag;
+
+      ApplyWindowInfo();
+    }
+
     private void NumRowsSpinner_ValueChanged(object sender, EventArgs e)
     {
-      FillDisplaySections();
+      FillMonitorDisplaySections();
     }
 
     private void NumColsSpinner_ValueChanged(object sender, EventArgs e)
     {
-      FillDisplaySections();
+      FillMonitorDisplaySections();
+    }
+
+    private void DisplayComboBox_SelectedIndexChanged(object sender, EventArgs e)
+    {
+      if (null == _currentDisplaySection)
+      {
+        return;
+      }
+
+      _currentScreen = (Screen)this.DisplayComboBox.SelectedItem;
+      this.groupBox1.Text = _currentScreen.DeviceName;
+      ApplyWindowInfo();
+    }
+
+    private void SaveButton_Click(object sender, EventArgs e)
+    {
+      ApplyWindowInfo(true);
+      this.Dispose();
+    }
+  }
+
+  class DisplaySection
+  {
+    public int RowIndex { get; set; }
+    public int ColumnIndex { get; set; }
+    public int TotalRows { get; set; }
+    public int TotalColumns { get; set; }
+
+    public DisplaySection()
+    {
+    }
+
+    public DisplaySection(int rowIndex, int columnIndex, int totalRows, int totalColumns)
+    {
+      this.RowIndex = rowIndex;
+      this.ColumnIndex = columnIndex;
+      this.TotalRows = totalRows;
+      this.TotalColumns = totalColumns;
     }
   }
 }
