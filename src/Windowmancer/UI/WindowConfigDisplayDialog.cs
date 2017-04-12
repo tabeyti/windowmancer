@@ -30,7 +30,8 @@ namespace Windowmancer.UI
 
     private void InitializeDisplayDropDown()
     {
-      this.DisplayComboBox.DisplayMember = "DeviceName";
+      this.DisplaysListBox.DisplayMember = "DeviceName";
+
       Screen primaryScreen = null;
       foreach (var screen in Screen.AllScreens)
       {
@@ -39,10 +40,9 @@ namespace Windowmancer.UI
           primaryScreen = screen;
         }
 
-        this.DisplayComboBox.Items.Add(screen);
+        this.DisplaysListBox.Items.Add(screen);
       }
-      this.DisplayComboBox.SelectedItem = _currentScreen = primaryScreen;
-      RefreshScreenHighlight();
+      this.DisplaysListBox.SelectedItem = _currentScreen = primaryScreen;
     }
 
     private void FillMonitorDisplaySections()
@@ -78,7 +78,7 @@ namespace Windowmancer.UI
             AutoSize = true,
             Tag = new DisplaySection(r, c, tp.RowCount, tp.ColumnCount)
           };
-          button.Click += DisplaySectionButtong_OnClick;
+          button.Click += DisplaySectionButton_OnClick;
           tp.Controls.Add(button);
           _displaySectionButtons.Add(button);
         }
@@ -94,14 +94,44 @@ namespace Windowmancer.UI
       }
     }
 
-    private void RefreshScreenHighlight()
+    private void ApplyWindowInfo(bool withSave = false)
+    {
+      var rectangle = GetRectangle();
+      this.WidthTextBox.Text = rectangle.Width.ToString();
+      this.HeightTextBox.Text = rectangle.Height.ToString();
+      this.XTextBox.Text = rectangle.X.ToString();
+      this.YTextBox.Text = rectangle.Y.ToString();
+
+      if (!withSave)
+      {
+        return;
+      }
+      
+      this.LocationInfo = new LocationInfo
+      {
+        PositionInfo = new PositionInfo
+        {
+          X = rectangle.X,
+          Y = rectangle.Y,
+        },
+        DisplayName = _currentScreen.DeviceName
+      };
+      this.SizeInfo = new SizeInfo
+      {
+        Width = rectangle.Width,
+        Height = rectangle.Height
+      };
+    }
+
+    private void RefreshWindowHighlight()
     {
       _screenHighlight?.Dispose();
       _screenHighlight = new ScreenHighlight();
-      _screenHighlight.Highlight(_currentScreen);
+      var rec = GetRectangle();
+      _screenHighlight.Highlight(rec);
     }
-
-    private void ApplyWindowInfo(bool withSave = false)
+    
+    private Rectangle GetRectangle()
     {
       var screen = _currentScreen;
 
@@ -113,40 +143,16 @@ namespace Windowmancer.UI
 
       var totalRows = _currentDisplaySection.TotalRows;
       var totalCols = _currentDisplaySection.TotalColumns;
-      
-      var x = (screenWidth / totalCols) * col  + screen.Bounds.X;
+
+      var x = (screenWidth / totalCols) * col + screen.Bounds.X;
       var y = (screenHeight / totalRows) * row + screen.Bounds.Y;
 
       var width = (screenWidth / totalCols);
       var height = (screenHeight / totalRows);
-
-      this.WidthTextBox.Text = width.ToString();
-      this.HeightTextBox.Text = height.ToString();
-      this.XTextBox.Text = x.ToString();
-      this.YTextBox.Text = y.ToString();
-
-      if (!withSave)
-      {
-        return;
-      }
-
-      this.LocationInfo = new LocationInfo
-      {
-        PositionInfo = new PositionInfo
-        {
-          X = x,
-          Y = y,
-        },
-        DisplayName = _currentScreen.DeviceName
-      };
-      this.SizeInfo = new SizeInfo
-      {
-        Width = width,
-        Height = height
-      };
+      return new Rectangle(x, y, width, height);
     }
 
-    private void DisplaySectionButtong_OnClick(object sender, EventArgs e)
+    private void DisplaySectionButton_OnClick(object sender, EventArgs e)
     {
       // Reset color on all display section buttons.
       _displaySectionButtons.ForEach(b => b.BackColor = SystemColors.Control);
@@ -156,6 +162,7 @@ namespace Windowmancer.UI
       button.BackColor = Color.Gold;
       _currentDisplaySection = (DisplaySection)button.Tag;
       ApplyWindowInfo();
+      RefreshWindowHighlight();
     }
 
     private void NumRowsSpinner_ValueChanged(object sender, EventArgs e)
@@ -170,16 +177,15 @@ namespace Windowmancer.UI
 
     private void DisplayComboBox_SelectedIndexChanged(object sender, EventArgs e)
     {
-      if (null == _currentDisplaySection)
-      {
-        return;
-      }
+      //if (null == _currentDisplaySection)
+      //{
+      //  return;
+      //}
 
-      _currentScreen = (Screen)this.DisplayComboBox.SelectedItem;
-      this.groupBox1.Text = _currentScreen.DeviceName;
-      ApplyWindowInfo();
-
-      RefreshScreenHighlight();
+      //_currentScreen = (Screen)this.DisplayComboBox.SelectedItem;
+      //this.groupBox1.Text = _currentScreen.DeviceName;
+      //ApplyWindowInfo();
+      //RefreshWindowHighlight();
     }
 
     private void SaveButton_Click(object sender, EventArgs e)
@@ -197,6 +203,19 @@ namespace Windowmancer.UI
     private void CancelButton_Click(object sender, EventArgs e)
     {
       DisposeEverything();
+    }
+
+    private void DisplaysListBox_SelectedIndexChanged(object sender, EventArgs e)
+    {
+      if (null == _currentDisplaySection)
+      {
+        return;
+      }
+
+      _currentScreen = (Screen)this.DisplaysListBox.SelectedItem;
+      this.groupBox1.Text = _currentScreen.DeviceName;
+      ApplyWindowInfo();
+      RefreshWindowHighlight();
     }
   }
 
