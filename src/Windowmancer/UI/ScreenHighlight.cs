@@ -43,12 +43,25 @@ namespace Windowmancer.UI
       var rectangle = new Rectangle(new Point(x, y), size);
 
       _borderWidth = borderWidth;
-      SetLocation(rectangle);
+      SetHighlightSizeLocation(rectangle);
+      SetWindowPos(this.Handle, new IntPtr(-1), 0, 0, 0, 0, 0x43);
+      Show();
+    }
+
+    public void Highlight(Rectangle rectangle)
+    {
+      Highlight(rectangle, 5);
+    }
+
+    public void Highlight(Rectangle rectangle, int borderWidth)
+    {
+      _borderWidth = borderWidth;
+      SetHighlightSizeLocation(rectangle);
       SetWindowPos(this.Handle, new IntPtr(-1), 0, 0, 0, 0, 0x43);
       Show();
     }
     
-    public void SetLocation(Rectangle rectangle)
+    public void SetHighlightSizeLocation(Rectangle rectangle)
     {
       this.TopMost = true;
       _outerRectangle = new Rectangle(new Point(0, 0), rectangle.Size);
