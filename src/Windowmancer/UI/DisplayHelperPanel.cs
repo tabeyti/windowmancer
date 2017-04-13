@@ -31,6 +31,13 @@ namespace Windowmancer.UI
       FillMonitorDisplaySections();
     }
 
+    public void Stop()
+    {
+      this.DisplaysListBox.Items.Clear();
+      ClearDisplaySecions();
+      _screenHighlight?.Dispose();
+    }
+
     private void InitializeMonitorList()
     {
       this.DisplaysListBox.DisplayMember = "DeviceName";
@@ -48,13 +55,18 @@ namespace Windowmancer.UI
       this.DisplaysListBox.SelectedItem = _currentScreen = primaryScreen;
     }
 
-    private void FillMonitorDisplaySections()
+    private void ClearDisplaySecions()
     {
       if (this.groupBox1.Controls.Count > 0)
       {
         this.groupBox1.Controls.RemoveAt(0);
       }
       _displaySectionButtons.Clear();
+    }
+
+    private void FillMonitorDisplaySections()
+    {
+      ClearDisplaySecions();
       var tp = new TableLayoutPanel
       {
         RowCount = (int)this.NumRowsSpinner.Value,
@@ -103,7 +115,7 @@ namespace Windowmancer.UI
       _screenHighlight = new ScreenHighlight();
       var rec = GetRectangle();
       _screenHighlight.Highlight(rec);
-      OnRectangleChanged(this, new EventArgs());
+      OnRectangleChanged?.Invoke(this, new EventArgs());
     }
 
     private Rectangle GetRectangle()

@@ -35,7 +35,7 @@ namespace Windowmancer.Models
 
     public override string ToString()
     {
-      return $"x:{this.X}  y:{this.Y}";
+      return $"({this.X}, {this.Y})";
     }
   }
 

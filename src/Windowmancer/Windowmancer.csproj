@@ -173,12 +173,6 @@
       <DependentUpon>WindowConfigDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\TrayApp.cs" />
-    <Compile Include="UI\WindowConfigDisplayDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\WindowConfigDisplayDialog.Designer.cs">
-      <DependentUpon>WindowConfigDisplayDialog.cs</DependentUpon>
-    </Compile>
     <EmbeddedResource Include="UI\AboutBox.resx">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </EmbeddedResource>
@@ -206,9 +200,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\WindowConfigDialog.resx">
       <DependentUpon>WindowConfigDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\WindowConfigDisplayDialog.resx">
-      <DependentUpon>WindowConfigDisplayDialog.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.manifest">
       <SubType>Designer</SubType>

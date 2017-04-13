@@ -151,12 +151,14 @@ namespace Windowmancer.UI
     {
       if (SaveWindowInfo())
       {
+        this.DisplayHelperPanel.Stop();
         this.Dispose();
       }
     }
 
     private void WindowConfigDialogCancelButton_Click(object sender, EventArgs e)
     {
+      this.DisplayHelperPanel.Stop();
       this.WindowInfo = null;
       this.Dispose();
     }
@@ -174,19 +176,37 @@ namespace Windowmancer.UI
       }
     }
 
-    private void button1_Click(object sender, EventArgs e)
+    private void AbsoluteRadioButton_CheckedChanged(object sender, EventArgs e)
     {
-      var d = new WindowConfigDisplayDialog();
-      d.ShowDialog(this);
-      if (null == d.LocationInfo || null == d.SizeInfo)
+      var button = (RadioButton)sender;
+      if (button.Checked)
       {
+        this.WindowLayoutLayoutPanel.Enabled = true;
         return;
       }
-      // Update position and size info based on display helper result.
-      this.InvokeControl(() => this.WindowSizeBoxWidth.Value = d.SizeInfo.Width);
-      this.InvokeControl(() => this.WindowSizeBoxHeight.Value = d.SizeInfo.Height);
-      this.InvokeControl(() => this.WindowLocationBoxX.Value = d.LocationInfo.PositionInfo.X);
-      this.InvokeControl(() => this.WindowLocationBoxY.Value = d.LocationInfo.PositionInfo.Y);
+      this.WindowLayoutLayoutPanel.Enabled = false;
+    }
+
+    private void DisplayRadioButton_CheckedChanged(object sender, EventArgs e)
+    {
+      var button = (RadioButton)sender;
+      if (button.Checked)
+      {
+        this.DisplayHelperPanel.Enabled = true;
+        this.DisplayHelperPanel.Start();
+        return;
+      }
+      this.DisplayHelperPanel.Enabled = false;
+      this.DisplayHelperPanel.Stop();
+    }
+
+    private void DisplayHelperPanel_OnRectangleChanged(object sender, EventArgs e)
+    {
+      var rectangle = this.DisplayHelperPanel.Rectangle;
+      this.WindowSizeBoxWidth.Value = rectangle.Width;
+      this.WindowSizeBoxHeight.Value = rectangle.Height;
+      this.WindowLocationBoxX.Value = rectangle.X;
+      this.WindowLocationBoxY.Value = rectangle.Y;
     }
   }
 }
