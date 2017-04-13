@@ -132,21 +132,21 @@ namespace Windowmancer.UI
 
     private WindowInfo ShowWindowConfigDialog(Process process)
     {
-      var dialog = new WindowConfigDialog(process);
+      var dialog = new WindowConfigDialog(process) {StartPosition = FormStartPosition.CenterParent};
       dialog.ShowDialog(this);
       return dialog.WindowInfo;
     }
 
     private WindowInfo ShowWindowConfigDialog(WindowInfo windowInfo)
     {
-      var dialog =  new WindowConfigDialog(windowInfo);
+      var dialog =  new WindowConfigDialog(windowInfo) { StartPosition = FormStartPosition.CenterParent };
       dialog.ShowDialog(this);
       return dialog.WindowInfo;
     }
 
     private void HandleProfileConfigDialog(Profile profile = null)
     {
-      var dialog = new ProfileConfigDialog(_profileManager, profile);
+      var dialog = new ProfileConfigDialog(_profileManager, profile) { StartPosition = FormStartPosition.CenterParent };
       dialog.ShowDialog(this);
       ProfileListSelectActiveProfile();
       this.ProfileListDataGridView.Refresh();
@@ -194,8 +194,6 @@ namespace Windowmancer.UI
       _profileManager.AddToActiveProfile(windowInfo);
     }
 
-    #endregion Events
-
     private void SavedWindowsDataGrid_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
     {
       var procRow = e.RowIndex <= 0 ? this.WindowConfigsDataGrid.SelectedRows[0] : this.WindowConfigsDataGrid.Rows[e.RowIndex];
@@ -204,7 +202,7 @@ namespace Windowmancer.UI
       {
         return;
       }
-      _profileManager.ActiveProfile.Windows[e.RowIndex] = windowInfo;
+      _profileManager.UpdateActiveProfile(e.RowIndex, windowInfo);
     }
 
     private void preferencesToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -233,7 +231,7 @@ namespace Windowmancer.UI
       {
         return;
       }
-      _profileManager.ActiveProfile.Windows[procRow.Index] = windowInfo;
+      _profileManager.UpdateActiveProfile(procRow.Index, windowInfo);
     }
 
     private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
@@ -328,5 +326,7 @@ namespace Windowmancer.UI
       var dialog = new AboutBox();
       dialog.ShowDialog(this);
     }
+
+    #endregion Events
   }
 }

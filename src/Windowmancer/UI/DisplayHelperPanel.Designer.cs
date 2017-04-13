@@ -42,12 +42,12 @@
       // 
       // DisplaysListBox
       // 
-      this.DisplaysListBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
+      this.DisplaysListBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+      this.DisplaysListBox.Dock = System.Windows.Forms.DockStyle.Left;
       this.DisplaysListBox.FormattingEnabled = true;
-      this.DisplaysListBox.Location = new System.Drawing.Point(3, 3);
+      this.DisplaysListBox.Location = new System.Drawing.Point(0, 0);
       this.DisplaysListBox.Name = "DisplaysListBox";
-      this.DisplaysListBox.Size = new System.Drawing.Size(108, 238);
+      this.DisplaysListBox.Size = new System.Drawing.Size(108, 250);
       this.DisplaysListBox.TabIndex = 23;
       this.DisplaysListBox.SelectedIndexChanged += new System.EventHandler(this.DisplaysListBox_SelectedIndexChanged);
       // 
@@ -112,7 +112,7 @@
       this.GridConfigGroupBox.Controls.Add(this.NumRowsSpinner);
       this.GridConfigGroupBox.Controls.Add(this.NumColsLabel);
       this.GridConfigGroupBox.Controls.Add(this.NumColsSpinner);
-      this.GridConfigGroupBox.Location = new System.Drawing.Point(119, 192);
+      this.GridConfigGroupBox.Location = new System.Drawing.Point(117, 192);
       this.GridConfigGroupBox.Name = "GridConfigGroupBox";
       this.GridConfigGroupBox.Size = new System.Drawing.Size(353, 55);
       this.GridConfigGroupBox.TabIndex = 24;
@@ -147,9 +147,9 @@
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.Controls.Add(this.GridConfigGroupBox);
       this.Controls.Add(this.DisplaysListBox);
       this.Controls.Add(this.groupBox1);
-      this.Controls.Add(this.GridConfigGroupBox);
       this.MinimumSize = new System.Drawing.Size(475, 0);
       this.Name = "DisplayHelperPanel";
       this.Size = new System.Drawing.Size(475, 250);
