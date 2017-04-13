@@ -125,6 +125,12 @@
     <Compile Include="UI\AboutBox.Designer.cs">
       <DependentUpon>AboutBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\DisplayHelperPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\DisplayHelperPanel.Designer.cs">
+      <DependentUpon>DisplayHelperPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\HotKeyInputBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -175,6 +181,9 @@
     </Compile>
     <EmbeddedResource Include="UI\AboutBox.resx">
       <DependentUpon>AboutBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\DisplayHelperPanel.resx">
+      <DependentUpon>DisplayHelperPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\EditorForm.resx">
       <DependentUpon>EditorForm.cs</DependentUpon>

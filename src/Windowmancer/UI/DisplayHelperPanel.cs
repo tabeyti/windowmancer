@@ -3,29 +3,32 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using Windowmancer.Models;
 
 namespace Windowmancer.UI
 {
-  public partial class WindowConfigDisplayDialog : Form
+  public partial class DisplayHelperPanel : UserControl
   {
-    public LocationInfo LocationInfo { get; private set; }
-    public SizeInfo SizeInfo { get; private set; }
-
-    private readonly List<Button> _DisplayAreaButtons = new List<Button>();
+    public Rectangle Rectangle => GetRectangle();
+    public event EventHandler OnRectangleChanged;
+        
+    private readonly List<Button> _displaySectionButtons = new List<Button>();
     private Screen _currentScreen;
-    private DisplayArea _currentDisplayArea;
+    private DisplaySection _currentDisplaySection;
     private ScreenHighlight _screenHighlight;
 
-    public WindowConfigDisplayDialog()
+    public DisplayHelperPanel()
     {
       InitializeComponent();
     }
 
-    private void WindowConfigDisplayDialog_Load(object sender, EventArgs e)
+    private void DisplayHelperPanel_Load(object sender, EventArgs e)
+    {
+    }
+
+    public void Start()
     {
       InitializeMonitorList();
-      FillMonitorDisplayAreas();
+      FillMonitorDisplaySections();
     }
 
     private void InitializeMonitorList()
@@ -45,13 +48,13 @@ namespace Windowmancer.UI
       this.DisplaysListBox.SelectedItem = _currentScreen = primaryScreen;
     }
 
-    private void FillMonitorDisplayAreas()
+    private void FillMonitorDisplaySections()
     {
       if (this.groupBox1.Controls.Count > 0)
       {
         this.groupBox1.Controls.RemoveAt(0);
       }
-      _DisplayAreaButtons.Clear();
+      _displaySectionButtons.Clear();
       var tp = new TableLayoutPanel
       {
         RowCount = (int)this.NumRowsSpinner.Value,
@@ -76,16 +79,16 @@ namespace Windowmancer.UI
             Text = num++.ToString(),
             Dock = DockStyle.Fill,
             AutoSize = true,
-            Tag = new DisplayArea(r, c, tp.RowCount, tp.ColumnCount)
+            Tag = new DisplaySection(r, c, tp.RowCount, tp.ColumnCount)
           };
-          button.Click += DisplayAreaButton_OnClick;
+          button.Click += DisplaySectionButton_OnClick;
           tp.Controls.Add(button);
-          _DisplayAreaButtons.Add(button);
+          _displaySectionButtons.Add(button);
         }
         colsComplete = true;
       }
       // Make first section button the default selection.
-      _DisplayAreaButtons.First().PerformClick();
+      _displaySectionButtons.First().PerformClick();
       this.groupBox1.Controls.Add(tp);
 
       if (null != _currentScreen)
@@ -94,43 +97,15 @@ namespace Windowmancer.UI
       }
     }
 
-    private void ApplyWindowInfo(bool withSave = false)
-    {
-      var rectangle = GetRectangle();
-      this.WidthTextBox.Text = rectangle.Width.ToString();
-      this.HeightTextBox.Text = rectangle.Height.ToString();
-      this.XTextBox.Text = rectangle.X.ToString();
-      this.YTextBox.Text = rectangle.Y.ToString();
-
-      if (!withSave)
-      {
-        return;
-      }
-      
-      this.LocationInfo = new LocationInfo
-      {
-        PositionInfo = new PositionInfo
-        {
-          X = rectangle.X,
-          Y = rectangle.Y,
-        },
-        DisplayName = _currentScreen.DeviceName
-      };
-      this.SizeInfo = new SizeInfo
-      {
-        Width = rectangle.Width,
-        Height = rectangle.Height
-      };
-    }
-
     private void RefreshWindowHighlight()
     {
       _screenHighlight?.Dispose();
       _screenHighlight = new ScreenHighlight();
       var rec = GetRectangle();
       _screenHighlight.Highlight(rec);
+      OnRectangleChanged(this, new EventArgs());
     }
-    
+
     private Rectangle GetRectangle()
     {
       var screen = _currentScreen;
@@ -138,11 +113,11 @@ namespace Windowmancer.UI
       var screenWidth = screen.Bounds.Width;
       var screenHeight = screen.Bounds.Height;
 
-      var row = _currentDisplayArea.RowIndex;
-      var col = _currentDisplayArea.ColumnIndex;
+      var row = _currentDisplaySection.RowIndex;
+      var col = _currentDisplaySection.ColumnIndex;
 
-      var totalRows = _currentDisplayArea.TotalRows;
-      var totalCols = _currentDisplayArea.TotalColumns;
+      var totalRows = _currentDisplaySection.TotalRows;
+      var totalCols = _currentDisplaySection.TotalColumns;
 
       var x = (screenWidth / totalCols) * col + screen.Bounds.X;
       var y = (screenHeight / totalRows) * row + screen.Bounds.Y;
@@ -152,72 +127,53 @@ namespace Windowmancer.UI
       return new Rectangle(x, y, width, height);
     }
 
-    private void DisplayAreaButton_OnClick(object sender, EventArgs e)
+    private void DisplaySectionButton_OnClick(object sender, EventArgs e)
     {
       // Reset color on all display section buttons.
-      _DisplayAreaButtons.ForEach(b => b.BackColor = SystemColors.Control);
+      _displaySectionButtons.ForEach(b => b.BackColor = SystemColors.Control);
 
       // Make the selected button have custom color for visibility.
-      var button = ((Button) sender);
+      var button = ((Button)sender);
       button.BackColor = Color.Gold;
-      _currentDisplayArea = (DisplayArea)button.Tag;
-      ApplyWindowInfo();
+      _currentDisplaySection = (DisplaySection)button.Tag;
       RefreshWindowHighlight();
     }
 
     private void NumRowsSpinner_ValueChanged(object sender, EventArgs e)
     {
-      FillMonitorDisplayAreas();
+      FillMonitorDisplaySections();
     }
 
     private void NumColsSpinner_ValueChanged(object sender, EventArgs e)
     {
-      FillMonitorDisplayAreas();
-    }
-
-    private void SaveButton_Click(object sender, EventArgs e)
-    {
-      ApplyWindowInfo(true);
-      DisposeEverything();
-    }
-
-    public void DisposeEverything()
-    {
-      _screenHighlight?.Dispose();
-      this.Dispose();
-    }
-
-    private void CancelButton_Click(object sender, EventArgs e)
-    {
-      DisposeEverything();
+      FillMonitorDisplaySections();
     }
 
     private void DisplaysListBox_SelectedIndexChanged(object sender, EventArgs e)
     {
-      if (null == _currentDisplayArea)
+      if (null == _currentDisplaySection)
       {
         return;
       }
 
       _currentScreen = (Screen)this.DisplaysListBox.SelectedItem;
       this.groupBox1.Text = _currentScreen.DeviceName;
-      ApplyWindowInfo();
       RefreshWindowHighlight();
     }
   }
 
-  class DisplayArea
+  class DisplaySection
   {
     public int RowIndex { get; set; }
     public int ColumnIndex { get; set; }
     public int TotalRows { get; set; }
     public int TotalColumns { get; set; }
 
-    public DisplayArea()
+    public DisplaySection()
     {
     }
 
-    public DisplayArea(int rowIndex, int columnIndex, int totalRows, int totalColumns)
+    public DisplaySection(int rowIndex, int columnIndex, int totalRows, int totalColumns)
     {
       this.RowIndex = rowIndex;
       this.ColumnIndex = columnIndex;

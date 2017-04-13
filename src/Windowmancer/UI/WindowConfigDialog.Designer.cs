@@ -40,7 +40,6 @@ namespace Windowmancer.UI
       this.WindowSizeBoxHeight = new System.Windows.Forms.NumericUpDown();
       this.WindowSizeBoxWidth = new System.Windows.Forms.NumericUpDown();
       this.WindowPostitionGroupBox = new System.Windows.Forms.GroupBox();
-      this.label1 = new System.Windows.Forms.Label();
       this.WindowLocationBoxY = new System.Windows.Forms.NumericUpDown();
       this.WindowLocationBoxX = new System.Windows.Forms.NumericUpDown();
       this.MatchStringGroupBox = new System.Windows.Forms.GroupBox();
@@ -50,8 +49,8 @@ namespace Windowmancer.UI
       this.WindowConfigNameGroupBox = new System.Windows.Forms.GroupBox();
       this.WindowConfigNameTextBox = new System.Windows.Forms.TextBox();
       this.BringToFrontCheckBox = new System.Windows.Forms.CheckBox();
-      this.DisplayHelperButton = new System.Windows.Forms.Button();
-      this.label3 = new System.Windows.Forms.Label();
+      this.WindowLayoutBox = new System.Windows.Forms.GroupBox();
+      this.displayHelperPanel1 = new Windowmancer.UI.DisplayHelperPanel();
       this.WindowMatchGroupBox.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.WindowSizeBoxHeight)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.WindowSizeBoxWidth)).BeginInit();
@@ -60,13 +59,14 @@ namespace Windowmancer.UI
       ((System.ComponentModel.ISupportInitialize)(this.WindowLocationBoxX)).BeginInit();
       this.MatchStringGroupBox.SuspendLayout();
       this.WindowConfigNameGroupBox.SuspendLayout();
+      this.WindowLayoutBox.SuspendLayout();
       this.SuspendLayout();
       // 
       // WindowMatchGroupBox
       // 
       this.WindowMatchGroupBox.Controls.Add(this.WindowProcessNameRadioButton);
       this.WindowMatchGroupBox.Controls.Add(this.WindowTitleRadioButton);
-      this.WindowMatchGroupBox.Location = new System.Drawing.Point(12, 228);
+      this.WindowMatchGroupBox.Location = new System.Drawing.Point(289, 469);
       this.WindowMatchGroupBox.Name = "WindowMatchGroupBox";
       this.WindowMatchGroupBox.Size = new System.Drawing.Size(268, 48);
       this.WindowMatchGroupBox.TabIndex = 0;
@@ -97,7 +97,7 @@ namespace Windowmancer.UI
       // 
       // WindowSizeBoxHeight
       // 
-      this.WindowSizeBoxHeight.Location = new System.Drawing.Point(112, 85);
+      this.WindowSizeBoxHeight.Location = new System.Drawing.Point(277, 37);
       this.WindowSizeBoxHeight.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -109,7 +109,7 @@ namespace Windowmancer.UI
       // 
       // WindowSizeBoxWidth
       // 
-      this.WindowSizeBoxWidth.Location = new System.Drawing.Point(6, 85);
+      this.WindowSizeBoxWidth.Location = new System.Drawing.Point(389, 37);
       this.WindowSizeBoxWidth.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -121,28 +121,16 @@ namespace Windowmancer.UI
       // 
       // WindowPostitionGroupBox
       // 
-      this.WindowPostitionGroupBox.Controls.Add(this.label3);
       this.WindowPostitionGroupBox.Controls.Add(this.WindowSizeBoxHeight);
-      this.WindowPostitionGroupBox.Controls.Add(this.DisplayHelperButton);
       this.WindowPostitionGroupBox.Controls.Add(this.WindowSizeBoxWidth);
-      this.WindowPostitionGroupBox.Controls.Add(this.label1);
       this.WindowPostitionGroupBox.Controls.Add(this.WindowLocationBoxY);
       this.WindowPostitionGroupBox.Controls.Add(this.WindowLocationBoxX);
-      this.WindowPostitionGroupBox.Location = new System.Drawing.Point(12, 73);
+      this.WindowPostitionGroupBox.Location = new System.Drawing.Point(12, 394);
       this.WindowPostitionGroupBox.Name = "WindowPostitionGroupBox";
-      this.WindowPostitionGroupBox.Size = new System.Drawing.Size(268, 149);
+      this.WindowPostitionGroupBox.Size = new System.Drawing.Size(475, 75);
       this.WindowPostitionGroupBox.TabIndex = 2;
       this.WindowPostitionGroupBox.TabStop = false;
       this.WindowPostitionGroupBox.Text = "Window Layout";
-      // 
-      // label1
-      // 
-      this.label1.AutoSize = true;
-      this.label1.Location = new System.Drawing.Point(4, 21);
-      this.label1.Name = "label1";
-      this.label1.Size = new System.Drawing.Size(26, 13);
-      this.label1.TabIndex = 7;
-      this.label1.Text = "X/Y";
       // 
       // WindowLocationBoxY
       // 
@@ -163,7 +151,7 @@ namespace Windowmancer.UI
       // 
       // WindowLocationBoxX
       // 
-      this.WindowLocationBoxX.Location = new System.Drawing.Point(6, 37);
+      this.WindowLocationBoxX.Location = new System.Drawing.Point(7, 37);
       this.WindowLocationBoxX.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -181,9 +169,9 @@ namespace Windowmancer.UI
       // MatchStringGroupBox
       // 
       this.MatchStringGroupBox.Controls.Add(this.WindowMatchStringTextBox);
-      this.MatchStringGroupBox.Location = new System.Drawing.Point(12, 282);
+      this.MatchStringGroupBox.Location = new System.Drawing.Point(12, 469);
       this.MatchStringGroupBox.Name = "MatchStringGroupBox";
-      this.MatchStringGroupBox.Size = new System.Drawing.Size(274, 54);
+      this.MatchStringGroupBox.Size = new System.Drawing.Size(274, 48);
       this.MatchStringGroupBox.TabIndex = 3;
       this.MatchStringGroupBox.TabStop = false;
       this.MatchStringGroupBox.Text = "Regex Match String";
@@ -200,7 +188,7 @@ namespace Windowmancer.UI
       // 
       this.WindowConfigDialogSaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
       this.WindowConfigDialogSaveButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.WindowConfigDialogSaveButton.Location = new System.Drawing.Point(208, 371);
+      this.WindowConfigDialogSaveButton.Location = new System.Drawing.Point(725, 528);
       this.WindowConfigDialogSaveButton.Name = "WindowConfigDialogSaveButton";
       this.WindowConfigDialogSaveButton.Size = new System.Drawing.Size(75, 23);
       this.WindowConfigDialogSaveButton.TabIndex = 4;
@@ -211,7 +199,7 @@ namespace Windowmancer.UI
       // WindowConfigDialogCancelButton
       // 
       this.WindowConfigDialogCancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.WindowConfigDialogCancelButton.Location = new System.Drawing.Point(127, 371);
+      this.WindowConfigDialogCancelButton.Location = new System.Drawing.Point(644, 528);
       this.WindowConfigDialogCancelButton.Name = "WindowConfigDialogCancelButton";
       this.WindowConfigDialogCancelButton.Size = new System.Drawing.Size(75, 23);
       this.WindowConfigDialogCancelButton.TabIndex = 5;
@@ -242,42 +230,39 @@ namespace Windowmancer.UI
       this.BringToFrontCheckBox.AutoSize = true;
       this.BringToFrontCheckBox.Checked = true;
       this.BringToFrontCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-      this.BringToFrontCheckBox.Location = new System.Drawing.Point(12, 342);
+      this.BringToFrontCheckBox.Location = new System.Drawing.Point(12, 523);
       this.BringToFrontCheckBox.Name = "BringToFrontCheckBox";
       this.BringToFrontCheckBox.Size = new System.Drawing.Size(86, 17);
       this.BringToFrontCheckBox.TabIndex = 7;
       this.BringToFrontCheckBox.Text = "Bring to front";
       this.BringToFrontCheckBox.UseVisualStyleBackColor = true;
       // 
-      // DisplayHelperButton
+      // WindowLayoutBox
       // 
-      this.DisplayHelperButton.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.DisplayHelperButton.Location = new System.Drawing.Point(3, 111);
-      this.DisplayHelperButton.Name = "DisplayHelperButton";
-      this.DisplayHelperButton.Size = new System.Drawing.Size(259, 32);
-      this.DisplayHelperButton.TabIndex = 8;
-      this.DisplayHelperButton.Text = "Display Helper";
-      this.DisplayHelperButton.UseVisualStyleBackColor = true;
-      this.DisplayHelperButton.Click += new System.EventHandler(this.button1_Click);
+      this.WindowLayoutBox.Controls.Add(this.displayHelperPanel1);
+      this.WindowLayoutBox.Location = new System.Drawing.Point(12, 73);
+      this.WindowLayoutBox.Name = "WindowLayoutBox";
+      this.WindowLayoutBox.Size = new System.Drawing.Size(486, 266);
+      this.WindowLayoutBox.TabIndex = 9;
+      this.WindowLayoutBox.TabStop = false;
+      this.WindowLayoutBox.Text = "Window Layout";
       // 
-      // label3
+      // displayHelperPanel1
       // 
-      this.label3.AutoSize = true;
-      this.label3.Location = new System.Drawing.Point(4, 69);
-      this.label3.Name = "label3";
-      this.label3.Size = new System.Drawing.Size(71, 13);
-      this.label3.TabIndex = 9;
-      this.label3.Text = "Width/Height";
+      this.displayHelperPanel1.Location = new System.Drawing.Point(7, 19);
+      this.displayHelperPanel1.MinimumSize = new System.Drawing.Size(475, 0);
+      this.displayHelperPanel1.Name = "displayHelperPanel1";
+      this.displayHelperPanel1.Size = new System.Drawing.Size(475, 241);
+      this.displayHelperPanel1.TabIndex = 8;
       // 
       // WindowConfigDialog
       // 
       this.AcceptButton = this.WindowConfigDialogSaveButton;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(295, 406);
+      this.ClientSize = new System.Drawing.Size(812, 563);
       this.ControlBox = false;
+      this.Controls.Add(this.WindowLayoutBox);
       this.Controls.Add(this.BringToFrontCheckBox);
       this.Controls.Add(this.WindowConfigNameGroupBox);
       this.Controls.Add(this.WindowConfigDialogCancelButton);
@@ -297,13 +282,13 @@ namespace Windowmancer.UI
       ((System.ComponentModel.ISupportInitialize)(this.WindowSizeBoxHeight)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.WindowSizeBoxWidth)).EndInit();
       this.WindowPostitionGroupBox.ResumeLayout(false);
-      this.WindowPostitionGroupBox.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.WindowLocationBoxY)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.WindowLocationBoxX)).EndInit();
       this.MatchStringGroupBox.ResumeLayout(false);
       this.MatchStringGroupBox.PerformLayout();
       this.WindowConfigNameGroupBox.ResumeLayout(false);
       this.WindowConfigNameGroupBox.PerformLayout();
+      this.WindowLayoutBox.ResumeLayout(false);
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -325,9 +310,8 @@ namespace Windowmancer.UI
     private Button WindowConfigDialogCancelButton;
     private GroupBox WindowConfigNameGroupBox;
     private TextBox WindowConfigNameTextBox;
-    private Label label1;
     private CheckBox BringToFrontCheckBox;
-    private Button DisplayHelperButton;
-    private Label label3;
+    private DisplayHelperPanel displayHelperPanel1;
+    private GroupBox WindowLayoutBox;
   }
 }
