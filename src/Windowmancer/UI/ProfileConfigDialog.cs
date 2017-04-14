@@ -37,12 +37,15 @@ namespace Windowmancer.UI
 
     private void SaveProfile()
     {
+      // If this is a new profile add it.
       if (null == _profile)
       {
-        _profileManager.AddNewProfile(this.ProfileNameTextBox.Text);
+        var result = _profileManager.AddNewProfile(this.ProfileNameTextBox.Text);
         return;
       }
-      _profile.Name = this.ProfileNameTextBox.Text;
+      
+      // Update the existing profile.
+      _profileManager.UpdateActiveProfileName(this.ProfileNameTextBox.Text);
     }
 
     #region Events
