@@ -43,6 +43,7 @@ namespace Windowmancer.UI
     {
       _keyHookManager.OnKeyCombinationSuccess += OnKeyCombinationSuccess;
       _procMonitor.Start();
+
       _trayContextMenu = BuildContextMenu();
       _trayIcon = new NotifyIcon
       {
@@ -55,6 +56,19 @@ namespace Windowmancer.UI
       {
         _trayIcon.ContextMenuStrip = BuildContextMenu();
       };
+
+      // Hook into active profile updates to display proper
+      // tooltip text for the tray icon.
+      _trayIcon.Text = TrayIconTooltipText();
+      _profileManager.OnActiveProfileUpdate += (s, e) =>
+      {
+        _trayIcon.Text = TrayIconTooltipText();
+      };
+    }
+
+    private string TrayIconTooltipText()
+    {
+      return $"Windowmancer\nActive Profile - {_profileManager.ActiveProfile.Name}";
     }
 
     private ContextMenuStrip BuildContextMenu()
@@ -132,17 +146,18 @@ namespace Windowmancer.UI
       Application.Exit();
     }
 
-    public void TrayContextMenu_OnProfileSelect(object sender, EventArgs e)
+    private void TrayContextMenu_OnProfileSelect(object sender, EventArgs e)
     {
       // Uncheck previous item.
-      UncheckCheckedMenuItem();
       var mi = ((ToolStripMenuItem)sender);
+      UncheckCheckedMenuItem();
       mi.Checked = true;
       _profileManager.UpdateActiveProfile(((Profile)mi.Tag).Id);
       _editor?.UpdateActiveProfile(((Profile)mi.Tag));
+      //_trayIcon.Text = TrayIconTooltipText();
     }
 
-    public void TrayContextMenu_OnProfileSettings(object sender, EventArgs e)
+    private void TrayContextMenu_OnProfileSettings(object sender, EventArgs e)
     {
       var settings = new SettingsDialog(_keyHookManager);
       settings.Show();
