@@ -125,9 +125,15 @@ namespace Windowmancer.Services
       return true;
     }
 
-    public void UpdateActiveProfile(int index, WindowInfo windowInfo)
+    public void UpdateToActiveProfile(int index, WindowInfo windowInfo)
     {
       this.ActiveProfile.Windows[index] = windowInfo;
+      _userData.Save();
+    }
+
+    public void UpdateActiveProfileName(string name)
+    {
+      this.ActiveProfile.Name = name;
       _userData.Save();
     }
 

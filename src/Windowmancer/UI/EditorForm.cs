@@ -202,7 +202,7 @@ namespace Windowmancer.UI
       {
         return;
       }
-      _profileManager.UpdateActiveProfile(e.RowIndex, windowInfo);
+      _profileManager.UpdateToActiveProfile(e.RowIndex, windowInfo);
     }
 
     private void preferencesToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -231,7 +231,7 @@ namespace Windowmancer.UI
       {
         return;
       }
-      _profileManager.UpdateActiveProfile(procRow.Index, windowInfo);
+      _profileManager.UpdateToActiveProfile(procRow.Index, windowInfo);
     }
 
     private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
