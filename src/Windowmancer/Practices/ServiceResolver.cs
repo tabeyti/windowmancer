@@ -11,7 +11,7 @@ using Windowmancer.Configuration;
 using Windowmancer.Models;
 using Windowmancer.Services;
 
-namespace Windowmancer.Pratices
+namespace Windowmancer.Practices
 {
   public static class WMServiceResolver
   {
