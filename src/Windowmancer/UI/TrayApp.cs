@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Windows.Forms;
 using Microsoft.Practices.Unity;
-using Windowmancer.Configuration;
 using Windowmancer.Properties;
 using Windowmancer.Services;
 using System.Collections.Generic;
 using System.Drawing;
 using Windowmancer.Models;
-using System.Reflection;
 
 namespace Windowmancer.UI
 {
@@ -154,7 +152,6 @@ namespace Windowmancer.UI
       mi.Checked = true;
       _profileManager.UpdateActiveProfile(((Profile)mi.Tag).Id);
       _editor?.UpdateActiveProfile(((Profile)mi.Tag));
-      //_trayIcon.Text = TrayIconTooltipText();
     }
 
     private void TrayContextMenu_OnProfileSettings(object sender, EventArgs e)
