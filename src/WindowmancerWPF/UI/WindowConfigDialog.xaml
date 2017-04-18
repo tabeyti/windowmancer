@@ -57,8 +57,9 @@
     <Grid Grid.Column="2">
       <Grid.RowDefinitions>
         <RowDefinition Height="100" />
+        <RowDefinition Height="30"/>
         <RowDefinition Height="*" />
-        <RowDefinition Height="65" />
+        <!--<RowDefinition Height="65" />-->
       </Grid.RowDefinitions>
       <GroupBox
         Grid.Row="0"
@@ -126,58 +127,74 @@
 
         </Grid>
       </GroupBox>
-      <Border Grid.Row="1" Margin="5" BorderBrush="Gray" BorderThickness="10" CornerRadius="2">
-        <Grid x:Name="DisplayPanel"  
-              HorizontalAlignment="Stretch" 
-              
+      <CheckBox Grid.Row="1"
+                  Name="DisplayHelperCheckBox"
+                  Content="Display Helper"
+                  VerticalAlignment="Center"
+                  Checked="DisplayHelperCheckBox_OnCheck" 
+                  Unchecked="DisplayHelperCheckBox_OnCheck"/>
+      <Grid Grid.Row="2" Name="DisplayHelperControl">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*"/>
+          <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+        <Border Margin="5" 
+                Grid.Row="0"
+                BorderBrush="Gray" 
+                BorderThickness="10" 
+                CornerRadius="2">
+          <Grid x:Name="DisplayPanel"
+              HorizontalAlignment="Stretch"               
               VerticalAlignment="Stretch">
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-          </Grid.ColumnDefinitions>
-        </Grid>
-      </Border>
-      <Grid Grid.Row="2" 
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+          </Grid>
+        </Border>
+        <Grid Grid.Row="1" 
             HorizontalAlignment="Stretch" 
             Margin="10,10,10,10" 
             VerticalAlignment="Top">
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="*" />
-          <ColumnDefinition Width="20" /> <!--spacer-->
-          <ColumnDefinition Width="40" />
-          <ColumnDefinition Width="50" />
-          <ColumnDefinition Width="20" /> <!--spacer-->
-          <ColumnDefinition Width="60" />
-          <ColumnDefinition Width="50" />
-        </Grid.ColumnDefinitions><ComboBox />
-        <ComboBox Name="DisplaysComboBox" 
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="20" />
+            <!--spacer-->
+            <ColumnDefinition Width="40" />
+            <ColumnDefinition Width="50" />
+            <ColumnDefinition Width="60" />
+            <ColumnDefinition Width="50" />
+          </Grid.ColumnDefinitions>
+          <ComboBox />
+          <ComboBox Name="DisplaysComboBox" 
                   Grid.Column="0"
                   SelectionChanged="DisplaysComboBox_SelectionChanged">
-          <ComboBox.ItemTemplate>
-            <DataTemplate>
-              <TextBlock Text="{Binding DeviceName}" />
-            </DataTemplate>
-          </ComboBox.ItemTemplate>
-        </ComboBox>
-        <Label Grid.Column="2" 
-               Content="Rows" 
+            <ComboBox.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding DeviceName}" />
+              </DataTemplate>
+            </ComboBox.ItemTemplate>
+          </ComboBox>
+          <Label Grid.Column="2" 
+               Content="Rows:" 
                HorizontalAlignment="Left" 
                VerticalAlignment="Center"/>
-        <xctk:IntegerUpDown Name="RowSpinner" 
+          <xctk:IntegerUpDown Name="RowSpinner" 
                             Grid.Column="3" 
                             Value="1"
                             Minimum="1"
                             Maximum="10"
                             Height="20"/>
-        <Label Grid.Column="5" 
-               Content="Columns" 
+          <Label Grid.Column="4" 
+               Content="Columns:" 
                HorizontalAlignment="Left" 
                VerticalAlignment="Top" />
-        <xctk:IntegerUpDown Name="ColumnSpinner" 
-                            Grid.Column="6" 
+          <xctk:IntegerUpDown Name="ColumnSpinner" 
+                            Grid.Column="5" 
                             Value="1"
                             Minimum="1"
                             Maximum="10"
                             Height="20"/>
+        </Grid>
       </Grid>
     </Grid>
   </Grid>

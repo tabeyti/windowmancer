@@ -14,6 +14,16 @@ namespace WindowmancerWPF.Practices
     [System.Runtime.InteropServices.DllImport("gdi32.dll")]
     public static extern bool DeleteObject(IntPtr hObject);
 
+    public static ImageSource ImageSourceForBitmap(Bitmap bmp)
+    {
+      var handle = bmp.GetHbitmap();
+      try
+      {
+        return Imaging.CreateBitmapSourceFromHBitmap(handle, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+      }
+      finally { DeleteObject(handle); }
+    }
+
     public static Icon GetProcessIcon(Process process)
     {
       System.Drawing.Icon ico = null;
