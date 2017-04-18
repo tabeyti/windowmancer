@@ -52,13 +52,18 @@ namespace WindowmancerWPF.UI
       this.DisplaysComboBox.ItemsSource = Screen.AllScreens;
       this.DisplaysComboBox.SelectedItem = _currentDisplay = Screen.PrimaryScreen;
 
-      RecreateDisplaySectorControl(1, 1);
+      //RecreateDisplaySectionControl(1, 1);
+      this.DisplayHelperControl.IsEnabled = false;
     }
 
-    private void RecreateDisplaySectorControl(int rows, int cols)
+    private void ClearDisplaySectionPanel()
     {
       this.DisplayPanel.Children.RemoveRange(0, this.DisplayPanel.Children.Count);
+    }
 
+    private void RecreateDisplaySectionControl(int rows, int cols)
+    {
+      ClearDisplaySectionPanel();
       var grid = new UniformGrid { Rows = rows, Columns = cols };
       _displaySectionButtons.Clear();
       Enumerable.Range(0, rows).ForEach(r =>
@@ -130,11 +135,25 @@ namespace WindowmancerWPF.UI
       _currentHighlight.UpdateLayout(this.Position.X, this.Position.Y, this.Size.Width, this.Size.Height);
     }
 
+    private void EnableDisplayHelper()
+    {
+      this.DisplayHelperControl.IsEnabled = true;
+      RecreateDisplaySectionControl((int)this.RowSpinner.Value, (int)this.ColumnSpinner.Value);
+    }
+
+    private void DisableDisplayHelper()
+    {
+      this.DisplayHelperControl.IsEnabled = false;
+      ClearDisplaySectionPanel();
+      _currentHighlight?.Close();
+      _currentHighlight = null;
+    }
+
     private void RowColSpinners_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
     {
       int rows = this.RowSpinner?.Value ?? 1;
       int cols = this.ColumnSpinner?.Value ?? 1;
-      RecreateDisplaySectorControl(rows, cols);
+      RecreateDisplaySectionControl(rows, cols);
     }
 
     private void DisplaysComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -145,6 +164,19 @@ namespace WindowmancerWPF.UI
         UpdateLayoutValues();
         UpdateScreenHighlight();
       }
+    }
+
+    private void DisplayHelperCheckBox_OnCheck(object sender, RoutedEventArgs e)
+    {
+      var box = (System.Windows.Controls.CheckBox)sender;
+      if (box.IsChecked.Value)
+      {
+        this.LayoutGroupBox.IsEnabled = false;
+        EnableDisplayHelper();
+        return;
+      }
+      this.LayoutGroupBox.IsEnabled = true;
+      DisableDisplayHelper();
     }
   }
 

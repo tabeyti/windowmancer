@@ -6,13 +6,17 @@ using WindowmancerWPF.Practices;
 using WindowmancerWPF.Services;
 using System.Windows.Input;
 using System.Windows.Controls;
+using Gat.Controls;
+using System.Windows.Media.Imaging;
+using System;
+using MahApps.Metro.Controls;
 
 namespace WindowmancerWPF.UI
 { 
   /// <summary>
   /// Interaction logic for MainWindow.xaml
   /// </summary>
-  public partial class EditorWindow : Window
+  public partial class EditorWindow : MetroWindow
   {
     // TODO: Temp
     private static IUnityContainer ServiceResolver { get; set; }
@@ -58,5 +62,12 @@ namespace WindowmancerWPF.UI
     }
 
     #endregion Control Events
+
+    private void AboutBox_Click(object sender, RoutedEventArgs e)
+    {
+      var about = new About();
+      about.ApplicationLogo = Helper.ImageSourceForBitmap(Properties.Resources.AppLogo);
+      about.Show();
+    }
   }
 }
