@@ -51,8 +51,8 @@
                                     Margin="4,-6,10,0" 
                                     VerticalAlignment="Top" 
                                     Width="Auto"/>
-                <RadioButton Name="MatchByWindowTitleRadioButton" Content="Match by Window Title" GroupName="MatchOptions" IsChecked="{Binding Path=CurrentOption, Mode=TwoWay}"/>
-                <RadioButton Name="MatchByProcesNameRadioButton" Content="Match by Process Name" GroupName="MatchOptions" IsChecked="{Binding Path=CurrentOption, Mode=TwoWay}"/>
+                <RadioButton Name="MatchByWindowTitleRadioButton" Content="Match by Window Title" GroupName="MatchOptions" IsChecked="{Binding Path=CurrentOption, Mode=TwoWay}" Margin="5,0,0,5"/>
+                <RadioButton Name="MatchByProcesNameRadioButton" Content="Match by Process Name" GroupName="MatchOptions" IsChecked="{Binding Path=CurrentOption, Mode=TwoWay}" Margin="5,0,0,5"/>
               </StackPanel>
             </GroupBox>
             <GroupBox  Grid.Row="2"
@@ -80,16 +80,17 @@
                                     Foreground="White"
                                     Value="{Binding Mode=TwoWay, Path=Position.X}"
                                     Height="20" 
+                                    ShowButtonSpinner="False"
                                     Margin="0,5"/>
                 <Label Grid.Column="2" Grid.Row="0" Content="x"/>
                 <xctk:IntegerUpDown Name="YSpinner" 
-                                      Grid.Column="3"
-                                      Grid.Row="0"
-                                      Foreground="White"
-                                      Value="{Binding Mode=TwoWay, Path=Position.X}"
-                                      Height="20" 
-                                      Margin="0,5"/>
-
+                                    Grid.Column="3"
+                                    Grid.Row="0"
+                                    Foreground="White"
+                                    Value="{Binding Mode=TwoWay, Path=Position.X}"
+                                    Height="20" 
+                                    Margin="0,5"
+                                    ShowButtonSpinner="False"/>
 
                 <Label Grid.Column="0" Grid.Row="1" Content="Size" HorizontalAlignment="Left" VerticalAlignment="Center" Height="Auto"/>
                 <xctk:IntegerUpDown Name="WidthSpinner" 
@@ -97,14 +98,16 @@
                                       Foreground="White"
                                       Value="{Binding Mode=TwoWay, Path=Size.Width}"
                                       Height="20" 
-                                      Margin="0,5"/>
+                                      Margin="0,5"
+                                    ShowButtonSpinner="False"/>
                 <Label Content="x" Grid.Column="2" Grid.Row="1"/>
                 <xctk:IntegerUpDown Name="HeightSpinner" 
                                       Grid.Column="3" Grid.Row="1"
                                       Foreground="White"
                                       Value="{Binding Mode=TwoWay, Path=Size.Height}"
                                       Height="20" 
-                                      Margin="0,5"/>
+                                      Margin="0,5"
+                                    ShowButtonSpinner="False"/>
               </Grid>
 
             </GroupBox>
@@ -112,7 +115,7 @@
         </Grid>
       </TabItem>
       <TabItem x:Name="LayoutTab" Header="Layout Helper">
-        <Grid>
+        <Grid Margin="5">
           <Grid.ColumnDefinitions>
             <ColumnDefinition Width="120"/>
             <ColumnDefinition Width="*"/>

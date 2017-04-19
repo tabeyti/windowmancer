@@ -1,55 +1,45 @@
 ﻿<Controls:MetroWindow x:Class="WindowmancerWPF.UI.EditorWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WindowmancerWPF"
-        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        mc:Ignorable="d"
-        BorderThickness="1"
-        BorderBrush="SteelBlue"
-        Title="Windowmancer" Height="768" Width="1024">
-  <!--<Controls:MetroWindow.Resources>
-    <ResourceDictionary>
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:local="clr-namespace:WindowmancerWPF"
+                      xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                      mc:Ignorable="d"
+                      Background="{StaticResource MainColorTheme}"
+                      GlowBrush="#640fff"
+                      TitleCaps="False"
+                      Title="Windowmancer" Height="768" Width="1024">
+  <Controls:MetroWindow.Resources>
+    <Style x:Key="MyColumnHeader" 
+               BasedOn="{StaticResource MetroDataGridColumnHeader}" 
+               TargetType="{x:Type DataGridColumnHeader}">
+      <Setter Property="BorderBrush" Value="{StaticResource MainColorTheme}" />
+      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="Controls:ControlsHelper.ContentCharacterCasing" Value="Normal"/>
+      <Setter Property="SeparatorBrush" Value="{StaticResource MainColorTheme}" />
+    </Style>
 
-      <x:Array x:Key="DataGridSelectionUnitArray" Type="DataGridSelectionUnit">
-        <DataGridSelectionUnit>FullRow</DataGridSelectionUnit>
-        <DataGridSelectionUnit>CellOrRowHeader</DataGridSelectionUnit>
-        <DataGridSelectionUnit>Cell</DataGridSelectionUnit>
-      </x:Array>
-      <x:Array x:Key="DataGridGridLinesVisibilityArray" Type="DataGridGridLinesVisibility">
-        <DataGridGridLinesVisibility>All</DataGridGridLinesVisibility>
-        <DataGridGridLinesVisibility>Horizontal</DataGridGridLinesVisibility>
-        <DataGridGridLinesVisibility>Vertical</DataGridGridLinesVisibility>
-        <DataGridGridLinesVisibility>None</DataGridGridLinesVisibility>
-      </x:Array> 
-      <x:Array x:Key="DataGridHeadersVisibilityArray" Type="DataGridHeadersVisibility">
-        <DataGridHeadersVisibility>All</DataGridHeadersVisibility>
-        <DataGridHeadersVisibility>Row</DataGridHeadersVisibility>
-        <DataGridHeadersVisibility>Column</DataGridHeadersVisibility>
-        <DataGridHeadersVisibility>None</DataGridHeadersVisibility>
-      </x:Array>
-    </ResourceDictionary>
-  </Controls:MetroWindow.Resources>-->
+  </Controls:MetroWindow.Resources>
+
   <Grid>
     <Grid.RowDefinitions>
-      <RowDefinition Height="35"/>
+      <RowDefinition Height="30"/>
       <RowDefinition Height="*" />
       <RowDefinition Height="5" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
     <DockPanel Grid.Row="0">
       <Menu DockPanel.Dock="Top">
-        <MenuItem Header="_Settings">
-          <MenuItem Header="_Preferences"/>
+        <MenuItem Header="_Settings" FontSize="12">
+          <MenuItem Header="_Preferences" FontSize="12"/>
         </MenuItem>
-        <MenuItem Header="_Help">
-          <MenuItem Header="_Documentation"/>
+        <MenuItem Header="_Help" FontSize="11">
+          <MenuItem Header="_Documentation" FontSize="12"/>
           <Separator/>
-          <MenuItem Header="_About" Click="AboutBox_Click"/>
+          <MenuItem Header="_About" Click="AboutBox_Click" FontSize="12"/>
         </MenuItem>
       </Menu>
-      <StackPanel></StackPanel>
     </DockPanel>
     <Grid Grid.Row="1">
       <Grid.ColumnDefinitions>
@@ -57,60 +47,61 @@
         <ColumnDefinition Width="5" />
         <ColumnDefinition Width="*" />
       </Grid.ColumnDefinitions>
-      <ListBox Name="ProfileListBox" Grid.Column="0">
-        <ListBox.ItemTemplate>
-          <DataTemplate>
-            <Grid Margin="0,2">
-              <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-              </Grid.ColumnDefinitions>
-              <TextBlock Text="{Binding Name}" />
-            </Grid>
-          </DataTemplate>
-        </ListBox.ItemTemplate>
-      </ListBox>
-      <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
-      <DataGrid Name="WindowConfigDataGrid" 
+      <GroupBox Header="Profiles" Grid.Column="0">
+        <ListBox Name="ProfileListBox" Background="#1e1e1e">
+          <ListBox.ItemTemplate>
+            <DataTemplate>
+              <Grid Margin="0,2">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{Binding Name}" />
+              </Grid>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+      </GroupBox>      
+      <GridSplitter Background="{StaticResource MainColorTheme}" Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
+      <GroupBox Header="Window Configurations" Grid.Column="2">
+        <DataGrid Name="WindowConfigDataGrid" 
                 GridLinesVisibility="None" 
-                Grid.Column="2" 
+                
                 IsReadOnly="True" 
                 SelectionMode="Single" 
                 SelectionUnit="FullRow"
+                Background="#1e1e1e"
+                CanUserResizeColumns="False"
+                ColumnHeaderStyle="{StaticResource MyColumnHeader}"
                 MouseDoubleClick="WindowConfigDataGrid_OnMouseDoubleClick">
-        <!--<DataGrid.Resources>
-          <Style TargetType="DataGridRow">
-            <EventSetter Event="MouseDoubleClick" Handler="WindowConfigDataGrid_RowDoubleClick"/>
-          </Style>
-        </DataGrid.Resources>-->
-        <!--<DataGrid.InputBindings>
-          <MouseBinding MouseAction="LeftDoubleClick"
-                  Command="{Binding Path=WindowConfigDataGrid_RowDoubleClick}"
-                  CommandParameter="{Binding ElementName=WindowConfigDataGrid, Path=SelectedItem}" />
-        </DataGrid.InputBindings>-->
-      </DataGrid>
+        </DataGrid>
+      </GroupBox>
     </Grid>
-    <GridSplitter Grid.Row="2" Height="5" HorizontalAlignment="Stretch" />
-    <DataGrid Name="ActiveWindowsGrid" 
-              Grid.Row="3" 
+    <GridSplitter Grid.Row="2" Background="{StaticResource MainColorTheme}" Height="5" HorizontalAlignment="Stretch" />
+    <GroupBox Header="Active Windows" Grid.Row="3">
+      <DataGrid Name="ActiveWindowsGrid" 
               GridLinesVisibility="None"               
               AutoGenerateColumns="False"
               IsReadOnly="True" 
               SelectionMode="Single" 
               SelectionUnit="FullRow"
+              CanUserResizeColumns="False"
+              Background="#1e1e1e"
+              ColumnHeaderStyle="{StaticResource MyColumnHeader}"
               MouseDoubleClick="ActiveWindowsGrid_OnMouseDoubleClick">
-      <DataGrid.Columns>
-        <DataGridTemplateColumn>
-          <DataGridTemplateColumn.CellTemplate>
-            <DataTemplate>
-              <Image Source="{Binding Icon}" />
-            </DataTemplate>
-          </DataGridTemplateColumn.CellTemplate>
-        </DataGridTemplateColumn>
-        <DataGridTextColumn Header="Id" Binding="{Binding Id}"></DataGridTextColumn>
-        <DataGridTextColumn Header="Name" Binding="{Binding Name}"></DataGridTextColumn>
-        <DataGridTextColumn Header="Window Title" Binding="{Binding WindowTitle}"></DataGridTextColumn>
-      </DataGrid.Columns>
-    </DataGrid>
+        <DataGrid.Columns>
+          <DataGridTemplateColumn>
+            <DataGridTemplateColumn.CellTemplate>
+              <DataTemplate>
+                <Image Source="{Binding Icon}" />
+              </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+          </DataGridTemplateColumn>
+          <DataGridTextColumn Header="Id" Binding="{Binding Id}"></DataGridTextColumn>
+          <DataGridTextColumn Header="Name" Binding="{Binding Name}"></DataGridTextColumn>
+          <DataGridTextColumn Header="Window Title" Binding="{Binding WindowTitle}"></DataGridTextColumn>
+        </DataGrid.Columns>
+      </DataGrid>
+    </GroupBox>
   </Grid>
 
 </Controls:MetroWindow>

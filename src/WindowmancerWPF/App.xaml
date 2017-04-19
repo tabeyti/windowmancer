@@ -5,17 +5,20 @@
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              StartupUri="UI/EditorWindow.xaml">
     <Application.Resources>
-    <ResourceDictionary>
+      <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <!-- MahApps.Metro resource dictionaries. Make sure that all file names are Case Sensitive! -->
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />
         <!-- Accent and AppTheme setting -->
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Steel.xaml" />
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml" />
       </ResourceDictionary.MergedDictionaries>
       <system:Double x:Key="TabItemFontSize">20</system:Double>
+      <system:Double x:Key="MenuItemFontSize">10</system:Double>
+      <SolidColorBrush x:Key="MainColorTheme" Color="#3f3f46"/>
     </ResourceDictionary>
 
   </Application.Resources>
