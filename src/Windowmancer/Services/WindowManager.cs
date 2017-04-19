@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using Windowmancer.Extensions;
 using Windowmancer.Models;
 using Windowmancer.Practices;
@@ -39,11 +40,6 @@ namespace Windowmancer.Services
         return;
       }
 
-      // Get absolute position based on monitor target.
-      //var screen = Screen.AllScreens.ToList().Find(s => s.DeviceName == windowInfo.LocationInfo.DisplayName);
-      //var x = screen.WorkingArea.Left + windowInfo.LocationInfo.PositionInfo.X;
-      //var y = screen.WorkingArea.Top + windowInfo.LocationInfo.PositionInfo.Y;
-
       var x = windowInfo.LocationInfo.PositionInfo.X;
       var y = windowInfo.LocationInfo.PositionInfo.Y;
 
@@ -53,6 +49,17 @@ namespace Windowmancer.Services
         Win32.SetForegroundWindow(handle);
       });
       Win32.MoveWindow(handle, x, y, windowInfo.SizeInfo.Width, windowInfo.SizeInfo.Height, true);
+    }
+
+    public static Process GetProcess(WindowInfo windowInfo)
+    {
+      if (null == windowInfo)
+      {
+        return null;
+      }
+
+      var allProcceses = System.Diagnostics.Process.GetProcesses();
+      return allProcceses.ToList().Find(windowInfo.IsMatch);
     }
 
     public void RefreshProfile()

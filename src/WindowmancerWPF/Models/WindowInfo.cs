@@ -17,6 +17,12 @@ namespace WindowmancerWPF.Models
     }
   }
 
+  public class WindowLayoutInfo
+  {
+    public PositionInfo PositionInfo { get; set; }
+    public SizeInfo SizeInfo { get; set; }
+  }
+
   public class LocationInfo
   {
     public string DisplayName { get; set; }

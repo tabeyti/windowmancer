@@ -6,8 +6,31 @@
         xmlns:local="clr-namespace:WindowmancerWPF"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
-        Title="WindowmancerWPF" Height="600" Width="800">
+        BorderThickness="1"
+        BorderBrush="SteelBlue"
+        Title="Windowmancer" Height="768" Width="1024">
+  <!--<Controls:MetroWindow.Resources>
+    <ResourceDictionary>
 
+      <x:Array x:Key="DataGridSelectionUnitArray" Type="DataGridSelectionUnit">
+        <DataGridSelectionUnit>FullRow</DataGridSelectionUnit>
+        <DataGridSelectionUnit>CellOrRowHeader</DataGridSelectionUnit>
+        <DataGridSelectionUnit>Cell</DataGridSelectionUnit>
+      </x:Array>
+      <x:Array x:Key="DataGridGridLinesVisibilityArray" Type="DataGridGridLinesVisibility">
+        <DataGridGridLinesVisibility>All</DataGridGridLinesVisibility>
+        <DataGridGridLinesVisibility>Horizontal</DataGridGridLinesVisibility>
+        <DataGridGridLinesVisibility>Vertical</DataGridGridLinesVisibility>
+        <DataGridGridLinesVisibility>None</DataGridGridLinesVisibility>
+      </x:Array> 
+      <x:Array x:Key="DataGridHeadersVisibilityArray" Type="DataGridHeadersVisibility">
+        <DataGridHeadersVisibility>All</DataGridHeadersVisibility>
+        <DataGridHeadersVisibility>Row</DataGridHeadersVisibility>
+        <DataGridHeadersVisibility>Column</DataGridHeadersVisibility>
+        <DataGridHeadersVisibility>None</DataGridHeadersVisibility>
+      </x:Array>
+    </ResourceDictionary>
+  </Controls:MetroWindow.Resources>-->
   <Grid>
     <Grid.RowDefinitions>
       <RowDefinition Height="35"/>
@@ -29,11 +52,6 @@
       <StackPanel></StackPanel>
     </DockPanel>
     <Grid Grid.Row="1">
-      <!--<Grid.Resources>
-        <DataTemplate x:Key="">
-          
-        </DataTemplate>
-      </Grid.Resources>-->
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="200" />
         <ColumnDefinition Width="5" />
@@ -48,8 +66,8 @@
               </Grid.ColumnDefinitions>
               <TextBlock Text="{Binding Name}" />
             </Grid>
-            </DataTemplate>
-          </ListBox.ItemTemplate>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
       </ListBox>
       <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
       <DataGrid Name="WindowConfigDataGrid" 
@@ -58,32 +76,28 @@
                 IsReadOnly="True" 
                 SelectionMode="Single" 
                 SelectionUnit="FullRow"
-                >
-        <DataGrid.Style>
-          <Style TargetType="DataGrid">
-            <Setter Property="AlternatingRowBackground" Value="DarkGray"/>
-          </Style>
-        </DataGrid.Style>
-        <DataGrid.Resources>
+                MouseDoubleClick="WindowConfigDataGrid_OnMouseDoubleClick">
+        <!--<DataGrid.Resources>
           <Style TargetType="DataGridRow">
             <EventSetter Event="MouseDoubleClick" Handler="WindowConfigDataGrid_RowDoubleClick"/>
           </Style>
-        </DataGrid.Resources>
+        </DataGrid.Resources>-->
+        <!--<DataGrid.InputBindings>
+          <MouseBinding MouseAction="LeftDoubleClick"
+                  Command="{Binding Path=WindowConfigDataGrid_RowDoubleClick}"
+                  CommandParameter="{Binding ElementName=WindowConfigDataGrid, Path=SelectedItem}" />
+        </DataGrid.InputBindings>-->
       </DataGrid>
     </Grid>
     <GridSplitter Grid.Row="2" Height="5" HorizontalAlignment="Stretch" />
     <DataGrid Name="ActiveWindowsGrid" 
               Grid.Row="3" 
               GridLinesVisibility="None"               
-              AutoGenerateColumns="False" 
+              AutoGenerateColumns="False"
               IsReadOnly="True" 
               SelectionMode="Single" 
-              SelectionUnit="FullRow">
-      <DataGrid.Style>
-        <Style TargetType="DataGrid">
-          <Setter Property="AlternatingRowBackground" Value="DarkGray"/>
-        </Style>
-      </DataGrid.Style>
+              SelectionUnit="FullRow"
+              MouseDoubleClick="ActiveWindowsGrid_OnMouseDoubleClick">
       <DataGrid.Columns>
         <DataGridTemplateColumn>
           <DataGridTemplateColumn.CellTemplate>

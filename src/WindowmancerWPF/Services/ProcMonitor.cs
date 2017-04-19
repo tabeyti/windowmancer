@@ -144,5 +144,10 @@ namespace WindowmancerWPF.Services
       _process = process;
       Icon = Helper.GetProcessIconImageSource(_process);
     }
+
+    public Process GetProcess()
+    {
+      return _process;
+    }
   }
 }

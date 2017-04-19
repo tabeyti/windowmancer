@@ -1,14 +1,10 @@
-﻿using System.Collections.ObjectModel;
-using Microsoft.Practices.Unity;
+﻿using Microsoft.Practices.Unity;
 using System.Windows;
 using WindowmancerWPF.Models;
 using WindowmancerWPF.Practices;
 using WindowmancerWPF.Services;
 using System.Windows.Input;
-using System.Windows.Controls;
 using Gat.Controls;
-using System.Windows.Media.Imaging;
-using System;
 using MahApps.Metro.Controls;
 
 namespace WindowmancerWPF.UI
@@ -50,24 +46,33 @@ namespace WindowmancerWPF.UI
 
     #region Control Events
 
-    private void WindowConfigDataGrid_RowDoubleClick(object sender, MouseButtonEventArgs e)
-    {
-      var row = sender as DataGridRow;
-      var item = (WindowInfo)WindowConfigDataGrid.SelectedItem;
-
-      var dialog = new WindowConfigDialog();
-      dialog.ShowDialog();
-
-      // Some operations with this row
-    }
-
     #endregion Control Events
 
     private void AboutBox_Click(object sender, RoutedEventArgs e)
     {
-      var about = new About();
-      about.ApplicationLogo = Helper.ImageSourceForBitmap(Properties.Resources.AppLogo);
+      var about = new About
+      {
+        ApplicationLogo = Helper.ImageSourceForBitmap(Properties.Resources.AppLogo)
+      };
       about.Show();
+    }
+
+    private void WindowConfigDataGrid_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+    {
+      if (this.WindowConfigDataGrid.SelectedItem == null) return;
+      var item = (WindowInfo)WindowConfigDataGrid.SelectedItem;
+
+      var dialog = new WindowConfigDialog(item) {Owner = this};
+      dialog.ShowDialog();
+    }
+
+    private void ActiveWindowsGrid_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+    {
+      if (this.ActiveWindowsGrid.SelectedItem == null) return;
+      var item = (MonitoredProcess)this.ActiveWindowsGrid.SelectedItem;
+
+      var dialog = new WindowConfigDialog(item.GetProcess()) { Owner = this };
+      dialog.ShowDialog();
     }
   }
 }

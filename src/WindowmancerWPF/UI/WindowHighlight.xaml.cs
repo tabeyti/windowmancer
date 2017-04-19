@@ -5,9 +5,9 @@ namespace WindowmancerWPF.UI
   /// <summary>
   /// Interaction logic for ScreenHighlight.xaml
   /// </summary>
-  public partial class ScreenHighlight : Window
+  public partial class WindowHighlight : Window
   {
-    public ScreenHighlight()
+    public WindowHighlight()
     {
       InitializeComponent();
     }
