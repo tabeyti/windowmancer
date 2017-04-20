@@ -10,10 +10,10 @@
       
       <ResourceDictionary.MergedDictionaries>
         <!-- MahApps.Metro resource dictionaries. Make sure that all file names are Case Sensitive! -->
-        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />
+        <ResourceDictionary Source="/MahApps.Metro;component/Styles/Controls.xaml" />
+        <ResourceDictionary Source="/MahApps.Metro;component/Styles/Fonts.xaml" />
+        <ResourceDictionary Source="/MahApps.Metro;component/Styles/Colors.xaml" />
+        <ResourceDictionary Source="/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />
         
         <!-- Accent and AppTheme setting -->
         <!--<ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Steel.xaml" />-->
@@ -24,6 +24,7 @@
       <SolidColorBrush x:Key="MainColorTheme" Color="#2d2d2d"/>
       <system:Double x:Key="TabItemFontSize">20</system:Double>
       <system:Double x:Key="MenuItemFontSize">10</system:Double>
+      <system:Double x:Key="ContextMenuItemFontSize">10</system:Double>
 
     </ResourceDictionary>
 
