@@ -3,22 +3,28 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:WindowmancerWPF"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
-             StartupUri="UI/EditorWindow.xaml">
-    <Application.Resources>
-      <ResourceDictionary>
+             Startup="App_OnStartup"
+             Exit="App_OnExit">
+  <Application.Resources>
+    <ResourceDictionary>
+      
       <ResourceDictionary.MergedDictionaries>
         <!-- MahApps.Metro resource dictionaries. Make sure that all file names are Case Sensitive! -->
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />
+        
         <!-- Accent and AppTheme setting -->
-        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Steel.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml" />
+        <!--<ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Steel.xaml" />-->
+        <ResourceDictionary Source="pack://application:,,,/UI/Themes/MyBaseDark.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/UI/Accents/DarkAccent.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/UI/Controls/Controls.ListBox.xaml" />
       </ResourceDictionary.MergedDictionaries>
+      <SolidColorBrush x:Key="MainColorTheme" Color="#2d2d2d"/>
       <system:Double x:Key="TabItemFontSize">20</system:Double>
       <system:Double x:Key="MenuItemFontSize">10</system:Double>
-      <SolidColorBrush x:Key="MainColorTheme" Color="#3f3f46"/>
+
     </ResourceDictionary>
 
   </Application.Resources>

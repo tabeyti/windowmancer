@@ -7,8 +7,10 @@
                       xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       mc:Ignorable="d"
                       Background="{StaticResource MainColorTheme}"
-                      GlowBrush="#640fff"
+                      GlowBrush="SlateBlue"
                       TitleCaps="False"
+                      IconScalingMode="NoScaleSmallerFrame"
+                      WindowStartupLocation="CenterScreen"
                       Title="Windowmancer" Height="768" Width="1024">
   <Controls:MetroWindow.Resources>
     <Style x:Key="MyColumnHeader" 
@@ -19,7 +21,6 @@
       <Setter Property="Controls:ControlsHelper.ContentCharacterCasing" Value="Normal"/>
       <Setter Property="SeparatorBrush" Value="{StaticResource MainColorTheme}" />
     </Style>
-
   </Controls:MetroWindow.Resources>
 
   <Grid>
@@ -48,7 +49,9 @@
         <ColumnDefinition Width="*" />
       </Grid.ColumnDefinitions>
       <GroupBox Header="Profiles" Grid.Column="0">
-        <ListBox Name="ProfileListBox" Background="#1e1e1e">
+        <ListBox Name="ProfileListBox" 
+                 Style="{StaticResource MyListBox}"
+                 ItemContainerStyle="{StaticResource MyListBoxItem}">
           <ListBox.ItemTemplate>
             <DataTemplate>
               <Grid Margin="0,2">
@@ -65,29 +68,48 @@
       <GroupBox Header="Window Configurations" Grid.Column="2">
         <DataGrid Name="WindowConfigDataGrid" 
                 GridLinesVisibility="None" 
-                
                 IsReadOnly="True" 
                 SelectionMode="Single" 
                 SelectionUnit="FullRow"
-                Background="#1e1e1e"
+                Background="{StaticResource AccentViewBackgroundColorBrush}"
                 CanUserResizeColumns="False"
                 ColumnHeaderStyle="{StaticResource MyColumnHeader}"
                 MouseDoubleClick="WindowConfigDataGrid_OnMouseDoubleClick">
+          <DataGrid.Resources>
+            <ContextMenu x:Key="RowMenu">
+              <MenuItem Header="Edit" Click="WindowConfigDataGrid_MenuItemClick"></MenuItem>
+            </ContextMenu>
+          </DataGrid.Resources>
+          <DataGrid.RowStyle>
+              <Style TargetType="DataGridRow" BasedOn="{StaticResource MetroDataGridRow}">
+                <Setter Property="ContextMenu" Value="{StaticResource RowMenu}"></Setter>
+              </Style>
+          </DataGrid.RowStyle>
         </DataGrid>
       </GroupBox>
     </Grid>
     <GridSplitter Grid.Row="2" Background="{StaticResource MainColorTheme}" Height="5" HorizontalAlignment="Stretch" />
     <GroupBox Header="Active Windows" Grid.Row="3">
-      <DataGrid Name="ActiveWindowsGrid" 
+      <DataGrid Name="ActiveWindowsDataGrid" 
               GridLinesVisibility="None"               
               AutoGenerateColumns="False"
               IsReadOnly="True" 
               SelectionMode="Single" 
               SelectionUnit="FullRow"
               CanUserResizeColumns="False"
-              Background="#1e1e1e"
+              Background="{StaticResource AccentViewBackgroundColorBrush}"
               ColumnHeaderStyle="{StaticResource MyColumnHeader}"
               MouseDoubleClick="ActiveWindowsGrid_OnMouseDoubleClick">
+        <DataGrid.Resources>
+          <ContextMenu x:Key="RowMenu">
+            <MenuItem Header="Add" Click="ActiveWindowsDataGrid_MenuItemClick"></MenuItem>
+          </ContextMenu>
+        </DataGrid.Resources>
+        <DataGrid.RowStyle>
+          <Style TargetType="DataGridRow" BasedOn="{StaticResource MetroDataGridRow}">
+            <Setter Property="ContextMenu" Value="{StaticResource RowMenu}"></Setter>
+          </Style>
+        </DataGrid.RowStyle>
         <DataGrid.Columns>
           <DataGridTemplateColumn>
             <DataGridTemplateColumn.CellTemplate>
@@ -105,3 +127,4 @@
   </Grid>
 
 </Controls:MetroWindow>
+
