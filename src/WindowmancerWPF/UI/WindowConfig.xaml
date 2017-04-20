@@ -8,12 +8,7 @@
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         x:Class="WindowmancerWPF.UI.WindowConfig"
         mc:Ignorable="d"
-        
-        Height="450" 
-        Width="600"
-        
-        BorderThickness="1"
-        BorderBrush="SteelBlue"
+  HorizontalAlignment="Stretch"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
   <Grid>
     <Grid.RowDefinitions>

@@ -11,7 +11,7 @@
                       TitleCaps="False"
                       IconScalingMode="NoScaleSmallerFrame"
                       WindowStartupLocation="CenterScreen"
-                      Title="Windowmancer" Height="768" Width="1024">
+                       Height="768" Width="1024">
   <Controls:MetroWindow.Resources>
     <Style x:Key="MyColumnHeader" 
                BasedOn="{StaticResource MetroDataGridColumnHeader}" 
@@ -22,7 +22,17 @@
       <Setter Property="SeparatorBrush" Value="{StaticResource MainColorTheme}" />
     </Style>
   </Controls:MetroWindow.Resources>
+  <Controls:MetroWindow.Flyouts>
+    <Controls:FlyoutsControl x:Name="flyoutsControl">
+      <Controls:Flyout Header="Modal"
+                             IsModal="True"
+                             Position="Right"
+                       Width="750">
 
+
+      </Controls:Flyout>
+    </Controls:FlyoutsControl>
+  </Controls:MetroWindow.Flyouts>
   <Grid>
     <Grid.RowDefinitions>
       <RowDefinition Height="30"/>
@@ -63,7 +73,7 @@
             </DataTemplate>
           </ListBox.ItemTemplate>
         </ListBox>
-      </GroupBox>      
+      </GroupBox>
       <GridSplitter Background="{StaticResource MainColorTheme}" Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
       <GroupBox Header="Window Configurations" Grid.Column="2">
         <DataGrid Name="WindowConfigDataGrid" 

@@ -7,6 +7,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Gat.Controls;
 using MahApps.Metro.Controls.Dialogs;
+using MahApps.Metro.Controls;
 
 namespace WindowmancerWPF.UI
 { 
@@ -50,6 +51,15 @@ namespace WindowmancerWPF.UI
       if (this.WindowConfigDataGrid.SelectedItem == null) return;
       var item = (WindowInfo)WindowConfigDataGrid.SelectedItem;
 
+      var flyout = this.Flyouts.Items[0] as Flyout;
+      if (flyout == null)
+      {
+        return;
+      }
+      var w = new WindowConfig(item);
+      flyout.Content = w;
+      flyout.IsOpen = !flyout.IsOpen;
+
       //var d = new CustomDialog();
       //var settings = new MetroDialogSettings
       //{
@@ -58,18 +68,41 @@ namespace WindowmancerWPF.UI
       //  NegativeButtonText = "Cancel",
       //  FirstAuxiliaryButtonText = "Okay"
       //};
-      //d.Content = new WindowConfigDialog(item);
+      //d.Content = new WindowConfig(item);
 
       //this.ShowMetroDialogAsync(d, settings);
 
-      var dialog = new WindowConfigDialog(item) { Owner = this };
-      dialog.ShowDialog();
+      //var dialog = new WindowConfigDialog(item) { Owner = this };
+      //dialog.ShowDialog();
     }
 
     private void HandleProcessWindowConfig()
     {
-      //if (this.ActiveWindowsDataGrid.SelectedItem == null) return;
-      //var item = (MonitoredProcess)this.ActiveWindowsDataGrid.SelectedItem;
+      if (this.ActiveWindowsDataGrid.SelectedItem == null) return;
+      var item = (MonitoredProcess)this.ActiveWindowsDataGrid.SelectedItem;
+
+      var flyout = this.Flyouts.Items[0] as Flyout;
+      if (flyout == null)
+      {
+        return;
+      }
+      var w = new WindowConfig(item.GetProcess());
+      flyout.Content = w;
+      flyout.IsOpen = !flyout.IsOpen;
+
+      //var d = new CustomDialog(this);
+      //var settings = new MetroDialogSettings
+      //{
+      //  AffirmativeButtonText = "Okay",
+      //  AnimateShow = true,
+      //  NegativeButtonText = "Cancel",
+      //  FirstAuxiliaryButtonText = "Okay",
+      //  ColorScheme = MetroDialogColorScheme.Inverted,
+      //  CustomResourceDictionary = WindowmancerWPF.App.Current.Resources
+
+      //};
+      //d.Content = new WindowConfig(item.GetProcess());
+      //this.ShowMetroDialogAsync(d, settings);
 
       //var dialog = new WindowConfigDialog(item.GetProcess()) { Owner = this };
       //var result = dialog.ShowDialog();
@@ -77,9 +110,8 @@ namespace WindowmancerWPF.UI
       //{
       //  return;
       //}
-
     }
-    
+
     private void AboutBox_Click(object sender, RoutedEventArgs e)
     {
       var about = new About
@@ -107,6 +139,18 @@ namespace WindowmancerWPF.UI
     private void ActiveWindowsDataGrid_MenuItemClick(object sender, RoutedEventArgs e)
     {
       HandleProcessWindowConfig();
+    }
+
+    private void ShowModal(object sender, RoutedEventArgs e)
+    {
+      var flyout = this.Flyouts.Items[0] as Flyout;
+      if (flyout == null)
+      {
+        return;
+      }
+      var w = new WindowConfig();
+      flyout.Content = w;
+      flyout.IsOpen = !flyout.IsOpen;
     }
   }
 }

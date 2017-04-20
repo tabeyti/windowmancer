@@ -13,6 +13,7 @@ using WindowmancerWPF.Practices;
 using WindowmancerWPF.Services;
 using Button = System.Windows.Controls.Button;
 using ButtonBase = System.Windows.Controls.Primitives.ButtonBase;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace WindowmancerWPF.UI
 {
@@ -26,6 +27,8 @@ namespace WindowmancerWPF.UI
     public SizeInfo Size { get; set; }
     public WindowInfo WindowInfo { get; set; }
     public bool DisplayHelperPreview { get; set; }
+
+    public MetroWindow ParentWindow { get; set; }
 
     private Screen _currentDisplay;
     private DisplaySection _displaySection;
