@@ -20,7 +20,7 @@ namespace WindowmancerWPF.UI
   /// Interaction logic for WindowConfigDialog.xaml
   /// </summary>
   /// 
-  public partial class WindowConfigDialog : MetroWindow
+  public partial class WindowConfig
   {
     public PositionInfo Position { get; set; }
     public SizeInfo Size { get; set; }
@@ -35,14 +35,14 @@ namespace WindowmancerWPF.UI
     private readonly List<Button> _displaySectionButtons = new List<Button>();
     private readonly SolidColorBrush _defaultBrush = Brushes.Turquoise;
 
-    public WindowConfigDialog()
+    public WindowConfig()
     {
       PreInitialization();
       InitializeComponent();
       Initialize();
     }
 
-    public WindowConfigDialog(WindowInfo windowInfo)
+    public WindowConfig(WindowInfo windowInfo)
     {
       this.WindowInfo = windowInfo;
       _process = WindowManager.GetProcess(this.WindowInfo);
@@ -51,7 +51,7 @@ namespace WindowmancerWPF.UI
       Initialize();
     }
 
-    public WindowConfigDialog(Process process)
+    public WindowConfig(Process process)
     {
       _process = process;
 
@@ -66,6 +66,7 @@ namespace WindowmancerWPF.UI
     /// </summary>
     private void PreInitialization()
     {
+      //this.DialogResult = false;
       this.Size = new SizeInfo();
       this.Position = new PositionInfo();
     }
@@ -145,7 +146,7 @@ namespace WindowmancerWPF.UI
       Enumerable.Range(0, rows).ForEach(r =>
         Enumerable.Range(0, cols).ForEach(c =>
         {
-          var button = new Button { Content = ((r * cols) + c).ToString(), Background = _defaultBrush, Foreground = Brushes.Black};
+          var button = new Button { Content = ((r * cols) + c).ToString(), Background = _defaultBrush, Foreground = Brushes.Black };
           button.Click += DisplaySection_OnClick;
           button.Tag = new DisplaySection
           {
@@ -266,14 +267,13 @@ namespace WindowmancerWPF.UI
 
     private void OkayButton_Click(object sender, RoutedEventArgs e)
     {
-      this.DialogResult = true;
-      this.Close();
+      //this.DialogResult = true;
+      //this.Close();
     }
 
     private void CancelButton_Click(object sender, RoutedEventArgs e)
     {
-      this.DialogResult = false;
-      this.Close();
+      //this.Close();
     }
 
     private void TabControl_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -296,36 +296,6 @@ namespace WindowmancerWPF.UI
         return;
       }
       DisableScreenHighlight();
-    }
-
-    /// <summary>
-    /// Our window dispose method.
-    /// </summary>
-    /// <param name="e"></param>
-    protected override void OnClosed(EventArgs e)
-    {
-      base.OnClosed(e);
-      _windowHighlight?.Close();
-    }
-  }
-
-  class DisplaySection
-  {
-    public int RowIndex { get; set; }
-    public int ColumnIndex { get; set; }
-    public int TotalRows { get; set; }
-    public int TotalColumns { get; set; }
-
-    public DisplaySection()
-    {
-    }
-
-    public DisplaySection(int rowIndex, int columnIndex, int totalRows, int totalColumns)
-    {
-      this.RowIndex = rowIndex;
-      this.ColumnIndex = columnIndex;
-      this.TotalRows = totalRows;
-      this.TotalColumns = totalColumns;
     }
   }
 }

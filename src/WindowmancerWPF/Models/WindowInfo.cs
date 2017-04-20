@@ -7,8 +7,7 @@ namespace WindowmancerWPF.Models
   public class WindowInfo
   {
     public string Name { get; set; }
-    public LocationInfo LocationInfo { get; set; }
-    public SizeInfo SizeInfo { get; set; }
+    public WindowLayoutInfo LayoutInfo { get; set; }
     public WindowMatchCriteria MatchCriteria { get; set; }
     public bool BringToFront { get; set; }
     public bool IsMatch(Process p)
@@ -21,6 +20,11 @@ namespace WindowmancerWPF.Models
   {
     public PositionInfo PositionInfo { get; set; }
     public SizeInfo SizeInfo { get; set; }
+
+    public override string ToString()
+    {
+      return $"pos: {this.PositionInfo} - size: {this.SizeInfo}";
+    }
   }
 
   public class LocationInfo

@@ -24,6 +24,11 @@ namespace WindowmancerWPF.Practices
       finally { DeleteObject(handle); }
     }
 
+    public static ImageSource ImageSourceForIcon(Icon icon)
+    {
+      return Imaging.CreateBitmapSourceFromHIcon(icon.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+    }
+
     public static Icon GetProcessIcon(Process process)
     {
       System.Drawing.Icon ico = null;

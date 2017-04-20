@@ -40,15 +40,15 @@ namespace WindowmancerWPF.Services
         return;
       }
       
-      var x = (int)windowInfo.LocationInfo.PositionInfo.X;
-      var y = (int)windowInfo.LocationInfo.PositionInfo.Y;
+      var x = (int)windowInfo.LayoutInfo.PositionInfo.X;
+      var y = (int)windowInfo.LayoutInfo.PositionInfo.Y;
 
       windowInfo.BringToFront.RunIfTrue(() =>
       {
         Win32.ShowWindow(handle, Win32.ShowWindowCommands.Maximize);
         Win32.SetForegroundWindow(handle);
       });
-      Win32.MoveWindow(handle, x, y, windowInfo.SizeInfo.Width, windowInfo.SizeInfo.Height, true);
+      Win32.MoveWindow(handle, x, y, windowInfo.LayoutInfo.SizeInfo.Width, windowInfo.LayoutInfo.SizeInfo.Height, true);
     }
 
     public static Process GetProcess(WindowInfo windowInfo)
