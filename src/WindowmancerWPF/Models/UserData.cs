@@ -46,15 +46,15 @@ namespace WindowmancerWPF.Models
 
     public void Save()
     {
-      try
-      {
-        var text = JsonConvert.SerializeObject(this, Formatting.Indented);
-        System.IO.File.WriteAllText(_config.UserDataPath, text);
-      }
-      catch (Exception e)
-      {
-        throw new ExceptionBox(e);
-      }
+      //try
+      //{
+      //  var text = JsonConvert.SerializeObject(this, Formatting.Indented);
+      //  System.IO.File.WriteAllText(_config.UserDataPath, text);
+      //}
+      //catch (Exception e)
+      //{
+      //  throw new ExceptionBox(e);
+      //}
     }
   }
 }

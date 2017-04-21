@@ -8,7 +8,8 @@
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         x:Class="WindowmancerWPF.UI.WindowConfig"
         mc:Ignorable="d"
-  HorizontalAlignment="Stretch"
+        HorizontalAlignment="Stretch"
+        Loaded="WindowConfig_OnLoaded"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
   <Grid>
     <Grid.RowDefinitions>
@@ -16,7 +17,7 @@
       <RowDefinition Height="50"/>
     </Grid.RowDefinitions>
     <TabControl Grid.Row="0" SelectionChanged="TabControl_SelectionChanged">
-      <TabItem x:Name="GeneralTab" Header="General">
+      <TabItem x:Name="GeneralTab" Header="General" Style="{StaticResource MyTabItem}">
         <Grid>
           <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -106,95 +107,81 @@
                                       Margin="0,5"
                                     ShowButtonSpinner="False"/>
               </Grid>
-
             </GroupBox>
           </Grid>
         </Grid>
       </TabItem>
-      <TabItem x:Name="LayoutTab" Header="Layout Helper">
+      <TabItem x:Name="LayoutTab" Header="Layout Helper" Style="{StaticResource MyTabItem}">
         <Grid Margin="5">
           <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="120"/>
+            <ColumnDefinition MaxWidth="200"/>
             <ColumnDefinition Width="*"/>
           </Grid.ColumnDefinitions>
-          <ListBox Name="DisplayListBox" 
-                   Grid.Column="0"
-                   SelectionChanged="DisplaysComboBox_SelectionChanged" 
-                   >
-            <ListBox.ItemTemplate>
-              <DataTemplate>
-                <TextBlock Text="{Binding DeviceName}" />
-              </DataTemplate>
-            </ListBox.ItemTemplate>
-          </ListBox>
-          <Grid Name="DisplayHelperControl" Grid.Column="1">
+
+          <!--#region Display helper settings -->
+          <Grid Grid.Column="0">
             <Grid.RowDefinitions>
+              <RowDefinition Height="200"/>
               <RowDefinition Height="*"/>
-              <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0">
-              <Border Margin="5"
-                BorderBrush="Gray" 
-                BorderThickness="10" 
-                CornerRadius="2">
-                <Grid x:Name="DisplayPanel"
-              HorizontalAlignment="Stretch"               
-              VerticalAlignment="Stretch">
-                  <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                  </Grid.ColumnDefinitions>
-                </Grid>
-              </Border>
-            </Grid>
+            <GroupBox Header="Displays">
+              <ListBox  Name="DisplayListBox" 
+                        Style="{StaticResource MyListBox}"
+                        ItemContainerStyle="{StaticResource MyListBoxItem}"
+                        Grid.Row="0"
+                        SelectionChanged="DisplaysComboBox_SelectionChanged">
+                <ListBox.ItemTemplate>
+                  <DataTemplate>
+                    <Grid Margin="3,3">
+                      <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                      </Grid.ColumnDefinitions>
+                      <TextBlock Text="{Binding DeviceName}" />
+                    </Grid>
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+              </ListBox>
+            </GroupBox>
             <Grid Grid.Row="1" 
                   HorizontalAlignment="Stretch" 
                   Margin="10,10,10,10" 
                   VerticalAlignment="Top">
               <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0" />
-                <ColumnDefinition Width="20" />
-                <!--spacer-->
-                <ColumnDefinition Width="40" />
-                <ColumnDefinition Width="50" />
-                <ColumnDefinition Width="60" />
-                <ColumnDefinition Width="50" />
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="75" />
+                <ColumnDefinition Width="75" />
               </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition Height="20"/>
+                <RowDefinition />
+              </Grid.RowDefinitions>
 
-              <!--<ComboBox Name="DisplaysComboBox" 
-                  Grid.Column="0"
-                  SelectionChanged="DisplaysComboBox_SelectionChanged">
-                <ComboBox.ItemTemplate>
-                  <DataTemplate>
-                    <TextBlock Text="{Binding DeviceName}" />
-                  </DataTemplate>
-                </ComboBox.ItemTemplate>
-              </ComboBox>-->
-              <Label Grid.Column="2" 
-               Content="Rows:" 
-               HorizontalAlignment="Left" 
-               VerticalAlignment="Center"/>
+              <Label Grid.Row="0" Grid.Column="0" 
+                     Content="Rows:" 
+                     HorizontalAlignment="Left" 
+                     VerticalAlignment="Center"/>
               <xctk:IntegerUpDown Name="RowSpinner" 
-                                Grid.Column="3" 
+                                Grid.Row="0" Grid.Column="1" 
                                 Foreground="White"
                                 Value="1"
                                 Minimum="1"
                                 Maximum="10"
                                 Height="20"/>
-              <Label Grid.Column="4" 
-               Content="Columns:" 
-               HorizontalAlignment="Left" 
-               VerticalAlignment="Top" />
+              <Label Grid.Row="1" Grid.Column="0" 
+                     Content="Columns:" 
+                     HorizontalAlignment="Left" 
+                     VerticalAlignment="Top" />
               <xctk:IntegerUpDown Name="ColumnSpinner" 
-                                Grid.Column="5" 
+                                Grid.Row="1" Grid.Column="1" 
                                 Foreground="White"
                                 Value="1"
                                 Minimum="1"
                                 Maximum="10"
                                 Height="20"/>
               <CheckBox Name="PreviewCheckBox" 
-                        Grid.Column="6"
-                        HorizontalAlignment="Right"
+                        Grid.Row="3" 
+                        HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                     Content="Preview" 
                     IsChecked="{Binding DisplayHelperPreview}"
@@ -202,9 +189,29 @@
                     Unchecked="PreviewCheckBox_OnChecked"/>
             </Grid>
           </Grid>
+          <!--#endregion-->
+
+          <!--#region Display panel -->
+          <Grid Name="DisplayHelperControl" 
+                Grid.Column="1"
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Top"
+                Margin="10,10, 10,10">
+            <Border Margin="5"
+                    MaxWidth="640" MaxHeight="480"
+                    x:Name="DisplayPanel"
+                    BorderBrush="Gray" 
+                    BorderThickness="10" 
+                    CornerRadius="2">
+              <Grid x:Name="DisplayPanelGrid"/>
+            </Border>
+          </Grid>
+          <!--#endregion-->
+
         </Grid>
       </TabItem>
     </TabControl>
+
     <Grid Grid.Row="1" Margin="10,10,0,10" HorizontalAlignment="Right">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="100"></ColumnDefinition>

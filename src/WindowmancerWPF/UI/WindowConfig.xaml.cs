@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
+using System.Windows.Input;
 using System.Windows.Media;
 using MahApps.Metro.Controls;
 using WindowmancerWPF.Models;
@@ -23,11 +24,15 @@ namespace WindowmancerWPF.UI
   /// 
   public partial class WindowConfig
   {
+    public event EventHandler OnClose;
+
+    // Binding objects.
     public PositionInfo Position { get; set; }
     public SizeInfo Size { get; set; }
-    public WindowInfo WindowInfo { get; set; }
     public bool DisplayHelperPreview { get; set; }
+    public ScreenAspectRatio ScreenAspectRatio { get; set; }
 
+    public WindowInfo WindowInfo { get; set; }
     public MetroWindow ParentWindow { get; set; }
 
     private Screen _currentDisplay;
@@ -57,7 +62,6 @@ namespace WindowmancerWPF.UI
     public WindowConfig(Process process)
     {
       _process = process;
-
       PreInitialization();
       InitializeComponent();
       Initialize();
@@ -69,7 +73,8 @@ namespace WindowmancerWPF.UI
     /// </summary>
     private void PreInitialization()
     {
-      //this.DialogResult = false;
+      this.ScreenAspectRatio = new ScreenAspectRatio(Screen.PrimaryScreen);
+
       this.Size = new SizeInfo();
       this.Position = new PositionInfo();
     }
@@ -102,8 +107,8 @@ namespace WindowmancerWPF.UI
       this.Size.Width = rec.Width;
       this.Size.Height = rec.Height;
 
-      this.NameTextBox.TextBox = _process.MainWindowTitle;
-      this.RegexMatchStringTextBox.TextBox = _process.MainWindowTitle;
+      this.NameTextBox.Text = _process.MainWindowTitle;
+      this.RegexMatchStringTextBox.Text = _process.MainWindowTitle;
       this.MatchByWindowTitleRadioButton.IsChecked = true;
     }
 
@@ -115,8 +120,8 @@ namespace WindowmancerWPF.UI
       this.Size.Height = this.WindowInfo.LayoutInfo.SizeInfo.Height;
 
       this.MatchByWindowTitleRadioButton.IsChecked = true;
-      this.NameTextBox.TextBox = this.WindowInfo.Name;
-      this.RegexMatchStringTextBox.TextBox = this.WindowInfo.MatchCriteria.MatchString;
+      this.NameTextBox.Text = this.WindowInfo.Name;
+      this.RegexMatchStringTextBox.Text = this.WindowInfo.MatchCriteria.MatchString;
     }
 
     private Win32.RECT GetWindowRec()
@@ -138,7 +143,7 @@ namespace WindowmancerWPF.UI
 
     private void ClearDisplaySectionPanel()
     {
-      this.DisplayPanel.Children.RemoveRange(0, this.DisplayPanel.Children.Count);
+      this.DisplayPanelGrid.Children.RemoveRange(0, this.DisplayPanelGrid.Children.Count);
     }
 
     private void RecreateDisplaySectionControl(int rows, int cols)
@@ -149,7 +154,13 @@ namespace WindowmancerWPF.UI
       Enumerable.Range(0, rows).ForEach(r =>
         Enumerable.Range(0, cols).ForEach(c =>
         {
-          var button = new Button { Content = ((r * cols) + c).ToString(), Background = _defaultBrush, Foreground = Brushes.Black };
+          var button = new Button
+          {
+            Content = ((r * cols) + c).ToString(),
+            Background = _defaultBrush,
+            Foreground = Brushes.Black,
+            Style = (Style)FindResource("SquareButtonStyle")
+        };
           button.Click += DisplaySection_OnClick;
           button.Tag = new DisplaySection
           {
@@ -162,7 +173,7 @@ namespace WindowmancerWPF.UI
           grid.Children.Add(button);
         })
       );
-      this.DisplayPanel.Children.Add(grid);
+      this.DisplayPanelGrid.Children.Add(grid);
 
       // Select first button.
       _displaySectionButtons.First().RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
@@ -251,6 +262,17 @@ namespace WindowmancerWPF.UI
       _windowHighlight = null;
     }
 
+    private void Close()
+    {
+      OnClose?.Invoke(this, new EventArgs());
+      var window = Window.GetWindow(this);
+      if (window == null)
+      {
+        throw new Exception("WindowConfig - Could locate active window to unbind the KeyDown listener.");
+      }
+      window.KeyDown -= WindowConfig_HandleKeyPress;
+    }
+
     private void RowColSpinners_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
     {
       var rows = this.RowSpinner?.Value ?? 1;
@@ -261,22 +283,38 @@ namespace WindowmancerWPF.UI
     private void DisplaysComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
     {
       _currentDisplay = (Screen)this.DisplayListBox.SelectedItem;
-      if (_displaySection != null)
+
+      this.ScreenAspectRatio = new ScreenAspectRatio(_currentDisplay);
+
+      var length = _currentDisplay.Bounds.Height > _currentDisplay.Bounds.Width ? _currentDisplay.Bounds.Height : _currentDisplay.Bounds.Width;
+
+      if (_currentDisplay.Bounds.Height > _currentDisplay.Bounds.Width)
       {
-        UpdateLayoutValues();
-        UpdateScreenHighlight();
+        this.DisplayPanel.Height = this.DisplayPanel.MaxHeight;
+        this.DisplayPanel.Width = this.DisplayPanel.MaxHeight * (this.ScreenAspectRatio.XRatio/this.ScreenAspectRatio.YRatio);
       }
+      else
+      {
+        this.DisplayPanel.Width = this.DisplayPanel.MaxWidth;
+        this.DisplayPanel.Height = this.DisplayPanel.MaxWidth * (this.ScreenAspectRatio.YRatio/ this.ScreenAspectRatio.XRatio);
+      }
+      
+      if (_displaySection == null) return;
+      UpdateLayoutValues();
+      UpdateScreenHighlight();
     }
 
     private void OkayButton_Click(object sender, RoutedEventArgs e)
     {
       //this.DialogResult = true;
       //this.Close();
+      Close();
     }
 
     private void CancelButton_Click(object sender, RoutedEventArgs e)
     {
       //this.Close();
+      Close();
     }
 
     private void TabControl_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -299,6 +337,45 @@ namespace WindowmancerWPF.UI
         return;
       }
       DisableScreenHighlight();
+    }
+
+    private void WindowConfig_OnLoaded(object sender, RoutedEventArgs e)
+    {
+      var window = Window.GetWindow(this);
+      if (window == null)
+      {
+        throw new Exception("WindowConfig - Could locate active window to bind the KeyDown listener.");
+      }
+      window.KeyDown += WindowConfig_HandleKeyPress;
+    }
+
+    private void WindowConfig_HandleKeyPress(object sender, System.Windows.Input.KeyEventArgs e)
+    {
+      if (e.Key != Key.Escape)
+      {
+        return;
+      }
+      Close();
+    }
+  }
+
+  class DisplaySection
+  {
+    public int RowIndex { get; set; }
+    public int ColumnIndex { get; set; }
+    public int TotalRows { get; set; }
+    public int TotalColumns { get; set; }
+
+    public DisplaySection()
+    {
+    }
+
+    public DisplaySection(int rowIndex, int columnIndex, int totalRows, int totalColumns)
+    {
+      this.RowIndex = rowIndex;
+      this.ColumnIndex = columnIndex;
+      this.TotalRows = totalRows;
+      this.TotalColumns = totalColumns;
     }
   }
 }

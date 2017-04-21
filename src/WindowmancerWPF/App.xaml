@@ -20,6 +20,7 @@
         <ResourceDictionary Source="pack://application:,,,/UI/Themes/MyBaseDark.xaml" />
         <ResourceDictionary Source="pack://application:,,,/UI/Accents/DarkAccent.xaml" />
         <ResourceDictionary Source="pack://application:,,,/UI/Controls/Controls.ListBox.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/UI/Controls/Controls.TabItem.xaml" />
       </ResourceDictionary.MergedDictionaries>
       <SolidColorBrush x:Key="MainColorTheme" Color="#2d2d2d"/>
       <system:Double x:Key="TabItemFontSize">20</system:Double>
