@@ -28,20 +28,19 @@
       <Setter Property="SeparatorBrush" Value="{StaticResource MainColorTheme}" />
     </Style>
   </Controls:MetroWindow.Resources>
+  
   <Controls:MetroWindow.Flyouts>
     <Controls:FlyoutsControl x:Name="FlyoutsControl">
-      <Controls:Flyout Header="Modal"
+      <Controls:Flyout Header="Window Configuration"
                        IsModal="True"
                        Position="Right"
                        CloseButtonVisibility="Hidden"
-                       TitleVisibility="Hidden"
                        Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}"/>
-      <Controls:Flyout Header="Modal"
+      <Controls:Flyout Header="Profile Configuration"
                        IsModal="True"
-                       Position="Left"
+                       Position="Left"                       
                        CloseButtonVisibility="Hidden"
-                       TitleVisibility="Hidden"
-                       Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}"/>
+                       Width="400"/>
     </Controls:FlyoutsControl>
   </Controls:MetroWindow.Flyouts>
   <Grid>

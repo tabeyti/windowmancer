@@ -8,6 +8,10 @@
              d:DesignHeight="300" d:DesignWidth="300"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
   <Grid>
-    <local:LabelTextBox Label="Name" Text=""/>
+    
+    <StackPanel Margin="10">
+      <local:LabelTextBox Label="Name" Text=""/>
+    </StackPanel>
+    
   </Grid>
 </UserControl>

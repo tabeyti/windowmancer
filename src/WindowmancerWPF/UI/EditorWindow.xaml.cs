@@ -120,8 +120,9 @@ namespace WindowmancerWPF.UI
     {
       var about = new About
       {
-        ApplicationLogo = Helper.ImageSourceForBitmap(Properties.Resources.AppLogo)
+        ApplicationLogo = Helper.ImageSourceForBitmap(Properties.Resources.AppLogo),
       };
+      about.Window.Background = Brushes.Black;
       about.Show();
     }
 
