@@ -13,7 +13,7 @@ namespace WindowmancerWPF.UI
     }
 
     private string _localLabel = "";
-    private string _localTextBox = "";
+    private string _localText = "";
 
     public string Label
     {
@@ -25,12 +25,12 @@ namespace WindowmancerWPF.UI
       }
     }
 
-    public string TextBox
+    public string Text
     {
-      get { return _localTextBox; }
+      get { return _localText; }
       set
       {
-        _localTextBox = value;
+        _localText = value;
         BaseTextBox.Text = value;
       }
     }

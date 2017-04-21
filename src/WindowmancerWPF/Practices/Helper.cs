@@ -107,5 +107,16 @@ namespace WindowmancerWPF.Practices
 
       return null;
     }
+
+    public static int GetGreatestCommonDivisor(int a, int b)
+    {
+      while (true)
+      {
+        if (b == 0) return a;
+        var a1 = a;
+        a = b;
+        b = a1 % b;
+      }
+    }
   }
 }

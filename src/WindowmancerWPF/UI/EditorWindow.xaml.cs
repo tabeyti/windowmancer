@@ -1,4 +1,5 @@
-﻿using Microsoft.Practices.Unity;
+﻿using System.Diagnostics;
+using Microsoft.Practices.Unity;
 using System.Windows;
 using WindowmancerWPF.Models;
 using WindowmancerWPF.Practices;
@@ -8,6 +9,7 @@ using System.Windows.Media;
 using Gat.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using MahApps.Metro.Controls;
+using System;
 
 namespace WindowmancerWPF.UI
 { 
@@ -34,8 +36,6 @@ namespace WindowmancerWPF.UI
 
     private void Initialize()
     {
-      this.Icon = Helper.ImageSourceForIcon(Properties.Resources.AppIcon);
-
       // Apply data sources.
       this.ProfileListBox.ItemsSource = _profileManager.Profiles;
       this.ProfileListBox.SelectedItem = _profileManager.ActiveProfile;
@@ -46,6 +46,34 @@ namespace WindowmancerWPF.UI
       _procMonitor.Start();
     }
 
+    private void HandleProfileConfigEdit(Profile profile = null)
+    {
+      ProfileConfig content = default(ProfileConfig);
+      if (null != profile)
+      {
+        content = new ProfileConfig(profile);
+      }
+      else
+      {
+        content = new ProfileConfig();
+      }
+
+      var flyout = this.Flyouts.Items[1] as Flyout;
+      if (flyout == null)
+      {
+        return;
+      }
+
+      content.OnClose += (s, e) =>
+      {
+        flyout.IsOpen = false;
+        // TODO: Handle window config updates here
+      };
+      flyout.Content = content;
+      flyout.CloseButtonVisibility = Visibility.Visible;
+      flyout.IsOpen = true;
+    }
+    
     private void HandleWindowConfigEdit()
     {
       if (this.WindowConfigDataGrid.SelectedItem == null) return;
@@ -57,59 +85,35 @@ namespace WindowmancerWPF.UI
         return;
       }
       var w = new WindowConfig(item);
+      w.OnClose += (s, e) =>
+      {
+        flyout.IsOpen = false;
+        // TODO: Handle window config updates here
+      };
+
       flyout.Content = w;
-      flyout.IsOpen = !flyout.IsOpen;
-
-      //var d = new CustomDialog();
-      //var settings = new MetroDialogSettings
-      //{
-      //  AffirmativeButtonText = "Okay",
-      //  AnimateShow = true,
-      //  NegativeButtonText = "Cancel",
-      //  FirstAuxiliaryButtonText = "Okay"
-      //};
-      //d.Content = new WindowConfig(item);
-
-      //this.ShowMetroDialogAsync(d, settings);
-
-      //var dialog = new WindowConfigDialog(item) { Owner = this };
-      //dialog.ShowDialog();
+      flyout.IsOpen = true;
     }
 
     private void HandleProcessWindowConfig()
     {
       if (this.ActiveWindowsDataGrid.SelectedItem == null) return;
-      var item = (MonitoredProcess)this.ActiveWindowsDataGrid.SelectedItem;
+      var item = ((MonitoredProcess)this.ActiveWindowsDataGrid.SelectedItem).GetProcess();
 
       var flyout = this.Flyouts.Items[0] as Flyout;
       if (flyout == null)
       {
         return;
       }
-      var w = new WindowConfig(item.GetProcess());
+      var w = new WindowConfig(item);
+      w.OnClose += (s, e) =>
+      {
+        flyout.IsOpen = false;
+        // TODO: Handle window config updates here
+      };
+
       flyout.Content = w;
-      flyout.IsOpen = !flyout.IsOpen;
-
-      //var d = new CustomDialog(this);
-      //var settings = new MetroDialogSettings
-      //{
-      //  AffirmativeButtonText = "Okay",
-      //  AnimateShow = true,
-      //  NegativeButtonText = "Cancel",
-      //  FirstAuxiliaryButtonText = "Okay",
-      //  ColorScheme = MetroDialogColorScheme.Inverted,
-      //  CustomResourceDictionary = WindowmancerWPF.App.Current.Resources
-
-      //};
-      //d.Content = new WindowConfig(item.GetProcess());
-      //this.ShowMetroDialogAsync(d, settings);
-
-      //var dialog = new WindowConfigDialog(item.GetProcess()) { Owner = this };
-      //var result = dialog.ShowDialog();
-      //if (result == null)
-      //{
-      //  return;
-      //}
+      flyout.IsOpen = true;
     }
 
     private void AboutBox_Click(object sender, RoutedEventArgs e)
@@ -151,6 +155,11 @@ namespace WindowmancerWPF.UI
       var w = new WindowConfig();
       flyout.Content = w;
       flyout.IsOpen = !flyout.IsOpen;
+    }
+
+    private void ProfileListContextMenu_MenuItemClick(object sender, RoutedEventArgs e)
+    {
+      HandleProfileConfigEdit();
     }
   }
 }
