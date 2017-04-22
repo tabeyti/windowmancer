@@ -264,13 +264,13 @@ namespace WindowmancerWPF.UI
 
     private void Close()
     {
-      OnClose?.Invoke(this, new EventArgs());
       var window = Window.GetWindow(this);
       if (window == null)
       {
         throw new Exception("WindowConfig - Could locate active window to unbind the KeyDown listener.");
       }
       window.KeyDown -= WindowConfig_HandleKeyPress;
+      OnClose?.Invoke(this, new EventArgs());
     }
 
     private void RowColSpinners_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -306,14 +306,12 @@ namespace WindowmancerWPF.UI
 
     private void OkayButton_Click(object sender, RoutedEventArgs e)
     {
-      //this.DialogResult = true;
-      //this.Close();
+      // Update WindowConfig object with input values.
       Close();
     }
 
     private void CancelButton_Click(object sender, RoutedEventArgs e)
     {
-      //this.Close();
       Close();
     }
 

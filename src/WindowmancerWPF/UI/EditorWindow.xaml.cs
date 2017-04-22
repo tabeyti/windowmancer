@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using Microsoft.Practices.Unity;
 using System.Windows;
 using WindowmancerWPF.Models;
@@ -7,12 +8,11 @@ using WindowmancerWPF.Services;
 using System.Windows.Input;
 using System.Windows.Media;
 using Gat.Controls;
-using MahApps.Metro.Controls.Dialogs;
 using MahApps.Metro.Controls;
-using System;
+using System.Windows.Controls;
 
 namespace WindowmancerWPF.UI
-{ 
+{
   /// <summary>
   /// Interaction logic for MainWindow.xaml
   /// </summary>
@@ -48,37 +48,26 @@ namespace WindowmancerWPF.UI
 
     private void HandleProfileConfigEdit(Profile profile = null)
     {
-      ProfileConfig content = default(ProfileConfig);
-      if (null != profile)
-      {
-        content = new ProfileConfig(profile);
-      }
-      else
-      {
-        content = new ProfileConfig();
-      }
-
       var flyout = this.Flyouts.Items[1] as Flyout;
-      if (flyout == null)
+      if (null == flyout)
       {
-        return;
+        throw new Exception("HandleProfileConfigEdit - No flyout available at index 1");
       }
 
+      flyout.Header = null != profile ? "Edit Profile" : "Add Profile";
+      var content = null != profile ? new ProfileConfig(profile) : new ProfileConfig();
+      
       content.OnClose += (s, e) =>
       {
         flyout.IsOpen = false;
         // TODO: Handle window config updates here
       };
       flyout.Content = content;
-      flyout.CloseButtonVisibility = Visibility.Visible;
       flyout.IsOpen = true;
     }
     
-    private void HandleWindowConfigEdit()
+    private void HandleWindowConfigEdit(WindowInfo item)
     {
-      if (this.WindowConfigDataGrid.SelectedItem == null) return;
-      var item = (WindowInfo)WindowConfigDataGrid.SelectedItem;
-
       var flyout = this.Flyouts.Items[0] as Flyout;
       if (flyout == null)
       {
@@ -95,11 +84,8 @@ namespace WindowmancerWPF.UI
       flyout.IsOpen = true;
     }
 
-    private void HandleProcessWindowConfig()
+    private void HandleWindowConfigEdit(Process item)
     {
-      if (this.ActiveWindowsDataGrid.SelectedItem == null) return;
-      var item = ((MonitoredProcess)this.ActiveWindowsDataGrid.SelectedItem).GetProcess();
-
       var flyout = this.Flyouts.Items[0] as Flyout;
       if (flyout == null)
       {
@@ -121,46 +107,59 @@ namespace WindowmancerWPF.UI
       var about = new About
       {
         ApplicationLogo = Helper.ImageSourceForBitmap(Properties.Resources.AppLogo),
+        Window = {Background = Brushes.Black},
       };
-      about.Window.Background = Brushes.Black;
       about.Show();
     }
 
     private void WindowConfigDataGrid_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
     {
-      HandleWindowConfigEdit();
+      if (this.WindowConfigDataGrid.SelectedItem == null) return;
+      var item = (WindowInfo)WindowConfigDataGrid.SelectedItem;
+      HandleWindowConfigEdit(item);
     }
 
     private void ActiveWindowsGrid_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
     {
-      HandleProcessWindowConfig();
+      if (this.ActiveWindowsDataGrid.SelectedItem == null) return;
+      var item = ((MonitoredProcess)this.ActiveWindowsDataGrid.SelectedItem).GetProcess();
+      HandleWindowConfigEdit(item);
     }
 
     private void WindowConfigDataGrid_MenuItemClick(object sender, RoutedEventArgs e)
     {
-      HandleWindowConfigEdit();
+      if (this.WindowConfigDataGrid.SelectedItem == null) return;
+      var item = (WindowInfo)WindowConfigDataGrid.SelectedItem;
+      HandleWindowConfigEdit(item);
     }
 
     private void ActiveWindowsDataGrid_MenuItemClick(object sender, RoutedEventArgs e)
     {
-      HandleProcessWindowConfig();
+      if (this.ActiveWindowsDataGrid.SelectedItem == null) return;
+      var item = ((MonitoredProcess)this.ActiveWindowsDataGrid.SelectedItem).GetProcess();
+      HandleWindowConfigEdit(item);
     }
-
-    private void ShowModal(object sender, RoutedEventArgs e)
-    {
-      var flyout = this.Flyouts.Items[0] as Flyout;
-      if (flyout == null)
-      {
-        return;
-      }
-      var w = new WindowConfig();
-      flyout.Content = w;
-      flyout.IsOpen = !flyout.IsOpen;
-    }
-
+    
     private void ProfileListContextMenu_MenuItemClick(object sender, RoutedEventArgs e)
     {
-      HandleProfileConfigEdit();
+      var menuItem = (MenuItem) sender;
+      switch (menuItem.Header as string)
+      {
+        case "Add":
+          HandleProfileConfigEdit();
+          break;
+        case "Edit":
+          var item = (Profile)this.ProfileListBox.SelectedItem;
+          HandleProfileConfigEdit(item);
+          break;
+        case "Delete":
+          break;
+      }
+    }
+
+    private void RefreshProfile(object sender, RoutedEventArgs e)
+    {
+
     }
   }
 }

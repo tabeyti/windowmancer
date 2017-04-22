@@ -6,6 +6,9 @@
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                      xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+                      xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                      xmlns:converters="clr-namespace:WindowmancerWPF.UI.Converters"
                       mc:Ignorable="d"
                       Background="{StaticResource MainColorTheme}"
                       GlowBrush="SlateBlue"
@@ -28,18 +31,21 @@
       <Setter Property="SeparatorBrush" Value="{StaticResource MainColorTheme}" />
     </Style>
   </Controls:MetroWindow.Resources>
-  
+
+  <!--<Controls:MetroWindow.LeftWindowCommands>
+    <Controls:WindowCommands>
+      
+    </Controls:WindowCommands>
+  </Controls:MetroWindow.LeftWindowCommands>-->
+
   <Controls:MetroWindow.Flyouts>
     <Controls:FlyoutsControl x:Name="FlyoutsControl">
       <Controls:Flyout Header="Window Configuration"
                        IsModal="True"
                        Position="Right"
-                       CloseButtonVisibility="Hidden"
                        Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}"/>
-      <Controls:Flyout Header="Profile Configuration"
-                       IsModal="True"
+      <Controls:Flyout IsModal="True"
                        Position="Left"                       
-                       CloseButtonVisibility="Hidden"
                        Width="400"/>
     </Controls:FlyoutsControl>
   </Controls:MetroWindow.Flyouts>
@@ -52,13 +58,13 @@
     </Grid.RowDefinitions>
     <DockPanel Grid.Row="0">
       <Menu DockPanel.Dock="Top">
-        <MenuItem Header="_Settings" FontSize="12">
-          <MenuItem Header="_Preferences" FontSize="12"/>
+        <MenuItem Header="_Settings" ItemContainerStyle="{StaticResource MetroMenuItem}">
+          <MenuItem Header="_Preferences"/>
         </MenuItem>
-        <MenuItem Header="_Help" FontSize="11">
-          <MenuItem Header="_Documentation" FontSize="12"/>
+        <MenuItem Header="_Help">
+          <MenuItem Header="_Documentation"/>
           <Separator/>
-          <MenuItem Header="_About" Click="AboutBox_Click" FontSize="12"/>
+          <MenuItem Header="_About" Click="AboutBox_Click"/>
         </MenuItem>
       </Menu>
     </DockPanel>
@@ -68,14 +74,39 @@
         <ColumnDefinition Width="5" />
         <ColumnDefinition Width="*" />
       </Grid.ColumnDefinitions>
-      <GroupBox Header="Profiles" Grid.Column="0">
+      <GroupBox Grid.Column="0">
+        <GroupBox.HeaderTemplate>
+          <DataTemplate>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+              </Grid.ColumnDefinitions>
+              <Label Content="Profiles" Grid.Column="0"/>
+              <Button Grid.Column="1"
+                      Click="RefreshProfile" 
+                      ToolTip="Refresh Active Profile" 
+                      HorizontalAlignment="Right"
+                      BorderThickness="0"
+                      Margin="0">
+                <iconPacks:PackIconModern Width="16" Height="16" Margin="0" BorderThickness="0" Kind="MonitorPlay" />
+              </Button>
+            </Grid>
+          </DataTemplate>
+        </GroupBox.HeaderTemplate>
         <ListBox Name="ProfileListBox" 
                  Style="{StaticResource MyListBox}">
           <ListBox.Resources>
             <ContextMenu x:Key="RowMenu">
-              <MenuItem Header="Add" Click="ProfileListContextMenu_MenuItemClick"></MenuItem>
+              <MenuItem Header="Edit" Click="ProfileListContextMenu_MenuItemClick"></MenuItem>
+              <MenuItem Header="Delete" Click="ProfileListContextMenu_MenuItemClick"></MenuItem>
             </ContextMenu>
           </ListBox.Resources>
+          <ListBox.ContextMenu>
+            <ContextMenu>
+              <MenuItem Header="Add" Click="ProfileListContextMenu_MenuItemClick"></MenuItem>
+            </ContextMenu>
+          </ListBox.ContextMenu>
           <ListBox.ItemContainerStyle>
             <Style TargetType="ListBoxItem" BasedOn="{StaticResource MyListBoxItem}">
               <Setter Property="ContextMenu" Value="{StaticResource RowMenu}"></Setter>
@@ -149,7 +180,7 @@
           </DataGridTemplateColumn>
           <DataGridTextColumn Header="Id" Binding="{Binding Id}"></DataGridTextColumn>
           <DataGridTextColumn Header="Name" Binding="{Binding Name}"></DataGridTextColumn>
-          <DataGridTextColumn Header="Window Title" Binding="{Binding WindowTitle}"></DataGridTextColumn>
+          <DataGridTextColumn Header="Window Title" Binding="{Binding WindowTitle, Converter={StaticResource StringTruncateConverter}}" ></DataGridTextColumn>
         </DataGrid.Columns>
       </DataGrid>
     </GroupBox>
