@@ -218,11 +218,13 @@
         <ColumnDefinition Width="100"></ColumnDefinition>
       </Grid.ColumnDefinitions>
       <Button Name="CancelButton"
+              Style="{StaticResource SquareButtonStyle}"
               Content="Cancel" 
               Grid.Column="0"
               Width="75"
               IsDefault="False" Click="CancelButton_Click"/>
       <Button Name="OkayButton"
+              Style="{StaticResource SquareButtonStyle}"
               Content="Okay" 
               Grid.Column="1"
               Width="75"
