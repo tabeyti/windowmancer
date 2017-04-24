@@ -80,11 +80,13 @@ namespace WindowmancerWPF.UI
         var procRec = Helper.GetProcessWindowRec(_process);
         this.WindowInfo = new WindowInfo
         {
+          Name = _process.MainWindowTitle,
           LayoutInfo = new WindowLayoutInfo(
             procRec.Left, 
             procRec.Top, 
             procRec.Width, 
-            procRec.Height)
+            procRec.Height),
+          MatchCriteria = new WindowMatchCriteria { MatchString = _process.MainWindowTitle }
         };
       }
       else if (this.WindowInfo == null)
@@ -97,15 +99,6 @@ namespace WindowmancerWPF.UI
     private void Initialize()
     {
       this.DisplayHelperPreview = false;
-      if (null != WindowInfo)
-      {
-        LoadWindowInfo();
-      }
-      else if (null != _process)
-      {
-        LoadProcessInfo();
-      }
-
       this.RowSpinner.ValueChanged += RowColSpinners_ValueChanged;
       this.ColumnSpinner.ValueChanged += RowColSpinners_ValueChanged;
 
@@ -117,6 +110,8 @@ namespace WindowmancerWPF.UI
     private void LoadProcessInfo()
     {
       var rec = GetWindowRec();
+      //this.WindowInfo.LayoutInfo.PositionInfo.X = rec.Left;
+
       //this.Position.X = rec.Left;
       //this.Position.Y = rec.Top;
       //this.Size.Width = rec.Width;
@@ -129,11 +124,6 @@ namespace WindowmancerWPF.UI
 
     private void LoadWindowInfo()
     {
-      //this.Position.X = this.WindowInfo.LayoutInfo.PositionInfo.X;
-      //this.Position.Y = this.WindowInfo.LayoutInfo.PositionInfo.Y;
-      //this.Size.Width = this.WindowInfo.LayoutInfo.SizeInfo.Width;
-      //this.Size.Height = this.WindowInfo.LayoutInfo.SizeInfo.Height;
-
       this.MatchByWindowTitleRadioButton.IsChecked = true;
       this.NameTextBox.Text = this.WindowInfo.Name;
       this.RegexMatchStringTextBox.Text = this.WindowInfo.MatchCriteria.MatchString;

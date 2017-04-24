@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:WindowmancerWPF.UI"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:converters="clr-namespace:WindowmancerWPF.UI.Converters"
         x:Class="WindowmancerWPF.UI.WindowConfig"
         mc:Ignorable="d"
         HorizontalAlignment="Stretch"
@@ -34,7 +35,8 @@
                                 HorizontalAlignment="Stretch" 
                                 Margin="10,10,10,10" 
                                 VerticalAlignment="Top" 
-                                Height="Auto"/>
+                                Height="Auto"
+                                Text="{Binding WindowInfo.Name}"/>
             <GroupBox Grid.Row="1"
                       x:Name="MatchGroupBox" 
                       Header="Matching Rules" 
@@ -43,15 +45,28 @@
                       VerticalAlignment="Top" 
                       Height="Auto">
               <StackPanel>
+                <StackPanel.Resources>
+                  <converters:EnumBooleanConverter x:Key="EnumBooleanConverter" />
+                </StackPanel.Resources>
                 <local:LabelTextBox Label="Regex Match String"
                                     x:Name="RegexMatchStringTextBox"
                                     HorizontalAlignment="Stretch" 
                                     Margin="4,-6,10,0" 
                                     VerticalAlignment="Top" 
                                     Width="Auto"
-                                    Text="{Binding Mode=TwoWay, Path=WindowInfo.Name}"/>
-                <RadioButton Name="MatchByWindowTitleRadioButton" Content="Match by Window Title" GroupName="MatchOptions" IsChecked="{Binding Path=CurrentOption, Mode=TwoWay}" Margin="5,0,0,5"/>
-                <RadioButton Name="MatchByProcesNameRadioButton" Content="Match by Process Name" GroupName="MatchOptions" IsChecked="{Binding Path=CurrentOption, Mode=TwoWay}" Margin="5,0,0,5"/>
+                                    Text="{Binding Mode=TwoWay, Path=WindowInfo.MatchCriteria.MatchString}"/>
+                <!--<RadioButton Name="MatchByWindowTitleRadioButton" Content="Match by Window Title" GroupName="MatchOptions" IsChecked="{Binding Path=CurrentOption, Mode=TwoWay}" Margin="5,0,0,5"/>
+                <RadioButton Name="MatchByProcesNameRadioButton" Content="Match by Process Name" GroupName="MatchOptions" IsChecked="{Binding Path=CurrentOption, Mode=TwoWay}" Margin="5,0,0,5"/>-->
+                <RadioButton  Name="MatchByWindowTitleRadioButton" 
+                              Content="Match by Window Title" 
+                              GroupName="MatchOptions" 
+                              Margin="5,0,0,5"
+                              IsChecked="{Binding Path=WindowInfo.MatchCriteria.MatchType, Converter={StaticResource EnumBooleanConverter}, ConverterParameter=WindowTitle}"/>
+                <RadioButton  Name="MatchByProcesNameRadioButton" 
+                              Content="Match by Process Name" 
+                              GroupName="MatchOptions" 
+                              Margin="5,0,0,5"
+                              IsChecked="{Binding Path=WindowInfo.MatchCriteria.MatchType, Converter={StaticResource EnumBooleanConverter}, ConverterParameter=ProcessName}"/>  
               </StackPanel>
             </GroupBox>
             <GroupBox  Grid.Row="2"
