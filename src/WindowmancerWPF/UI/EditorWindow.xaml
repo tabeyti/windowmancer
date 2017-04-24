@@ -1,4 +1,4 @@
-﻿<!--http://stackoverflow.com/questions/17508333/setting-window-icon-with-a-static-resource-->
+﻿  <!--http://stackoverflow.com/questions/17508333/setting-window-icon-with-a-static-resource-->
 
 <Controls:MetroWindow  x:Class="WindowmancerWPF.UI.EditorWindow"
                       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"

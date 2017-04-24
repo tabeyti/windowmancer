@@ -6,8 +6,14 @@ namespace WindowmancerWPF.Models
 {
   public class WindowMatchCriteria : ICloneable
   {
-    public WindowMatchCriteriaType MatchType { get; }
-    public string MatchString { get; }
+    public WindowMatchCriteriaType MatchType { get; set; }
+    public string MatchString { get; set; }
+
+    public WindowMatchCriteria()
+    {
+      this.MatchType = WindowMatchCriteriaType.WindowTitle;
+      this.MatchString = "";
+    }
 
     public WindowMatchCriteria(WindowMatchCriteriaType type, string matchString)
     {
@@ -41,5 +47,11 @@ namespace WindowmancerWPF.Models
           return false;
       }
     }
+  }
+
+  public enum WindowMatchCriteriaType
+  {
+    WindowTitle,
+    ProcessName,
   }
 }

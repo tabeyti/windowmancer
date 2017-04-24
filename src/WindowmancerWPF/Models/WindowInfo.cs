@@ -69,7 +69,7 @@ namespace WindowmancerWPF.Models
       this.Name = info.Name;
       this.BringToFront = info.BringToFront;
       this.MatchCriteria = info.MatchCriteria;
-      this.LayoutInfo.Update(info.LayoutInfo);
+      this.LayoutInfo = info.LayoutInfo;
     }
   }
 
@@ -190,11 +190,5 @@ namespace WindowmancerWPF.Models
       this.RegisterProperty<int>("Width", width);
       this.RegisterProperty<int>("Height", height);
     }
-  }
-
-  public enum WindowMatchCriteriaType
-  {
-    WindowTitle,
-    ProcessName,
   }
 }
