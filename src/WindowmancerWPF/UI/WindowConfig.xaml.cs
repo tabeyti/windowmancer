@@ -24,14 +24,13 @@ namespace WindowmancerWPF.UI
   /// 
   public partial class WindowConfig
   {
-    public event EventHandler OnClose;
+    public event Action OnClose;
+
+    public Action<WindowInfo> OnSave;
 
     // Binding objects.
-    public PositionInfo Position { get; set; }
-    public SizeInfo Size { get; set; }
     public bool DisplayHelperPreview { get; set; }
     public ScreenAspectRatio ScreenAspectRatio { get; set; }
-
     public WindowInfo WindowInfo { get; set; }
     public MetroWindow ParentWindow { get; set; }
 
@@ -50,17 +49,18 @@ namespace WindowmancerWPF.UI
       Initialize();
     }
 
-    public WindowConfig(WindowInfo windowInfo)
+    public WindowConfig(WindowInfo windowInfo, Action<WindowInfo> onSave)
     {
-      this.WindowInfo = windowInfo;
-      _process = WindowManager.GetProcess(this.WindowInfo);
+      this.OnSave = onSave;
+      this.WindowInfo = (WindowInfo)windowInfo.Clone();
       PreInitialization();
       InitializeComponent();
       Initialize();
     }
 
-    public WindowConfig(Process process)
+    public WindowConfig(Process process, Action<WindowInfo> onSave)
     {
+      this.OnSave = onSave;
       _process = process;
       PreInitialization();
       InitializeComponent();
@@ -75,8 +75,23 @@ namespace WindowmancerWPF.UI
     {
       this.ScreenAspectRatio = new ScreenAspectRatio(Screen.PrimaryScreen);
 
-      this.Size = new SizeInfo();
-      this.Position = new PositionInfo();
+      if (_process != null)
+      {
+        var procRec = Helper.GetProcessWindowRec(_process);
+        this.WindowInfo = new WindowInfo
+        {
+          LayoutInfo = new WindowLayoutInfo(
+            procRec.Left, 
+            procRec.Top, 
+            procRec.Width, 
+            procRec.Height)
+        };
+      }
+      else if (this.WindowInfo == null)
+      {
+        this.WindowInfo = new WindowInfo();
+        _process = WindowManager.GetProcess(this.WindowInfo);
+      }
     }
 
     private void Initialize()
@@ -102,10 +117,10 @@ namespace WindowmancerWPF.UI
     private void LoadProcessInfo()
     {
       var rec = GetWindowRec();
-      this.Position.X = rec.Left;
-      this.Position.Y = rec.Top;
-      this.Size.Width = rec.Width;
-      this.Size.Height = rec.Height;
+      //this.Position.X = rec.Left;
+      //this.Position.Y = rec.Top;
+      //this.Size.Width = rec.Width;
+      //this.Size.Height = rec.Height;
 
       this.NameTextBox.Text = _process.MainWindowTitle;
       this.RegexMatchStringTextBox.Text = _process.MainWindowTitle;
@@ -114,10 +129,10 @@ namespace WindowmancerWPF.UI
 
     private void LoadWindowInfo()
     {
-      this.Position.X = this.WindowInfo.LayoutInfo.PositionInfo.X;
-      this.Position.Y = this.WindowInfo.LayoutInfo.PositionInfo.Y;
-      this.Size.Width = this.WindowInfo.LayoutInfo.SizeInfo.Width;
-      this.Size.Height = this.WindowInfo.LayoutInfo.SizeInfo.Height;
+      //this.Position.X = this.WindowInfo.LayoutInfo.PositionInfo.X;
+      //this.Position.Y = this.WindowInfo.LayoutInfo.PositionInfo.Y;
+      //this.Size.Width = this.WindowInfo.LayoutInfo.SizeInfo.Width;
+      //this.Size.Height = this.WindowInfo.LayoutInfo.SizeInfo.Height;
 
       this.MatchByWindowTitleRadioButton.IsChecked = true;
       this.NameTextBox.Text = this.WindowInfo.Name;
@@ -136,7 +151,6 @@ namespace WindowmancerWPF.UI
       {
         return rec;
       }
-      //_logger.Info($"{this} - Process {_proc.ProcessName} is minimized. Getting maxmized position/size.");
       rec = Win32.GetPlacement(_process.MainWindowHandle);
       return rec;
     }
@@ -197,10 +211,25 @@ namespace WindowmancerWPF.UI
 
       var width = (screenWidth / totalCols);
       var height = (screenHeight / totalRows);
-      this.Size.Width = width;
-      this.Size.Height = height;
-      this.Position.X = x;
-      this.Position.Y = y;
+
+      this.WindowInfo.LayoutInfo.SizeInfo.Width = width;
+      this.WindowInfo.LayoutInfo.SizeInfo.Height = height;
+      this.WindowInfo.LayoutInfo.PositionInfo.X = x;
+      this.WindowInfo.LayoutInfo.PositionInfo.Y = y;
+    }
+
+    private void SaveConfig()
+    {
+      var matchType = this.MatchByProcesNameRadioButton.IsChecked.Value ?
+        WindowMatchCriteriaType.ProcessName : WindowMatchCriteriaType.WindowTitle;
+
+      this.WindowInfo.Name = this.NameTextBox.Text;
+      this.WindowInfo.MatchCriteria = new WindowMatchCriteria(matchType,
+        this.RegexMatchStringTextBox.Text);
+      this.WindowInfo.LayoutInfo.PositionInfo.X = (int)this.XSpinner.Value;
+      this.WindowInfo.LayoutInfo.PositionInfo.Y = (int)this.YSpinner.Value;
+      this.WindowInfo.LayoutInfo.SizeInfo.Width = (int)this.WidthSpinner.Value;
+      this.WindowInfo.LayoutInfo.SizeInfo.Height = (int)this.HeightSpinner.Value;
     }
 
     private void DisplaySection_OnClick(object sender, EventArgs e)
@@ -226,11 +255,7 @@ namespace WindowmancerWPF.UI
       // Move process window if process is active.
       if (null != _process)
       {
-        WindowManager.ApplyWindowLayout(new WindowLayoutInfo
-        {
-          PositionInfo = new PositionInfo { X = this.Position.X, Y = this.Position.Y },
-          SizeInfo = new SizeInfo { Width = this.Size.Width, Height = this.Size.Height }
-        }, _process);
+        WindowManager.ApplyWindowLayout(this.WindowInfo.LayoutInfo, _process);
       }
 
       // Hightlight where process window layout.
@@ -238,9 +263,8 @@ namespace WindowmancerWPF.UI
       {
         _windowHighlight = new WindowHighlight();
       }
-      _windowHighlight.UpdateLayout(this.Position.X, this.Position.Y, this.Size.Width, this.Size.Height);
+      _windowHighlight.UpdateLayout(this.WindowInfo.LayoutInfo);
       _windowHighlight.Show();
-
     }
 
     private void DisableScreenHighlight()
@@ -270,7 +294,7 @@ namespace WindowmancerWPF.UI
         throw new Exception("WindowConfig - Could locate active window to unbind the KeyDown listener.");
       }
       window.KeyDown -= WindowConfig_HandleKeyPress;
-      OnClose?.Invoke(this, new EventArgs());
+      OnClose?.Invoke();
     }
 
     private void RowColSpinners_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -306,7 +330,8 @@ namespace WindowmancerWPF.UI
 
     private void OkayButton_Click(object sender, RoutedEventArgs e)
     {
-      // Update WindowConfig object with input values.
+      SaveConfig();
+      OnSave?.Invoke(this.WindowInfo);
       Close();
     }
 
@@ -377,3 +402,4 @@ namespace WindowmancerWPF.UI
     }
   }
 }
+

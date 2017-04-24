@@ -14,6 +14,27 @@ namespace WindowmancerWPF.Practices
     [System.Runtime.InteropServices.DllImport("gdi32.dll")]
     public static extern bool DeleteObject(IntPtr hObject);
 
+    /// <summary>
+    /// Retrieves the provided process' window rectangel.
+    /// </summary>
+    /// <param name="process"></param>
+    /// <returns></returns>
+    public static Win32.RECT GetProcessWindowRec(Process process)
+    {
+      var info = new Win32.WINDOWINFO();
+      var rec = new Win32.RECT();
+
+      Win32.GetWindowInfo(process.MainWindowHandle, ref info);
+      rec = info.rcWindow;
+
+      if (!Win32.IsIconic(process.MainWindowHandle))
+      {
+        return rec;
+      }
+      rec = Win32.GetPlacement(process.MainWindowHandle);
+      return rec;
+    }
+
     public static ImageSource ImageSourceForBitmap(Bitmap bmp)
     {
       var handle = bmp.GetHbitmap();

@@ -53,15 +53,24 @@ namespace WindowmancerWPF.UI
       {
         throw new Exception("HandleProfileConfigEdit - No flyout available at index 1");
       }
-
-      flyout.Header = null != profile ? "Edit Profile" : "Add Profile";
-      var content = null != profile ? new ProfileConfig(profile) : new ProfileConfig();
       
-      content.OnClose += (s, e) =>
+      ProfileConfig content;
+      if (null == profile)
       {
-        flyout.IsOpen = false;
-        // TODO: Handle window config updates here
-      };
+        flyout.Header = "Add Profile";
+        content = new ProfileConfig((p) => 
+        {
+          _profileManager.AddNewProfile(p);
+          this.ProfileListBox.SelectedItem = p;
+        });
+      }
+      else
+      {
+        flyout.Header = "Edit Profile";
+        content = new ProfileConfig(profile);
+      }
+      content.OnClose = () => { flyout.IsOpen = false; };
+
       flyout.Content = content;
       flyout.IsOpen = true;
     }
@@ -73,12 +82,8 @@ namespace WindowmancerWPF.UI
       {
         return;
       }
-      var w = new WindowConfig(item);
-      w.OnClose += (s, e) =>
-      {
-        flyout.IsOpen = false;
-        // TODO: Handle window config updates here
-      };
+      var w = new WindowConfig(item, c => { item.Update(c); });
+      w.OnClose += () => { flyout.IsOpen = false; };
 
       flyout.Content = w;
       flyout.IsOpen = true;
@@ -91,12 +96,11 @@ namespace WindowmancerWPF.UI
       {
         return;
       }
-      var w = new WindowConfig(item);
-      w.OnClose += (s, e) =>
+      var w = new WindowConfig(item, c =>
       {
-        flyout.IsOpen = false;
-        // TODO: Handle window config updates here
-      };
+        _profileManager.AddToActiveProfile(c);
+      });
+      w.OnClose += () => { flyout.IsOpen = false; };
 
       flyout.Content = w;
       flyout.IsOpen = true;
@@ -160,6 +164,13 @@ namespace WindowmancerWPF.UI
     private void RefreshProfile(object sender, RoutedEventArgs e)
     {
 
+    }
+
+    private void ProfileListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+      var profile = (Profile)(this.ProfileListBox.SelectedItem);
+      _profileManager.ActiveProfile = profile;
+      this.WindowConfigDataGrid.ItemsSource = _profileManager.ActiveProfile.Windows;
     }
   }
 }
