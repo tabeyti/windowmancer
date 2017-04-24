@@ -22,6 +22,7 @@ namespace WindowmancerWPF.Services
         {
           return;
         }
+        value.IsActive = true;
         _userData.ActiveProfile = value.Id;
         _activeProfile = value;
         _windowManager.ActiveProfile = _activeProfile;
@@ -49,20 +50,7 @@ namespace WindowmancerWPF.Services
       this.ActiveProfile = profile ?? Profiles.FirstOrDefault();
       _windowManager.ActiveProfile = this.ActiveProfile;
     }
-
-    public void UpdateActiveProfile(int index)
-    {
-      if (index < 0 || index >= this.Profiles.Count)
-      {
-        throw new ExceptionBox($"{this} - Index {index} out of range.");
-      }
-      this.ActiveProfile = this.Profiles[index];
-      _windowManager.ActiveProfile = this.ActiveProfile;
-      _userData.Save();
-
-      OnActiveProfileUpdate?.Invoke(this, new EventArgs());
-    }
-
+    
     public void UpdateActiveProfile(string id)
     {
       var profile = this.Profiles.Find(p => p.Id == id);
@@ -70,31 +58,45 @@ namespace WindowmancerWPF.Services
       {
         throw new ExceptionBox($"{this} - Could not find profile from id {id}.");
       }
+      DeselectActiveProfile(profile);
       this.ActiveProfile = profile;
       _windowManager.ActiveProfile = this.ActiveProfile;
       _userData.Save();
-
       OnActiveProfileUpdate?.Invoke(this, new EventArgs());
     }
 
-    public bool AddNewProfile(string name)
+    public bool AddNewProfile(Profile profile)
     {
-      if (Profiles.Any(p => p.Name == name))
+      if (Profiles.Any(p => p.Name == profile.Name))
       {
         return false;
       }
-      var profile = new Profile
-      {
-        Id = Guid.NewGuid().ToString(),
-        Name = name,
-        Windows = new ObservableCollection<WindowInfo>()
-      };
+      DeselectActiveProfile(profile);
       this.Profiles.Add(profile);
       this.ActiveProfile = profile;
       _userData.Save();
       OnActiveProfileUpdate?.Invoke(this, new EventArgs());
       return true;
     }
+
+    //public bool AddNewProfile(string name)
+    //{
+    //  if (Profiles.Any(p => p.Name == name))
+    //  {
+    //    return false;
+    //  }
+    //  var profile = new Profile
+    //  {
+    //    Id = Guid.NewGuid().ToString(),
+    //    Name = name,
+    //    Windows = new ObservableCollection<WindowInfo>()
+    //  };
+    //  this.Profiles.Add(profile);
+    //  this.ActiveProfile = profile;
+    //  _userData.Save();
+    //  OnActiveProfileUpdate?.Invoke(this, new EventArgs());
+    //  return true;
+    //}
 
     /// <summary>
     /// Deletes the current active profile, returning the index of the new
@@ -107,6 +109,7 @@ namespace WindowmancerWPF.Services
       {
         return -1;
       }
+
       // Get the index of the new active profile since we are deleting this one.
       var index = this.Profiles.IndexOf(this.ActiveProfile);
       if (index == 0 && this.Profiles.Count == 1)
@@ -120,6 +123,7 @@ namespace WindowmancerWPF.Services
       
       this.Profiles.Remove(this.ActiveProfile);
       this.ActiveProfile = this.Profiles[index];
+      this.ActiveProfile.IsActive = true;
       OnActiveProfileUpdate?.Invoke(this, new EventArgs());
       return index;
     }
@@ -135,11 +139,17 @@ namespace WindowmancerWPF.Services
       return true;
     }
 
-    public void UpdateToActiveProfile(int index, WindowInfo windowInfo)
-    {
-      this.ActiveProfile.Windows[index] = windowInfo;
-      _userData.Save();
-    }
+    ///// <summary>
+    ///// Updates a window configuration within the active profile.
+    ///// specified
+    ///// </summary>
+    ///// <param name="index"></param>
+    ///// <param name="windowInfo"></param>
+    //public void UpdateToActiveProfile(WindowInfo windowInfo)
+    //{
+    //  this.ActiveProfile.Windows.Find = windowInfo;
+    //  _userData.Save();
+    //}
 
     public void UpdateActiveProfileName(string name)
     {
@@ -160,6 +170,11 @@ namespace WindowmancerWPF.Services
 
     public void Dispose()
     {
+    }
+
+    private void DeselectActiveProfile(Profile profile)
+    {
+      foreach (var p in this.Profiles) { p.IsActive = false; }
     }
   }
 }

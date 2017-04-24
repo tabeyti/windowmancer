@@ -1,9 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 
 namespace WindowmancerWPF.Models
 {
-  public class WindowMatchCriteria
+  public class WindowMatchCriteria : ICloneable
   {
     public WindowMatchCriteriaType MatchType { get; }
     public string MatchString { get; }
@@ -17,6 +18,11 @@ namespace WindowmancerWPF.Models
     public override string ToString()
     {
       return $"{this.MatchType} - {this.MatchString}";
+    }
+
+    public object Clone()
+    {
+      return new WindowMatchCriteria(this.MatchType, this.MatchString);
     }
   }
 

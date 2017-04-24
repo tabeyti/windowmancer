@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using WindowmancerWPF.Models;
 
 namespace WindowmancerWPF.UI
 {
@@ -19,5 +20,15 @@ namespace WindowmancerWPF.UI
       this.Left = x;
       this.Top = y;
     }
+
+    public void UpdateLayout(WindowLayoutInfo layoutInfo)
+    {
+      UpdateLayout(
+        layoutInfo.PositionInfo.X,
+        layoutInfo.PositionInfo.Y,
+        layoutInfo.SizeInfo.Width,
+        layoutInfo.SizeInfo.Height);
+    }
   }
 }
+

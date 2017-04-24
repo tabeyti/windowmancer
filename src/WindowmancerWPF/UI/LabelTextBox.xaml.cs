@@ -1,38 +1,39 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 
 namespace WindowmancerWPF.UI
 {
   /// <summary>
   /// Interaction logic for LabelTextBox.xaml
   /// </summary>
-  public partial class LabelTextBox : UserControl
+  public partial class LabelTextBox
   {
+    public static readonly DependencyProperty LabelProperty = DependencyProperty.Register("Label",
+        typeof(string),
+        typeof(LabelTextBox),
+        new FrameworkPropertyMetadata("Unnamed Label"));
+
+    public static readonly DependencyProperty TextProperty = DependencyProperty.Register("Text",
+        typeof(string),
+        typeof(LabelTextBox),
+        new FrameworkPropertyMetadata("", FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
     public LabelTextBox()
     {
       InitializeComponent();
+      Root.DataContext = this;
     }
-
-    private string _localLabel = "";
-    private string _localText = "";
 
     public string Label
     {
-      get { return _localLabel; }
-      set
-      {
-        _localLabel = value;
-        BaseLabel.Content = value;
-      }
+      get { return (string)GetValue(LabelProperty); }
+      set { SetValue(LabelProperty, value); }
     }
 
     public string Text
     {
-      get { return _localText; }
-      set
-      {
-        _localText = value;
-        BaseTextBox.Text = value;
-      }
+      get { return (string)GetValue(TextProperty); }
+      set { SetValue(TextProperty, value); }
     }
   }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -11,12 +12,15 @@ namespace WindowmancerWPF.UI
   /// </summary>
   public partial class ProfileConfig : UserControl
   {
-    public event EventHandler OnClose;
+    public Action OnClose { get; set; }
+
+    public Action<Profile> OnSave { get; set; }
 
     public Profile Profile { get; set; }
 
-    public ProfileConfig()
+    public ProfileConfig(Action<Profile> onSave)
     {
+      this.OnSave = onSave;
       PreInitialize();
       InitializeComponent();
     }
@@ -33,7 +37,12 @@ namespace WindowmancerWPF.UI
     {
       if (null == this.Profile)
       {
-        this.Profile = new Profile();
+        this.Profile = new Profile
+        {
+          Id = Guid.NewGuid().ToString(),
+          Name = "",
+          Windows = new ObservableCollection<WindowInfo>()
+        };
       }
     }
     private void Initialize()
@@ -49,7 +58,12 @@ namespace WindowmancerWPF.UI
         throw new Exception("ProfileConfig - Could locate active window to unbind the KeyDown listener.");
       }
       window.KeyDown -= ProfileConfig_HandleKeyPress;
-      OnClose?.Invoke(this, new EventArgs());
+      OnClose?.Invoke();
+    }
+
+    private void SaveProfile()
+    {
+      this.Profile.Name = this.ProfileNameTextBox.Text;
     }
 
     private void ProfileConfig_OnLoaded(object sender, RoutedEventArgs e)
@@ -78,6 +92,8 @@ namespace WindowmancerWPF.UI
 
     private void OkayButton_Click(object sender, RoutedEventArgs e)
     {
+      SaveProfile();
+      OnSave?.Invoke(this.Profile);
       Close();
     }
   }

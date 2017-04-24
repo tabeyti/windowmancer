@@ -95,6 +95,7 @@
           </DataTemplate>
         </GroupBox.HeaderTemplate>
         <ListBox Name="ProfileListBox" 
+                 SelectionChanged="ProfileListBox_SelectionChanged"
                  Style="{StaticResource MyListBox}">
           <ListBox.Resources>
             <ContextMenu x:Key="RowMenu">
@@ -109,7 +110,8 @@
           </ListBox.ContextMenu>
           <ListBox.ItemContainerStyle>
             <Style TargetType="ListBoxItem" BasedOn="{StaticResource MyListBoxItem}">
-              <Setter Property="ContextMenu" Value="{StaticResource RowMenu}"></Setter>
+              <Setter Property="ContextMenu" Value="{StaticResource RowMenu}"/>
+              <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
             </Style>
           </ListBox.ItemContainerStyle>
           <ListBox.ItemTemplate>
@@ -138,8 +140,14 @@
           <DataGrid.Resources>
             <ContextMenu x:Key="RowMenu">
               <MenuItem Header="Edit" Click="WindowConfigDataGrid_MenuItemClick"></MenuItem>
+              <MenuItem Header="Delete" Click="WindowConfigDataGrid_MenuItemClick"></MenuItem>
             </ContextMenu>
           </DataGrid.Resources>
+          <DataGrid.ContextMenu>
+            <ContextMenu>
+              <MenuItem Header="Add" Click="WindowConfigDataGrid_MenuItemClick"></MenuItem>
+            </ContextMenu>
+          </DataGrid.ContextMenu>
           <DataGrid.RowStyle>
             <Style TargetType="DataGridRow" BasedOn="{StaticResource MetroDataGridRow}">
               <Setter Property="ContextMenu" Value="{StaticResource RowMenu}"></Setter>
