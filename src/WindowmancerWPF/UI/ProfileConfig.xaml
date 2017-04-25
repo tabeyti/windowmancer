@@ -15,7 +15,9 @@
     </Grid.RowDefinitions>
 
     <StackPanel Margin="10" Grid.Row="0">
-      <local:LabelTextBox x:Name="ProfileNameTextBox" Label="Name" />
+      <local:LabelTextBox x:Name="ProfileNameTextBox" 
+                          Label="Name" 
+                          Text="{Binding Profile.Name}"/>
     </StackPanel>
 
     <Grid Grid.Row="1" Margin="10,10,0,10" HorizontalAlignment="Right">

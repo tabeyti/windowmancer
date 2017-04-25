@@ -80,7 +80,7 @@ namespace WindowmancerWPF.UI
       else
       {
         flyout.Header = "Edit Profile";
-        content = new ProfileConfig(profile);
+        content = new ProfileConfig(profile, p => { profile.Update(p); } );
       }
       content.OnClose = () => { flyout.IsOpen = false; };
       flyout.Content = content;

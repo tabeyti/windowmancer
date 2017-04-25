@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using WindowmancerWPF.Models;
 
@@ -25,8 +26,9 @@ namespace WindowmancerWPF.UI
       InitializeComponent();
     }
 
-    public ProfileConfig(Profile profile)
+    public ProfileConfig(Profile profile, Action<Profile> onSave)
     {
+      this.OnSave = onSave;
       this.Profile = profile;
       PreInitialize();
       InitializeComponent();
@@ -61,11 +63,6 @@ namespace WindowmancerWPF.UI
       OnClose?.Invoke();
     }
 
-    private void SaveProfile()
-    {
-      this.Profile.Name = this.ProfileNameTextBox.Text;
-    }
-
     private void ProfileConfig_OnLoaded(object sender, RoutedEventArgs e)
     {
       var window = Window.GetWindow(this);
@@ -92,9 +89,25 @@ namespace WindowmancerWPF.UI
 
     private void OkayButton_Click(object sender, RoutedEventArgs e)
     {
-      SaveProfile();
+      ForceDataValidation();
       OnSave?.Invoke(this.Profile);
       Close();
+    }
+
+    /// <summary>
+    /// Forces an update to the data binding on a text box which has focus.
+    /// </summary>
+    private static void ForceDataValidation()
+    {
+      var textBox = Keyboard.FocusedElement as TextBox;
+      if (textBox != null)
+      {
+        BindingExpression be = textBox.GetBindingExpression(TextBox.TextProperty);
+        if (be != null && !textBox.IsReadOnly && textBox.IsEnabled)
+        {
+          be.UpdateSource();
+        }
+      }
     }
   }
 }
