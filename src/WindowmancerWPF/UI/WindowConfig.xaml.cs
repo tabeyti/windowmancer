@@ -32,7 +32,6 @@ namespace WindowmancerWPF.UI
     public bool DisplayHelperPreview { get; set; }
     public ScreenAspectRatio ScreenAspectRatio { get; set; }
     public WindowInfo WindowInfo { get; set; }
-    public MetroWindow ParentWindow { get; set; }
 
     private Screen _currentDisplay;
     private DisplaySection _displaySection;
@@ -42,8 +41,9 @@ namespace WindowmancerWPF.UI
     private readonly List<Button> _displaySectionButtons = new List<Button>();
     private readonly SolidColorBrush _defaultBrush = Brushes.Turquoise;
 
-    public WindowConfig()
+    public WindowConfig(Action<WindowInfo> onSave)
     {
+      this.OnSave = onSave;
       PreInitialization();
       InitializeComponent();
       Initialize();
@@ -52,7 +52,7 @@ namespace WindowmancerWPF.UI
     public WindowConfig(WindowInfo windowInfo, Action<WindowInfo> onSave)
     {
       this.OnSave = onSave;
-      this.WindowInfo = (WindowInfo)windowInfo.Clone();
+      this.WindowInfo = (WindowInfo)windowInfo?.Clone();
       PreInitialization();
       InitializeComponent();
       Initialize();

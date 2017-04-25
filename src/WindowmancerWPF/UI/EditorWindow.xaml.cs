@@ -10,6 +10,7 @@ using System.Windows.Media;
 using Gat.Controls;
 using MahApps.Metro.Controls;
 using System.Windows.Controls;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace WindowmancerWPF.UI
 {
@@ -46,6 +47,18 @@ namespace WindowmancerWPF.UI
       _procMonitor.Start();
     }
 
+    private void ShowDeleteToast(string itemName, string message = null)
+    {
+      var flyout = this.Flyouts.Items[2] as Flyout;
+      if (null == flyout)
+      {
+        throw new Exception("HandleProfileConfigEdit - No flyout available at index 1");
+      }
+      this.DeleteToastItem.Text = itemName;
+      this.DeleteToastMessage.Text = message ?? this.DeleteToastItem.Text;
+      flyout.IsOpen = true;
+    }
+
     private void HandleProfileConfigEdit(Profile profile = null)
     {
       var flyout = this.Flyouts.Items[1] as Flyout;
@@ -70,22 +83,21 @@ namespace WindowmancerWPF.UI
         content = new ProfileConfig(profile);
       }
       content.OnClose = () => { flyout.IsOpen = false; };
-
       flyout.Content = content;
       flyout.IsOpen = true;
     }
     
-    private void HandleWindowConfigEdit(WindowInfo item)
+    private void HandleWindowConfigEdit(WindowInfo item = null)
     {
       var flyout = this.Flyouts.Items[0] as Flyout;
-      if (flyout == null)
-      {
-        return;
-      }
-      var w = new WindowConfig(item, c => { item.Update(c); });
-      w.OnClose += () => { flyout.IsOpen = false; };
+      if (flyout == null) return;
 
-      flyout.Content = w;
+      var windowConfig = null == item ? 
+        new WindowConfig(item, w => { _profileManager.AddToActiveProfile(w); }) : 
+        new WindowConfig(item, w => { item.Update(w); });
+      windowConfig.OnClose += () => { flyout.IsOpen = false; };
+
+      flyout.Content = windowConfig;
       flyout.IsOpen = true;
     }
 
@@ -132,9 +144,22 @@ namespace WindowmancerWPF.UI
 
     private void WindowConfigDataGrid_MenuItemClick(object sender, RoutedEventArgs e)
     {
-      if (this.WindowConfigDataGrid.SelectedItem == null) return;
-      var item = (WindowInfo)WindowConfigDataGrid.SelectedItem;
-      HandleWindowConfigEdit(item);
+      WindowInfo item = null;
+      switch ((string) ((MenuItem) sender).Header)
+      {
+        case "Add":
+          HandleWindowConfigEdit();
+          break;
+        case "Edit":
+          item = (WindowInfo)WindowConfigDataGrid.SelectedItem;
+          HandleWindowConfigEdit(item);
+          break;
+        case "Delete":
+          item = (WindowInfo)WindowConfigDataGrid.SelectedItem;
+          _profileManager.RemoveFromActiveProfile(item);
+          ShowDeleteToast(item.Name, "window configuration deleted.");
+          break;
+      }
     }
 
     private void ActiveWindowsDataGrid_MenuItemClick(object sender, RoutedEventArgs e)
@@ -160,17 +185,17 @@ namespace WindowmancerWPF.UI
           break;
       }
     }
-
-    private void RefreshProfile(object sender, RoutedEventArgs e)
-    {
-
-    }
-
+    
     private void ProfileListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
       var profile = (Profile)(this.ProfileListBox.SelectedItem);
       _profileManager.ActiveProfile = profile;
       this.WindowConfigDataGrid.ItemsSource = _profileManager.ActiveProfile.Windows;
+    }
+
+    private void RunProfileButton_OnClick(object sender, RoutedEventArgs e)
+    {
+
     }
   }
 }

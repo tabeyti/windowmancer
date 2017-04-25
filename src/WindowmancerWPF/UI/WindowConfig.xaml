@@ -27,6 +27,7 @@
             <Grid.RowDefinitions>
               <RowDefinition Height="60" />
               <RowDefinition Height="140" />
+              <RowDefinition Height="Auto" />
               <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <local:LabelTextBox Grid.Row="0"
@@ -55,8 +56,6 @@
                                     VerticalAlignment="Top" 
                                     Width="Auto"
                                     Text="{Binding Mode=TwoWay, Path=WindowInfo.MatchCriteria.MatchString}"/>
-                <!--<RadioButton Name="MatchByWindowTitleRadioButton" Content="Match by Window Title" GroupName="MatchOptions" IsChecked="{Binding Path=CurrentOption, Mode=TwoWay}" Margin="5,0,0,5"/>
-                <RadioButton Name="MatchByProcesNameRadioButton" Content="Match by Process Name" GroupName="MatchOptions" IsChecked="{Binding Path=CurrentOption, Mode=TwoWay}" Margin="5,0,0,5"/>-->
                 <RadioButton  Name="MatchByWindowTitleRadioButton" 
                               Content="Match by Window Title" 
                               GroupName="MatchOptions" 
@@ -66,7 +65,7 @@
                               Content="Match by Process Name" 
                               GroupName="MatchOptions" 
                               Margin="5,0,0,5"
-                              IsChecked="{Binding Path=WindowInfo.MatchCriteria.MatchType, Converter={StaticResource EnumBooleanConverter}, ConverterParameter=ProcessName}"/>  
+                              IsChecked="{Binding Path=WindowInfo.MatchCriteria.MatchType, Converter={StaticResource EnumBooleanConverter}, ConverterParameter=ProcessName}"/>
               </StackPanel>
             </GroupBox>
             <GroupBox  Grid.Row="2"
@@ -124,6 +123,13 @@
                                     ShowButtonSpinner="False"/>
               </Grid>
             </GroupBox>
+            <CheckBox Name="BringToFrontCheckbox"  
+                      Grid.Row="3"
+                      HorizontalAlignment="Left"
+                      VerticalAlignment="Top"
+                      Content="Bring to front" 
+                      Margin="10,10,10,0" 
+                      IsChecked="{Binding WindowInfo.BringToFront}"/>
           </Grid>
         </Grid>
       </TabItem>

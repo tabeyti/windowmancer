@@ -1,4 +1,4 @@
-﻿  <!--http://stackoverflow.com/questions/17508333/setting-window-icon-with-a-static-resource-->
+﻿<!--http://stackoverflow.com/questions/17508333/setting-window-icon-with-a-static-resource-->
 
 <Controls:MetroWindow  x:Class="WindowmancerWPF.UI.EditorWindow"
                       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -11,7 +11,7 @@
                       xmlns:converters="clr-namespace:WindowmancerWPF.UI.Converters"
                       mc:Ignorable="d"
                       Background="{StaticResource MainColorTheme}"
-                      GlowBrush="SlateBlue"
+                      GlowBrush="{StaticResource TrimColor}"
                       TitleCaps="False"
                       IconScalingMode="NoScaleSmallerFrame"
                       WindowStartupLocation="CenterScreen"
@@ -32,12 +32,6 @@
     </Style>
   </Controls:MetroWindow.Resources>
 
-  <!--<Controls:MetroWindow.LeftWindowCommands>
-    <Controls:WindowCommands>
-      
-    </Controls:WindowCommands>
-  </Controls:MetroWindow.LeftWindowCommands>-->
-
   <Controls:MetroWindow.Flyouts>
     <Controls:FlyoutsControl x:Name="FlyoutsControl">
       <Controls:Flyout Header="Window Configuration"
@@ -45,8 +39,26 @@
                        Position="Right"
                        Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}"/>
       <Controls:Flyout IsModal="True"
-                       Position="Left"                       
+                       Position="Left"
                        Width="400"/>
+      <Controls:Flyout IsModal="False"
+                       Position="Bottom"                       
+                       IsAutoCloseEnabled="True"
+                       AutoCloseInterval="3000"
+                       TitleVisibility="Collapsed"
+                       CloseButtonVisibility="Collapsed"
+                       BorderBrush="{StaticResource TrimColor}"
+                       BorderThickness="1"
+                       Height ="75">
+        <TextBlock Name="ItemMessageToast" 
+                   HorizontalAlignment="Center" 
+                   VerticalAlignment="Center"
+                   Margin="10"
+                   FontSize="16">
+          <Run Name="DeleteToastItem" Foreground="DeepSkyBlue"/>
+          <Run Name="DeleteToastMessage" Foreground="White"/>
+        </TextBlock>
+        </Controls:Flyout>
     </Controls:FlyoutsControl>
   </Controls:MetroWindow.Flyouts>
   <Grid>
@@ -82,14 +94,21 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
               </Grid.ColumnDefinitions>
-              <Label Content="Profiles" Grid.Column="0"/>
+              <Label Content="PROFILES" Grid.Column="0"/>
               <Button Grid.Column="1"
-                      Click="RefreshProfile" 
+                      Name="RunProfileButton"
+                      Click="RunProfileButton_OnClick" 
                       ToolTip="Refresh Active Profile" 
                       HorizontalAlignment="Right"
                       BorderThickness="0"
-                      Margin="0">
-                <iconPacks:PackIconModern Width="16" Height="16" Margin="0" BorderThickness="0" Kind="MonitorPlay" />
+                      Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+                      Margin="0"
+                      Padding="0">
+                <iconPacks:PackIconModern Width="16" 
+                                          Height="16" 
+                                          Margin="0" 
+                                          Padding="0"
+                                          Kind="MonitorPlay" />
               </Button>
             </Grid>
           </DataTemplate>
