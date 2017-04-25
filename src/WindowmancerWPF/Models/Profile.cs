@@ -23,5 +23,10 @@ namespace WindowmancerWPF.Models
       RegisterProperty<string>("Name");
       RegisterProperty<bool>("IsActive");
     }
+
+    public void Update(Profile profile)
+    {
+      this.Name = profile.Name;
+    }
   }
 }
