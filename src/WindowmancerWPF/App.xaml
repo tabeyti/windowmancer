@@ -22,7 +22,11 @@
         <ResourceDictionary Source="pack://application:,,,/UI/Accents/DarkAccent.xaml" />
         <ResourceDictionary Source="pack://application:,,,/UI/Controls/Controls.ListBox.xaml" />
         <ResourceDictionary Source="pack://application:,,,/UI/Controls/Controls.TabItem.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/UI/Controls/Controls.GroupBox.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/UI/Controls/Controls.Expander.xaml" />
       </ResourceDictionary.MergedDictionaries>
+      
+      <!--Color themes-->
       <SolidColorBrush x:Key="MainColorTheme" Color="#2d2d2d"/>
       <SolidColorBrush x:Key="TrimColor" Color="#470FBF"/>
       
@@ -30,8 +34,6 @@
       <system:Double x:Key="TabItemFontSize">20</system:Double>
       <system:Double x:Key="ContextMenuFontSize">12</system:Double>
       <system:Double x:Key="MenuFontSize">12</system:Double>
-
-
       <converters:StringTruncateConverter x:Key="StringTruncateConverter" />
 
     </ResourceDictionary>

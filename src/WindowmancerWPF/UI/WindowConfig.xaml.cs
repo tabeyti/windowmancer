@@ -98,53 +98,14 @@ namespace WindowmancerWPF.UI
 
     private void Initialize()
     {
-      this.DisplayHelperPreview = false;
+      EnableDisableLayoutHelper(false);
       this.RowSpinner.ValueChanged += RowColSpinners_ValueChanged;
       this.ColumnSpinner.ValueChanged += RowColSpinners_ValueChanged;
 
       this.DisplayListBox.ItemsSource = Screen.AllScreens;
       this.DisplayListBox.SelectedItem = _currentDisplay = Screen.PrimaryScreen;
-      this.DisplayHelperControl.IsEnabled = false;
     }
-
-    private void LoadProcessInfo()
-    {
-      var rec = GetWindowRec();
-      //this.WindowInfo.LayoutInfo.PositionInfo.X = rec.Left;
-
-      //this.Position.X = rec.Left;
-      //this.Position.Y = rec.Top;
-      //this.Size.Width = rec.Width;
-      //this.Size.Height = rec.Height;
-
-      this.NameTextBox.Text = _process.MainWindowTitle;
-      this.RegexMatchStringTextBox.Text = _process.MainWindowTitle;
-      this.MatchByWindowTitleRadioButton.IsChecked = true;
-    }
-
-    private void LoadWindowInfo()
-    {
-      this.MatchByWindowTitleRadioButton.IsChecked = true;
-      this.NameTextBox.Text = this.WindowInfo.Name;
-      this.RegexMatchStringTextBox.Text = this.WindowInfo.MatchCriteria.MatchString;
-    }
-
-    private Win32.RECT GetWindowRec()
-    {
-      var info = new Win32.WINDOWINFO();
-      var rec = new Win32.RECT();
-
-      Win32.GetWindowInfo(_process.MainWindowHandle, ref info);
-      rec = info.rcWindow;
-
-      if (!Win32.IsIconic(_process.MainWindowHandle))
-      {
-        return rec;
-      }
-      rec = Win32.GetPlacement(_process.MainWindowHandle);
-      return rec;
-    }
-
+    
     private void ClearDisplaySectionPanel()
     {
       this.DisplayPanelGrid.Children.RemoveRange(0, this.DisplayPanelGrid.Children.Count);
@@ -163,7 +124,8 @@ namespace WindowmancerWPF.UI
             Content = ((r * cols) + c).ToString(),
             Background = _defaultBrush,
             Foreground = Brushes.Black,
-            Style = (Style)FindResource("SquareButtonStyle")
+            Style = (Style)FindResource("SquareButtonStyle"),
+            IsEnabled = true
         };
           button.Click += DisplaySection_OnClick;
           button.Tag = new DisplaySection
@@ -261,21 +223,21 @@ namespace WindowmancerWPF.UI
     {
       _windowHighlight?.Close();
     }
-
-    private void EnableDisplayHelper()
+    
+    private void EnableDisableLayoutHelper(bool enable)
     {
-      this.DisplayHelperControl.IsEnabled = true;
-      RecreateDisplaySectionControl((int)this.RowSpinner.Value, (int)this.ColumnSpinner.Value);
-    }
-
-    private void DisableDisplayHelper()
-    {
-      this.DisplayHelperControl.IsEnabled = false;
+      if (enable)
+      {
+        RecreateDisplaySectionControl((int)this.RowSpinner.Value, (int)this.ColumnSpinner.Value);
+        return;
+      }
+      
       ClearDisplaySectionPanel();
       _windowHighlight?.Close();
       _windowHighlight = null;
+      
     }
-
+    
     private void Close()
     {
       var window = Window.GetWindow(this);
@@ -284,6 +246,7 @@ namespace WindowmancerWPF.UI
         throw new Exception("WindowConfig - Could locate active window to unbind the KeyDown listener.");
       }
       window.KeyDown -= WindowConfig_HandleKeyPress;
+      _windowHighlight?.Close();
       OnClose?.Invoke();
     }
 
@@ -318,7 +281,7 @@ namespace WindowmancerWPF.UI
       UpdateScreenHighlight();
     }
 
-    private void OkayButton_Click(object sender, RoutedEventArgs e)
+    private void SaveButton_Click(object sender, RoutedEventArgs e)
     {
       SaveConfig();
       OnSave?.Invoke(this.WindowInfo);
@@ -329,19 +292,7 @@ namespace WindowmancerWPF.UI
     {
       Close();
     }
-
-    private void TabControl_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-    {
-      if (this.LayoutTab.IsSelected)
-      {
-        this.WindowLayoutGroupBox.IsEnabled = false;
-        EnableDisplayHelper();
-        return;
-      }
-      this.WindowLayoutGroupBox.IsEnabled = true;
-      DisableDisplayHelper();
-    }
-
+    
     private void PreviewCheckBox_OnChecked(object sender, RoutedEventArgs e)
     {
       if (this.PreviewCheckBox.IsChecked.Value)
@@ -369,6 +320,13 @@ namespace WindowmancerWPF.UI
         return;
       }
       Close();
+    }
+    
+    private void LayoutHelperExpander_OnExpanded(object sender, RoutedEventArgs e)
+    {
+      var expander = (sender as System.Windows.Controls.Expander);
+      if (expander?.IsExpanded == null) return;
+      EnableDisableLayoutHelper(expander.IsExpanded);
     }
   }
 
