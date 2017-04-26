@@ -197,5 +197,11 @@ namespace WindowmancerWPF.UI
     {
       _windowManager.RefreshProfile();
     }
+
+    private void ProfileListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+    {
+      var item = (Profile)this.ProfileListBox.SelectedItem;
+      HandleProfileConfigEdit(item);
+    }
   }
 }

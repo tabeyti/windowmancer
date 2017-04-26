@@ -4,28 +4,37 @@ using System.Text.RegularExpressions;
 
 namespace WindowmancerWPF.Models
 {
-  public class WindowMatchCriteria : ICloneable
+  public class WindowMatchCriteria : PropertyNotifyBase, ICloneable
   {
-    public WindowMatchCriteriaType MatchType { get; set; }
-    public string MatchString { get; set; }
+    public WindowMatchCriteriaType MatchType
+    {
+      get { return GetProperty<WindowMatchCriteriaType>(); }
+      set { SetProperty(value); }
+    }
+
+    public string MatchString
+    {
+      get { return GetProperty<string>(); }
+      set { SetProperty(value); }
+    }
 
     public WindowMatchCriteria()
     {
-      this.MatchType = WindowMatchCriteriaType.WindowTitle;
-      this.MatchString = "";
+      RegisterProperty("MatchType", WindowMatchCriteriaType.WindowTitle);
+      RegisterProperty("MatchString", "");
     }
 
     public WindowMatchCriteria(WindowMatchCriteriaType type, string matchString)
     {
-      this.MatchType = type;
-      this.MatchString = matchString;
+      RegisterProperty("MatchType", type);
+      RegisterProperty("MatchString", matchString);
     }
 
     public override string ToString()
     {
       return $"{this.MatchType} - {this.MatchString}";
     }
-
+    
     public object Clone()
     {
       return new WindowMatchCriteria(this.MatchType, this.MatchString);
