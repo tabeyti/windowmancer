@@ -1,8 +1,9 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 
 namespace WindowmancerWPF.Models
 {
-  public class Profile : PropertyNotifyBase
+  public class Profile : PropertyNotifyBase, ICloneable
   {
     public string Name
     {
@@ -27,6 +28,11 @@ namespace WindowmancerWPF.Models
     public void Update(Profile profile)
     {
       this.Name = profile.Name;
+    }
+
+    public object Clone()
+    {
+      return new Profile { Name = this.Name, Id = this.Id };
     }
   }
 }

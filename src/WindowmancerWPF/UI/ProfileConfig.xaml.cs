@@ -29,7 +29,7 @@ namespace WindowmancerWPF.UI
     public ProfileConfig(Profile profile, Action<Profile> onSave)
     {
       this.OnSave = onSave;
-      this.Profile = profile;
+      this.Profile = (Profile)profile.Clone();
       PreInitialize();
       InitializeComponent();
       Initialize();

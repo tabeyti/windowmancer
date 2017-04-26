@@ -176,8 +176,8 @@ namespace WindowmancerWPF.UI
         WindowMatchCriteriaType.ProcessName : WindowMatchCriteriaType.WindowTitle;
 
       this.WindowInfo.Name = this.NameTextBox.Text;
-      this.WindowInfo.MatchCriteria = new WindowMatchCriteria(matchType,
-        this.RegexMatchStringTextBox.Text);
+      this.WindowInfo.MatchCriteria.MatchType = matchType;
+      this.WindowInfo.MatchCriteria.MatchString = this.RegexMatchStringTextBox.Text;
       this.WindowInfo.LayoutInfo.PositionInfo.X = (int)this.XSpinner.Value;
       this.WindowInfo.LayoutInfo.PositionInfo.Y = (int)this.YSpinner.Value;
       this.WindowInfo.LayoutInfo.SizeInfo.Width = (int)this.WidthSpinner.Value;
