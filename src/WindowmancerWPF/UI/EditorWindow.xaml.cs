@@ -195,7 +195,7 @@ namespace WindowmancerWPF.UI
 
     private void RunProfileButton_OnClick(object sender, RoutedEventArgs e)
     {
-
+      _windowManager.RefreshProfile();
     }
   }
 }

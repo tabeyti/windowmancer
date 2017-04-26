@@ -6,9 +6,7 @@
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-                      xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
                       xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-                      xmlns:converters="clr-namespace:WindowmancerWPF.UI.Converters"
                       mc:Ignorable="d"
                       Background="{StaticResource MainColorTheme}"
                       GlowBrush="{StaticResource TrimColor}"
@@ -37,6 +35,7 @@
       <Controls:Flyout Header="Window Configuration"
                        IsModal="True"
                        Position="Right"
+                       CloseButtonVisibility="Collapsed"
                        Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}"/>
       <Controls:Flyout IsModal="True"
                        Position="Left"
@@ -86,16 +85,16 @@
         <ColumnDefinition Width="5" />
         <ColumnDefinition Width="*" />
       </Grid.ColumnDefinitions>
-      <GroupBox Grid.Column="0">
-        <GroupBox.HeaderTemplate>
-          <DataTemplate>
-            <Grid>
-              <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-              </Grid.ColumnDefinitions>
-              <Label Content="PROFILES" Grid.Column="0"/>
-              <Button Grid.Column="1"
+      <GroupBox Grid.Column="0"
+                Style="{StaticResource MyGroupBoxStyle}">
+        <GroupBox.Header>
+          <Grid Height="20" Margin="0">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*"/>
+              <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="PROFILES" Grid.Column="0" Padding="0"/>
+            <Button Grid.Column="1"
                       Name="RunProfileButton"
                       Click="RunProfileButton_OnClick" 
                       ToolTip="Refresh Active Profile" 
@@ -104,15 +103,14 @@
                       Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
                       Margin="0"
                       Padding="0">
-                <iconPacks:PackIconModern Width="16" 
+              <iconPacks:PackIconModern Width="16" 
                                           Height="16" 
                                           Margin="0" 
                                           Padding="0"
                                           Kind="MonitorPlay" />
-              </Button>
-            </Grid>
-          </DataTemplate>
-        </GroupBox.HeaderTemplate>
+            </Button>
+          </Grid>
+        </GroupBox.Header>
         <ListBox Name="ProfileListBox" 
                  SelectionChanged="ProfileListBox_SelectionChanged"
                  Style="{StaticResource MyListBox}">
@@ -146,7 +144,8 @@
         </ListBox>
       </GroupBox>
       <GridSplitter Background="{StaticResource MainColorTheme}" Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
-      <GroupBox Header="Window Configurations" Grid.Column="2">
+      <GroupBox Header="Window Configurations" Grid.Column="2"
+                Style="{StaticResource MyGroupBoxStyle}">
         <DataGrid Name="WindowConfigDataGrid" 
                 GridLinesVisibility="None" 
                 IsReadOnly="True" 
@@ -176,7 +175,8 @@
       </GroupBox>
     </Grid>
     <GridSplitter Grid.Row="2" Background="{StaticResource MainColorTheme}" Height="5" HorizontalAlignment="Stretch" />
-    <GroupBox Header="Active Windows" Grid.Row="3">
+    <GroupBox Header="Active Windows" Grid.Row="3"
+              Style="{StaticResource MyGroupBoxStyle}">
       <DataGrid Name="ActiveWindowsDataGrid" 
               GridLinesVisibility="None"               
               AutoGenerateColumns="False"
