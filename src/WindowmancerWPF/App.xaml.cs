@@ -3,18 +3,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Forms;
-using Hardcodet.Wpf.TaskbarNotification;
 using Microsoft.Practices.Unity;
 using WindowmancerWPF.Models;
 using WindowmancerWPF.Practices;
 using WindowmancerWPF.Services;
 using WindowmancerWPF.UI;
 using Application = System.Windows.Application;
-using ContextMenu = System.Windows.Controls.ContextMenu;
 using Control = System.Windows.Controls.Control;
-using MenuItem = System.Windows.Controls.MenuItem;
 using Point = System.Drawing.Point;
 
 namespace WindowmancerWPF
@@ -26,6 +22,8 @@ namespace WindowmancerWPF
   {
     public static IUnityContainer ServiceResolver = WMServiceResolver.Instance;
 
+    // Static colors which should match theme colors in App.xaml
+    // TODO: Grab colors from App.xaml instead of hard-code them
     public static Color TrayAppBgColor = Color.FromArgb(255, 30, 30, 30);
     public static Color TrayAppForegroundColor = Color.White;
     public static Color SelectedItemColor = Color.DeepSkyBlue;
@@ -35,9 +33,7 @@ namespace WindowmancerWPF
     private WindowManager _windowManager;
     private ProcMonitor _procMonitor;
     private UserData _userData;
-
-    private TaskbarIcon _trayApp;
-
+    
     public ObservableCollection<Control> ContextMenuItemCollection { get; set; }
 
     private NotifyIcon _trayIcon;
@@ -59,17 +55,15 @@ namespace WindowmancerWPF
       _procMonitor = ServiceResolver.Resolve<ProcMonitor>();
 
       Initialize();
+
+      // Open editor on first run.
+      OpenEditor();
     }
 
     private void Initialize()
     {
       _keyHookManager.OnKeyCombinationSuccess += OnKeyCombinationSuccess;
       _procMonitor.Start();
-      //_trayApp = (TaskbarIcon)FindResource("TrayApp");
-
-      //this.ContextMenuItemCollection = new ObservableCollection<Control>();
-      //ReCreateContextMenu();
-      //_trayApp.ContextMenu.ItemsSource = this.ContextMenuItemCollection;
 
       var iconStream = Application.GetResourceStream(
         new Uri("pack://application:,,,/WindowmancerWPF;component/AppIcon.ico")).Stream;
@@ -80,7 +74,7 @@ namespace WindowmancerWPF
       {
         Icon = new System.Drawing.Icon(iconStream),
         ContextMenuStrip = _trayContextMenu,
-        Visible = true,
+        Visible = true
       };
       _trayIcon.DoubleClick += (s, e) => OpenEditor();
       _trayIcon.MouseDown += (s, e) => { _trayIcon.ContextMenuStrip = BuildContextMenu(); };
@@ -98,11 +92,17 @@ namespace WindowmancerWPF
     
     private ContextMenuStrip BuildContextMenu()
     {
-      // Create fresh button as first item.
+      var iconStream = Application.GetResourceStream(
+        new Uri("pack://application:,,,/WindowmancerWPF;component/AppIcon.ico")).Stream;
+      var wmIcon = new System.Drawing.Bitmap(iconStream);
+
       var menuItems = new List<ToolStripItem>();
+
+      // Create fresh button as first item.
       var rescanMenuItem = new ToolStripButton("Rescan Profile");
       rescanMenuItem.Font = new Font(rescanMenuItem.Font, System.Drawing.FontStyle.Bold);
       rescanMenuItem.Click += (s, e) => { _windowManager.RefreshProfile(); };
+      rescanMenuItem.Image = wmIcon;
       menuItems.Add(rescanMenuItem);
       menuItems.Add(new ToolStripSeparator());
 
@@ -112,6 +112,7 @@ namespace WindowmancerWPF
 
       // Application control menu items.
       var openMenuItem = new ToolStripMenuItem("Open", null, (s, e) => OpenEditor());
+      openMenuItem.TextAlign = ContentAlignment.MiddleLeft;
       openMenuItem.Font = new Font(openMenuItem.Font, System.Drawing.FontStyle.Bold);
       menuItems.Add(openMenuItem);
       menuItems.Add(new ToolStripMenuItem("Settings", null, TrayContextMenu_OnProfileSettings));
@@ -123,7 +124,8 @@ namespace WindowmancerWPF
         BackColor = TrayAppBgColor,
         ForeColor = TrayAppForegroundColor,
         ShowCheckMargin = false,
-        ShowImageMargin = false
+        ShowImageMargin = false,
+        Margin = new Padding(0)
       };
       cms.Items.AddRange(menuItems.ToArray());
       return cms;

@@ -8,7 +8,7 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("WindowmancerWPF")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Windowmancer is a tool for managing the positioning of windows on a user's desktop.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("WindowmancerWPF")]

@@ -15,7 +15,7 @@ namespace WindowmancerWPF.Services
     public ObservableCollection<Profile> Profiles => _userData.Profiles;
     public Profile ActiveProfile
     {
-      get { return _activeProfile; }
+      get => _activeProfile;
       set
       {
         if (value == null)

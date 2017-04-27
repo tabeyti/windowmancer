@@ -10,6 +10,7 @@ using System.Windows.Media;
 using Gat.Controls;
 using MahApps.Metro.Controls;
 using System.Windows.Controls;
+using MahApps.Metro.Controls.Dialogs;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace WindowmancerWPF.UI
@@ -120,12 +121,23 @@ namespace WindowmancerWPF.UI
 
     private void AboutBox_Click(object sender, RoutedEventArgs e)
     {
-      var about = new About
+      var dialog = new CustomDialog();
+      var about = new AboutDialog();
+      var settings = new MetroDialogSettings
       {
-        ApplicationLogo = Helper.ImageSourceForBitmap(Properties.Resources.AppLogo),
-        Window = {Background = Brushes.Black},
+        AffirmativeButtonText = "Okay",
+        AnimateShow = true,
+        FirstAuxiliaryButtonText = "Okay"
       };
-      about.Show();
+      dialog.Content = about;
+      this.ShowMetroDialogAsync(dialog, settings);
+
+      //var about = new About
+      //{
+      //  ApplicationLogo = Helper.ImageSourceForBitmap(Properties.Resources.AppLogo),
+      //  Window = {Background = Brushes.Black},
+      //};
+      //about.Show();
     }
 
     private void WindowConfigDataGrid_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)

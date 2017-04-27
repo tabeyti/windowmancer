@@ -1,7 +1,5 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Windows;
 
 namespace WindowmancerWPF.Models
 {
@@ -9,26 +7,26 @@ namespace WindowmancerWPF.Models
   {
     public string Name
     {
-      get { return GetProperty<string>(); }
-      set { SetProperty(value); }
+      get => GetProperty<string>();
+      set => SetProperty(value);
     }
 
     public WindowLayoutInfo LayoutInfo
     {
-      get { return GetProperty<WindowLayoutInfo>(); }
-      set { SetProperty(value); }
+      get => GetProperty<WindowLayoutInfo>();
+      set => SetProperty(value);
     }
 
     public WindowMatchCriteria MatchCriteria
     {
-      get { return GetProperty<WindowMatchCriteria>(); }
-      set { SetProperty(value); }
+      get => GetProperty<WindowMatchCriteria>();
+      set => SetProperty(value);
     }
 
     public bool BringToFront
     {
-      get { return GetProperty<bool>(); }
-      set { SetProperty(value); }
+      get => GetProperty<bool>();
+      set => SetProperty(value);
     }
 
     public WindowInfo()
@@ -77,14 +75,14 @@ namespace WindowmancerWPF.Models
   {
     public PositionInfo PositionInfo
     {
-      get { return GetProperty<PositionInfo>(); }
-      set { SetProperty(value); }
+      get => GetProperty<PositionInfo>();
+      set => SetProperty(value);
     }
 
     public SizeInfo SizeInfo
     {
-      get { return GetProperty<SizeInfo>(); }
-      set { SetProperty(value); }
+      get => GetProperty<SizeInfo>();
+      set => SetProperty(value);
     }
 
     public WindowLayoutInfo()
@@ -124,13 +122,13 @@ namespace WindowmancerWPF.Models
   {
     public int X
     {
-      get { return GetProperty<int>(); }
-      set { SetProperty(value); }
+      get => GetProperty<int>();
+      set => SetProperty(value);
     }
     public int Y
     {
-      get { return GetProperty<int>(); }
-      set { SetProperty(value); }
+      get => GetProperty<int>();
+      set => SetProperty(value);
     }
 
     public override string ToString()
@@ -160,13 +158,13 @@ namespace WindowmancerWPF.Models
   {
     public int Width
     {
-      get { return GetProperty<int>(); }
-      set { SetProperty(value); }
+      get => GetProperty<int>();
+      set => SetProperty(value);
     }
     public int Height
     {
-      get { return GetProperty<int>(); }
-      set { SetProperty(value); }
+      get => GetProperty<int>();
+      set => SetProperty(value);
     }
 
     public override string ToString()

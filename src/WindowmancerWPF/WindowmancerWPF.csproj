@@ -59,14 +59,6 @@
     <ApplicationIcon>AppIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FastColoredTextBox, Version=2.16.21.0, Culture=neutral, PublicKeyToken=fb8aa12b994ef61b, processorArchitecture=MSIL">
-      <HintPath>..\packages\FCTB.2.16.21.0\lib\FastColoredTextBox.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Gat.Controls.AboutBox, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AboutBox.2.0.0\lib\net451\Gat.Controls.AboutBox.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Gma.System.MouseKeyHook, Version=5.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MouseKeyHook.5.4.0\lib\net40\Gma.System.MouseKeyHook.dll</HintPath>
       <Private>True</Private>
@@ -158,8 +150,14 @@
     <Compile Include="Services\ProcMonitor.cs" />
     <Compile Include="Services\ProfileManager.cs" />
     <Compile Include="Services\WindowManager.cs" />
+    <Compile Include="UI\AboutDialog.xaml.cs">
+      <DependentUpon>AboutDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Converters\EnumBooleanConverter.cs" />
     <Compile Include="UI\Converters\StringTruncateConverter.cs" />
+    <Compile Include="UI\HotKeyInputBox.xaml.cs">
+      <DependentUpon>HotKeyInputBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\LabelTextBox.xaml.cs">
       <DependentUpon>LabelTextBox.xaml</DependentUpon>
     </Compile>
@@ -172,6 +170,10 @@
     <Compile Include="UI\WindowHighlight.xaml.cs">
       <DependentUpon>WindowHighlight.xaml</DependentUpon>
     </Compile>
+    <Page Include="UI\AboutDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Accents\DarkAccent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -202,6 +204,10 @@
       <DependentUpon>EditorWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="UI\HotKeyInputBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="UI\LabelTextBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -273,6 +279,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="AppIcon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="AppLogo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

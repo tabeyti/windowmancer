@@ -7,16 +7,16 @@ namespace WindowmancerWPF.Models
   {
     public string Name
     {
-      get { return GetProperty<string>();  }
-      set { SetProperty(value); }
+      get => GetProperty<string>();
+      set => SetProperty(value);
     }
     public string Id { get; set; }
     public ObservableCollection<WindowInfo> Windows { get; set; }
 
     public bool IsActive
     {
-      get { return GetProperty<bool>(); }
-      set { SetProperty(value); }
+      get => GetProperty<bool>();
+      set => SetProperty(value);
     }
 
     public Profile()
