@@ -1,7 +1,7 @@
 ﻿using Microsoft.Practices.Unity;
 using System;
 using System.Windows.Forms;
-using Windowmancer.Pratices;
+using Windowmancer.Practices;
 
 namespace Windowmancer
 {

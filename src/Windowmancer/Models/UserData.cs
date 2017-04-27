@@ -16,6 +16,24 @@ namespace Windowmancer.Models
 
     public UserData(UserConfig config)
     {
+      this.Profiles = new BindingList<Profile>
+      {
+        new Profile
+        {
+          Id = Guid.NewGuid().ToString(),
+          Name = "My Profile",
+          Windows = new BindingList<WindowInfo>()
+        }
+      };
+      this.KeyComboConfig = new KeyComboConfig
+      {
+        KeyCombination = new System.Collections.Generic.List<KeyInfo>()
+        {
+          new KeyInfo { Key = System.Windows.Forms.Keys.Control },
+          new KeyInfo { Key = System.Windows.Forms.Keys.Shift },
+          new KeyInfo { Key = System.Windows.Forms.Keys.K },
+        }
+      };
       _config = config;
     }
 

@@ -1,0 +1,44 @@
+﻿<Application x:Class="WindowmancerWPF.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:converters="clr-namespace:WindowmancerWPF.UI.Converters"
+             ShutdownMode="OnExplicitShutdown"
+             Startup="App_OnStartup"
+             Exit="App_OnExit">
+  <Application.Resources>
+    <ResourceDictionary>
+
+      <ResourceDictionary.MergedDictionaries>
+        <!-- MahApps.Metro resource dictionaries. Make sure that all file names are Case Sensitive! -->
+        <ResourceDictionary Source="/MahApps.Metro;component/Styles/Controls.xaml" />
+        <ResourceDictionary Source="/MahApps.Metro;component/Styles/Fonts.xaml" />
+        <ResourceDictionary Source="/MahApps.Metro;component/Styles/Colors.xaml" />
+        <ResourceDictionary Source="/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />
+
+        <!-- Accent and AppTheme setting -->
+        <!--<ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Steel.xaml" />-->
+        <ResourceDictionary Source="pack://application:,,,/UI/Themes/MyBaseDark.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/UI/Accents/DarkAccent.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/UI/Controls/Controls.ListBox.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/UI/Controls/Controls.TabItem.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/UI/Controls/Controls.GroupBox.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/UI/Controls/Controls.Expander.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+
+      <!--Color themes-->
+      <SolidColorBrush x:Key="MainColorTheme" Color="#2d2d2d"/>
+      <SolidColorBrush x:Key="TrimColor" Color="#470FBF"/>
+      <SolidColorBrush x:Key="BackgroundColor" Color="#470FBF"/>      
+
+      <!--Font overrides-->
+      <system:Double x:Key="TabItemFontSize">20</system:Double>
+      <system:Double x:Key="ContextMenuFontSize">12</system:Double>
+      <system:Double x:Key="MenuFontSize">12</system:Double>
+      <converters:StringTruncateConverter x:Key="StringTruncateConverter" />
+
+    </ResourceDictionary>
+
+  </Application.Resources>
+
+</Application>

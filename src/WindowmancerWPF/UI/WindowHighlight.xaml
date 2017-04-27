@@ -1,0 +1,19 @@
+﻿<Window x:Class="WindowmancerWPF.UI.WindowHighlight"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WindowmancerWPF.UI"
+        mc:Ignorable="d"
+        Title="ScreenHighlight" 
+        WindowStyle="None" 
+        ResizeMode="NoResize"
+        AllowsTransparency="True"
+        Topmost="True">
+  <Window.Background>
+    <SolidColorBrush Opacity="0" Color="White"/>
+  </Window.Background>
+  <Border BorderThickness="5" BorderBrush="Yellow" Margin="0">
+    <Grid/>
+  </Border>
+</Window>

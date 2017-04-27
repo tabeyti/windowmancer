@@ -8,12 +8,18 @@ namespace Windowmancer.Services
 {
   public class ProfileManager : IDisposable
   {
+    public event EventHandler OnActiveProfileUpdate;
+
     public BindingList<Profile> Profiles => _userData.Profiles;
     public Profile ActiveProfile
     {
       get { return _activeProfile; }
       set
       {
+        if (value == null)
+        {
+          return;
+        }
         _userData.ActiveProfile = value.Id;
         _activeProfile = value;
         _windowManager.ActiveProfile = _activeProfile;
@@ -51,6 +57,8 @@ namespace Windowmancer.Services
       this.ActiveProfile = this.Profiles[index];
       _windowManager.ActiveProfile = this.ActiveProfile;
       _userData.Save();
+
+      OnActiveProfileUpdate?.Invoke(this, new EventArgs());
     }
 
     public void UpdateActiveProfile(string id)
@@ -63,6 +71,8 @@ namespace Windowmancer.Services
       this.ActiveProfile = profile;
       _windowManager.ActiveProfile = this.ActiveProfile;
       _userData.Save();
+
+      OnActiveProfileUpdate?.Invoke(this, new EventArgs());
     }
 
     public bool AddNewProfile(string name)
@@ -80,6 +90,7 @@ namespace Windowmancer.Services
       this.Profiles.Add(profile);
       this.ActiveProfile = profile;
       _userData.Save();
+      OnActiveProfileUpdate?.Invoke(this, new EventArgs());
       return true;
     }
 
@@ -107,6 +118,7 @@ namespace Windowmancer.Services
       
       this.Profiles.Remove(this.ActiveProfile);
       this.ActiveProfile = this.Profiles[index];
+      OnActiveProfileUpdate?.Invoke(this, new EventArgs());
       return index;
     }
 
@@ -119,6 +131,19 @@ namespace Windowmancer.Services
       this.ActiveProfile.Windows.Add(info);
       _userData.Save();
       return true;
+    }
+
+    public void UpdateToActiveProfile(int index, WindowInfo windowInfo)
+    {
+      this.ActiveProfile.Windows[index] = windowInfo;
+      _userData.Save();
+    }
+
+    public void UpdateActiveProfileName(string name)
+    {
+      this.ActiveProfile.Name = name;
+      OnActiveProfileUpdate?.Invoke(this, new EventArgs());
+      _userData.Save();
     }
 
     public void RemoveFromActiveProfile(WindowInfo info)
