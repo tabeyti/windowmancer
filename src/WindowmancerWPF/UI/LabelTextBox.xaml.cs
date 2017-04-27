@@ -26,14 +26,14 @@ namespace WindowmancerWPF.UI
 
     public string Label
     {
-      get { return (string)GetValue(LabelProperty); }
-      set { SetValue(LabelProperty, value); }
+      get => (string)GetValue(LabelProperty);
+      set => SetValue(LabelProperty, value);
     }
 
     public string Text
     {
-      get { return (string)GetValue(TextProperty); }
-      set { SetValue(TextProperty, value); }
+      get => (string)GetValue(TextProperty);
+      set => SetValue(TextProperty, value);
     }
   }
 }

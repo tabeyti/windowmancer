@@ -18,14 +18,14 @@ namespace WindowmancerWPF.Practices
 
       public int Width
       {
-        get { return this.Right - this.Left; }
-        set { this.Right = value + this.Left; }
+        get => this.Right - this.Left;
+        set => this.Right = value + this.Left;
       }
 
       public int Height
       {
-        get { return this.Bottom - this.Top; }
-        set { this.Bottom = value + this.Top; }
+        get => this.Bottom - this.Top;
+        set => this.Bottom = value + this.Top;
       }
     }
 

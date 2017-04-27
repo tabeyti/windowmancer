@@ -8,14 +8,14 @@ namespace WindowmancerWPF.Models
   {
     public WindowMatchCriteriaType MatchType
     {
-      get { return GetProperty<WindowMatchCriteriaType>(); }
-      set { SetProperty(value); }
+      get => GetProperty<WindowMatchCriteriaType>();
+      set => SetProperty(value);
     }
 
     public string MatchString
     {
-      get { return GetProperty<string>(); }
-      set { SetProperty(value); }
+      get => GetProperty<string>();
+      set => SetProperty(value);
     }
 
     public WindowMatchCriteria()
