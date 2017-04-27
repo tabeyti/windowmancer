@@ -1,7 +1,21 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Drawing;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Forms;
+using Hardcodet.Wpf.TaskbarNotification;
 using Microsoft.Practices.Unity;
+using WindowmancerWPF.Models;
 using WindowmancerWPF.Practices;
+using WindowmancerWPF.Services;
 using WindowmancerWPF.UI;
+using Application = System.Windows.Application;
+using ContextMenu = System.Windows.Controls.ContextMenu;
+using Control = System.Windows.Controls.Control;
+using MenuItem = System.Windows.Controls.MenuItem;
+using Point = System.Drawing.Point;
 
 namespace WindowmancerWPF
 {
@@ -12,6 +26,25 @@ namespace WindowmancerWPF
   {
     public static IUnityContainer ServiceResolver = WMServiceResolver.Instance;
 
+    public static Color TrayAppBgColor = Color.FromArgb(255, 30, 30, 30);
+    public static Color TrayAppForegroundColor = Color.White;
+    public static Color SelectedItemColor = Color.DeepSkyBlue;
+
+    private KeyHookManager _keyHookManager;
+    private ProfileManager _profileManager;
+    private WindowManager _windowManager;
+    private ProcMonitor _procMonitor;
+    private UserData _userData;
+
+    private TaskbarIcon _trayApp;
+
+    public ObservableCollection<Control> ContextMenuItemCollection { get; set; }
+
+    private NotifyIcon _trayIcon;
+    private ContextMenuStrip _trayContextMenu;
+    private EditorWindow _editor;
+
+    
     private void App_OnExit(object sender, ExitEventArgs e)
     {
       ServiceResolver.Dispose();
@@ -19,8 +52,184 @@ namespace WindowmancerWPF
 
     private void App_OnStartup(object sender, StartupEventArgs e)
     {
-      var editor = new EditorWindow();
-      editor.Show();
+      _userData = ServiceResolver.Resolve<UserData>();
+      _profileManager = ServiceResolver.Resolve<ProfileManager>();
+      _windowManager = ServiceResolver.Resolve<WindowManager>();
+      _keyHookManager = ServiceResolver.Resolve<KeyHookManager>();
+      _procMonitor = ServiceResolver.Resolve<ProcMonitor>();
+
+      Initialize();
+    }
+
+    private void Initialize()
+    {
+      _keyHookManager.OnKeyCombinationSuccess += OnKeyCombinationSuccess;
+      _procMonitor.Start();
+      //_trayApp = (TaskbarIcon)FindResource("TrayApp");
+
+      //this.ContextMenuItemCollection = new ObservableCollection<Control>();
+      //ReCreateContextMenu();
+      //_trayApp.ContextMenu.ItemsSource = this.ContextMenuItemCollection;
+
+      var iconStream = Application.GetResourceStream(
+        new Uri("pack://application:,,,/WindowmancerWPF;component/AppIcon.ico")).Stream;
+
+      // Build system tray app.
+      _trayContextMenu = BuildContextMenu();
+      _trayIcon = new NotifyIcon
+      {
+        Icon = new System.Drawing.Icon(iconStream),
+        ContextMenuStrip = _trayContextMenu,
+        Visible = true,
+      };
+      _trayIcon.DoubleClick += (s, e) => OpenEditor();
+      _trayIcon.MouseDown += (s, e) => { _trayIcon.ContextMenuStrip = BuildContextMenu(); };
+
+      // Hook into active profile updates to display proper
+      // tooltip text for the tray icon.
+      _trayIcon.Text = TrayIconTooltipText();
+      _profileManager.OnActiveProfileUpdate += (s, e) => { _trayIcon.Text = TrayIconTooltipText(); };
+    }
+
+    private string TrayIconTooltipText()
+    {
+      return $"Windowmancer\nActive Profile - {_profileManager.ActiveProfile.Name}";
+    }
+    
+    private ContextMenuStrip BuildContextMenu()
+    {
+      // Create fresh button as first item.
+      var menuItems = new List<ToolStripItem>();
+      var rescanMenuItem = new ToolStripButton("Rescan Profile");
+      rescanMenuItem.Font = new Font(rescanMenuItem.Font, System.Drawing.FontStyle.Bold);
+      rescanMenuItem.Click += (s, e) => { _windowManager.RefreshProfile(); };
+      menuItems.Add(rescanMenuItem);
+      menuItems.Add(new ToolStripSeparator());
+
+      // Grab all selectable profiles.
+      menuItems.AddRange(GetProfileMenuItems());
+      menuItems.Add(new ToolStripSeparator());
+
+      // Application control menu items.
+      var openMenuItem = new ToolStripMenuItem("Open", null, (s, e) => OpenEditor());
+      openMenuItem.Font = new Font(openMenuItem.Font, System.Drawing.FontStyle.Bold);
+      menuItems.Add(openMenuItem);
+      menuItems.Add(new ToolStripMenuItem("Settings", null, TrayContextMenu_OnProfileSettings));
+      menuItems.Add(new ToolStripSeparator());
+      menuItems.Add(new ToolStripMenuItem("Exit", null, (s, e) => ExitApplication()));
+      
+      var cms = new ContextMenuStrip
+      {
+        BackColor = TrayAppBgColor,
+        ForeColor = TrayAppForegroundColor,
+        ShowCheckMargin = false,
+        ShowImageMargin = false
+      };
+      cms.Items.AddRange(menuItems.ToArray());
+      return cms;
+    }
+    
+    private IEnumerable<ToolStripItem> GetProfileMenuItems()
+    {
+      var list = new List<ToolStripItem>();
+      foreach (var p in _profileManager.Profiles)
+      {
+        var m = new ToolStripMenuItem(p.Name, null, TrayContextMenu_OnProfileSelect) { Tag = p };
+        if (p.Id == _profileManager.ActiveProfile.Id)
+        {
+          SelectMenuItem(m);
+        }
+        m.Tag = p;
+        list.Add(m);
+      }
+      return list;
+    }
+
+    private void OpenEditor()
+    {
+      if (_editor != null) return;
+
+      _editor = new EditorWindow();
+      _editor.ShowDialog();
+      _editor = null;
+    }
+
+    private void OnKeyCombinationSuccess()
+    {
+      _windowManager.RefreshProfile();
+    }
+
+    private void UncheckCheckedMenuItem()
+    {
+      foreach (ToolStripItem m in _trayContextMenu.Items)
+      {
+        if (m.GetType() != typeof(ToolStripMenuItem)) continue;
+        
+
+        var item = m as ToolStripMenuItem;
+        if (!item.Checked) continue;
+        DeselectMenuItem(item);
+        break;
+      }
+    }
+
+    #region Events
+
+    private void ExitApplication()
+    {
+      _trayIcon.Visible = false;
+      Application.Current.Shutdown();
+    }
+
+    private void TrayContextMenu_OnProfileSelect(object sender, EventArgs e)
+    {
+      // Uncheck previous item.
+      var mi = ((ToolStripMenuItem)sender);
+      UncheckCheckedMenuItem();
+      SelectMenuItem(mi);
+      _profileManager.UpdateActiveProfile(((Profile)mi.Tag).Id);
+      //_editor?.UpdateActiveProfile(((Profile)mi.Tag));
+    }
+
+    private void SelectMenuItem(ToolStripMenuItem mi)
+    {
+      mi.Checked = true;
+      mi.ForeColor = SelectedItemColor;
+    }
+
+    private void DeselectMenuItem(ToolStripMenuItem mi)
+    {
+      mi.Checked = false;
+      mi.ForeColor = Color.White;
+    }
+
+    private void TrayContextMenu_OnProfileSettings(object sender, EventArgs e)
+    {
+      //var settings = new SettingsDialog(_keyHookManager);
+      //settings.Show();
+    }
+
+    #endregion Events
+
+    public class MenuItemRenderer : ToolStripProfessionalRenderer
+    {
+      protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e)
+      {
+        var borderRectangle = new Rectangle(Point.Empty, e.Item.Size);
+        var size = e.Item.Size;
+        size.Width--;
+        size.Height--;
+        var bgRectangle = new Rectangle(Point.Empty, size);
+
+        using (var borderBrush = new SolidBrush(App.TrayAppForegroundColor))
+        using (var bgBrush = new SolidBrush(App.TrayAppBgColor))
+        {
+          e.Graphics.FillRectangle(borderBrush, borderRectangle);
+          e.Graphics.FillRectangle(bgBrush, bgRectangle);
+
+        }
+      }
     }
   }
 }
+
