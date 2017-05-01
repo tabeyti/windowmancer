@@ -142,6 +142,7 @@
             <Expander x:Name="LayoutHelperExpander" 
                       Header="Layout Helper"
                       Expanded="LayoutHelperExpander_OnExpanded"
+                      Collapsed="LayoutHelperExpander_OnExpanded"
                       Style="{StaticResource MyExpanderStyle}"
                       Margin="10">
               <Grid Margin="5" 
@@ -180,13 +181,15 @@
                         VerticalAlignment="Top">
                     <Grid.ColumnDefinitions>
                       <ColumnDefinition Width="75" />
-                      <ColumnDefinition Width="75" />
+                      <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                       <RowDefinition/>
                       <RowDefinition/>
                       <RowDefinition Height="20"/>
                       <RowDefinition />
+                      <RowDefinition Height="20"/>
+                      <RowDefinition Height="65"/>
                     </Grid.RowDefinitions>
                     <Label Grid.Row="0" Grid.Column="0" 
                                  Content="Rows:" 
@@ -218,6 +221,13 @@
                               IsChecked="{Binding DisplayHelperPreview}"
                               Checked="PreviewCheckBox_OnChecked"
                               Unchecked="PreviewCheckBox_OnChecked"/>
+                    <Button Name="SetDisplayHelperLayoutButton" 
+                            Grid.Row="5" Grid.ColumnSpan="2" Grid.Column="0"
+                            Margin="10"
+                            Click="SetDisplayHelperLayoutButton_OnClick"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            Content="Set"/>
                   </Grid>
                 </Grid>
                 <!--#endregion-->

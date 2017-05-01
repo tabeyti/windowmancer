@@ -33,8 +33,8 @@ namespace WindowmancerWPF.UI
     public ScreenAspectRatio ScreenAspectRatio { get; set; }
     public WindowInfo WindowInfo { get; set; }
 
-    private Screen _currentDisplay;
-    private DisplaySection _displaySection;
+    private static Screen _screen;
+    private static DisplaySection _displaySection = new DisplaySection();
     private WindowHighlight _windowHighlight;
     private Process _process;
 
@@ -103,7 +103,9 @@ namespace WindowmancerWPF.UI
       this.ColumnSpinner.ValueChanged += RowColSpinners_ValueChanged;
 
       this.DisplayListBox.ItemsSource = Screen.AllScreens;
-      this.DisplayListBox.SelectedItem = _currentDisplay = Screen.PrimaryScreen;
+
+      _screen = _screen ?? Screen.PrimaryScreen;
+      this.DisplayListBox.SelectedItem = _screen;
     }
     
     private void ClearDisplaySectionPanel()
@@ -111,7 +113,7 @@ namespace WindowmancerWPF.UI
       this.DisplayPanelGrid.Children.RemoveRange(0, this.DisplayPanelGrid.Children.Count);
     }
 
-    private void RecreateDisplaySectionControl(int rows, int cols)
+    private void RecreateDisplaySection2Control(int rows, int cols)
     {
       ClearDisplaySectionPanel();
       var grid = new UniformGrid { Rows = rows, Columns = cols };
@@ -127,7 +129,7 @@ namespace WindowmancerWPF.UI
             Style = (Style)FindResource("SquareButtonStyle"),
             IsEnabled = true
         };
-          button.Click += DisplaySection_OnClick;
+          button.Click += DisplaySection2_OnClick;
           button.Tag = new DisplaySection
           {
             RowIndex = r,
@@ -141,16 +143,23 @@ namespace WindowmancerWPF.UI
       );
       this.DisplayPanelGrid.Children.Add(grid);
 
+      var dsb = _displaySectionButtons.Find(d =>
+      {
+        var ds = (DisplaySection) d.Tag;
+        return ds.ColumnIndex == _displaySection.ColumnIndex &&
+               ds.RowIndex == _displaySection.RowIndex;
+      });
+
+      _displaySection = (DisplaySection)dsb.Tag;
+
       // Select first button.
-      _displaySectionButtons.First().RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+      dsb.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
     }
 
     private void UpdateLayoutValues()
     {
-      var screen = _currentDisplay;
-
-      var screenWidth = screen.Bounds.Width;
-      var screenHeight = screen.Bounds.Height;
+      var screenWidth = _screen.Bounds.Width;
+      var screenHeight = _screen.Bounds.Height;
 
       var row = _displaySection.RowIndex;
       var col = _displaySection.ColumnIndex;
@@ -158,8 +167,8 @@ namespace WindowmancerWPF.UI
       var totalRows = _displaySection.TotalRows;
       var totalCols = _displaySection.TotalColumns;
 
-      var x = (screenWidth / totalCols) * col + screen.Bounds.X;
-      var y = (screenHeight / totalRows) * row + screen.Bounds.Y;
+      var x = (screenWidth / totalCols) * col + _screen.Bounds.X;
+      var y = (screenHeight / totalRows) * row + _screen.Bounds.Y;
 
       var width = (screenWidth / totalCols);
       var height = (screenHeight / totalRows);
@@ -184,7 +193,7 @@ namespace WindowmancerWPF.UI
       this.WindowInfo.LayoutInfo.SizeInfo.Height = (int)this.HeightSpinner.Value;
     }
 
-    private void DisplaySection_OnClick(object sender, EventArgs e)
+    private void DisplaySection2_OnClick(object sender, EventArgs e)
     {
       // Reset the previous button highlight.
       _displaySectionButtons.ForEach(b => b.Background = _defaultBrush);
@@ -193,7 +202,7 @@ namespace WindowmancerWPF.UI
       var button = (Button)sender;
       button.Background = Brushes.Yellow;
       _displaySection = (DisplaySection)button.Tag;
-      UpdateLayoutValues();
+      //UpdateLayoutValues();
       UpdateScreenHighlight();
     }
 
@@ -204,10 +213,12 @@ namespace WindowmancerWPF.UI
         return;
       }
 
+      var layoutInfo = _displaySection.GetLayoutInfo(_screen);
+
       // Move process window if process is active.
       if (null != _process)
       {
-        WindowManager.ApplyWindowLayout(this.WindowInfo.LayoutInfo, _process);
+        WindowManager.ApplyWindowLayout(layoutInfo, _process);
       }
 
       // Hightlight where process window layout.
@@ -215,27 +226,31 @@ namespace WindowmancerWPF.UI
       {
         _windowHighlight = new WindowHighlight();
       }
-      _windowHighlight.UpdateLayout(this.WindowInfo.LayoutInfo);
+
+      _windowHighlight.UpdateLayout(layoutInfo);
       _windowHighlight.Show();
     }
 
     private void DisableScreenHighlight()
     {
       _windowHighlight?.Close();
+      _windowHighlight = null;
     }
     
     private void EnableDisableLayoutHelper(bool enable)
     {
       if (enable)
       {
-        RecreateDisplaySectionControl((int)this.RowSpinner.Value, (int)this.ColumnSpinner.Value);
+        RecreateDisplaySection2Control(_displaySection.TotalRows, _displaySection.TotalColumns);
         return;
       }
       
       ClearDisplaySectionPanel();
-      _windowHighlight?.Close();
-      _windowHighlight = null;
-      
+      if (this.PreviewCheckBox.IsChecked.Value)
+      {
+        this.PreviewCheckBox.IsChecked = false;
+        DisableScreenHighlight();
+      }
     }
     
     private void Close()
@@ -254,18 +269,18 @@ namespace WindowmancerWPF.UI
     {
       var rows = this.RowSpinner?.Value ?? 1;
       var cols = this.ColumnSpinner?.Value ?? 1;
-      RecreateDisplaySectionControl(rows, cols);
+      RecreateDisplaySection2Control(rows, cols);
     }
 
     private void DisplaysComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
     {
-      _currentDisplay = (Screen)this.DisplayListBox.SelectedItem;
+      _screen = (Screen)this.DisplayListBox.SelectedItem;
 
-      this.ScreenAspectRatio = new ScreenAspectRatio(_currentDisplay);
+      this.ScreenAspectRatio = new ScreenAspectRatio(_screen);
 
-      var length = _currentDisplay.Bounds.Height > _currentDisplay.Bounds.Width ? _currentDisplay.Bounds.Height : _currentDisplay.Bounds.Width;
+      var length = _screen.Bounds.Height > _screen.Bounds.Width ? _screen.Bounds.Height : _screen.Bounds.Width;
 
-      if (_currentDisplay.Bounds.Height > _currentDisplay.Bounds.Width)
+      if (_screen.Bounds.Height > _screen.Bounds.Width)
       {
         this.DisplayPanel.Height = this.DisplayPanel.MaxHeight;
         this.DisplayPanel.Width = this.DisplayPanel.MaxHeight * (this.ScreenAspectRatio.XRatio/this.ScreenAspectRatio.YRatio);
@@ -276,8 +291,7 @@ namespace WindowmancerWPF.UI
         this.DisplayPanel.Height = this.DisplayPanel.MaxWidth * (this.ScreenAspectRatio.YRatio/ this.ScreenAspectRatio.XRatio);
       }
       
-      if (_displaySection == null) return;
-      UpdateLayoutValues();
+      //UpdateLayoutValues();
       UpdateScreenHighlight();
     }
 
@@ -328,6 +342,11 @@ namespace WindowmancerWPF.UI
       if (expander?.IsExpanded == null) return;
       EnableDisableLayoutHelper(expander.IsExpanded);
     }
+
+    private void SetDisplayHelperLayoutButton_OnClick(object sender, RoutedEventArgs e)
+    {
+      UpdateLayoutValues();
+    }
   }
 
   class DisplaySection
@@ -339,6 +358,8 @@ namespace WindowmancerWPF.UI
 
     public DisplaySection()
     {
+      this.RowIndex = this.ColumnIndex = 0;
+      this.TotalRows = this.TotalColumns = 1;
     }
 
     public DisplaySection(int rowIndex, int columnIndex, int totalRows, int totalColumns)
@@ -347,6 +368,26 @@ namespace WindowmancerWPF.UI
       this.ColumnIndex = columnIndex;
       this.TotalRows = totalRows;
       this.TotalColumns = totalColumns;
+    }
+
+    public WindowLayoutInfo GetLayoutInfo(Screen screen)
+    {
+      var screenWidth = screen.Bounds.Width;
+      var screenHeight = screen.Bounds.Height;
+
+      var row = this.RowIndex;
+      var col = this.ColumnIndex;
+
+      var totalRows = this.TotalRows;
+      var totalCols = this.TotalColumns;
+
+      var x = (screenWidth / totalCols) * col + screen.Bounds.X;
+      var y = (screenHeight / totalRows) * row + screen.Bounds.Y;
+
+      var width = (screenWidth / totalCols);
+      var height = (screenHeight / totalRows);
+
+      return new WindowLayoutInfo(x, y, width, height);
     }
   }
 }

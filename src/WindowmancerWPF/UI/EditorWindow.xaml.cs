@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Microsoft.Practices.Unity;
 using System.Windows;
 using WindowmancerWPF.Models;
@@ -7,7 +9,6 @@ using WindowmancerWPF.Practices;
 using WindowmancerWPF.Services;
 using System.Windows.Input;
 using System.Windows.Media;
-using Gat.Controls;
 using MahApps.Metro.Controls;
 using System.Windows.Controls;
 using MahApps.Metro.Controls.Dialogs;
@@ -95,7 +96,7 @@ namespace WindowmancerWPF.UI
 
       var windowConfig = null == item ? 
         new WindowConfig(item, w => { _profileManager.AddToActiveProfile(w); }) : 
-        new WindowConfig(item, w => { item.Update(w); });
+        new WindowConfig(item, item.Update);
       windowConfig.OnClose += () => { flyout.IsOpen = false; };
 
       flyout.Content = windowConfig;

@@ -27,27 +27,27 @@ namespace WindowmancerWPF.Models
       _props.Add(propertyName, value);
     }
 
-    protected T GetProperty<T>([CallerMemberName]string memeberName = "")
+    protected T GetProperty<T>([CallerMemberName]string memberName = "")
     {
-      if (!_props.ContainsKey(memeberName))
+      if (!_props.ContainsKey(memberName))
       {
         return default(T);
       }
-      return (T)_props[memeberName];
+      return (T)_props[memberName];
     }
 
-    protected void SetProperty(object prop, [CallerMemberName]string memeberName="")
+    protected void SetProperty(object value, [CallerMemberName]string memberName="")
     {
-      if (!_props.ContainsKey(memeberName))
+      if (!_props.ContainsKey(memberName))
       {
         // TODO: warn or error?
         return;
       }
 
-      if (prop != _props[memeberName])
+      if (value != _props[memberName])
       {
-        _props[memeberName] = prop;
-        OnPointPropertyChanged(memeberName);
+        _props[memberName] = value;
+        OnPointPropertyChanged(memberName);
       }
     }
 
