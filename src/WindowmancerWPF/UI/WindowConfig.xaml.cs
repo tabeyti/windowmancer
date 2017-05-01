@@ -202,7 +202,6 @@ namespace WindowmancerWPF.UI
       var button = (Button)sender;
       button.Background = Brushes.Yellow;
       _displaySection = (DisplaySection)button.Tag;
-      //UpdateLayoutValues();
       UpdateScreenHighlight();
     }
 
@@ -290,8 +289,6 @@ namespace WindowmancerWPF.UI
         this.DisplayPanel.Width = this.DisplayPanel.MaxWidth;
         this.DisplayPanel.Height = this.DisplayPanel.MaxWidth * (this.ScreenAspectRatio.YRatio/ this.ScreenAspectRatio.XRatio);
       }
-      
-      //UpdateLayoutValues();
       UpdateScreenHighlight();
     }
 

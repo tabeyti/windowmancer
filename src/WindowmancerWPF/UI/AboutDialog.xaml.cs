@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Reflection;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace WindowmancerWPF.UI
 {
@@ -9,6 +11,8 @@ namespace WindowmancerWPF.UI
   /// </summary>
   public partial class AboutDialog : UserControl
   {
+    public Action OnClose { get; set; }
+
     public Version Version => Assembly.GetExecutingAssembly().GetName().Version;
 
     public string ApplicationName => Assembly.GetExecutingAssembly().GetName().Name;
@@ -23,17 +27,40 @@ namespace WindowmancerWPF.UI
       .GetCustomAttributes(typeof(AssemblyCompanyAttribute), false)[0]).Company;
 
 
-    public AboutDialog()
+    public AboutDialog(Action onClose)
     {
-
-      //var app = Assembly.GetExecutingAssembly();
-      //var title = (AssemblyTitleAttribute)app.GetCustomAttributes(typeof(AssemblyTitleAttribute), false)[0];
-      //var product = (AssemblyProductAttribute)app.GetCustomAttributes(typeof(AssemblyProductAttribute), false)[0];
-      //var copyright = (AssemblyCopyrightAttribute)app.GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false)[0];
-      //var company = (AssemblyCompanyAttribute)app.GetCustomAttributes(typeof(AssemblyCompanyAttribute), false)[0];
-      //var description = (AssemblyDescriptionAttribute)app.GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false)[0];
-
+      this.OnClose = onClose;
       InitializeComponent();
+    }
+
+    private void Close()
+    {
+      var window = Window.GetWindow(this);
+      if (window == null)
+      {
+        throw new Exception("AboutDialog - Could locate active window to unbind the KeyDown listener.");
+      }
+      window.KeyDown -= AboutDialog_OnKeyPress;
+      this.OnClose?.Invoke();
+    }
+
+    private void AboutDialog_OnLoaded(object sender, RoutedEventArgs e)
+    {
+      var window = Window.GetWindow(this);
+      if (window == null)
+      {
+        throw new Exception("AboutDialog - Could locate active window to bind the KeyDown listener.");
+      }
+      window.KeyDown += AboutDialog_OnKeyPress;
+    }
+
+    private void AboutDialog_OnKeyPress(object sender, System.Windows.Input.KeyEventArgs e)
+    {
+      if (e.Key != Key.Escape && e.Key != Key.Return)
+      {
+        return;
+      }
+      Close();
     }
   }
 }

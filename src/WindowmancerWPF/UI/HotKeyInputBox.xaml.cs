@@ -2,7 +2,6 @@
 
 using System.Text;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace WindowmancerWPF.UI
@@ -31,7 +30,6 @@ namespace WindowmancerWPF.UI
 
     private void OnKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
     {
-      // The text box grabs all input.
       e.Handled = true;
 
       // Fetch the actual shortcut key.

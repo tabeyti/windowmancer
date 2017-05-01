@@ -82,7 +82,7 @@ namespace WindowmancerWPF.UI
       else
       {
         flyout.Header = "Edit Profile";
-        content = new ProfileConfig(profile, p => { profile.Update(p); } );
+        content = new ProfileConfig(profile, profile.Update );
       }
       content.OnClose = () => { flyout.IsOpen = false; };
       flyout.Content = content;
@@ -123,22 +123,15 @@ namespace WindowmancerWPF.UI
     private void AboutBox_Click(object sender, RoutedEventArgs e)
     {
       var dialog = new CustomDialog();
-      var about = new AboutDialog();
+      var about = new AboutDialog(() => { this.HideMetroDialogAsync(dialog); });
       var settings = new MetroDialogSettings
       {
         AffirmativeButtonText = "Okay",
         AnimateShow = true,
-        FirstAuxiliaryButtonText = "Okay"
+        FirstAuxiliaryButtonText = "Okay",
       };
       dialog.Content = about;
       this.ShowMetroDialogAsync(dialog, settings);
-
-      //var about = new About
-      //{
-      //  ApplicationLogo = Helper.ImageSourceForBitmap(Properties.Resources.AppLogo),
-      //  Window = {Background = Brushes.Black},
-      //};
-      //about.Show();
     }
 
     private void WindowConfigDataGrid_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
