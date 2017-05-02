@@ -21,7 +21,7 @@
         <TextBlock Text="{Binding ApplicationName}"
                    HorizontalAlignment="Left"
                    Margin="5"
-                   FontSize="14"
+                   FontSize="16"
                    FontWeight="Bold"/>
         <!--Version-->
         <StackPanel Orientation="Horizontal">

@@ -156,7 +156,11 @@ namespace WindowmancerWPF.UI
       dsb.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
     }
 
-    private void UpdateLayoutValues()
+    /// <summary>
+    /// Updates our WindowInfo's layout values with values gathered
+    /// from the current display section and screen.
+    /// </summary>
+    private void UpdateLayoutValuesFromDisplayHelper()
     {
       var screenWidth = _screen.Bounds.Width;
       var screenHeight = _screen.Bounds.Height;
@@ -218,6 +222,12 @@ namespace WindowmancerWPF.UI
       if (null != _process)
       {
         WindowManager.ApplyWindowLayout(layoutInfo, _process);
+      }
+
+      var window = Window.GetWindow(this);
+      if (null != window)
+      {
+        window.Topmost = true;
       }
 
       // Hightlight where process window layout.
@@ -342,7 +352,7 @@ namespace WindowmancerWPF.UI
 
     private void SetDisplayHelperLayoutButton_OnClick(object sender, RoutedEventArgs e)
     {
-      UpdateLayoutValues();
+      UpdateLayoutValuesFromDisplayHelper();
     }
   }
 

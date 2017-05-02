@@ -12,6 +12,7 @@ using System.Windows.Media;
 using MahApps.Metro.Controls;
 using System.Windows.Controls;
 using MahApps.Metro.Controls.Dialogs;
+using WindowmancerWPF.UI.Base;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace WindowmancerWPF.UI
@@ -120,15 +121,33 @@ namespace WindowmancerWPF.UI
       flyout.IsOpen = true;
     }
 
+    private void HandleSettingsDialog()
+    {
+      var flyout = this.Flyouts.Items[1] as Flyout;
+      if (flyout == null)
+      {
+        return;
+      }
+      flyout.Header = "Preferences";
+      var w = new PreferencesDialog(s => { });
+      w.OnClose += () => { flyout.IsOpen = false; };
+      flyout.Content = w;
+      flyout.IsOpen = true;
+    }
+
     private void AboutBox_Click(object sender, RoutedEventArgs e)
     {
-      var dialog = new CustomDialog();
-      var about = new AboutDialog(() => { this.HideMetroDialogAsync(dialog); });
+      var dialog = new MyCustomDialog();
+      var about = new AboutDialog(() =>
+      {
+        this.HideMetroDialogAsync(dialog);
+      });
       var settings = new MetroDialogSettings
       {
         AffirmativeButtonText = "Okay",
         AnimateShow = true,
         FirstAuxiliaryButtonText = "Okay",
+        ColorScheme = MetroDialogColorScheme.Theme
       };
       dialog.Content = about;
       this.ShowMetroDialogAsync(dialog, settings);
@@ -208,6 +227,11 @@ namespace WindowmancerWPF.UI
     {
       var item = (Profile)this.ProfileListBox.SelectedItem;
       HandleProfileConfigEdit(item);
+    }
+
+    private void Preferences_Click(object sender, RoutedEventArgs e)
+    {
+      HandleSettingsDialog();
     }
   }
 }

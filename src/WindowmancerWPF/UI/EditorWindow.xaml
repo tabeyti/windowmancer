@@ -1,28 +1,28 @@
 ﻿<!--http://stackoverflow.com/questions/17508333/setting-window-icon-with-a-static-resource-->
 
 <Controls:MetroWindow  x:Class="WindowmancerWPF.UI.EditorWindow"
-                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                      xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-                      xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-                      mc:Ignorable="d"
-                      Background="{StaticResource MainColorTheme}"
-                      GlowBrush="{StaticResource TrimColor}"
-                      TitleCaps="False"
-                      IconScalingMode="NoScaleSmallerFrame"
-                      WindowStartupLocation="CenterScreen"
-                      LeftWindowCommandsOverlayBehavior="Always"
-                      RightWindowCommandsOverlayBehavior="Always"
-                      WindowButtonCommandsOverlayBehavior="Always"
-                      Icon="../AppIcon.ico"
-                      Title="Windowmancer"
-                      Width="1024" Height="768">
+                       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                       xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                       xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                       mc:Ignorable="d"
+                       Background="{StaticResource MainColorTheme}"
+                       GlowBrush="{StaticResource TrimColor}"
+                       TitleCaps="False"
+                       IconScalingMode="NoScaleSmallerFrame"
+                       WindowStartupLocation="CenterScreen"
+                       LeftWindowCommandsOverlayBehavior="Always"
+                       RightWindowCommandsOverlayBehavior="Always"
+                       WindowButtonCommandsOverlayBehavior="Always"
+                       Icon="../AppIcon.ico"
+                       Title="Windowmancer"
+                       Width="1024" Height="768">
   <Controls:MetroWindow.Resources>
     <Style x:Key="MyColumnHeader" 
-               BasedOn="{StaticResource MetroDataGridColumnHeader}" 
-               TargetType="{x:Type DataGridColumnHeader}">
+           BasedOn="{StaticResource MetroDataGridColumnHeader}" 
+           TargetType="{x:Type DataGridColumnHeader}">
       <Setter Property="BorderBrush" Value="{StaticResource MainColorTheme}" />
       <Setter Property="FontSize" Value="12"/>
       <Setter Property="Controls:ControlsHelper.ContentCharacterCasing" Value="Normal"/>
@@ -57,7 +57,7 @@
           <Run Name="DeleteToastItem" Foreground="DeepSkyBlue"/>
           <Run Name="DeleteToastMessage" Foreground="White"/>
         </TextBlock>
-        </Controls:Flyout>
+      </Controls:Flyout>
     </Controls:FlyoutsControl>
   </Controls:MetroWindow.Flyouts>
   <Grid>
@@ -70,7 +70,7 @@
     <DockPanel Grid.Row="0">
       <Menu DockPanel.Dock="Top">
         <MenuItem Header="_Settings" ItemContainerStyle="{StaticResource MetroMenuItem}">
-          <MenuItem Header="_Preferences"/>
+          <MenuItem Header="_Preferences" Click="Preferences_Click"/>
         </MenuItem>
         <MenuItem Header="_Help">
           <MenuItem Header="_Documentation"/>
@@ -95,19 +95,19 @@
             </Grid.ColumnDefinitions>
             <Label Content="PROFILES" Grid.Column="0" Padding="0"/>
             <Button Grid.Column="1"
-                      Name="RunProfileButton"
-                      Click="RunProfileButton_OnClick" 
-                      ToolTip="Refresh Active Profile" 
-                      HorizontalAlignment="Right"
-                      BorderThickness="0"
-                      Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
-                      Margin="0"
-                      Padding="0">
+                    Name="RunProfileButton"
+                    Click="RunProfileButton_OnClick" 
+                    ToolTip="Refresh Active Profile" 
+                    HorizontalAlignment="Right"
+                    BorderThickness="0"
+                    Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+                    Margin="0"
+                    Padding="0">
               <iconPacks:PackIconModern Width="16" 
-                                          Height="16" 
-                                          Margin="0" 
-                                          Padding="0"
-                                          Kind="MonitorPlay" />
+                                        Height="16" 
+                                        Margin="0" 
+                                        Padding="0"
+                                        Kind="MonitorPlay" />
             </Button>
           </Grid>
         </GroupBox.Header>
@@ -148,14 +148,14 @@
       <GroupBox Header="Window Configurations" Grid.Column="2"
                 Style="{StaticResource MyGroupBoxStyle}">
         <DataGrid Name="WindowConfigDataGrid" 
-                GridLinesVisibility="None" 
-                IsReadOnly="True" 
-                SelectionMode="Single" 
-                SelectionUnit="FullRow"
-                Background="{StaticResource AccentViewBackgroundColorBrush}"
-                CanUserResizeColumns="False"
-                ColumnHeaderStyle="{StaticResource MyColumnHeader}"
-                MouseDoubleClick="WindowConfigDataGrid_OnMouseDoubleClick">
+                  GridLinesVisibility="None" 
+                  IsReadOnly="True" 
+                  SelectionMode="Single" 
+                  SelectionUnit="FullRow"
+                  Background="{StaticResource AccentViewBackgroundColorBrush}"
+                  CanUserResizeColumns="False"
+                  ColumnHeaderStyle="{StaticResource MyColumnHeader}"
+                  MouseDoubleClick="WindowConfigDataGrid_OnMouseDoubleClick">
           <DataGrid.Resources>
             <ContextMenu x:Key="RowMenu">
               <MenuItem Header="Edit" Click="WindowConfigDataGrid_MenuItemClick"></MenuItem>
@@ -179,15 +179,15 @@
     <GroupBox Header="Active Windows" Grid.Row="3"
               Style="{StaticResource MyGroupBoxStyle}">
       <DataGrid Name="ActiveWindowsDataGrid" 
-              GridLinesVisibility="None"               
-              AutoGenerateColumns="False"
-              IsReadOnly="True" 
-              SelectionMode="Single" 
-              SelectionUnit="FullRow"
-              CanUserResizeColumns="False"
-              Background="{StaticResource AccentViewBackgroundColorBrush}"
-              ColumnHeaderStyle="{StaticResource MyColumnHeader}"
-              MouseDoubleClick="ActiveWindowsGrid_OnMouseDoubleClick">
+                GridLinesVisibility="None"               
+                AutoGenerateColumns="False"
+                IsReadOnly="True" 
+                SelectionMode="Single" 
+                SelectionUnit="FullRow"
+                CanUserResizeColumns="False"
+                Background="{StaticResource AccentViewBackgroundColorBrush}"
+                ColumnHeaderStyle="{StaticResource MyColumnHeader}"
+                MouseDoubleClick="ActiveWindowsGrid_OnMouseDoubleClick">
         <DataGrid.Resources>
           <ContextMenu x:Key="RowMenu">
             <MenuItem Header="Add" Click="ActiveWindowsDataGrid_MenuItemClick"></MenuItem>

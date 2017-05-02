@@ -1,7 +1,9 @@
 ﻿//http://stackoverflow.com/questions/2136431/how-do-i-read-custom-keyboard-shortcut-from-user-in-wpf
 
+using System;
 using System.Text;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace WindowmancerWPF.UI
@@ -9,11 +11,11 @@ namespace WindowmancerWPF.UI
   /// <summary>
   /// Interaction logic for LabelTextBox.xaml
   /// </summary>
-  public partial class HotKeyInputBox
+  public partial class HotKeyInputBox : UserControl, IDisposable
   {
-    public static readonly DependencyProperty TextProperty = DependencyProperty.Register("Text",
+    public static readonly DependencyProperty TextProperty = DependencyProperty.Register("TextProperty",
         typeof(string),
-        typeof(LabelTextBox),
+        typeof(TextBox),
         new FrameworkPropertyMetadata("", FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
     public HotKeyInputBox()
@@ -63,6 +65,12 @@ namespace WindowmancerWPF.UI
       // Update the text box.
       this.BaseTextBox.Text = shortcutText.ToString();
 
+    }
+
+    public void Dispose()
+    {
+      this.BaseTextBox = null;
+      this.Root = null;
     }
   }
 }

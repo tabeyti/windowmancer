@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Forms;
+using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Practices.Unity;
 using WindowmancerWPF.Models;
 using WindowmancerWPF.Practices;
@@ -115,7 +117,6 @@ namespace WindowmancerWPF
       openMenuItem.TextAlign = ContentAlignment.MiddleLeft;
       openMenuItem.Font = new Font(openMenuItem.Font, System.Drawing.FontStyle.Bold);
       menuItems.Add(openMenuItem);
-      menuItems.Add(new ToolStripMenuItem("Settings", null, TrayContextMenu_OnProfileSettings));
       menuItems.Add(new ToolStripSeparator());
       menuItems.Add(new ToolStripMenuItem("Exit", null, (s, e) => ExitApplication()));
       
@@ -190,7 +191,6 @@ namespace WindowmancerWPF
       UncheckCheckedMenuItem();
       SelectMenuItem(mi);
       _profileManager.UpdateActiveProfile(((Profile)mi.Tag).Id);
-      //_editor?.UpdateActiveProfile(((Profile)mi.Tag));
     }
 
     private void SelectMenuItem(ToolStripMenuItem mi)
@@ -203,12 +203,6 @@ namespace WindowmancerWPF
     {
       mi.Checked = false;
       mi.ForeColor = Color.White;
-    }
-
-    private void TrayContextMenu_OnProfileSettings(object sender, EventArgs e)
-    {
-      //var settings = new SettingsDialog(_keyHookManager);
-      //settings.Show();
     }
 
     #endregion Events
