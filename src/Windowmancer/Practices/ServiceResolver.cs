@@ -1,12 +1,8 @@
-﻿using Microsoft.Practices.Unity;
+using Microsoft.Practices.Unity;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Windowmancer.Configuration;
 using Windowmancer.Models;
 using Windowmancer.Services;
@@ -43,7 +39,6 @@ namespace Windowmancer.Practices
       var userData = JsonConvert.DeserializeObject<UserData>(text);
       userData.SetUserConfig(userConfig);
       container.RegisterInstance(userData, new ContainerControlledLifetimeManager());
-
       container.RegisterType<ProcMonitor>(new ContainerControlledLifetimeManager());
       container.RegisterType<WindowManager>(new ContainerControlledLifetimeManager());
       container.RegisterType<ProfileManager>(new ContainerControlledLifetimeManager());

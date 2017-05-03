@@ -1,0 +1,27 @@
+<UserControl x:Class="Windowmancer.UI.PreferencesDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Windowmancer.UI"
+             mc:Ignorable="d" 
+             Loaded="PreferencesDialog_OnLoaded"
+             d:DesignHeight="300" d:DesignWidth="400">
+  <StackPanel>
+    <Grid>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto"/>
+        <ColumnDefinition Width="*"/>
+      </Grid.ColumnDefinitions>
+
+      <Label Content="Hot-Key Combination: " 
+             Grid.Column="0"
+             VerticalAlignment="Center"/>
+      <local:HotKeyInputBox Margin="10" 
+                            x:Name="HotKeyInputBox"
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            MinWidth="75"/>
+    </Grid>
+  </StackPanel>
+</UserControl>

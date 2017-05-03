@@ -1,27 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Windowmancer.Models
 {
-  public class WindowMatchCriteria
+  public class WindowMatchCriteria : PropertyNotifyBase, ICloneable
   {
-    public WindowMatchCriteriaType MatchType { get; }
-    public string MatchString { get; }
+    public WindowMatchCriteriaType MatchType
+    {
+      get => GetProperty<WindowMatchCriteriaType>();
+      set => SetProperty(value);
+    }
+
+    public string MatchString
+    {
+      get => GetProperty<string>();
+      set => SetProperty(value);
+    }
+
+    public WindowMatchCriteria()
+    {
+      RegisterProperty("MatchType", WindowMatchCriteriaType.WindowTitle);
+      RegisterProperty("MatchString", "");
+    }
 
     public WindowMatchCriteria(WindowMatchCriteriaType type, string matchString)
     {
-      this.MatchType = type;
-      this.MatchString = matchString;
+      RegisterProperty("MatchType", type);
+      RegisterProperty("MatchString", matchString);
     }
 
     public override string ToString()
     {
       return $"{this.MatchType} - {this.MatchString}";
+    }
+    
+    public object Clone()
+    {
+      return new WindowMatchCriteria(this.MatchType, this.MatchString);
     }
   }
 
@@ -40,5 +56,11 @@ namespace Windowmancer.Models
           return false;
       }
     }
+  }
+
+  public enum WindowMatchCriteriaType
+  {
+    WindowTitle,
+    ProcessName,
   }
 }

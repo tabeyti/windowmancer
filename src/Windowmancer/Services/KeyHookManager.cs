@@ -1,10 +1,8 @@
-﻿using Gma.System.MouseKeyHook;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Windows.Input;
+using NHotkey.Wpf;
 using Windowmancer.Models;
 
 namespace Windowmancer.Services
@@ -13,9 +11,8 @@ namespace Windowmancer.Services
   {
     public event Action OnKeyCombinationSuccess;
 
-    public KeyComboConfig KeyComboConfig => _userData.KeyComboConfig;
+    public HotKeyConfig HotKeyConfig { get; private set; }
 
-    private IKeyboardEvents _globalHook;
     private readonly UserData _userData;
 
     public KeyHookManager(UserData userData)
@@ -26,92 +23,43 @@ namespace Windowmancer.Services
 
     public void Initialize()
     {
-      _globalHook = Hook.GlobalEvents();
-      _globalHook.KeyUp += (s, e) =>
-      {
-        var keyCode = GetActualKeyCode(e.KeyCode);
-        _userData.KeyComboConfig.Update(keyCode, false);
-      };
-      _globalHook.KeyDown += (s, e) =>
-      {
-        var keyCode = GetActualKeyCode(e.KeyCode);
-        if (_userData.KeyComboConfig.Update(keyCode, true))
-        {
-          OnKeyCombinationSuccess?.Invoke();
-        }
-      };
-      _globalHook.KeyUp += (s, e) =>
-      {
-        _userData.KeyComboConfig.Update(e.KeyCode, false);
-      };
+      SetNewHotKeyConfig(_userData.HotKeyConfig);
     }
-
-    public void UpdateKeyComboConfig(KeyComboConfig config)
+    
+    public void UpdateHotKeyConfig(HotKeyConfig config)
     {
-      if (null == config)
-      {
-        throw new ExceptionBox($"{this} - Invalid config provided for update.");
-      }
-      _userData.KeyComboConfig = config;
+      _userData.HotKeyConfig = config ?? throw new Exception($"{this} - Invalid hot-key config provided for update.");
+      SetNewHotKeyConfig(config);
       _userData.Save();
     }
 
-    /// <summary>
-    /// We don't handle shift/ctrl/atl position keys (left and right).
-    /// If we get one, assign it to it's generic key type.
-    /// </summary>
-    public Keys GetActualKeyCode(Keys keyCode)
+    private void SetNewHotKeyConfig(HotKeyConfig config)
     {
-      switch (keyCode)
+      this.HotKeyConfig = config;
+      var modifierKeys = ModifierKeys.None;
+      config.ModifierKeys.ForEach(m => modifierKeys |= m);
+      HotkeyManager.Current.AddOrReplace("RescanProfile", config.PrimaryKey, modifierKeys, (s, e) =>
       {
-        case Keys.LShiftKey:
-        case Keys.RShiftKey:
-          return Keys.Shift;
-        case Keys.LControlKey:
-        case Keys.RControlKey:
-          return Keys.Control;
-        case Keys.LMenu:
-        case Keys.RMenu:
-          return Keys.Alt;
-        default:
-          return keyCode;
-      }
+        OnKeyCombinationSuccess?.Invoke();
+      });
     }
   }
 
-  public class KeyComboConfig
+  public class HotKeyConfig
   {
-    public List<KeyInfo> KeyCombination { get; set; }
+    public List<ModifierKeys> ModifierKeys { get; set; }
+    public Key PrimaryKey { get; set; }
 
-    public KeyComboConfig()
+    public HotKeyConfig()
     {
+      this.ModifierKeys = new List<ModifierKeys>();
+      this.PrimaryKey = Key.None;
     }
 
-    public KeyComboConfig(IEnumerable<Keys> keys)
+    public HotKeyConfig(IEnumerable<ModifierKeys> modifierKeys, Key primaryKey)
     {
-      this.KeyCombination = new List<KeyInfo>();
-      keys.ToList().ForEach(k => this.KeyCombination.Add(
-        new KeyInfo { Key = k, IsDown = false }));
-    }
-
-    /// <summary>
-    /// Updates the state of the key combination. If the combination is
-    /// satisfied via all keys being pressed down, return true.
-    /// </summary>
-    public bool Update(Keys key, bool isDown)
-    {
-      var keyConfig = this.KeyCombination.Find(k => k.Key == key);
-      if (null == keyConfig)
-      {
-        return false;
-      }
-      keyConfig.IsDown = isDown;
-      if (this.KeyCombination.TrueForAll(k => k.IsDown))
-      {
-        this.KeyCombination.ForEach(k => k.IsDown = false);
-        return true;
-      }
-      return false;
+      this.ModifierKeys = modifierKeys.ToList();
+      this.PrimaryKey = primaryKey;
     }
   }
 }

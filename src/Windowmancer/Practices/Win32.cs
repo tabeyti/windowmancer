@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Windows;
 using static Windowmancer.Practices.Win32;
 
 namespace Windowmancer.Practices
@@ -17,14 +18,14 @@ namespace Windowmancer.Practices
 
       public int Width
       {
-        get { return this.Right - this.Left; }
-        set { this.Right = value + this.Left; }
+        get => this.Right - this.Left;
+        set => this.Right = value + this.Left;
       }
 
       public int Height
       {
-        get { return this.Bottom - this.Top; }
-        set { this.Bottom = value + this.Top; }
+        get => this.Bottom - this.Top;
+        set => this.Bottom = value + this.Top;
       }
     }
 
@@ -57,8 +58,8 @@ namespace Windowmancer.Practices
       public int length;
       public int flags;
       public int showCmd;
-      public Point ptMinPosition;
-      public Point ptMaxPosition;
+      public System.Drawing.Point ptMinPosition;
+      public System.Drawing.Point ptMaxPosition;
       public RECT rcNormalPosition;
     }
 

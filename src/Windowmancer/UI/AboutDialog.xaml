@@ -1,0 +1,58 @@
+<UserControl x:Class="Windowmancer.UI.AboutDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Windowmancer.UI"
+             mc:Ignorable="d" 
+             Loaded="AboutDialog_OnLoaded"
+             d:DesignHeight="300" d:DesignWidth="400"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}">
+  <StackPanel>
+    <StackPanel Orientation="Horizontal">
+      <Image Source="../AppLogo.png" 
+             Margin ="10" 
+             MaxHeight="128" 
+             MaxWidth="128" 
+             HorizontalAlignment="Left"/>
+
+      <StackPanel>
+        <!--Title-->
+        <TextBlock Text="{Binding ApplicationName}"
+                   HorizontalAlignment="Left"
+                   Margin="5"
+                   FontSize="16"
+                   FontWeight="Bold"/>
+        <!--Version-->
+        <StackPanel Orientation="Horizontal">
+          <TextBlock Text="Version: "
+                     VerticalAlignment="Center"
+                     Margin="5"/>
+          <TextBlock Text="{Binding Version}" 
+                     TextWrapping="Wrap" 
+                     HorizontalAlignment="Left" 
+                     VerticalAlignment="Center"
+                     Margin="0" 
+                     FontWeight="Bold"/>
+        </StackPanel>
+
+        <!--Copyright-->
+        
+        <TextBlock Text="{Binding Copyright}" 
+                    Margin="5" 
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Left"
+                    FontWeight="Bold"/>
+        
+      </StackPanel>
+    </StackPanel>
+
+    <Border BorderBrush="{StaticResource TrimColor}"
+            Opacity="75"
+            BorderThickness="1" 
+            Margin="10"
+            Padding="10">
+      <TextBlock TextWrapping="Wrap" Text="{Binding Description}"/>
+    </Border>
+  </StackPanel>
+</UserControl>

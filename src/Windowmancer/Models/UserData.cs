@@ -1,6 +1,7 @@
-﻿using System;
-using System.ComponentModel;
-using System.IO;
+using System;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Windows.Input;
 using Newtonsoft.Json;
 using Windowmancer.Configuration;
 using Windowmancer.Services;
@@ -9,31 +10,24 @@ namespace Windowmancer.Models
 {
   public class UserData
   {
-    public BindingList<Profile> Profiles { get; set; }
+    public ObservableCollection<Profile> Profiles { get; set; }
     public string ActiveProfile { get; set; }
-    public KeyComboConfig KeyComboConfig { get; set; }
+    public HotKeyConfig HotKeyConfig { get; set; }
     private UserConfig _config;
 
     public UserData(UserConfig config)
     {
-      this.Profiles = new BindingList<Profile>
+      this.Profiles = new ObservableCollection<Profile>
       {
         new Profile
         {
           Id = Guid.NewGuid().ToString(),
           Name = "My Profile",
-          Windows = new BindingList<WindowInfo>()
+          Windows = new ObservableCollection<WindowInfo>()
         }
       };
-      this.KeyComboConfig = new KeyComboConfig
-      {
-        KeyCombination = new System.Collections.Generic.List<KeyInfo>()
-        {
-          new KeyInfo { Key = System.Windows.Forms.Keys.Control },
-          new KeyInfo { Key = System.Windows.Forms.Keys.Shift },
-          new KeyInfo { Key = System.Windows.Forms.Keys.K },
-        }
-      };
+
+      this.HotKeyConfig = new HotKeyConfig(new[] { ModifierKeys.Control, ModifierKeys.Shift }.ToList(), Key.W);
       _config = config;
     }
 

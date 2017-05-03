@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
@@ -39,16 +39,16 @@ namespace Windowmancer.Services
       {
         return;
       }
-
-      var x = windowInfo.LocationInfo.PositionInfo.X;
-      var y = windowInfo.LocationInfo.PositionInfo.Y;
+      
+      var x = (int)windowInfo.LayoutInfo.PositionInfo.X;
+      var y = (int)windowInfo.LayoutInfo.PositionInfo.Y;
 
       windowInfo.BringToFront.RunIfTrue(() =>
       {
         Win32.ShowWindow(handle, Win32.ShowWindowCommands.Maximize);
         Win32.SetForegroundWindow(handle);
       });
-      Win32.MoveWindow(handle, x, y, windowInfo.SizeInfo.Width, windowInfo.SizeInfo.Height, true);
+      Win32.MoveWindow(handle, x, y, windowInfo.LayoutInfo.SizeInfo.Width, windowInfo.LayoutInfo.SizeInfo.Height, true);
     }
 
     public static Process GetProcess(WindowInfo windowInfo)
@@ -60,6 +60,25 @@ namespace Windowmancer.Services
 
       var allProcceses = System.Diagnostics.Process.GetProcesses();
       return allProcceses.ToList().Find(windowInfo.IsMatch);
+    }
+
+    public static void ApplyWindowLayout(WindowLayoutInfo layoutInfo, Process process)
+    {
+      var handle = process.MainWindowHandle;
+      if (handle == IntPtr.Zero)
+      {
+        return;
+      }
+
+      var x = layoutInfo.PositionInfo.X;
+      var y = layoutInfo.PositionInfo.Y;
+      var width = layoutInfo.SizeInfo.Width;
+      var height = layoutInfo.SizeInfo.Height; 
+
+
+      Win32.ShowWindow(handle, Win32.ShowWindowCommands.Maximize);
+      Win32.SetForegroundWindow(handle);
+      Win32.MoveWindow(handle, x, y, width, height, true);
     }
 
     public void RefreshProfile()

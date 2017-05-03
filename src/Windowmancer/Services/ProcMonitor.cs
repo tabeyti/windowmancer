@@ -1,8 +1,15 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Drawing;
+using System.Linq;
 using System.Management;
-using NLog;
+using System.Threading.Tasks;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using Windowmancer.Extensions;
+using Windowmancer.Practices;
 
 namespace Windowmancer.Services
 {
@@ -11,36 +18,59 @@ namespace Windowmancer.Services
     public event Action<Process> OnNewWindowProcess;
     public event Action<int> OnWindowProcessRemove;
 
+    public ObservableCollection<MonitoredProcess> ActiveWindowProcs { get; set; }
+
     private ManagementEventWatcher _startWatch;
     private ManagementEventWatcher _stopWatch;
 
     private readonly WindowManager _windowManager;
-    private readonly Dictionary<int, Process> _availableWindowDict = new Dictionary<int, Process>();
 
     public ProcMonitor(WindowManager windowManager)
     {
       _windowManager = windowManager;
+      this.ActiveWindowProcs = new ObservableCollection<MonitoredProcess>();
     }
 
     public void Start()
     {
-      _startWatch = new ManagementEventWatcher(
-        new WqlEventQuery("SELECT * FROM Win32_ProcessStartTrace"));
-      var startWatchEvent = new EventArrivedEventHandler(StartWatch_EventArrived);
-      _startWatch.EventArrived += startWatchEvent;
+      GetAllActiveWindowProcesses();
+
+      var computerName = "localhost";
+      var scope = new ManagementScope($"\\\\{computerName}\\root\\CIMV2", null);
+      scope.Connect();
+
+      const string processStartedQuery = "Select * From __InstanceCreationEvent Within 1 " +
+                                         "Where TargetInstance ISA 'Win32_Process' ";
+      const string processStoppedQuery = "Select * From __InstanceDeletionEvent Within 1 " +
+                                         "Where TargetInstance ISA 'Win32_Process' ";
+
+      _startWatch = new ManagementEventWatcher(scope, new EventQuery(processStartedQuery));
+      _startWatch.EventArrived += new EventArrivedEventHandler(StartWatch_EventArrived);
       _startWatch.Start();
 
-      _stopWatch = new ManagementEventWatcher(
-        new WqlEventQuery("SELECT * FROM Win32_ProcessStopTrace "));
-      var stopWatchEvent = new EventArrivedEventHandler(StopWatch_EventArrived);
-      _stopWatch.EventArrived += stopWatchEvent;
+      _stopWatch = new ManagementEventWatcher(scope, new EventQuery(processStoppedQuery));
+      _stopWatch.EventArrived += new EventArrivedEventHandler(StopWatch_EventArrived);
       _stopWatch.Start();
+    }
+
+    private void GetAllActiveWindowProcesses()
+    {
+      var allProcceses = System.Diagnostics.Process.GetProcesses();
+      foreach (var p in allProcceses)
+      {
+        if (p.MainWindowTitle == string.Empty)
+        {
+          continue;
+        }
+        AddToActiveWindows(p);
+      }
     }
 
     private void StartWatch_EventArrived(object sender, EventArrivedEventArgs e)
     {
-      var procProps = e.NewEvent.Properties;
-      var procId = int.Parse(procProps["ProcessId"].Value.ToString());
+      var obj = ((ManagementBaseObject) e.NewEvent.Properties["TargetInstance"].Value);
+      var procId = Convert.ToInt32(obj["ProcessId"]);
+      ;
       Process proc = null;
       try
       {
@@ -58,27 +88,38 @@ namespace Windowmancer.Services
 
     private void StopWatch_EventArrived(object sender, EventArrivedEventArgs e)
     {
-      var procProps = e.NewEvent.Properties;
-      var procId = int.Parse(procProps["ProcessId"].Value.ToString());
+      var obj = ((ManagementBaseObject) e.NewEvent.Properties["TargetInstance"].Value);
+      var procId = Convert.ToInt32(obj["ProcessId"]);
       RemoveActiveProcess(procId);
     }
 
     private void AddToActiveWindows(Process process)
     {
-      if (_availableWindowDict.ContainsKey(process.Id))
+      if (this.ActiveWindowProcs.Any(p => p.Id == process.Id))
       {
         return;
       }
-      _availableWindowDict.Add(process.Id, process);
+      try
+      {
+        App.Current.Dispatcher.Invoke((Action) delegate
+        {
+          this.ActiveWindowProcs.Add(new MonitoredProcess(process));
+        });
+      }
+      catch (Exception ex)
+      {
+        Console.WriteLine(ex.Message);
+      }
+      
       OnNewWindowProcess?.Invoke(process);
     }
 
     private void RemoveActiveProcess(int processId)
     {
-      if (_availableWindowDict.ContainsKey(processId))
+      App.Current.Dispatcher.Invoke((Action)delegate
       {
-        _availableWindowDict.Remove(processId);
-      }
+        this.ActiveWindowProcs.Remove(p => p.Id == processId);
+      }); 
       OnWindowProcessRemove?.Invoke(processId);
     }
 
@@ -86,6 +127,27 @@ namespace Windowmancer.Services
     {
       _startWatch?.Stop();
       _stopWatch?.Stop();
+    }
+  }
+
+  public class MonitoredProcess
+  {
+    public ImageSource Icon { get; }
+    public int Id => _process.Id;
+    public string Name => _process.ProcessName;
+    public string WindowTitle => _process.MainWindowTitle;
+
+    private readonly Process _process;
+
+    public MonitoredProcess(Process process)
+    {
+      _process = process;
+      Icon = Helper.GetProcessIconImageSource(_process);
+    }
+
+    public Process GetProcess()
+    {
+      return _process;
     }
   }
 }
