@@ -8,14 +8,14 @@ using Windowmancer.Models;
 
 namespace Windowmancer.Services
 {
-  public class ProfileManager : IDisposable
+  public class ProfileManager : PropertyNotifyBase, IDisposable
   {
     public event EventHandler OnActiveProfileUpdate;
 
     public ObservableCollection<Profile> Profiles => _userData.Profiles;
     public Profile ActiveProfile
     {
-      get => _activeProfile;
+      get => GetProperty<Profile>();
       set
       {
         if (value == null)
@@ -24,14 +24,13 @@ namespace Windowmancer.Services
         }
         value.IsActive = true;
         _userData.ActiveProfile = value.Id;
-        _activeProfile = value;
-        _windowManager.ActiveProfile = _activeProfile;
+        SetProperty(value);
+        _windowManager.ActiveProfile = value;
       }
     }
     public string ActiveProfileName => 
       (this.ActiveProfile == null) ? "None" : this.ActiveProfile.Name;
 
-    private Profile _activeProfile;
     private readonly UserData _userData;
     private readonly WindowManager _windowManager;
 
@@ -39,6 +38,7 @@ namespace Windowmancer.Services
       UserData userData, 
       WindowManager windowManager)
     {
+      RegisterProperty<Profile>("ActiveProfile");
       _windowManager = windowManager;
       _userData = userData;
       Initialize();

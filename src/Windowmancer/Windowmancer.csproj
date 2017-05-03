@@ -152,6 +152,7 @@
     <Compile Include="Configuration\UserConfig.cs" />
     <Compile Include="Extensions\ObservableCollectionExtensions.cs" />
     <Compile Include="Extensions\CollectionExtensions.cs" />
+    <Compile Include="Models\EditorViewModel.cs" />
     <Compile Include="Models\PreferencesModel.cs" />
     <Compile Include="Models\PropertyNotifyBase.cs" />
     <Compile Include="Models\ScreenAspectRatio.cs" />

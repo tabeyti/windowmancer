@@ -17,19 +17,24 @@ namespace Windowmancer.UI
   /// </summary>
   public partial class EditorWindow
   {
-    private readonly ProfileManager _profileManager;
+    public ProfileManager ProfileManager { get; }
+    public ProcMonitor ProcMonitor { get; }
+
     private readonly WindowManager _windowManager;
     private readonly KeyHookManager _keyHookManager;
-    private readonly ProcMonitor _procMonitor;
-    private readonly UserData _userData;
+
+    public EditorViewModel EditorViewModel { get; set; }
     
     public EditorWindow()
     {
-      _profileManager = App.ServiceResolver.Resolve<ProfileManager>();
+      this.ProfileManager = App.ServiceResolver.Resolve<ProfileManager>();
+      this.ProcMonitor = App.ServiceResolver.Resolve<ProcMonitor>();
+
       _windowManager = App.ServiceResolver.Resolve<WindowManager>();
       _keyHookManager = App.ServiceResolver.Resolve<KeyHookManager>();
-      _procMonitor = App.ServiceResolver.Resolve<ProcMonitor>();
-      _userData = App.ServiceResolver.Resolve<UserData>();
+      
+
+      this.EditorViewModel = new EditorViewModel();
 
       InitializeComponent();
       Initialize();
@@ -38,13 +43,11 @@ namespace Windowmancer.UI
     private void Initialize()
     {
       // Apply data sources.
-      this.ProfileListBox.ItemsSource = _profileManager.Profiles;
-      this.ProfileListBox.SelectedItem = _profileManager.ActiveProfile;
-      this.WindowConfigDataGrid.ItemsSource = _profileManager.ActiveProfile.Windows;
-      this.ActiveWindowsDataGrid.ItemsSource = _procMonitor.ActiveWindowProcs;
+      this.ProfileListBox.ItemsSource = ProfileManager.Profiles;
+      this.ProfileListBox.SelectedItem = ProfileManager.ActiveProfile;
 
       // Start process monitor.
-      _procMonitor.Start();
+      this.ProcMonitor.Start();
     }
 
     private void ShowItemMessageToast(string itemName, string message = null)
@@ -73,8 +76,9 @@ namespace Windowmancer.UI
         flyout.Header = "Add Profile";
         content = new ProfileConfig((p) => 
         {
-          _profileManager.AddNewProfile(p);
+          ProfileManager.AddNewProfile(p);
           this.ProfileListBox.SelectedItem = p;
+          this.EditorViewModel.Update();
           ShowItemMessageToast(p.Name, "add to profile list.");
         });
       }
@@ -100,7 +104,7 @@ namespace Windowmancer.UI
       var windowConfig = null == item ? 
         new WindowConfig(w =>
         {
-          _profileManager.AddToActiveProfile(w);
+          ProfileManager.AddToActiveProfile(w);
           ShowItemMessageToast(w.Name, "added to window configuration list.");
         }) : 
         new WindowConfig(item, (w) =>
@@ -123,7 +127,7 @@ namespace Windowmancer.UI
       }
       var windowConfig = new WindowConfig(item, c =>
       {
-        _profileManager.AddToActiveProfile(c);
+        ProfileManager.AddToActiveProfile(c);
         ShowItemMessageToast(c.Name, "added to window configuration list.");
       });
       windowConfig.OnClose += () => { flyout.IsOpen = false; };
@@ -197,7 +201,7 @@ namespace Windowmancer.UI
           break;
         case "Delete":
           item = (WindowInfo)WindowConfigDataGrid.SelectedItem;
-          _profileManager.RemoveFromActiveProfile(item);
+          ProfileManager.RemoveFromActiveProfile(item);
           ShowItemMessageToast(item.Name, "window configuration deleted.");
           break;
       }
@@ -223,15 +227,16 @@ namespace Windowmancer.UI
           HandleProfileConfigEdit(item);
           break;
         case "Delete":
+          ShowItemMessageToast(this.ProfileManager.ActiveProfile.Name, "profile deleted.");
+          this.ProfileManager.DeleteActiveProfile();
           break;
       }
     }
     
     private void ProfileListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-      var profile = (Profile)(this.ProfileListBox.SelectedItem);
-      _profileManager.ActiveProfile = profile;
-      this.WindowConfigDataGrid.ItemsSource = _profileManager.ActiveProfile.Windows;
+      // TODO: Hack to update the window title on profile selection. Need to data bind dis
+      this.EditorViewModel.Update();
     }
 
     private void RunProfileButton_OnClick(object sender, RoutedEventArgs e)

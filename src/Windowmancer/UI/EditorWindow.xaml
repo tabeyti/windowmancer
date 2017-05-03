@@ -17,8 +17,9 @@
                        RightWindowCommandsOverlayBehavior="Always"
                        WindowButtonCommandsOverlayBehavior="Always"
                        Icon="../AppIcon.ico"
-                       Title="Windowmancer"
-                       Width="1024" Height="768">
+                       Title="{Binding EditorViewModel.WindowTitle}"
+                       Width="1024" Height="768"
+                       DataContext="{Binding RelativeSource={RelativeSource Self}}">
   <Controls:MetroWindow.Resources>
     <Style x:Key="MyColumnHeader" 
            BasedOn="{StaticResource MetroDataGridColumnHeader}" 
@@ -113,6 +114,7 @@
         </GroupBox.Header>
         <ListBox Name="ProfileListBox" 
                  SelectionChanged="ProfileListBox_SelectionChanged"
+                 SelectedItem ="{Binding ProfileManager.ActiveProfile}"
                  Style="{StaticResource MyListBox}">
           <ListBox.Resources>
             <ContextMenu x:Key="RowMenu">
@@ -155,6 +157,7 @@
                   Background="{StaticResource AccentViewBackgroundColorBrush}"
                   CanUserResizeColumns="False"
                   ColumnHeaderStyle="{StaticResource MyColumnHeader}"
+                  ItemsSource="{Binding ProfileManager.ActiveProfile.Windows}"
                   MouseDoubleClick="WindowConfigDataGrid_OnMouseDoubleClick">
           <DataGrid.Resources>
             <ContextMenu x:Key="RowMenu">
@@ -179,6 +182,7 @@
     <GroupBox Header="Active Windows" Grid.Row="3"
               Style="{StaticResource MyGroupBoxStyle}">
       <DataGrid Name="ActiveWindowsDataGrid" 
+                ItemsSource="{Binding ProcMonitor.ActiveWindowProcs}"
                 GridLinesVisibility="None"               
                 AutoGenerateColumns="False"
                 IsReadOnly="True" 

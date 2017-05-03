@@ -8,13 +8,11 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
-using MahApps.Metro.Controls;
 using Windowmancer.Models;
 using Windowmancer.Practices;
 using Windowmancer.Services;
 using Button = System.Windows.Controls.Button;
 using ButtonBase = System.Windows.Controls.Primitives.ButtonBase;
-using MahApps.Metro.Controls.Dialogs;
 
 namespace Windowmancer.UI
 {
@@ -24,7 +22,7 @@ namespace Windowmancer.UI
   /// 
   public partial class WindowConfig
   {
-    public event Action OnClose;
+    public Action OnClose;
 
     public Action<WindowInfo> OnSave;
 
