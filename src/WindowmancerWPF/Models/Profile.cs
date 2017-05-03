@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Practices.Unity;
 using System.Collections.ObjectModel;
 
 namespace WindowmancerWPF.Models
@@ -12,6 +13,8 @@ namespace WindowmancerWPF.Models
     }
     public string Id { get; set; }
     public ObservableCollection<WindowInfo> Windows { get; set; }
+
+    private UserData _userData = null;
 
     public bool IsActive
     {
@@ -27,7 +30,9 @@ namespace WindowmancerWPF.Models
 
     public void Update(Profile profile)
     {
+      _userData = _userData ?? App.ServiceResolver.Resolve<UserData>();
       this.Name = profile.Name;
+      _userData.Save();
     }
 
     public object Clone()

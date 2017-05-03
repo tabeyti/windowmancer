@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using Microsoft.Practices.Unity;
 
 namespace WindowmancerWPF.Models
 {
@@ -28,6 +29,8 @@ namespace WindowmancerWPF.Models
       get => GetProperty<bool>();
       set => SetProperty(value);
     }
+
+    private UserData _userData;
 
     public WindowInfo()
     {
@@ -59,15 +62,17 @@ namespace WindowmancerWPF.Models
     }
 
     /// <summary>
-    /// Updates the current instance with values held within the passed instance.
+    /// Updates the current instance with values held within the passed instance,
+    /// saving to user data the changes.
     /// </summary>
-    /// <param name="info"></param>
     public void Update(WindowInfo info)
     {
       this.Name = info.Name;
       this.BringToFront = info.BringToFront;
       this.MatchCriteria = info.MatchCriteria;
       this.LayoutInfo = info.LayoutInfo;
+      _userData = _userData ?? App.ServiceResolver.Resolve<UserData>();
+      _userData.Save();
     }
   }
 

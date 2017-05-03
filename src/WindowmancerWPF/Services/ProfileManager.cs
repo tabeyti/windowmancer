@@ -79,25 +79,6 @@ namespace WindowmancerWPF.Services
       return true;
     }
 
-    //public bool AddNewProfile(string name)
-    //{
-    //  if (Profiles.Any(p => p.Name == name))
-    //  {
-    //    return false;
-    //  }
-    //  var profile = new Profile
-    //  {
-    //    Id = Guid.NewGuid().ToString(),
-    //    Name = name,
-    //    Windows = new ObservableCollection<WindowInfo>()
-    //  };
-    //  this.Profiles.Add(profile);
-    //  this.ActiveProfile = profile;
-    //  _userData.Save();
-    //  OnActiveProfileUpdate?.Invoke(this, new EventArgs());
-    //  return true;
-    //}
-
     /// <summary>
     /// Deletes the current active profile, returning the index of the new
     /// active profile.
@@ -138,19 +119,7 @@ namespace WindowmancerWPF.Services
       _userData.Save();
       return true;
     }
-
-    ///// <summary>
-    ///// Updates a window configuration within the active profile.
-    ///// specified
-    ///// </summary>
-    ///// <param name="index"></param>
-    ///// <param name="windowInfo"></param>
-    //public void UpdateToActiveProfile(WindowInfo windowInfo)
-    //{
-    //  this.ActiveProfile.Windows.Find = windowInfo;
-    //  _userData.Save();
-    //}
-
+    
     public void UpdateActiveProfileName(string name)
     {
       this.ActiveProfile.Name = name;

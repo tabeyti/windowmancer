@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.IO;
+using System.Linq;
+using System.Windows.Input;
 using Newtonsoft.Json;
 using WindowmancerWPF.Configuration;
 using WindowmancerWPF.Services;
@@ -13,7 +12,7 @@ namespace WindowmancerWPF.Models
   {
     public ObservableCollection<Profile> Profiles { get; set; }
     public string ActiveProfile { get; set; }
-    public KeyComboConfig KeyComboConfig { get; set; }
+    public HotKeyConfig HotKeyConfig { get; set; }
     private UserConfig _config;
 
     public UserData(UserConfig config)
@@ -27,15 +26,8 @@ namespace WindowmancerWPF.Models
           Windows = new ObservableCollection<WindowInfo>()
         }
       };
-      this.KeyComboConfig = new KeyComboConfig
-      {
-        KeyCombination = new System.Collections.Generic.List<KeyInfo>()
-        {
-          new KeyInfo { Key = System.Windows.Forms.Keys.Control },
-          new KeyInfo { Key = System.Windows.Forms.Keys.Shift },
-          new KeyInfo { Key = System.Windows.Forms.Keys.K },
-        }
-      };
+
+      this.HotKeyConfig = new HotKeyConfig(new[] { ModifierKeys.Control, ModifierKeys.Shift }.ToList(), Key.W);
       _config = config;
     }
 
@@ -46,15 +38,15 @@ namespace WindowmancerWPF.Models
 
     public void Save()
     {
-      //try
-      //{
-      //  var text = JsonConvert.SerializeObject(this, Formatting.Indented);
-      //  System.IO.File.WriteAllText(_config.UserDataPath, text);
-      //}
-      //catch (Exception e)
-      //{
-      //  throw new ExceptionBox(e);
-      //}
+      try
+      {
+        var text = JsonConvert.SerializeObject(this, Formatting.Indented);
+        System.IO.File.WriteAllText(_config.UserDataPath, text);
+      }
+      catch (Exception e)
+      {
+        throw new ExceptionBox(e);
+      }
     }
   }
 }

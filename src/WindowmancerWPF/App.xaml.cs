@@ -4,8 +4,6 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Forms;
-using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Practices.Unity;
 using WindowmancerWPF.Models;
 using WindowmancerWPF.Practices;
@@ -167,7 +165,6 @@ namespace WindowmancerWPF
       foreach (ToolStripItem m in _trayContextMenu.Items)
       {
         if (m.GetType() != typeof(ToolStripMenuItem)) continue;
-        
 
         var item = m as ToolStripMenuItem;
         if (!item.Checked) continue;

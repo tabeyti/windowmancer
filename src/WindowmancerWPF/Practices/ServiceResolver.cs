@@ -39,7 +39,6 @@ namespace WindowmancerWPF.Practices
       var userData = JsonConvert.DeserializeObject<UserData>(text);
       userData.SetUserConfig(userConfig);
       container.RegisterInstance(userData, new ContainerControlledLifetimeManager());
-
       container.RegisterType<ProcMonitor>(new ContainerControlledLifetimeManager());
       container.RegisterType<WindowManager>(new ContainerControlledLifetimeManager());
       container.RegisterType<ProfileManager>(new ContainerControlledLifetimeManager());

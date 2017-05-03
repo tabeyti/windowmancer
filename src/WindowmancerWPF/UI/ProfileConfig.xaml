@@ -22,8 +22,8 @@
 
     <Grid Grid.Row="1" Margin="10,10,0,10" HorizontalAlignment="Right">
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="100"></ColumnDefinition>
-      <ColumnDefinition Width="100"></ColumnDefinition>
+      <ColumnDefinition Width="100"/>
+      <ColumnDefinition Width="100"/>
     </Grid.ColumnDefinitions>
     <Button Name="CancelButton"
               Style="{StaticResource SquareButtonStyle}"

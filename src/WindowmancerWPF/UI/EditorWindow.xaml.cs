@@ -26,6 +26,7 @@ namespace WindowmancerWPF.UI
     private readonly WindowManager _windowManager;
     private readonly KeyHookManager _keyHookManager;
     private readonly ProcMonitor _procMonitor;
+    private readonly UserData _userData;
     
     public EditorWindow()
     {
@@ -33,6 +34,7 @@ namespace WindowmancerWPF.UI
       _windowManager = App.ServiceResolver.Resolve<WindowManager>();
       _keyHookManager = App.ServiceResolver.Resolve<KeyHookManager>();
       _procMonitor = App.ServiceResolver.Resolve<ProcMonitor>();
+      _userData = App.ServiceResolver.Resolve<UserData>();
 
       InitializeComponent();
       Initialize();
@@ -50,7 +52,7 @@ namespace WindowmancerWPF.UI
       _procMonitor.Start();
     }
 
-    private void ShowDeleteToast(string itemName, string message = null)
+    private void ShowItemMessageToast(string itemName, string message = null)
     {
       var flyout = this.Flyouts.Items[2] as Flyout;
       if (null == flyout)
@@ -78,12 +80,17 @@ namespace WindowmancerWPF.UI
         {
           _profileManager.AddNewProfile(p);
           this.ProfileListBox.SelectedItem = p;
+          ShowItemMessageToast(p.Name, "add to profile list.");
         });
       }
       else
       {
         flyout.Header = "Edit Profile";
-        content = new ProfileConfig(profile, profile.Update );
+        content = new ProfileConfig(profile, (p) =>
+        {
+          profile.Update(p);
+          ShowItemMessageToast(p.Name, "profile updated.");
+        } );
       }
       content.OnClose = () => { flyout.IsOpen = false; };
       flyout.Content = content;
@@ -96,8 +103,16 @@ namespace WindowmancerWPF.UI
       if (flyout == null) return;
 
       var windowConfig = null == item ? 
-        new WindowConfig(item, w => { _profileManager.AddToActiveProfile(w); }) : 
-        new WindowConfig(item, item.Update);
+        new WindowConfig(w =>
+        {
+          _profileManager.AddToActiveProfile(w);
+          ShowItemMessageToast(w.Name, "added to window configuration list.");
+        }) : 
+        new WindowConfig(item, (w) =>
+        {
+          item.Update(w);
+          ShowItemMessageToast(w.Name, "window configuration updated");
+        });
       windowConfig.OnClose += () => { flyout.IsOpen = false; };
 
       flyout.Content = windowConfig;
@@ -111,13 +126,14 @@ namespace WindowmancerWPF.UI
       {
         return;
       }
-      var w = new WindowConfig(item, c =>
+      var windowConfig = new WindowConfig(item, c =>
       {
         _profileManager.AddToActiveProfile(c);
+        ShowItemMessageToast(c.Name, "added to window configuration list.");
       });
-      w.OnClose += () => { flyout.IsOpen = false; };
+      windowConfig.OnClose += () => { flyout.IsOpen = false; };
 
-      flyout.Content = w;
+      flyout.Content = windowConfig;
       flyout.IsOpen = true;
     }
 
@@ -129,7 +145,12 @@ namespace WindowmancerWPF.UI
         return;
       }
       flyout.Header = "Preferences";
-      var w = new PreferencesDialog(s => { });
+      var w = new PreferencesDialog(new PreferencesModel(_keyHookManager.HotKeyConfig), p =>
+      {
+        var prefs = (PreferencesModel) p;
+        _keyHookManager.UpdateHotKeyConfig(prefs.HotKeyConfig);
+        ShowItemMessageToast("Preferences", "updated.");
+      });
       w.OnClose += () => { flyout.IsOpen = false; };
       flyout.Content = w;
       flyout.IsOpen = true;
@@ -182,7 +203,7 @@ namespace WindowmancerWPF.UI
         case "Delete":
           item = (WindowInfo)WindowConfigDataGrid.SelectedItem;
           _profileManager.RemoveFromActiveProfile(item);
-          ShowDeleteToast(item.Name, "window configuration deleted.");
+          ShowItemMessageToast(item.Name, "window configuration deleted.");
           break;
       }
     }
