@@ -39,6 +39,12 @@ namespace Windowmancer.UI
       return _hotKeys;
     }
 
+    public void SetHotKeyConfig(HotKeyConfig config)
+    {
+      _hotKeys = config;
+      this.BaseTextBox.Text = GetHotKeyString(_hotKeys.ModifierKeys, _hotKeys.PrimaryKey);
+    }
+
     /// <summary>
     /// Builds and returns the HotKey string based on the 
     /// keyboard's modifyer keys and the passed primary key.

@@ -34,9 +34,7 @@ namespace Windowmancer.UI
 
     private void Initialize()
     {
-      this.HotKeyInputBox.BaseTextBox.Text = HotKeyInputBox.GetHotKeyString(
-        this.Preferences.HotKeyConfig.ModifierKeys, 
-        this.Preferences.HotKeyConfig.PrimaryKey);
+      this.HotKeyInputBox.SetHotKeyConfig(this.Preferences.HotKeyConfig);
     }
 
     private void Close(bool save)
