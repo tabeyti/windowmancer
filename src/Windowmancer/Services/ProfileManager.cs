@@ -106,6 +106,7 @@ namespace Windowmancer.Services
       this.ActiveProfile = this.Profiles[index];
       this.ActiveProfile.IsActive = true;
       OnActiveProfileUpdate?.Invoke(this, new EventArgs());
+      _userData.Save();
       return index;
     }
 

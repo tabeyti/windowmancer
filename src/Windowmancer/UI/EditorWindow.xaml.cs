@@ -79,7 +79,7 @@ namespace Windowmancer.UI
           ProfileManager.AddNewProfile(p);
           this.ProfileListBox.SelectedItem = p;
           this.EditorViewModel.Update();
-          ShowItemMessageToast(p.Name, "add to profile list.");
+          ShowItemMessageToast(p.Name, "profile added.");
         });
       }
       else
@@ -105,7 +105,7 @@ namespace Windowmancer.UI
         new WindowConfig(w =>
         {
           ProfileManager.AddToActiveProfile(w);
-          ShowItemMessageToast(w.Name, "added to window configuration list.");
+          ShowItemMessageToast(w.Name, "window configuration added.");
         }) : 
         new WindowConfig(item, (w) =>
         {
