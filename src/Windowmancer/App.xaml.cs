@@ -1,3 +1,9 @@
+/**
+ * TODO: Process check (dissallow multiple instances of WM to run)
+ * TODO: 
+ * 
+ */
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -28,13 +34,13 @@ namespace Windowmancer
     public static Color TrayAppForegroundColor = Color.White;
     public static Color SelectedItemColor = Color.DeepSkyBlue;
 
+    public ObservableCollection<Control> ContextMenuItemCollection { get; set; }
+
     private KeyHookManager _keyHookManager;
     private ProfileManager _profileManager;
     private WindowManager _windowManager;
     private ProcMonitor _procMonitor;
     private UserData _userData;
-    
-    public ObservableCollection<Control> ContextMenuItemCollection { get; set; }
 
     private NotifyIcon _trayIcon;
     private ContextMenuStrip _trayContextMenu;
@@ -100,6 +106,9 @@ namespace Windowmancer
 
       // Create fresh button as first item.
       var rescanMenuItem = new ToolStripButton("Rescan Profile");
+      rescanMenuItem.MouseEnter += TrayContextMenuItem_MouseEnter;
+      rescanMenuItem.MouseLeave += TrayContextMenuItem_MouseLeave;
+      rescanMenuItem.Dock = DockStyle.Fill;
       rescanMenuItem.Font = new Font(rescanMenuItem.Font, System.Drawing.FontStyle.Bold);
       rescanMenuItem.Click += (s, e) => { _windowManager.RefreshProfile(); };
       rescanMenuItem.Image = wmIcon;
@@ -209,14 +218,14 @@ namespace Windowmancer
 
     private void TrayContextMenuItem_MouseEnter(object sender, EventArgs e)
     {
-      var menuItem = sender as ToolStripMenuItem;
-      menuItem.ForeColor = Color.FromArgb(menuItem.ForeColor.ToArgb() ^ 0xffffff);
+      var item = sender as ToolStripItem;
+      item.ForeColor = Color.FromArgb(item.ForeColor.ToArgb() ^ 0xffffff);
     }
 
     private void TrayContextMenuItem_MouseLeave(object sender, EventArgs e)
     {
-      var menuItem = sender as ToolStripMenuItem;
-      menuItem.ForeColor = Color.FromArgb(menuItem.ForeColor.ToArgb() ^ 0xffffff);
+      var item = sender as ToolStripItem;
+      item.ForeColor = Color.FromArgb(item.ForeColor.ToArgb() ^ 0xffffff);
     }
 
     private void SelectMenuItem(ToolStripMenuItem mi)
