@@ -96,7 +96,7 @@ namespace Windowmancer.UI
 
     private void Initialize()
     {
-      EnableDisableLayoutHelper(false);
+      EnableDisableLayoutHelper(false); 
       this.RowSpinner.ValueChanged += RowColSpinners_ValueChanged;
       this.ColumnSpinner.ValueChanged += RowColSpinners_ValueChanged;
 
@@ -111,7 +111,7 @@ namespace Windowmancer.UI
       this.DisplayPanelGrid.Children.RemoveRange(0, this.DisplayPanelGrid.Children.Count);
     }
 
-    private void RecreateDisplaySection2Control(int rows, int cols)
+    private void RecreateDisplaySectionControl(int rows, int cols)
     {
       ClearDisplaySectionPanel();
       var grid = new UniformGrid { Rows = rows, Columns = cols };
@@ -245,7 +245,11 @@ namespace Windowmancer.UI
     {
       if (enable)
       {
-        RecreateDisplaySection2Control(_displaySection.TotalRows, _displaySection.TotalColumns);
+        _rowColSpinnerEnabled = false;
+        this.RowSpinner.Value = _displaySection.TotalRows;
+        this.ColumnSpinner.Value = _displaySection.TotalColumns;
+        _rowColSpinnerEnabled = true;
+        RecreateDisplaySectionControl(_displaySection.TotalRows, _displaySection.TotalColumns);
         return;
       }
       
@@ -269,11 +273,14 @@ namespace Windowmancer.UI
       OnClose?.Invoke();
     }
 
+    private bool _rowColSpinnerEnabled = true;
     private void RowColSpinners_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
     {
+      if (!_rowColSpinnerEnabled) return;
+
       var rows = this.RowSpinner?.Value ?? 1;
       var cols = this.ColumnSpinner?.Value ?? 1;
-      RecreateDisplaySection2Control(rows, cols);
+      RecreateDisplaySectionControl(rows, cols);
     }
 
     private void DisplaysComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
