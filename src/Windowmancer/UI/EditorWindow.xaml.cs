@@ -2,12 +2,12 @@ using System;
 using System.Diagnostics;
 using Microsoft.Practices.Unity;
 using System.Windows;
-using Windowmancer.Models;
-using Windowmancer.Services;
 using System.Windows.Input;
 using MahApps.Metro.Controls;
 using System.Windows.Controls;
 using MahApps.Metro.Controls.Dialogs;
+using Windowmancer.Core.Models;
+using Windowmancer.Core.Services;
 using Windowmancer.UI.Base;
 
 namespace Windowmancer.UI

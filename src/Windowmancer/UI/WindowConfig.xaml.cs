@@ -8,9 +8,9 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
-using Windowmancer.Models;
-using Windowmancer.Practices;
-using Windowmancer.Services;
+using Windowmancer.Core.Models;
+using Windowmancer.Core.Practices;
+using Windowmancer.Core.Services;
 using Button = System.Windows.Controls.Button;
 using ButtonBase = System.Windows.Controls.Primitives.ButtonBase;
 
@@ -75,17 +75,7 @@ namespace Windowmancer.UI
 
       if (_process != null)
       {
-        var procRec = Helper.GetProcessWindowRec(_process);
-        this.WindowInfo = new WindowInfo
-        {
-          Name = _process.MainWindowTitle,
-          LayoutInfo = new WindowLayoutInfo(
-            procRec.Left, 
-            procRec.Top, 
-            procRec.Width, 
-            procRec.Height),
-          MatchCriteria = new WindowMatchCriteria { MatchString = _process.MainWindowTitle }
-        };
+        this.WindowInfo = WindowInfo.FromProcess(_process);
       }
       else
       {

@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using Windowmancer.Models;
+using Windowmancer.Core.Models;
 
 namespace Windowmancer.UI
 {

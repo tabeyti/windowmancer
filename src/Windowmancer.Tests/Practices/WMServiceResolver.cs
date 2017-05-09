@@ -1,16 +1,16 @@
-using Microsoft.Practices.Unity;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.IO;
 using System.Reflection;
+using Microsoft.Practices.Unity;
+using Newtonsoft.Json;
+using NLog;
 using Windowmancer.Core.Configuration;
 using Windowmancer.Core.Models;
-using Windowmancer.Core.Practices;
 using Windowmancer.Core.Services;
 
-namespace Windowmancer.Practices
+namespace Windowmancer.Tests.Practices
 {
-  public static class WMServiceResolver
+  public static class WmServiceResolver
   {
     private static IUnityContainer _instance;
     public static IUnityContainer Instance => _instance ?? (_instance = CreateResolver());
@@ -20,16 +20,22 @@ namespace Windowmancer.Practices
       var container = new UnityContainer();
       var config = GetAssembly();
 
-      // Set Helper instance of our service resolver.
-      Helper.ServiceResolver = container;
-
       // Register configs.
       RegisterConfig<UserConfig>(container, config.AppSettings);
+
+      // Register our logger.
+      RegisterLogger(container);
 
       // Register all services.
       RegisterServices(container);
 
       return container;
+    }
+
+    private static void RegisterLogger(IUnityContainer container)
+    {
+      var logger = LogManager.GetCurrentClassLogger();
+      container.RegisterInstance<ILogger>(logger, new ContainerControlledLifetimeManager());
     }
 
     private static void RegisterServices(IUnityContainer container)
@@ -38,7 +44,7 @@ namespace Windowmancer.Practices
       if (!File.Exists(userConfig.UserDataPath))
       {
         File.WriteAllText(userConfig.UserDataPath, JsonConvert.SerializeObject(new UserData(null)));
-      }          
+      }
       var text = File.ReadAllText(userConfig.UserDataPath);
       var userData = JsonConvert.DeserializeObject<UserData>(text);
       userData.SetUserConfig(userConfig);

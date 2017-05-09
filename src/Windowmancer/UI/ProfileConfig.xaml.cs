@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using Windowmancer.Models;
+using Windowmancer.Core.Models;
 
 namespace Windowmancer.UI
 {

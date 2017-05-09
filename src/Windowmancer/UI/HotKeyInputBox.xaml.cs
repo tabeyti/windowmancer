@@ -1,12 +1,11 @@
 //http://stackoverflow.com/questions/2136431/how-do-i-read-custom-keyboard-shortcut-from-user-in-wpf
 
-using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Windowmancer.Services;
+using Windowmancer.Core.Models;
 
 namespace Windowmancer.UI
 {
@@ -20,7 +19,7 @@ namespace Windowmancer.UI
         typeof(TextBox),
         new FrameworkPropertyMetadata("", FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
-    private HotKeyConfig _hotKeys = null;
+    private HotKeyConfigModel _hotKeys = null;
 
     public HotKeyInputBox()
     {
@@ -34,12 +33,12 @@ namespace Windowmancer.UI
       set => SetValue(TextProperty, value);
     }
 
-    public HotKeyConfig GetHotKeyConfig()
+    public HotKeyConfigModel GetHotKeyConfig()
     {
       return _hotKeys;
     }
 
-    public void SetHotKeyConfig(HotKeyConfig config)
+    public void SetHotKeyConfig(HotKeyConfigModel config)
     {
       _hotKeys = config;
       this.BaseTextBox.Text = GetHotKeyString(_hotKeys.ModifierKeys, _hotKeys.PrimaryKey);
@@ -97,7 +96,7 @@ namespace Windowmancer.UI
         return;
       }
 
-      _hotKeys = new HotKeyConfig();
+      _hotKeys = new HotKeyConfigModel();
       if ((Keyboard.Modifiers & ModifierKeys.Control) != 0)
       {
         _hotKeys.ModifierKeys.Add(ModifierKeys.Control);

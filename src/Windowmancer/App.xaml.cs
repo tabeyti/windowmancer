@@ -11,9 +11,10 @@ using System.Drawing;
 using System.Windows;
 using System.Windows.Forms;
 using Microsoft.Practices.Unity;
-using Windowmancer.Models;
+using Windowmancer.Core.Models;
+using Windowmancer.Core.Practices;
+using Windowmancer.Core.Services;
 using Windowmancer.Practices;
-using Windowmancer.Services;
 using Windowmancer.UI;
 using Application = System.Windows.Application;
 using Control = System.Windows.Controls.Control;
@@ -54,6 +55,9 @@ namespace Windowmancer
 
     private void App_OnStartup(object sender, StartupEventArgs e)
     {
+      // Set our application's dispatcher within Helper.
+      Helper.Dispatcher = this.Dispatcher;
+
       _userData = ServiceResolver.Resolve<UserData>();
       _profileManager = ServiceResolver.Resolve<ProfileManager>();
       _windowManager = ServiceResolver.Resolve<WindowManager>();
