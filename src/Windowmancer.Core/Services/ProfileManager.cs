@@ -46,8 +46,9 @@ namespace Windowmancer.Core.Services
       _windowManager.ActiveProfile = this.ActiveProfile;
     }
     
-    public void UpdateActiveProfile(string id)
+    public void UpdateActiveProfile(Profile newProfile)
     {
+      var id = newProfile.Id;
       var profile = this.Profiles.Find(p => p.Id == id);
       DeselectActiveProfile();
       this.ActiveProfile = profile ?? throw new ExceptionBox($"{this} - Could not find profile from id {id}.");

@@ -12,10 +12,13 @@ namespace Windowmancer.Core.Models
     public ObservableCollection<Profile> Profiles { get; set; }
     public string ActiveProfile { get; set; }
     public HotKeyConfigModel HotKeyConfig { get; set; }
+
     private UserConfig _config;
+    private bool _enabled;
 
     public UserData(UserConfig config)
     {
+      _enabled = true;
       this.Profiles = new ObservableCollection<Profile>
       {
         new Profile
@@ -35,8 +38,15 @@ namespace Windowmancer.Core.Models
       _config = config;
     }
 
+    public void Enable(bool enable)
+    {
+      _enabled = enable;
+    }
+
     public void Save()
     {
+      if (!_enabled) return;
+
       try
       {
         var text = JsonConvert.SerializeObject(this, Formatting.Indented);

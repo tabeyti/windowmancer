@@ -217,7 +217,7 @@ namespace Windowmancer
       var mi = ((ToolStripMenuItem)sender);
       UncheckCheckedMenuItem();
       SelectMenuItem(mi);
-      _profileManager.UpdateActiveProfile(((Profile)mi.Tag).Id);
+      _profileManager.UpdateActiveProfile(((Profile)mi.Tag));
     }
 
     private void TrayContextMenuItem_MouseEnter(object sender, EventArgs e)
