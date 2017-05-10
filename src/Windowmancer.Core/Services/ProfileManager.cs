@@ -9,7 +9,6 @@ namespace Windowmancer.Core.Services
   public class ProfileManager : PropertyNotifyBase, IDisposable
   {
     public event EventHandler OnActiveProfileUpdate;
-
     public ObservableCollection<Profile> Profiles => _userData.Profiles;
     public Profile ActiveProfile
     {
@@ -26,8 +25,6 @@ namespace Windowmancer.Core.Services
         _windowManager.ActiveProfile = value;
       }
     }
-    public string ActiveProfileName => 
-      (this.ActiveProfile == null) ? "None" : this.ActiveProfile.Name;
 
     private readonly UserData _userData;
     private readonly WindowManager _windowManager;
@@ -42,7 +39,7 @@ namespace Windowmancer.Core.Services
       Initialize();
     }
 
-    public void Initialize()
+    private void Initialize()
     {
       var profile = Profiles.Find(p => p.Id == _userData.ActiveProfile);
       this.ActiveProfile = profile ?? Profiles.FirstOrDefault();
@@ -52,24 +49,25 @@ namespace Windowmancer.Core.Services
     public void UpdateActiveProfile(string id)
     {
       var profile = this.Profiles.Find(p => p.Id == id);
-      if (null == profile)
-      {
-        throw new ExceptionBox($"{this} - Could not find profile from id {id}.");
-      }
-      DeselectActiveProfile(profile);
-      this.ActiveProfile = profile;
+      DeselectActiveProfile();
+      this.ActiveProfile = profile ?? throw new ExceptionBox($"{this} - Could not find profile from id {id}.");
       _windowManager.ActiveProfile = this.ActiveProfile;
       _userData.Save();
       OnActiveProfileUpdate?.Invoke(this, new EventArgs());
     }
 
+    /// <summary>
+    /// Adds a new profile to the list of user profiles.
+    /// </summary>
+    /// <param name="profile"></param>
+    /// <returns></returns>
     public bool AddNewProfile(Profile profile)
     {
       if (Profiles.Any(p => p.Name == profile.Name))
       {
         return false;
       }
-      DeselectActiveProfile(profile);
+      DeselectActiveProfile();
       this.Profiles.Add(profile);
       this.ActiveProfile = profile;
       _userData.Save();
@@ -108,6 +106,11 @@ namespace Windowmancer.Core.Services
       return index;
     }
 
+    /// <summary>
+    /// Adds a window info instance to the active profile.
+    /// </summary>
+    /// <param name="info"></param>
+    /// <returns></returns>
     public bool AddToActiveProfile(WindowInfo info)
     {
       if (null == info)
@@ -118,14 +121,12 @@ namespace Windowmancer.Core.Services
       _userData.Save();
       return true;
     }
-    
-    public void UpdateActiveProfileName(string name)
-    {
-      this.ActiveProfile.Name = name;
-      OnActiveProfileUpdate?.Invoke(this, new EventArgs());
-      _userData.Save();
-    }
 
+    /// <summary>
+    /// Removes the passed window info instance from the active profile's
+    /// list of window info objects.
+    /// </summary>
+    /// <param name="info"></param>
     public void RemoveFromActiveProfile(WindowInfo info)
     {
       if (null == info)
@@ -136,13 +137,17 @@ namespace Windowmancer.Core.Services
       _userData.Save();
     }
 
-    public void Dispose()
-    {
-    }
-
-    private void DeselectActiveProfile(Profile profile)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="profile"></param>
+    private void DeselectActiveProfile()
     {
       foreach (var p in this.Profiles) { p.IsActive = false; }
+    }
+
+    public void Dispose()
+    {
     }
   }
 }

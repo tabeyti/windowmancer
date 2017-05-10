@@ -12,6 +12,9 @@ using Xunit.Abstractions;
 
 namespace Windowmancer.Tests.Tests
 {
+  /// <summary>
+  /// Validates the API of the WindowManager service.
+  /// </summary>
   public class WindowManagerTests : TestClassBase
   {
     public WindowManagerTests(ITestOutputHelper xunitTestOutputHelper) : base(xunitTestOutputHelper)
@@ -30,7 +33,7 @@ namespace Windowmancer.Tests.Tests
       var modifiedLayoutInfo = (WindowLayoutInfo)originalLayoutInfo.Clone();
 
       // Modify position values.
-      ModifyLayoutInfoPosition(modifiedLayoutInfo);
+      TestHelper.ModifyLayoutInfoPosition(modifiedLayoutInfo);
 
       // Apply modified layout via window manager.
       WindowManager.ApplyWindowLayout(modifiedLayoutInfo, proc.Process);
@@ -53,7 +56,7 @@ namespace Windowmancer.Tests.Tests
       var modifiedLayoutInfo = (WindowLayoutInfo)originalLayoutInfo.Clone();
 
       // Modify the size values.
-      ModifyLayoutInfoSize(modifiedLayoutInfo);
+      TestHelper.ModifyLayoutInfoSize(modifiedLayoutInfo);
 
       // Apply modified layout via window manager.
       WindowManager.ApplyWindowLayout(modifiedLayoutInfo, proc.Process);
@@ -96,8 +99,8 @@ namespace Windowmancer.Tests.Tests
       // Modify the size/positioning of each window info object.
       windowInfoList.ForEach(w =>
       {
-        ModifyLayoutInfoSize(w.LayoutInfo);
-        ModifyLayoutInfoPosition(w.LayoutInfo);
+        TestHelper.ModifyLayoutInfoSize(w.LayoutInfo);
+        TestHelper.ModifyLayoutInfoPosition(w.LayoutInfo);
       });
       
       windowManager.RefreshProfile();
@@ -134,19 +137,6 @@ namespace Windowmancer.Tests.Tests
     }
 
     #region Helper Methods
-
-    private static readonly Random _rand = new Random();
-    private void ModifyLayoutInfoSize(WindowLayoutInfo layoutInfo)
-    {
-      layoutInfo.SizeInfo.Width = layoutInfo.SizeInfo.Width + _rand.Next(1, 10);
-      layoutInfo.SizeInfo.Height = layoutInfo.SizeInfo.Height + _rand.Next(1, 10); 
-    }
-
-    private void ModifyLayoutInfoPosition(WindowLayoutInfo layoutInfo)
-    {
-      layoutInfo.PositionInfo.X = layoutInfo.PositionInfo.X + _rand.Next(1, 10); 
-      layoutInfo.PositionInfo.Y = layoutInfo.PositionInfo.Y + _rand.Next(1, 10); 
-    }
 
     #endregion Helper Methods
   }

@@ -59,10 +59,33 @@ namespace Windowmancer.Tests.Practices
       return profile;
     }
 
+    /// <summary>
+    /// Creates a window title based on an incrementer value.
+    /// </summary>
     private static uint _windowTitleIncrement = 1;
     public static string CreateWindowTitle()
     {
       return $"Test_Window_{_windowTitleIncrement++}";
     }
+
+    /// <summary>
+    /// Modifies the passed layout size with a random value on both width and height.
+    /// </summary>
+    private static readonly Random _modifyLayoutRand = new Random();
+    public static void ModifyLayoutInfoSize(WindowLayoutInfo layoutInfo)
+    {
+      layoutInfo.SizeInfo.Width = layoutInfo.SizeInfo.Width + _modifyLayoutRand.Next(1, 10);
+      layoutInfo.SizeInfo.Height = layoutInfo.SizeInfo.Height + _modifyLayoutRand.Next(1, 10);
+    }
+
+    /// <summary>
+    /// Modifies the passed layout position with a random value on both X and Y.
+    /// </summary>
+    public static void ModifyLayoutInfoPosition(WindowLayoutInfo layoutInfo)
+    {
+      layoutInfo.PositionInfo.X = layoutInfo.PositionInfo.X + _modifyLayoutRand.Next(1, 10);
+      layoutInfo.PositionInfo.Y = layoutInfo.PositionInfo.Y + _modifyLayoutRand.Next(1, 10);
+    }
+
   }
 }
