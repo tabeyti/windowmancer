@@ -76,6 +76,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\TestProcessWrapper.cs" />
     <Compile Include="Practices\TestHelper.cs" />
     <Compile Include="Practices\WMServiceResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

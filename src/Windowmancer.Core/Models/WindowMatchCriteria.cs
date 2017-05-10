@@ -50,6 +50,7 @@ namespace Windowmancer.Core.Models
         case WindowMatchCriteriaType.ProcessName:
           return false;
         case WindowMatchCriteriaType.WindowTitle:
+          if (criteria.MatchString == string.Empty) return false;
           var m = Regex.Match(p.MainWindowTitle, criteria.MatchString);
           return m.Success;
         default:
