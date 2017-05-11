@@ -86,10 +86,12 @@
     <Compile Include="Practices\Helper.cs" />
     <Compile Include="Practices\Win32.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\Base\IDispatcher.cs" />
     <Compile Include="Services\KeyHookManager.cs" />
-    <Compile Include="Services\ProcMonitor.cs" />
+    <Compile Include="Services\ProcessMonitor.cs" />
     <Compile Include="Services\ProfileManager.cs" />
     <Compile Include="Services\WindowManager.cs" />
+    <Compile Include="Services\WmDispatcher.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

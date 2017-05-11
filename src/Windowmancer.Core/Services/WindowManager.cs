@@ -25,9 +25,8 @@ namespace Windowmancer.Core.Services
 
     public void ApplyWindowInfo(Process process)
     {
-      var windowInfo = this.ActiveProfile.Windows.Find(p => p.IsMatch(process));
-      if (windowInfo == null)
-        return;
+      var windowInfo = ActiveProfile?.Windows.Find(p => p.IsMatch(process));
+      if (windowInfo == null) return;
       ApplyWindowInfo(windowInfo, process);
     }
 

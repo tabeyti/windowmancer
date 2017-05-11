@@ -18,6 +18,7 @@ namespace Windowmancer.Tests.Models
 
     public void Dispose()
     {
+      if (this.Process.HasExited) return;
       this.Process.Kill();
     }
 

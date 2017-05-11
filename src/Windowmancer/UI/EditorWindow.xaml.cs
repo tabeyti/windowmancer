@@ -18,7 +18,7 @@ namespace Windowmancer.UI
   public partial class EditorWindow
   {
     public ProfileManager ProfileManager { get; }
-    public ProcMonitor ProcMonitor { get; }
+    public ProcessMonitor ProcMonitor { get; }
 
     private readonly WindowManager _windowManager;
     private readonly KeyHookManager _keyHookManager;
@@ -28,7 +28,7 @@ namespace Windowmancer.UI
     public EditorWindow()
     {
       this.ProfileManager = App.ServiceResolver.Resolve<ProfileManager>();
-      this.ProcMonitor = App.ServiceResolver.Resolve<ProcMonitor>();
+      this.ProcMonitor = App.ServiceResolver.Resolve<ProcessMonitor>();
 
       _windowManager = App.ServiceResolver.Resolve<WindowManager>();
       _keyHookManager = App.ServiceResolver.Resolve<KeyHookManager>();

@@ -6,7 +6,9 @@ using Newtonsoft.Json;
 using NLog;
 using Windowmancer.Core.Configuration;
 using Windowmancer.Core.Models;
+using Windowmancer.Core.Practices;
 using Windowmancer.Core.Services;
+using System.Windows.Threading;
 
 namespace Windowmancer.Tests.Practices
 {
@@ -49,7 +51,7 @@ namespace Windowmancer.Tests.Practices
       var userData = JsonConvert.DeserializeObject<UserData>(text);
       userData.SetUserConfig(userConfig);
       container.RegisterInstance(userData, new ContainerControlledLifetimeManager());
-      container.RegisterType<ProcMonitor>(new ContainerControlledLifetimeManager());
+      container.RegisterType<ProcessMonitor>(new ContainerControlledLifetimeManager());
       container.RegisterType<WindowManager>(new ContainerControlledLifetimeManager());
       container.RegisterType<ProfileManager>(new ContainerControlledLifetimeManager());
       container.RegisterType<KeyHookManager>(new ContainerControlledLifetimeManager());

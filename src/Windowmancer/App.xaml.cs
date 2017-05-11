@@ -40,7 +40,7 @@ namespace Windowmancer
     private KeyHookManager _keyHookManager;
     private ProfileManager _profileManager;
     private WindowManager _windowManager;
-    private ProcMonitor _procMonitor;
+    private ProcessMonitor _procMonitor;
     private UserData _userData;
 
     private NotifyIcon _trayIcon;
@@ -56,13 +56,13 @@ namespace Windowmancer
     private void App_OnStartup(object sender, StartupEventArgs e)
     {
       // Set our application's dispatcher within Helper.
-      Helper.Dispatcher = this.Dispatcher;
+      Helper.Dispatcher = new WmDispatcher(this.Dispatcher);
 
       _userData = ServiceResolver.Resolve<UserData>();
       _profileManager = ServiceResolver.Resolve<ProfileManager>();
       _windowManager = ServiceResolver.Resolve<WindowManager>();
       _keyHookManager = ServiceResolver.Resolve<KeyHookManager>();
-      _procMonitor = ServiceResolver.Resolve<ProcMonitor>();
+      _procMonitor = ServiceResolver.Resolve<ProcessMonitor>();
 
       Initialize();
 

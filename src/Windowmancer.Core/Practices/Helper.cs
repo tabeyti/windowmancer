@@ -6,21 +6,21 @@ using System.Windows.Forms;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 using Microsoft.Practices.Unity;
+using Windowmancer.Core.Services.Base;
 
 namespace Windowmancer.Core.Practices
 {
   public class Helper
   {
-    private static Dispatcher _dispatcher;
-    public static Dispatcher Dispatcher
+    private static IDispatcher _dispatcher;
+    public static IDispatcher Dispatcher
     {
       get
       {
         if (null == _dispatcher)
         {
-          throw new Exception("Helper - Must set a Dispatcher before use.");
+          throw new Exception("Helper - Must set a IDispatcher before use.");
         }
         return _dispatcher;
       }

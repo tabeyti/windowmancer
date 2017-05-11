@@ -9,10 +9,10 @@ using Windowmancer.Core.Extensions;
 
 namespace Windowmancer.Core.Services
 {
-  public class ProcMonitor : IDisposable
+  public class ProcessMonitor : IDisposable
   {
-    public event Action<Process> OnNewWindowProcess;
-    public event Action<int> OnWindowProcessRemove;
+    public Action<Process> OnNewWindowProcess;
+    public Action<int> OnWindowProcessRemove;
 
     public ObservableCollection<MonitoredProcess> ActiveWindowProcs { get; set; }
 
@@ -21,7 +21,7 @@ namespace Windowmancer.Core.Services
 
     private readonly WindowManager _windowManager;
 
-    public ProcMonitor(WindowManager windowManager)
+    public ProcessMonitor(WindowManager windowManager)
     {
       _windowManager = windowManager;
       this.ActiveWindowProcs = new ObservableCollection<MonitoredProcess>();
@@ -41,11 +41,11 @@ namespace Windowmancer.Core.Services
                                          "Where TargetInstance ISA 'Win32_Process' ";
 
       _startWatch = new ManagementEventWatcher(scope, new EventQuery(processStartedQuery));
-      _startWatch.EventArrived += new EventArrivedEventHandler(StartWatch_EventArrived);
+      _startWatch.EventArrived += StartWatch_EventArrived;
       _startWatch.Start();
 
       _stopWatch = new ManagementEventWatcher(scope, new EventQuery(processStoppedQuery));
-      _stopWatch.EventArrived += new EventArrivedEventHandler(StopWatch_EventArrived);
+      _stopWatch.EventArrived += StopWatch_EventArrived;
       _stopWatch.Start();
     }
 
@@ -97,7 +97,7 @@ namespace Windowmancer.Core.Services
       }
       try
       {
-        Helper.Dispatcher.Invoke((Action) delegate
+        Helper.Dispatcher.Invoke(delegate
         {
           this.ActiveWindowProcs.Add(new MonitoredProcess(process));
         });
@@ -112,7 +112,7 @@ namespace Windowmancer.Core.Services
 
     private void RemoveActiveProcess(int processId)
     {
-      Helper.Dispatcher.Invoke((Action)delegate
+      Helper.Dispatcher.Invoke(delegate
       {
         this.ActiveWindowProcs.Remove(p => p.Id == processId);
       }); 
