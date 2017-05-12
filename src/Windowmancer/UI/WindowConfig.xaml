@@ -72,12 +72,12 @@
                               IsChecked="{Binding Path=WindowInfo.MatchCriteria.MatchType, Converter={StaticResource EnumBooleanConverter}, ConverterParameter=ProcessName}"/>
                 </StackPanel>
               </GroupBox>
-              <CheckBox Name="BringToFrontCheckbox" Grid.Row="2"
+              <CheckBox Name="ApplyOnProcessStartCheckbox" Grid.Row="2"
                       HorizontalAlignment="Left"
                       VerticalAlignment="Top"
-                      Content="Bring to front" 
+                      Content="Apply on process start" 
                       Margin="10" 
-                      IsChecked="{Binding WindowInfo.BringToFront}"/>
+                      IsChecked="{Binding WindowInfo.ApplyOnProcessStart}"/>
             </Grid>
           </Grid>
         </GroupBox>

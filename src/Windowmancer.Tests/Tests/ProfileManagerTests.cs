@@ -58,8 +58,8 @@ namespace Windowmancer.Tests.Tests
       Assert.Equal(profileManager.ActiveProfile, windowManager.ActiveProfile);
     }
 
-    [Trait("Priority", "2")]
     [Fact]
+    [Trait("Priority", "2")]
     public void ProfileManagerTests_ActiveProfile_Delete()
     {
       var profileManager = ServiceResolver.Resolve<ProfileManager>();

@@ -25,7 +25,7 @@ namespace Windowmancer.Core.Models
       set => SetProperty(value);
     }
 
-    public bool BringToFront
+    public bool ApplyOnProcessStart
     {
       get => GetProperty<bool>();
       set => SetProperty(value);
@@ -36,14 +36,14 @@ namespace Windowmancer.Core.Models
     public WindowInfo()
     {
       RegisterProperty<string>("Name");
-      RegisterProperty<string>("BringToFront");
+      RegisterProperty<string>("ApplyOnProcessStart");
       RegisterProperty<WindowLayoutInfo>("LayoutInfo");
       RegisterProperty<WindowMatchCriteria>("MatchCriteria");
 
       this.Name = "";
       this.LayoutInfo = new WindowLayoutInfo();
       this.MatchCriteria = new WindowMatchCriteria(default(WindowMatchCriteriaType), "");
-      this.BringToFront = true;
+      this.ApplyOnProcessStart = true;
     }
 
     public bool IsMatch(Process p)
@@ -56,7 +56,7 @@ namespace Windowmancer.Core.Models
       return new WindowInfo
       {
         Name = this.Name,
-        BringToFront = this.BringToFront,
+        ApplyOnProcessStart = this.ApplyOnProcessStart,
         LayoutInfo = (WindowLayoutInfo)this.LayoutInfo.Clone(),
         MatchCriteria = (WindowMatchCriteria)this.MatchCriteria.Clone()
       };
@@ -69,7 +69,7 @@ namespace Windowmancer.Core.Models
     public void Update(WindowInfo info)
     {
       this.Name = info.Name;
-      this.BringToFront = info.BringToFront;
+      this.ApplyOnProcessStart = info.ApplyOnProcessStart;
       this.MatchCriteria = info.MatchCriteria;
       this.LayoutInfo = info.LayoutInfo;
       _userData = _userData ?? Helper.ServiceResolver.Resolve<UserData>();

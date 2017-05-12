@@ -170,6 +170,9 @@ namespace Windowmancer.UI
       this.WindowInfo.LayoutInfo.PositionInfo.Y = y;
     }
 
+    /// <summary>
+    /// Saves all input data into the WindowInfo instance.
+    /// </summary>
     private void SaveConfig()
     {
       var matchType = this.MatchByProcesNameRadioButton.IsChecked.Value ?

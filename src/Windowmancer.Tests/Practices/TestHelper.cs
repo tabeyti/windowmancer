@@ -46,8 +46,9 @@ namespace Windowmancer.Tests.Practices
     }
 
     private static uint _profileIncrement = 1;
-    public static Profile CreateNewProfile(List<WindowInfo> windowInfos)
+    public static Profile CreateNewProfile(List<WindowInfo> windowInfos = null)
     {
+      windowInfos = windowInfos ?? new List<WindowInfo> {CreateNewWindowInfo()};
       var profile = new Profile
       {
         Id = Guid.NewGuid().ToString(),
@@ -59,8 +60,27 @@ namespace Windowmancer.Tests.Practices
       return profile;
     }
 
+    public static WindowInfo CreateNewWindowInfo(string name = null)
+    {
+      name = name ?? CreateWindowTitle();
+      var sizeVal = _modifyLayoutRand.Next(200, 500);
+      var posVal = _modifyLayoutRand.Next(0, 1024);
+
+      return new WindowInfo
+      {
+        Name = name,
+        ApplyOnProcessStart = true,
+        LayoutInfo = new WindowLayoutInfo
+        {
+          SizeInfo = new SizeInfo(sizeVal, sizeVal),
+          PositionInfo = new PositionInfo(posVal, posVal)
+        },
+        MatchCriteria = new WindowMatchCriteria(WindowMatchCriteriaType.WindowTitle, name)
+      };
+    }
+
     /// <summary>
-    /// Creates a window title based on an incrementer value.
+    /// Creates a window title based on a counter.
     /// </summary>
     private static uint _windowTitleIncrement = 1;
     public static string CreateWindowTitle()

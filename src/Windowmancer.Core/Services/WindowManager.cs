@@ -23,11 +23,14 @@ namespace Windowmancer.Core.Services
     {
     }
 
-    public void ApplyWindowInfo(Process process)
+    public void ApplyWindowInfo(Process process, bool newProcess = false)
     {
       var windowInfo = ActiveProfile?.Windows.Find(p => p.IsMatch(process));
       if (windowInfo == null) return;
-      ApplyWindowInfo(windowInfo, process);
+      if (!newProcess || windowInfo.ApplyOnProcessStart)
+      {
+        ApplyWindowInfo(windowInfo, process);
+      }
     }
 
     public void ApplyWindowInfo(WindowInfo windowInfo, Process process)
@@ -40,13 +43,12 @@ namespace Windowmancer.Core.Services
       
       var x = (int)windowInfo.LayoutInfo.PositionInfo.X;
       var y = (int)windowInfo.LayoutInfo.PositionInfo.Y;
-
-      windowInfo.BringToFront.RunIfTrue(() =>
-      {
-        Win32.ShowWindow(handle, Win32.ShowWindowCommands.Maximize);
-        Win32.SetForegroundWindow(handle);
-      });
-      Win32.MoveWindow(handle, x, y, windowInfo.LayoutInfo.SizeInfo.Width, windowInfo.LayoutInfo.SizeInfo.Height, true);
+      var width = windowInfo.LayoutInfo.SizeInfo.Width;
+      var height = windowInfo.LayoutInfo.SizeInfo.Height;
+      
+      Win32.ShowWindow(handle, Win32.ShowWindowCommands.Maximize);
+      Win32.SetForegroundWindow(handle);
+      Win32.MoveWindow(handle, x, y, width, height, true);
     }
 
     public static Process GetProcess(WindowInfo windowInfo)
@@ -71,8 +73,7 @@ namespace Windowmancer.Core.Services
       var x = layoutInfo.PositionInfo.X;
       var y = layoutInfo.PositionInfo.Y;
       var width = layoutInfo.SizeInfo.Width;
-      var height = layoutInfo.SizeInfo.Height; 
-
+      var height = layoutInfo.SizeInfo.Height;
 
       Win32.ShowWindow(handle, Win32.ShowWindowCommands.Maximize);
       Win32.SetForegroundWindow(handle);

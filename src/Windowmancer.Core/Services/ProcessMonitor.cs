@@ -13,12 +13,10 @@ namespace Windowmancer.Core.Services
   {
     public Action<Process> OnNewWindowProcess;
     public Action<int> OnWindowProcessRemove;
-
     public ObservableCollection<MonitoredProcess> ActiveWindowProcs { get; set; }
 
     private ManagementEventWatcher _startWatch;
     private ManagementEventWatcher _stopWatch;
-
     private readonly WindowManager _windowManager;
 
     public ProcessMonitor(WindowManager windowManager)
@@ -66,20 +64,18 @@ namespace Windowmancer.Core.Services
     {
       var obj = ((ManagementBaseObject) e.NewEvent.Properties["TargetInstance"].Value);
       var procId = Convert.ToInt32(obj["ProcessId"]);
-      ;
-      Process proc = null;
+      Process proc;
       try
       {
         proc = Process.GetProcessById(procId);
-        if (proc.MainWindowTitle == string.Empty)
-          return;
+        if (proc.MainWindowTitle == string.Empty) { return; }
       }
       catch (Exception)
       {
         return;
       }
       AddToActiveWindows(proc);
-      _windowManager.ApplyWindowInfo(proc);
+      _windowManager.ApplyWindowInfo(proc, true);
     }
 
     private void StopWatch_EventArrived(object sender, EventArrivedEventArgs e)
@@ -91,10 +87,7 @@ namespace Windowmancer.Core.Services
 
     private void AddToActiveWindows(Process process)
     {
-      if (this.ActiveWindowProcs.Any(p => p.Id == process.Id))
-      {
-        return;
-      }
+      if (this.ActiveWindowProcs.Any(p => p.Id == process.Id)) { return; }
       try
       {
         Helper.Dispatcher.Invoke(delegate
@@ -106,7 +99,6 @@ namespace Windowmancer.Core.Services
       {
         Console.WriteLine(ex.Message);
       }
-      
       OnNewWindowProcess?.Invoke(process);
     }
 
