@@ -9,7 +9,6 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using Windowmancer.Core.Models;
-using Windowmancer.Core.Practices;
 using Windowmancer.Core.Services;
 using Button = System.Windows.Controls.Button;
 using ButtonBase = System.Windows.Controls.Primitives.ButtonBase;
