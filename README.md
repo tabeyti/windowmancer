@@ -4,9 +4,13 @@
 
 A tool to manage process windows on a user's desktop. Windowmancer makes it easy to locate a window on your desktop, adjust the size/positioning of the window, and have it saved as a window configuration 
 
-## Getting Started
+## Use
 
-Just execute Windowmancer.exe. You will see the application icon appear within the system tray area of your start bar, and the editor window will appear on first run.
+Execute Windowmancer.exe. You'll see both the application icon appear in the system tray and the window editor populate on first run.
+
+## Documentation
+
+You can read the documentation [./docs/DOCUMENTATION.md](here).
 
 ## Running the tests
 
@@ -24,7 +28,7 @@ We use [SemVer](http://semver.org/) for versioning.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
 ## Acknowledgments
 
