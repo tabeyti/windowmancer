@@ -1,12 +1,16 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.Practices.Unity;
+using Newtonsoft.Json;
 using Windowmancer.Core.Services.Base;
 
 namespace Windowmancer.Core.Practices
@@ -122,7 +126,7 @@ namespace Windowmancer.Core.Practices
       {
         retval = Imaging.CreateBitmapSourceFromHBitmap(
           hBitmap,
-          IntPtr.Zero, 
+          IntPtr.Zero,
           new Int32Rect(0, 0, bitmap.Width, bitmap.Height),
           BitmapSizeOptions.FromEmptyOptions());
         return retval;
@@ -139,9 +143,22 @@ namespace Windowmancer.Core.Practices
       return null;
     }
 
+    public static dynamic GetConfig(string configFileName)
+    {
+      var assembly = Assembly.GetCallingAssembly();
+      var resourceName = $"Windowmancer.{configFileName}";
+      var content = string.Empty;
+      
+      using (var stream = assembly.GetManifestResourceStream(resourceName))
+      using (var reader = new StreamReader(stream))
+      {
+        content = reader.ReadToEnd();
+      }
+      return JsonConvert.DeserializeObject(content);
+    }
+
     public static void DispatcherInvoke(Action callback)
     {
-      
     }
 
     public static int GetGreatestCommonDivisor(int a, int b)

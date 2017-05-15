@@ -27,7 +27,7 @@ namespace Windowmancer
   /// </summary>
   public partial class App
   {
-    public static IUnityContainer ServiceResolver = WMServiceResolver.Instance;
+    public static IUnityContainer ServiceResolver = Practices.WmServiceResolver.Instance;
 
     // Static colors which should match theme colors in App.xaml
     // TODO: Grab colors from App.xaml instead of hard-code them

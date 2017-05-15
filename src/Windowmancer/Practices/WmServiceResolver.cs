@@ -10,7 +10,7 @@ using Windowmancer.Core.Services;
 
 namespace Windowmancer.Practices
 {
-  public static class WMServiceResolver
+  public static class WmServiceResolver
   {
     private static IUnityContainer _instance;
     public static IUnityContainer Instance => _instance ?? (_instance = CreateResolver());
@@ -18,7 +18,7 @@ namespace Windowmancer.Practices
     private static IUnityContainer CreateResolver()
     {
       var container = new UnityContainer();
-      var config = GetAssembly();
+      var config = Helper.GetConfig("Windowmancer.json");
 
       // Set Helper instance of our service resolver.
       Helper.ServiceResolver = container;
@@ -48,12 +48,7 @@ namespace Windowmancer.Practices
       container.RegisterType<ProfileManager>(new ContainerControlledLifetimeManager());
       container.RegisterType<KeyHookManager>(new ContainerControlledLifetimeManager());
     }
-
-    public static dynamic GetAssembly()
-    {
-      return JsonConvert.DeserializeObject(File.ReadAllText($"{System.Reflection.Assembly.GetCallingAssembly().GetName().Name}.json"));
-    }
-
+    
     private static void RegisterConfig<T>(IUnityContainer container, dynamic appSettings)
     {
       T instance = RegisterConfig<T>(appSettings);
