@@ -16,15 +16,11 @@ def write_zip(build_dir):
   zf.write("{}/Windowmancer.exe".format(build_dir))
   zf.close()
 
-
-def msbuild_project():
-  
-
 # Main
 parser = OptionParser()
 parser.add_option("-c", "--config",    dest="build_config", help="The build configuration target (e.g. Debug)")
-parser.add_option("-t", "--platform",  dest="platform", help="The target platform (e.g. x64)")
-parser.add_option("-p", "--package",   action="store_true", default=False,   dest="package", help="Flag indicating whether to package the build.")
+parser.add_option("-p", "--platform",  dest="platform", help="The target platform (e.g. x64)")
+parser.add_option("-k", "--package",   action="store_true", default=False,   dest="package", help="Flag indicating whether to package the build.")
 parser.add_option("-v", "--version",   dest="version", help="The version tag for this build (e.g. 1.0.1)")
 
 (options, args) = parser.parse_args()
@@ -44,12 +40,17 @@ version = "0.0.1"
 if options.version: version = options.version
 version_tag = "v{}".format(version)
 
+solution_path = "{}/src/Windowmancer.sln".format(root_dir)
 
-subprocess.call("\"{}\"".format(msbuild_vars))
+# subprocess.call("\"{}\"".format(msbuild_vars))
+# Restore nuget packages.
+command = "nuget restore {}".format(solution_path)
+subprocess.call(command)
+
 # Build solution.
-command = "{} \"{}/src/Windowmancer.sln\" /p:Configuration={} /p:Platform=\"{}\" /p:ProductVersion={}".format(
+command = "{} \"{}\" /p:Configuration={} /p:Platform=\"{}\" /p:ProductVersion={}".format(
   msbuild_exe, 
-  root_dir,
+  solution_path,
   options.build_config,
   options.platform,
   version)
@@ -61,8 +62,4 @@ if options.package:
   print "Packaging binary..."
   write_zip("{}/build/{}/bin".format(root_dir, options.build_config))
   print "Packaging binary complete"
-
-# Deploy release to git.
-if options.deploy:
-  print "No"
 
