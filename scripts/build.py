@@ -79,10 +79,11 @@ if options.package:
 # Run tests with vigour
 if options.test:
   println("Starting test execution...")
-  command = "{} {}/Windowmancer.Tests.dll -xml {}/test_results_{}.xml".format(
+  command = "\"{}\" \"{}/Windowmancer.Tests.dll\" -xml \"{}/test_results_{}.xml\"".format(
     xunit_exe, 
     build_dir,
     root_dir,
     os.environ['BUILD_NUMBER'])
+  println("Executing {}".format(command))
   subprocess.call(command)
 
