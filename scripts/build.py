@@ -59,7 +59,7 @@ command = "nuget restore {}".format(solution_path)
 subprocess.call(command)
 
 # Build solution.
-command = "{} {} /p:Configuration={} /p:Platform=\"{}\" /p:ProductVersion={}".format(
+command = "{} \"{}\" /p:Configuration={} /p:Platform=\"{}\" /p:ProductVersion={}".format(
   msbuild_exe, 
   solution_path,
   options.build_config,
