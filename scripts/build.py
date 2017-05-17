@@ -18,8 +18,11 @@ def write_zip(build_dir):
   zf.write("{}/Windowmancer.exe".format(build_dir))
   zf.close()
 
-# Main
+def println(message):
+  print message
+  sys.stdout.flush()
 
+# Main
 if os.environ.get('BUILD_NUMBER') is None:
   os.environ['BUILD_NUMBER'] = "1"
 
@@ -56,26 +59,26 @@ command = "nuget restore {}".format(solution_path)
 subprocess.call(command)
 
 # Build solution.
-command = "{} \"{}\" /p:Configuration={} /p:Platform=\"{}\" /p:ProductVersion={}".format(
+command = "{} {} /p:Configuration={} /p:Platform=\"{}\" /p:ProductVersion={}".format(
   msbuild_exe, 
   solution_path,
   options.build_config,
   options.platform,
   version)
-print "Executing {}".format(command)
+println("Executing {}".format(command))
 subprocess.call(command)
 
 build_dir = "{}/build/{}/bin".format(root_dir, options.build_config)
 
 # Package exe.
 if options.package:
-  print "Packaging binary..."
+  println("Packaging binary...")
   write_zip(build_dir)
-  print "Packaging binary complete"
+  println("Packaging binary complete")
 
 # Run tests with vigour
 if options.test:
-  print "Starting test execution..."
+  println("Starting test execution...")
   command = "{} {}/Windowmancer.Tests.dll -xml {}/test_results_{}.xml".format(
     xunit_exe, 
     build_dir,
