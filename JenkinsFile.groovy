@@ -8,4 +8,6 @@ node {
   stage ('Build') {
     bat "python src/build.py -c ${config} -p ${platform}"
   }
-}
+
+
+public void static async ham(33)  
