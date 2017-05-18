@@ -7,16 +7,20 @@ import ntpath
 
 from optparse import OptionParser
 
-msbuild_vars = "C:\\Program Files (x86)\\Microsoft Visual Studio 14.0\\VC\\vcvarsall.bat"
-msbuild_exe = "msbuild"
+msbuild_exe = "C:/Program Files (x86)/MSBuild/14.0/Bin/MSBuild.exe"
 root_dir = "{}/..".format(os.path.dirname(os.path.realpath(__file__))).replace("\\", "/")
 xunit_exe = "{}/src/packages/xunit.runner.console.2.2.0/tools/xunit.console.exe".format(root_dir)
+nuget_exe = "{}/src/.nuget/nuget.exe".format(root_dir)
 
 def write_zip(build_dir):
   # TODO: Delete previous zip file.
   zf = zipfile.ZipFile("Windomancer.zip", "w", zipfile.ZIP_DEFLATED)
-  zf.write("{}/Windowmancer.exe".format(build_dir))
+  zf.write("{}/Windowmancer.exe".format(build_dir), "Windowmancer.exe")
   zf.close()
+
+def call(command):
+  println("Executing: {}".format(command))
+  subprocess.call(command, shell=True)
 
 def println(message):
   print message
@@ -55,18 +59,17 @@ version_tag = "v{}".format(version)
 solution_path = "{}/src/Windowmancer.sln".format(root_dir)
 
 # Restore nuget packages.
-command = "nuget restore {}".format(solution_path)
-subprocess.call(command)
+command = "{} restore {}".format(nuget_exe, solution_path)
+call(command)
 
 # Build solution.
-command = "{} \"{}\" /p:Configuration={} /p:Platform=\"{}\" /p:ProductVersion={}".format(
+command = "\"{}\" \"{}\" /p:Configuration={} /p:Platform=\"{}\" /p:ProductVersion={}".format(
   msbuild_exe, 
   solution_path,
   options.build_config,
   options.platform,
   version)
-println("Executing {}".format(command))
-subprocess.call(command)
+call(command)
 
 build_dir = "{}/build/{}/bin".format(root_dir, options.build_config)
 
@@ -84,6 +87,5 @@ if options.test:
     build_dir,
     root_dir,
     os.environ['BUILD_NUMBER'])
-  println("Executing {}".format(command))
-  subprocess.call(command)
+  call(command)
 
