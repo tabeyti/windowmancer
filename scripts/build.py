@@ -20,7 +20,9 @@ def write_zip(build_dir):
 
 def call(command):
   println("Executing: {}".format(command))
-  subprocess.call(command, shell=True)
+  result = subprocess.call(command, shell=True)
+  if result != 0:
+    sys.exit(result)
 
 def println(message):
   print message
