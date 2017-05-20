@@ -33,11 +33,11 @@ if os.environ.get('BUILD_NUMBER') is None:
   os.environ['BUILD_NUMBER'] = "1"
 
 parser = OptionParser()
-parser.add_option("-c", "--config",    dest="build_config", help="The build configuration target (e.g. Debug)")
-parser.add_option("-p", "--platform",  dest="platform", help="The target platform (e.g. x64)")
-parser.add_option("-v", "--version",   dest="version", help="The version tag for this build (e.g. 1.0.1)")
-parser.add_option("-k", "--package",   action="store_true", default=False,   dest="package", help="Flag indicating whether to package the build.")
-parser.add_option("-t", "--test",   action="store_true", default=False,   dest="test", help="Flag indicating whether to run tests.")
+parser.add_option("-c", "--config",   dest="build_config",                                  help="The build configuration target (e.g. Debug)")
+parser.add_option("-p", "--platform", dest="platform",                                      help="The target platform (e.g. x64)")
+parser.add_option("-v", "--version",  dest="version",                                       help="The version tag for this build (e.g. 1.0.1)")
+parser.add_option("-k", "--package",  dest="package", action="store_true",  default=False,  help="Flag indicating whether to package the build.")
+parser.add_option("-t", "--test",     dest="test",    default=None,                         help="Name of the output test file")
 
 (options, args) = parser.parse_args()
 
@@ -84,10 +84,11 @@ if options.package:
 # Run tests with vigour
 if options.test:
   println("Starting test execution...")
-  command = "\"{}\" \"{}/Windowmancer.Tests.dll\" -xml \"{}/test_results_{}.xml\"".format(
+  command = "\"{}\" \"{}/Windowmancer.Tests.dll\" -xml \"{}/{}\"".format(
     xunit_exe, 
     build_dir,
     root_dir,
+    options.test,
     os.environ['BUILD_NUMBER'])
   call(command)
 
