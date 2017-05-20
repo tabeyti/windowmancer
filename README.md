@@ -4,17 +4,19 @@
 
 A tool to manage process windows on a user's desktop. Windowmancer makes it easy to locate a window on your desktop, adjust the size/positioning of the window, and have it saved as a window configuration 
 
+[![Build Status](http://tabeyti.hopto.org:8080/buildStatus/icon?job=CI_Windowmancer)](http://tabeyti.hopto.org:8080/buildStatus/icon?job=CI_Windowmancer)
+
 ## Use
 
 Execute Windowmancer.exe. You'll see both the application icon appear in the system tray and the window editor populate on first run.
 
 ## Documentation
 
-You can read the documentation [./docs/DOCUMENTATION.md](here).
+You can read the documentation [here](./docs/DOCUMENTATION.md).
 
 ## Running the tests
 
-All tests were authored using XUnit. There are multiple ways to run XUnit tests:
+All tests are authored and ran using XUnit. There are multiple ways to run XUnit tests:
 * [Console Runner](https://xunit.github.io/docs/running-tests-in-msbuild.html)
 * [Visual Studio Plugin](https://xunit.github.io/docs/getting-started-desktop.html#run-tests-visualstudio)
 
