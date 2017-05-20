@@ -7,7 +7,7 @@ import ntpath
 
 from optparse import OptionParser
 
-msbuild_exe = "C:/Program Files (x86)/MSBuild/14.0/Bin/MSBuild.exe"
+msbuild_exe = "C:/Program Files (x86)/Microsoft Visual Studio/2017/Professional/MSBuild/15.0/Bin/msbuild.exe"
 root_dir = "{}/..".format(os.path.dirname(os.path.realpath(__file__))).replace("\\", "/")
 xunit_exe = "{}/src/packages/xunit.runner.console.2.2.0/tools/xunit.console.exe".format(root_dir)
 nuget_exe = "{}/src/.nuget/nuget.exe".format(root_dir)
