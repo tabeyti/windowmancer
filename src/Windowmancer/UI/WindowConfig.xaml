@@ -34,13 +34,14 @@
                 <RowDefinition Height="Auto" />
               </Grid.RowDefinitions>
               <local:LabelTextBox Grid.Row="0"
-                                Label="Name" 
-                                x:Name="NameTextBox"
-                                HorizontalAlignment="Stretch" 
-                                Margin="10,10,10,10" 
-                                VerticalAlignment="Top" 
-                                Height="Auto"
-                                Text="{Binding WindowInfo.Name}"/>
+                                  Label="Name" 
+                                  x:Name="NameTextBox"
+                                  HorizontalAlignment="Stretch" 
+                                  Margin="10,10,10,10" 
+                                  VerticalAlignment="Top" 
+                                  Height="Auto"
+                                  GotFocus="LabelTextBox_OnGotFocus"
+                                  Text="{Binding WindowInfo.Name}"/>
               <GroupBox Grid.Row="1"
                       x:Name="MatchGroupBox" 
                       Header="Matching Rules" 
@@ -54,12 +55,13 @@
                     <converters:EnumBooleanConverter x:Key="EnumBooleanConverter" />
                   </StackPanel.Resources>
                   <local:LabelTextBox Label="Regex Match String"
-                                    x:Name="RegexMatchStringTextBox"
-                                    HorizontalAlignment="Stretch" 
-                                    Margin="4,-6,10,0" 
-                                    VerticalAlignment="Top" 
-                                    Width="Auto"
-                                    Text="{Binding Mode=TwoWay, Path=WindowInfo.MatchCriteria.MatchString}"/>
+                                      x:Name="RegexMatchStringTextBox"
+                                      HorizontalAlignment="Stretch" 
+                                      Margin="4,-6,10,0" 
+                                      VerticalAlignment="Top" 
+                                      Width="Auto"
+                                      GotFocus="LabelTextBox_OnGotFocus"
+                                      Text="{Binding Mode=TwoWay, Path=WindowInfo.MatchCriteria.MatchString}"/>
                   <RadioButton  Name="MatchByWindowTitleRadioButton" 
                               Content="Match by Window Title" 
                               GroupName="MatchOptions" 

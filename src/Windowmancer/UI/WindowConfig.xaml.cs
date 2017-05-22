@@ -135,9 +135,9 @@ namespace Windowmancer.UI
         var ds = (DisplaySection) d.Tag;
         return ds.ColumnIndex == _displaySection.ColumnIndex &&
                ds.RowIndex == _displaySection.RowIndex;
-      });
+      }) ?? _displaySectionButtons.First();
 
-      _displaySection = (DisplaySection)dsb.Tag;
+      _displaySection = (DisplaySection) dsb.Tag;
 
       // Select first button.
       dsb.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
@@ -347,6 +347,11 @@ namespace Windowmancer.UI
     private void SetDisplayHelperLayoutButton_OnClick(object sender, RoutedEventArgs e)
     {
       UpdateLayoutValuesFromDisplayHelper();
+    }
+
+    private void LabelTextBox_OnGotFocus(object sender, RoutedEventArgs e)
+    {
+      (sender as LabelTextBox)?.BaseTextBox.SelectAll();
     }
   }
 
