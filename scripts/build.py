@@ -90,7 +90,7 @@ if options.test:
     os.makedirs(reportingDir)
 
   println("Starting test execution...")
-  command = "\"{}\" \"{}/Windowmancer.Tests.dll\" -xml \"{}/{}\"".format(
+  command = "\"{}\" \"{}/Windowmancer.Tests.dll\" -parallel none -xml \"{}/{}\"".format(
     xunit_exe, 
     build_dir,
     reportingDir,

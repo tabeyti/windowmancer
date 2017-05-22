@@ -163,11 +163,8 @@ csx/
 # Windows Store app package directory
 AppPackages/
 
-# Generated Files
-# src/Blizzard.TestFramework.Classic/Services/Generated/
-# src/Blizzard.TestFramework.Classic/Events/Generated/
-# src/Blizzard.Classic.Tests/Models/Generated/
-*.generated.cs
+# Reports
+reports/
 
 # Others
 sql/
