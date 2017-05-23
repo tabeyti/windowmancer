@@ -37,7 +37,7 @@ parser.add_option("-c", "--config",   dest="build_config",                      
 parser.add_option("-p", "--platform", dest="platform",                                      help="The target platform (e.g. x64)")
 parser.add_option("-v", "--version",  dest="version",                                       help="The version tag for this build (e.g. 1.0.1)")
 parser.add_option("-k", "--package",  dest="package", action="store_true",  default=False,  help="Flag indicating whether to package the build.")
-parser.add_option("-t", "--test",     dest="test",    default=None,                         help="Output test file. If this option is given, tests will be ran.")
+parser.add_option("-t", "--test",     dest="test",                          default=None,   help="Output test file. If this option is given, tests will be ran.")
 
 (options, args) = parser.parse_args()
 
