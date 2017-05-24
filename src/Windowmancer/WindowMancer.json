@@ -1,7 +1,8 @@
 ﻿{
   "AppSettings": {
     "UserConfig": {
-      "UserDataPath": "user.json"
+      "UserDataPath": "user.json",
+      "DocumentationLink": "https://github.com/tabeyti/windowmancer/blob/master/docs/DOCUMENTATION.md"
     }
   }
 }

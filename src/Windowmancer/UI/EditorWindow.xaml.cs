@@ -6,7 +6,9 @@ using System.Windows.Input;
 using MahApps.Metro.Controls;
 using System.Windows.Controls;
 using MahApps.Metro.Controls.Dialogs;
+using Windowmancer.Core.Configuration;
 using Windowmancer.Core.Models;
+using Windowmancer.Core.Practices;
 using Windowmancer.Core.Services;
 using Windowmancer.UI.Base;
 
@@ -253,6 +255,18 @@ namespace Windowmancer.UI
     private void Preferences_Click(object sender, RoutedEventArgs e)
     {
       HandleSettingsDialog();
+    }
+
+    private void Documentation_Click(object sender, RoutedEventArgs e)
+    {
+      var userConfig = Helper.ServiceResolver.Resolve<UserConfig>();
+
+      var startInfo = new ProcessStartInfo
+      {
+        FileName = userConfig.DocumentationLink
+      };
+
+      Process.Start(startInfo);
     }
   }
 }
