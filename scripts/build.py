@@ -49,8 +49,8 @@ if not options.platform:
   sys.exit(1)
 
 # Create version string for this build.
-version_major = 0
-version_minor = 1
+version_major = 1
+version_minor = 0
 version = "{}.{}.{}".format(version_major, version_minor, os.environ['BUILD_NUMBER'])
 
 solution_path = "{}/src/Windowmancer.sln".format(root_dir)
