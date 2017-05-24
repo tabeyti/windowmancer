@@ -7,7 +7,7 @@ node('Windows') {
         checkout scm
     } 
     stage ('Build and Test') {
-        bat "python scripts/build.py -c ${config} -p ${platform} -v1.0.${env.BUILD_NUMBER} -t ${testResultsFile}"
+        bat "python scripts/build.py -c ${config} -p ${platform} -t ${testResultsFile}"
     }
     stage ('Reporting') {    
         step([$class: 'XUnitBuilder',
