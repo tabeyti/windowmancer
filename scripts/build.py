@@ -21,7 +21,7 @@ def write_zip(build_dir):
 def call(command, exitcode_override=False):
   println("Executing: {}".format(command))
   result = subprocess.call(command, shell=True)
-  if result != 0 and exitcode_override:
+  if result != 0 or exitcode_override:
     sys.exit(result)
 
 def println(message):
@@ -35,7 +35,6 @@ if os.environ.get('BUILD_NUMBER') is None:
 parser = OptionParser()
 parser.add_option("-c", "--config",   dest="build_config",                                  help="The build configuration target (e.g. Debug)")
 parser.add_option("-p", "--platform", dest="platform",                                      help="The target platform (e.g. x64)")
-parser.add_option("-v", "--version",  dest="version",                                       help="The version tag for this build (e.g. 1.0.1)")
 parser.add_option("-k", "--package",  dest="package", action="store_true",  default=False,  help="Flag indicating whether to package the build.")
 parser.add_option("-t", "--test",     dest="test",                          default=None,   help="Output test file. If this option is given, tests will be ran.")
 
@@ -49,14 +48,10 @@ if not options.platform:
   parser.error('Platform not given (e.g. x64)')
   sys.exit(1)
 
-if not options.version:
-  parser.error('Version not given (e.g. 1.0.1)')
-  sys.exit(1)  
-
-# Determine version
-if options.version: 
-  version = options.version
-version_tag = "v{}".format(version)
+# Create version string for this build.
+version_major = 0
+version_minor = 1
+version = "{}.{}.{}".format(version_major, version_minor, os.environ['BUILD_NUMBER'])
 
 solution_path = "{}/src/Windowmancer.sln".format(root_dir)
 
@@ -65,7 +60,7 @@ command = "{} restore {}".format(nuget_exe, solution_path)
 call(command)
 
 # Build solution.
-command = "\"{}\" \"{}\" /p:Configuration={} /p:Platform=\"{}\" /p:ProductVersion={}".format(
+command = "\"{}\" \"{}\" /p:Configuration={} /p:Platform=\"{}\" /p:VersionAssembly={}".format(
   msbuild_exe, 
   solution_path,
   options.build_config,
