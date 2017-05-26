@@ -45,8 +45,8 @@ namespace Windowmancer.Core.Services
       var y = (int)windowInfo.LayoutInfo.PositionInfo.Y;
       var width = windowInfo.LayoutInfo.SizeInfo.Width;
       var height = windowInfo.LayoutInfo.SizeInfo.Height;
-      
-      Win32.ShowWindow(handle, Win32.ShowWindowCommands.Maximize);
+
+      Win32.ShowWindow(handle, Win32.ShowWindowCommands.Restore);
       Win32.SetForegroundWindow(handle);
       Win32.MoveWindow(handle, x, y, width, height, true);
     }

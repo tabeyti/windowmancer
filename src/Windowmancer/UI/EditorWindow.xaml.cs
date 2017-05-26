@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Microsoft.Practices.Unity;
 using System.Windows;
 using System.Windows.Input;
@@ -267,6 +268,29 @@ namespace Windowmancer.UI
       };
 
       Process.Start(startInfo);
+    }
+
+    private async void ActiveWindowsDataGrid_HighlightClick(object sender, RoutedEventArgs e)
+    {
+      if (this.ActiveWindowsDataGrid.SelectedItem == null) return;
+      var process = ((MonitoredProcess)this.ActiveWindowsDataGrid.SelectedItem).GetProcess();
+      var handle = process.MainWindowHandle;
+
+      // Restore window (if minimized) and bring to fore-ground
+      Win32.ShowWindow(handle, Win32.ShowWindowCommands.Restore);
+      Win32.SetForegroundWindow(handle);
+
+      var procRec = Win32.GetProcessWindowRec(process);
+
+      // Highlight the window temporarily.
+      var windowHighlight = new WindowHighlight();
+      Helper.Dispatcher.Invoke(() =>
+      {
+        windowHighlight.UpdateLayout(procRec.Left, procRec.Top, procRec.Width, procRec.Height);
+        windowHighlight.Show();
+      });
+      await Task.Delay(5000).ConfigureAwait(false);
+      Helper.Dispatcher.Invoke(windowHighlight.Close);
     }
   }
 }

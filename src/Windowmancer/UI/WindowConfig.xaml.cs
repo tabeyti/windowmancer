@@ -278,11 +278,7 @@ namespace Windowmancer.UI
     private void DisplaysComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
     {
       _screen = (Screen)this.DisplayListBox.SelectedItem;
-
       this.ScreenAspectRatio = new ScreenAspectRatio(_screen);
-
-      var length = _screen.Bounds.Height > _screen.Bounds.Width ? _screen.Bounds.Height : _screen.Bounds.Width;
-
       if (_screen.Bounds.Height > _screen.Bounds.Width)
       {
         this.DisplayPanel.Height = this.DisplayPanel.MaxHeight;

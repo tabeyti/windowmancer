@@ -195,6 +195,7 @@
         <DataGrid.Resources>
           <ContextMenu x:Key="RowMenu">
             <MenuItem Header="Add" Click="ActiveWindowsDataGrid_MenuItemClick"></MenuItem>
+            <MenuItem Header="Highlight" Click="ActiveWindowsDataGrid_HighlightClick"></MenuItem>
           </ContextMenu>
         </DataGrid.Resources>
         <DataGrid.RowStyle>
