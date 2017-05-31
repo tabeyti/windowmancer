@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Practices.Unity;
@@ -23,8 +22,59 @@ namespace Windowmancer.Tests.Tests
     {
     }
 
+    [Theory]
+    [Trait("Priority", "1")]
+    [InlineData(ProcessWindowState.Minimized)]
+    [InlineData(ProcessWindowState.Maximized)]
+    [InlineData(ProcessWindowState.Normal)]
+    public async void WindowManagerTests_SetWindowState_ProcessWindowState(ProcessWindowState setState)
+    {
+      // Create process window.
+      var proc = AddResource(TestHelper.CreateWindowProcess());
+      await Task.Delay(1000).ConfigureAwait(false);
+
+      // Verify it's in a normal state.
+      var state = WindowManager.GetWindowState(proc.Process);
+      Assert.Equal(ProcessWindowState.Normal, state);
+
+      // Alter window placement and verify it's correct.
+      WindowManager.SetWindowState(proc.Process, setState);
+      await Task.Delay(1000).ConfigureAwait(false);
+      state = WindowManager.GetWindowState(proc.Process);
+      Assert.Equal(setState, state);
+
+      // Show it in a normal position and verify.
+      WindowManager.ShowWindowNormal(proc.Process);
+      await Task.Delay(1000).ConfigureAwait(false);
+      state = WindowManager.GetWindowState(proc.Process);
+      Assert.Equal(ProcessWindowState.Normal, state);
+    }
+
     [Fact]
     [Trait("Priority", "1")]
+    public async void WindowManagerTests_SetWindowState_ProcessWindowRec()
+    {
+      // Create process window.
+      var proc = AddResource(TestHelper.CreateWindowProcess());
+      await Task.Delay(1000).ConfigureAwait(false);
+
+      var originalRec = WindowManager.GetCurrentRect(proc.Process);
+
+      // Maximize window and verify the resulting rec.
+      WindowManager.SetWindowState(proc.Process, ProcessWindowState.Maximized);
+      await Task.Delay(1000).ConfigureAwait(false);
+      var newRec = WindowManager.GetCurrentRect(proc.Process);
+      Assert.False(TestHelper.RecsMatch(originalRec, newRec));
+
+      // Restore window size and verify it matches original rec.
+      WindowManager.SetWindowState(proc.Process, ProcessWindowState.Normal);
+      await Task.Delay(1000).ConfigureAwait(false);
+      newRec = WindowManager.GetCurrentRect(proc.Process);
+      Assert.True(TestHelper.RecsMatch(originalRec, newRec));
+    }
+
+    [Fact]
+    [Trait("Priority", "2")]
     public void WindowManagerTests_ApplyWindowLayout_Position()
     {
       var proc = AddResource(TestHelper.CreateWindowProcess());
@@ -48,7 +98,7 @@ namespace Windowmancer.Tests.Tests
     }
 
     [Fact]
-    [Trait("Priority", "1")]
+    [Trait("Priority", "2")]
     public void WindowManagerTests_ApplyWindowLayout_Size()
     {
       var proc = AddResource(TestHelper.CreateWindowProcess());
@@ -71,7 +121,7 @@ namespace Windowmancer.Tests.Tests
       Assert.Equal(modifiedLayoutInfo.SizeInfo.Height, newRec.Height);
     }
 
-    [Trait("Priority", "1")]
+    [Trait("Priority", "2")]
     public void WindowManagerTests_ApplyLayout_NoValueChange()
     {
       var proc = AddResource(TestHelper.CreateWindowProcess());
@@ -89,7 +139,7 @@ namespace Windowmancer.Tests.Tests
     }
 
     [Fact]
-    [Trait("Priority", "2")]
+    [Trait("Priority", "3")]
     public void WindowManagerTests_RefreshProfile_SizeAndPosition()
     {
       var windowManager = ServiceResolver.Resolve<WindowManager>();
@@ -142,7 +192,7 @@ namespace Windowmancer.Tests.Tests
     }
 
     [Fact]
-    [Trait("Priority", "2")]
+    [Trait("Priority", "3")]
     public void WindowManagerTests_ApplyWindowInfo_ApplyOnProcessStart()
     {
       var windowManager = ServiceResolver.Resolve<WindowManager>();

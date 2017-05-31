@@ -7,12 +7,15 @@ namespace Windowmancer.Core.Practices
   public static class Win32
   {
     [StructLayout(LayoutKind.Sequential)]
-    public struct RECT
+    public struct Win32_Rect
     {
       public int Left;
       public int Top;
       public int Right;
       public int Bottom;
+
+      public int X => this.Left;
+      public int Y => this.Top;
 
       public int Width
       {
@@ -28,11 +31,11 @@ namespace Windowmancer.Core.Practices
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct WINDOW_INFO
+    public struct Win32_WindowInfo
     {
       public uint cbSize;
-      public Win32.RECT rcWindow;
-      public Win32.RECT rcClient;
+      public Win32.Win32_Rect rcWindow;
+      public Win32.Win32_Rect rcClient;
       public uint dwStyle;
       public uint dwExStyle;
       public uint dwWindowStatus;
@@ -41,35 +44,35 @@ namespace Windowmancer.Core.Practices
       public ushort atomWindowType;
       public ushort wCreatorVersion;
 
-      public WINDOW_INFO(bool? filler)
-       : this()   // Allows automatic initialization of "cbSize" with "new WINDOW_INFO(null/true/false)".
+      public Win32_WindowInfo(bool? filler)
+       : this()   // Allows automatic initialization of "cbSize" with "new Win32_WindowInfo(null/true/false)".
       {
-        cbSize = (uint)(Marshal.SizeOf(typeof(WINDOW_INFO)));
+        cbSize = (uint)(Marshal.SizeOf(typeof(Win32_WindowInfo)));
       }
     }
 
     /// <summary>
-    /// See MSDN WINDOWPLACEMENT Structure http://msdn.microsoft.com/en-us/library/ms632611(v=VS.85).aspx
+    /// See MSDN Win32_WindowPlacement Structure http://msdn.microsoft.com/en-us/library/ms632611(v=VS.85).aspx
     /// </summary>
-    public struct WINDOWPLACEMENT
+    public struct Win32_WindowPlacement
     {
       public int length;
       public int flags;
       public int showCmd;
       public System.Drawing.Point ptMinPosition;
       public System.Drawing.Point ptMaxPosition;
-      public RECT rcNormalPosition;
+      public Win32_Rect rcNormalPosition;
     }
 
     [DllImport("user32.dll", SetLastError = true)]
-    public static extern bool GetWindowRect(IntPtr hWnd, ref Win32.RECT Rect);
+    public static extern bool GetWindowRect(IntPtr hWnd, ref Win32.Win32_Rect win32Rect);
 
     [DllImport("user32.dll", CharSet = CharSet.Auto)]
     public static extern IntPtr FindWindow(string strClassName, string strWindowName);
 
     [DllImport("user32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    public static extern bool GetWindowInfo(IntPtr hwnd, ref WINDOW_INFO pwi);
+    public static extern bool GetWindowInfo(IntPtr hwnd, ref Win32_WindowInfo pwi);
 
     [DllImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
@@ -77,7 +80,7 @@ namespace Windowmancer.Core.Practices
 
     [return: MarshalAs(UnmanagedType.Bool)]
     [DllImport("user32.dll")]
-    public static extern bool GetWindowPlacement(IntPtr hWnd, ref WINDOWPLACEMENT lpwndpl);
+    public static extern bool GetWindowPlacement(IntPtr hWnd, ref Win32_WindowPlacement lpwndpl);
 
     [DllImport("user32.dll", EntryPoint = "SetWindowPos")]
     public static extern IntPtr SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int x, int Y, int cx, int cy, int wFlags);
@@ -97,16 +100,16 @@ namespace Windowmancer.Core.Practices
     /// </summary>
     /// <param name="handle">The handle.</param>
     /// <returns></returns>
-    public static Win32.RECT GetPlacement(IntPtr handle)
+    public static Win32.Win32_Rect GetPlacement(IntPtr handle)
     {
-      var placement = new WINDOWPLACEMENT();
+      var placement = new Win32_WindowPlacement();
       placement.length = System.Runtime.InteropServices.Marshal.SizeOf(placement);
       GetWindowPlacement(handle, ref placement);
       return placement.rcNormalPosition;
     }
 
     /// <summary>Enumeration of the different ways of showing a window using
-    /// ShowWindow</summary>
+    /// ShowWindowNormal</summary>
     public enum ShowWindowCommands : uint
     {
       /// <summary>Hides the window and activates another window.</summary>
@@ -173,10 +176,10 @@ namespace Windowmancer.Core.Practices
     /// </summary>
     /// <param name="process"></param>
     /// <returns></returns>
-    public static Win32.RECT GetProcessWindowRec(Process process)
+    public static Win32.Win32_Rect GetProcessWindowRec(Process process)
     {
-      var info = new Win32.WINDOW_INFO();
-      var rec = new Win32.RECT();
+      var info = new Win32.Win32_WindowInfo();
+      var rec = new Win32.Win32_Rect();
 
       Win32.GetWindowInfo(process.MainWindowHandle, ref info);
       rec = info.rcWindow;

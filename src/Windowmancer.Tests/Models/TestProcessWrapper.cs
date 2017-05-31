@@ -11,6 +11,8 @@ namespace Windowmancer.Tests.Models
 
     public string MainWindowTitle => this.Process.MainWindowTitle;
 
+    public IntPtr MainWindowHandle => this.Process.MainWindowHandle;
+
     public TestProcessWrapper(Process process)
     {
       this.Process = process;

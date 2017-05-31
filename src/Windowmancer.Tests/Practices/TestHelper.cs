@@ -17,6 +17,17 @@ namespace Windowmancer.Tests.Practices
     public static TestProcessWrapper CreateWindowProcess(string title = null)
     {
       title = title ?? CreateWindowTitle();
+
+      // Before creating process, kill all active window processes
+      // matching this window title (don't want duplicates)
+      foreach (var proc in Process.GetProcesses())
+      {
+        if (proc.MainWindowTitle != string.Empty && proc.MainWindowTitle.Contains(title))
+        {
+          proc.Kill();
+        }
+      }
+
       var processInfo = new ProcessStartInfo
       {
         Arguments = title,
@@ -33,6 +44,12 @@ namespace Windowmancer.Tests.Practices
 
       // Return and updated process (with window title in it)
       return GetUpdatedWindowProcess(new TestProcessWrapper(process));
+    }
+
+    public static bool RecsMatch(Win32.Win32_Rect rec1, Win32.Win32_Rect rec2)
+    {
+      return rec1.Width == rec2.Width &&
+             rec1.Height == rec2.Height;
     }
 
     /// <summary>
