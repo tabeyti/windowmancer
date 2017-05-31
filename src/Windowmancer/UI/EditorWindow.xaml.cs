@@ -274,13 +274,10 @@ namespace Windowmancer.UI
     {
       if (this.ActiveWindowsDataGrid.SelectedItem == null) return;
       var process = ((MonitoredProcess)this.ActiveWindowsDataGrid.SelectedItem).GetProcess();
-      var handle = process.MainWindowHandle;
 
       // Restore window (if minimized) and bring to fore-ground
-      Win32.ShowWindow(handle, Win32.ShowWindowCommands.Restore);
-      Win32.SetForegroundWindow(handle);
-
-      var procRec = Win32.GetProcessWindowRec(process);
+      WindowManager.ShowWindowNormal(process);
+      var procRec = WindowManager.GetCurrentRect(process);
 
       // Highlight the window temporarily.
       var windowHighlight = new WindowHighlight();
