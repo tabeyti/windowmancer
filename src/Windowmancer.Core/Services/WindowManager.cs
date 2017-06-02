@@ -174,7 +174,7 @@ namespace Windowmancer.Core.Services
     /// </summary>
     /// <param name="process"></param>
     /// <returns></returns>
-    public static Win32.Win32_Rect GetCurrentRect(Process process)
+    public static Win32.Win32_Rect GetWindowRectCurrent(Process process)
     {
       var rec = new Win32.Win32_Rect();
       Win32.GetWindowRect(process.MainWindowHandle, ref rec);
@@ -186,7 +186,7 @@ namespace Windowmancer.Core.Services
     /// </summary>
     /// <param name="process"></param>
     /// <returns></returns>
-    public static Win32.Win32_Rect GetNormalRect(Process process)
+    public static Win32.Win32_Rect GetWindowRectNormal(Process process)
     {
       return Win32.GetPlacement(process.MainWindowHandle);
     }

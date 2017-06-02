@@ -277,7 +277,7 @@ namespace Windowmancer.UI
 
       // Restore window (if minimized) and bring to fore-ground
       WindowManager.ShowWindowNormal(process);
-      var procRec = WindowManager.GetCurrentRect(process);
+      var procRec = WindowManager.GetWindowRectCurrent(process);
 
       // Highlight the window temporarily.
       var windowHighlight = new WindowHighlight();
