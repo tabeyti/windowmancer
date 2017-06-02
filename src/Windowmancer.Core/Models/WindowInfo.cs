@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using Microsoft.Practices.Unity;
 using Windowmancer.Core.Practices;
+using Windowmancer.Core.Services;
 
 namespace Windowmancer.Core.Models
 {
@@ -31,6 +32,12 @@ namespace Windowmancer.Core.Models
       set => SetProperty(value);
     }
 
+    public WindowStylingInfo StylingInfo
+    {
+      get => GetProperty<WindowStylingInfo>();
+      set => SetProperty(value);
+    }
+
     private UserData _userData;
 
     public WindowInfo()
@@ -39,11 +46,13 @@ namespace Windowmancer.Core.Models
       RegisterProperty<string>("ApplyOnProcessStart");
       RegisterProperty<WindowLayoutInfo>("LayoutInfo");
       RegisterProperty<WindowMatchCriteria>("MatchCriteria");
+      RegisterProperty<WindowStylingInfo>("StylingInfo");
 
       this.Name = "";
       this.LayoutInfo = new WindowLayoutInfo();
       this.MatchCriteria = new WindowMatchCriteria(default(WindowMatchCriteriaType), "");
       this.ApplyOnProcessStart = true;
+      this.StylingInfo = new WindowStylingInfo();
     }
 
     public bool IsMatch(Process p)
@@ -58,7 +67,8 @@ namespace Windowmancer.Core.Models
         Name = this.Name,
         ApplyOnProcessStart = this.ApplyOnProcessStart,
         LayoutInfo = (WindowLayoutInfo)this.LayoutInfo.Clone(),
-        MatchCriteria = (WindowMatchCriteria)this.MatchCriteria.Clone()
+        MatchCriteria = (WindowMatchCriteria)this.MatchCriteria.Clone(),
+        StylingInfo = (WindowStylingInfo)this.StylingInfo.Clone()
       };
     }
 
@@ -72,6 +82,7 @@ namespace Windowmancer.Core.Models
       this.ApplyOnProcessStart = info.ApplyOnProcessStart;
       this.MatchCriteria = info.MatchCriteria;
       this.LayoutInfo = info.LayoutInfo;
+      this.StylingInfo = info.StylingInfo;
       _userData = _userData ?? Helper.ServiceResolver.Resolve<UserData>();
       _userData.Save();
     }
@@ -87,7 +98,38 @@ namespace Windowmancer.Core.Models
           procRec.Top,
           procRec.Width,
           procRec.Height),
-        MatchCriteria = new WindowMatchCriteria { MatchString = process.MainWindowTitle }
+        MatchCriteria = new WindowMatchCriteria { MatchString = process.MainWindowTitle },
+        StylingInfo = new WindowStylingInfo
+        {
+          WindowOpacityPercentage = WindowManager.GetWindowOpacityPercentage(process)
+        }
+      };
+    }
+  }
+
+  public class WindowStylingInfo : PropertyNotifyBase, ICloneable
+  {
+    public uint WindowOpacityPercentage
+    {
+      get => GetProperty<uint>();
+      set => SetProperty(value);
+    }
+
+    public WindowStylingInfo()
+    {
+      RegisterProperty<uint>("WindowOpacityPercentage", 100);
+    }
+
+    public override string ToString()
+    {
+      return $"Opacity:{this.WindowOpacityPercentage}";
+    }
+
+    public object Clone()
+    {
+      return new WindowStylingInfo
+      {
+        WindowOpacityPercentage = (uint)this.WindowOpacityPercentage
       };
     }
   }

@@ -83,13 +83,63 @@
             </Grid>
           </Grid>
         </GroupBox>
-        <GroupBox x:Name="LayoutSettingsGroupBox"  Grid.Row="3"
-                        Header="Layout Settings"
-                      HorizontalAlignment="Stretch"
-                      Margin="10,10,10,0" 
-                      VerticalAlignment="Top" 
-                      Height="Auto"
-                      Style="{StaticResource MyGroupBoxStyle}">
+        <GroupBox x:Name="StylingGroupBox"  Grid.Row="3"
+                  Header="Styling"
+                  HorizontalAlignment="Stretch"
+                  Margin="10,10,10,0" 
+                  VerticalAlignment="Top" 
+                  Height="Auto"
+                  Style="{StaticResource MyGroupBoxStyle}">
+          <StackPanel Orientation="Vertical">
+          <Grid VerticalAlignment="Center" Margin="10">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="100"/>
+              <ColumnDefinition Width="*"/>
+              <ColumnDefinition Width="100"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0"
+                       Height="28" 
+                       Margin="0,10,10,0"
+                       VerticalAlignment="Center"
+                       Text="Window Opacity"/>
+            <Slider x:Name="WindowOpacitySlider"
+                    Grid.Column="1"
+                    TickFrequency="1"
+                    Minimum="0"
+                    Maximum="100"
+                    TickPlacement="BottomRight"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center"
+                    IsSnapToTickEnabled="True"
+                    MouseWheel="WindowOpacitySlider_OnMouseWheel"
+                    Value="{Binding Mode=TwoWay, Path=WindowInfo.StylingInfo.WindowOpacityPercentage}"/>
+            <xctk:IntegerUpDown x:Name="WindowOpacityValueTextBox"
+                                Height="28"
+                                Grid.Column="2"
+                                Margin="10"
+                                Foreground="White"
+                                TextAlignment="Right"
+                                Minimum="0"
+                                Maximum="100"
+                                Value="{Binding Mode=TwoWay, Path=WindowInfo.StylingInfo.WindowOpacityPercentage}" 
+                                ValueChanged="WindowOpacityValueTextBox_OnValueChanged"/>
+          </Grid>
+          <CheckBox x:Name="WindowStylingPreviewCheckBox"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Content="Preview"
+                    IsChecked="{Binding WindowStylingPreview}"
+                    Checked="WindowStylingPreviewCheckBox_OnChecked"
+                    Unchecked="WindowStylingPreviewCheckBox_OnChecked"/>
+          </StackPanel>
+        </GroupBox>
+        <GroupBox x:Name="LayoutSettingsGroupBox"
+                  Header="Layout Settings"
+                  HorizontalAlignment="Stretch"
+                  Margin="10,10,10,0" 
+                  VerticalAlignment="Top" 
+                  Height="Auto"
+                  Style="{StaticResource MyGroupBoxStyle}">
           <StackPanel>
             <Grid Margin="10">
               <Grid.ColumnDefinitions>
@@ -214,14 +264,14 @@
                                               Minimum="1"
                                               Maximum="10"
                                               Height="20"/>
-                    <CheckBox Name="PreviewCheckBox" 
+                    <CheckBox Name="WindowLayoutPreviewCheckBox" 
                               Grid.Row="3" Grid.Column="0"
                               HorizontalAlignment="Left"
                               VerticalAlignment="Center"
                               Content="Preview"
                               IsChecked="{Binding DisplayHelperPreview}"
-                              Checked="PreviewCheckBox_OnChecked"
-                              Unchecked="PreviewCheckBox_OnChecked"/>
+                              Checked="WindowLayoutPreviewCheckBox_OnChecked"
+                              Unchecked="WindowLayoutPreviewCheckBox_OnChecked"/>
                     <Button Name="SetDisplayHelperLayoutButton" 
                             Grid.Row="5" Grid.ColumnSpan="2" Grid.Column="0"
                             Margin="10"

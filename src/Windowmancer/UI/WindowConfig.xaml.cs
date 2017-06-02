@@ -8,6 +8,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
+using Windowmancer.Core.Extensions;
 using Windowmancer.Core.Models;
 using Windowmancer.Core.Services;
 using Button = System.Windows.Controls.Button;
@@ -27,8 +28,16 @@ namespace Windowmancer.UI
 
     // Binding objects.
     public bool DisplayHelperPreview { get; set; }
+    public bool WindowStylingPreview { get; set; }
+
     public ScreenAspectRatio ScreenAspectRatio { get; set; }
     public WindowInfo WindowInfo { get; set; }
+
+    // Container for storing origina values prior to "preview"
+    public WindowLayoutInfo OriginalLayoutInfo { get; set; }
+    // Container for storing origina values prior to "preview"
+    public uint OriginalOpacity { get; set; }
+
 
     private static Screen _screen;
     private static DisplaySection _displaySection = new DisplaySection();
@@ -246,15 +255,19 @@ namespace Windowmancer.UI
       }
       
       ClearDisplaySectionPanel();
-      if (this.PreviewCheckBox.IsChecked.Value)
+      if (this.WindowLayoutPreviewCheckBox.IsChecked.Value)
       {
-        this.PreviewCheckBox.IsChecked = false;
+        this.WindowLayoutPreviewCheckBox.IsChecked = false;
         DisableScreenHighlight();
       }
     }
     
     private void Close()
     {
+      // Uncheck previews, restoring old window values.
+      this.WindowStylingPreviewCheckBox.IsChecked = false;
+      this.WindowLayoutPreviewCheckBox.IsChecked = false;
+
       var window = Window.GetWindow(this);
       if (window == null)
       {
@@ -304,13 +317,23 @@ namespace Windowmancer.UI
       Close();
     }
     
-    private void PreviewCheckBox_OnChecked(object sender, RoutedEventArgs e)
+    private void WindowLayoutPreviewCheckBox_OnChecked(object sender, RoutedEventArgs e)
     {
-      if (this.PreviewCheckBox.IsChecked.Value)
+      if (this.DisplayHelperPreview)
       {
+        (_process != null).RunIfTrue(() =>
+        {
+          this.OriginalLayoutInfo = WindowInfo.FromProcess(_process).LayoutInfo;
+        });
         UpdateScreenHighlight();
         return;
       }
+
+      // If unchecked, then apply the original layout.
+      (_process != null).RunIfTrue(() =>
+      {
+        WindowManager.ApplyWindowLayout(this.OriginalLayoutInfo, _process);
+      }); 
       DisableScreenHighlight();
     }
 
@@ -348,6 +371,39 @@ namespace Windowmancer.UI
     private void LabelTextBox_OnGotFocus(object sender, RoutedEventArgs e)
     {
       (sender as LabelTextBox)?.BaseTextBox.SelectAll();
+    }
+
+    private void WindowOpacitySlider_OnMouseWheel(object sender, MouseWheelEventArgs e)
+    {
+      if (e.Delta > 0)
+      {
+        WindowOpacitySlider.Value = WindowOpacitySlider.Value + 1;
+      }
+      else
+      {
+        WindowOpacitySlider.Value = WindowOpacitySlider.Value - 1;
+      }
+    }
+
+    private void WindowOpacityValueTextBox_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+    {
+      if (this.WindowStylingPreview && null != _process)
+      {
+        WindowManager.SetWindowOpacityPercentage(_process, (uint)WindowOpacitySlider.Value);
+      }
+    }
+
+    private void WindowStylingPreviewCheckBox_OnChecked(object sender, RoutedEventArgs e)
+    {
+      if (this.WindowStylingPreview)
+      {
+        (_process != null).RunIfTrue(() => this.OriginalOpacity = WindowManager.GetWindowOpacityPercentage(_process));
+        WindowManager.SetWindowOpacityPercentage(_process, (uint) WindowOpacitySlider.Value);
+      }
+      else
+      {
+        (_process != null).RunIfTrue(() => WindowManager.SetWindowOpacityPercentage(_process, this.OriginalOpacity));
+      }
     }
   }
 

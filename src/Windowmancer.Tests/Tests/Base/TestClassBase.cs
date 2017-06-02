@@ -30,6 +30,13 @@ namespace Windowmancer.Tests.Tests.Base
       }
     }
 
+    /// <summary>
+    /// Method used to wrap around the creation of resources so that proper
+    /// disposal of said resources is handled after text execution completes.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="resource"></param>
+    /// <returns></returns>
     protected T AddResource<T>(T resource)
       where T : IDisposable
     {

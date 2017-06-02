@@ -24,6 +24,27 @@ namespace Windowmancer.Tests.Tests
 
     [Theory]
     [Trait("Priority", "1")]
+    [InlineData(50)]
+    [InlineData(1)]
+    [InlineData(99)]
+    public async void WindowManagerTests_SetWindowOpacity(uint opacity)
+    {
+      // Create process window.
+      var proc = AddResource(TestHelper.CreateWindowProcess());
+      await Task.Delay(1000).ConfigureAwait(false);
+
+      // Retrieve the current opacity of the window and verify it's at max.
+      var origOpacity = WindowManager.GetWindowOpacityPercentage(proc.Process);
+      Assert.Equal((uint)100, origOpacity);
+
+      // Set the desired opacity and validate.
+      WindowManager.SetWindowOpacityPercentage(proc.Process, opacity);
+      var alter = WindowManager.GetWindowOpacityPercentage(proc.Process);
+      Assert.Equal((uint)opacity, alter);
+    }
+
+    [Theory]
+    [Trait("Priority", "1")]
     [InlineData(ProcessWindowState.Minimized)]
     [InlineData(ProcessWindowState.Maximized)]
     [InlineData(ProcessWindowState.Normal)]
@@ -122,7 +143,7 @@ namespace Windowmancer.Tests.Tests
     }
 
     [Trait("Priority", "2")]
-    public void WindowManagerTests_ApplyLayout_NoValueChange()
+    public void WindowManagerTests_ApplyWindowLayout_NoValueChange()
     {
       var proc = AddResource(TestHelper.CreateWindowProcess());
 
@@ -140,7 +161,7 @@ namespace Windowmancer.Tests.Tests
 
     [Fact]
     [Trait("Priority", "3")]
-    public void WindowManagerTests_RefreshProfile_SizeAndPosition()
+    public void WindowManagerTests_RefreshProfile_LayoutInfo()
     {
       var windowManager = ServiceResolver.Resolve<WindowManager>();
 
@@ -151,7 +172,6 @@ namespace Windowmancer.Tests.Tests
         AddResource(TestHelper.CreateWindowProcess()),
         AddResource(TestHelper.CreateWindowProcess())
       };
-
       var procDict = new Dictionary<TestProcessWrapper, WindowInfo>();
 
       // Create a WindowInfo objects from our processes.
@@ -193,7 +213,51 @@ namespace Windowmancer.Tests.Tests
 
     [Fact]
     [Trait("Priority", "3")]
-    public void WindowManagerTests_ApplyWindowInfo_ApplyOnProcessStart()
+    public void WindowManagerTests_RefreshProfile_StylingInfo()
+    {
+      var windowManager = ServiceResolver.Resolve<WindowManager>();
+
+      // Create three process windows.
+      var procList = new List<TestProcessWrapper>
+      {
+        AddResource(TestHelper.CreateWindowProcess()),
+        AddResource(TestHelper.CreateWindowProcess()),
+        AddResource(TestHelper.CreateWindowProcess())
+      };
+
+      var procDict = new Dictionary<TestProcessWrapper, WindowInfo>();
+
+      // Create a WindowInfo objects from our processes.
+      var windowInfoList = new List<WindowInfo>();
+      procList.ForEach(p =>
+      {
+        var w = WindowInfo.FromProcess(p.Process);
+        windowInfoList.Add(w);
+        procDict.Add(p, w);
+      });
+
+      // Create a profile object to hold our window info and assign
+      // to the window manager.
+      var profile = TestHelper.CreateNewProfile(windowInfoList);
+      windowManager.ActiveProfile = profile;
+
+      // Modify window styling values for each and refresh the profile.
+      windowInfoList.ForEach(w => TestHelper.ModifyStylingInfoOpacity(w.StylingInfo));
+      windowManager.RefreshProfile();
+
+      // Retrieve new process information for each window info and validate.
+      foreach (var kv in procDict)
+      {
+        var proc = kv.Key;
+        var windowInfo = kv.Value;
+        var currentOpacity = WindowManager.GetWindowOpacityPercentage(proc.Process);
+        Assert.Equal(windowInfo.StylingInfo.WindowOpacityPercentage, currentOpacity);
+      }
+    }
+
+    [Fact]
+    [Trait("Priority", "3")]
+    public async void WindowManagerTests_ApplyWindowInfo_ApplyOnProcessStart()
     {
       var windowManager = ServiceResolver.Resolve<WindowManager>();
 
@@ -205,7 +269,7 @@ namespace Windowmancer.Tests.Tests
 
       // Create associated process.
       var proc = AddResource(TestHelper.CreateWindowProcess(windowInfo.Name));
-      Task.Delay(1000).Wait();
+      await Task.Delay(1000).ConfigureAwait(false);
       var oldRec = Win32.GetProcessWindowRec(proc.Process);
 
       // Apply window info via manager.

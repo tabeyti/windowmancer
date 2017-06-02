@@ -54,13 +54,16 @@ namespace Windowmancer.Core.Services
         return;
       }
       
+      // Set layout values.
       var x = (int)windowInfo.LayoutInfo.PositionInfo.X;
       var y = (int)windowInfo.LayoutInfo.PositionInfo.Y;
       var width = windowInfo.LayoutInfo.SizeInfo.Width;
       var height = windowInfo.LayoutInfo.SizeInfo.Height;
-
       ShowWindowNormal(process);
       Win32.MoveWindow(handle, x, y, width, height, true);
+
+      // Set styling values.
+      SetWindowOpacityPercentage(process, windowInfo.StylingInfo.WindowOpacityPercentage);
     }
 
 
@@ -109,26 +112,31 @@ namespace Windowmancer.Core.Services
     /// <param name="process"></param>
     public static void ApplyWindowLayout(WindowLayoutInfo layoutInfo, Process process)
     {
+      if (null == layoutInfo || null == process)
+      {
+        return;
+      }
+
       var handle = process.MainWindowHandle;
       if (handle == IntPtr.Zero)
       {
         return;
       }
 
+      // Set layout values.
       var x = layoutInfo.PositionInfo.X;
       var y = layoutInfo.PositionInfo.Y;
       var width = layoutInfo.SizeInfo.Width;
       var height = layoutInfo.SizeInfo.Height;
-
       ShowWindowNormal(process);
       Win32.MoveWindow(handle, x, y, width, height, true);
     }
-    
+
     /// <summary>
     /// Shows a process window in it's normal position (non-maximized/minimized)
     /// and brought to foreground.
     /// </summary>
-    /// <param name="handle"></param>
+    /// <param name="process"></param>
     public static void ShowWindowNormal(Process process)
     {
       SetWindowState(process, ProcessWindowState.Normal);
@@ -161,6 +169,11 @@ namespace Windowmancer.Core.Services
       Win32.ShowWindow(handle, win32State);
     }
 
+    /// <summary>
+    /// Retrieves the process window's rectangle as currently is.
+    /// </summary>
+    /// <param name="process"></param>
+    /// <returns></returns>
     public static Win32.Win32_Rect GetCurrentRect(Process process)
     {
       var rec = new Win32.Win32_Rect();
@@ -168,9 +181,63 @@ namespace Windowmancer.Core.Services
       return rec;
     }
 
+    /// <summary>
+    /// Retrieves the process window's rectangle when not minimized/maximized.
+    /// </summary>
+    /// <param name="process"></param>
+    /// <returns></returns>
     public static Win32.Win32_Rect GetNormalRect(Process process)
     {
       return Win32.GetPlacement(process.MainWindowHandle);
+    }
+
+    /// <summary>
+    /// Set's the opacity percentage of the provided process window.
+    /// A value of a 100 means the window is completely visible where a value
+    /// of 0 means the window is completely transparent.
+    /// </summary>
+    /// <param name="process"></param>
+    /// <param name="opacityPercentage"></param>
+    public static void SetWindowOpacityPercentage(Process process, uint opacityPercentage)
+    {
+      if (opacityPercentage > 100)
+      {
+        throw new Exception($"WindowManager.SetWindowOpacityPercentage - Opacity percentage cannot be above 100. Value given: {opacityPercentage}");
+      }
+      
+      var handle = process.MainWindowHandle;
+
+      // Only set the layered window attribute if it hasn't already been set for this
+      // window process handle.
+      uint crKey = 0;
+      byte bAlpha = 0;
+      uint dwFlags = 0;
+      Win32.GetLayeredWindowAttributes(process.MainWindowHandle, out crKey, out bAlpha, out dwFlags);
+
+      if (dwFlags == 0)
+      {
+        Win32.SetWindowLong(handle, Win32.GWL_EXSTYLE, Win32.GetWindowLong(handle, Win32.GWL_EXSTYLE) ^ Win32.WS_EX_LAYERED);
+      }
+
+      opacityPercentage = opacityPercentage > 100 ? 100 : opacityPercentage;
+      bAlpha = (byte)Math.Round(255 * ((double)opacityPercentage / 100));
+      Win32.SetLayeredWindowAttributes(handle, 0, bAlpha, Win32.LWA_ALPHA);
+    }
+
+    /// <summary>
+    /// Gets the targeted process window's opacity percentage. 
+    /// A value of a 100 means the window is completely visible where a value
+    /// of 0 means the window is completely transparent.
+    /// </summary>
+    /// <param name="process"></param>
+    /// <returns></returns>
+    public static uint GetWindowOpacityPercentage(Process process)
+    {
+      uint crKey = 0;
+      byte bAlpha = 0;
+      uint dwFlags = 0;
+      Win32.GetLayeredWindowAttributes(process.MainWindowHandle, out crKey, out bAlpha, out dwFlags);
+      return bAlpha == 0 ? 100 : (uint)Math.Round(100 * ((double)bAlpha / 255));
     }
 
     private static ProcessWindowState ProcWinStateFromWin32(int win32WindowState)

@@ -124,5 +124,13 @@ namespace Windowmancer.Tests.Practices
       layoutInfo.PositionInfo.Y = layoutInfo.PositionInfo.Y + _modifyLayoutRand.Next(1, 10);
     }
 
+    /// <summary>
+    /// Modifies the passed styling opacity with a random value.
+    /// </summary>
+    private static readonly Random _modifyStylingRand = new Random();
+    public static void ModifyStylingInfoOpacity(WindowStylingInfo stylingInfo)
+    {
+      stylingInfo.WindowOpacityPercentage = (uint)_modifyStylingRand.Next(0, 100);
+    }
   }
 }
