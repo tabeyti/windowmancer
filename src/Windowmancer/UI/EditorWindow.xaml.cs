@@ -271,7 +271,7 @@ namespace Windowmancer.UI
       Process.Start(startInfo);
     }
 
-    private async void ActiveWindowsDataGrid_HighlightClick(object sender, RoutedEventArgs e)
+    private void ActiveWindowsDataGrid_HighlightClick(object sender, RoutedEventArgs e)
     {
       if (this.ActiveWindowsDataGrid.SelectedItem == null) return;
       var process = ((MonitoredProcess)this.ActiveWindowsDataGrid.SelectedItem).GetProcess();

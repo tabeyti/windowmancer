@@ -213,7 +213,7 @@ namespace Windowmancer.Tests.Tests
 
     [Fact]
     [Trait("Priority", "3")]
-    public void WindowManagerTests_RefreshProfile_StylingInfo()
+    public async void WindowManagerTests_RefreshProfile_StylingInfo()
     {
       var windowManager = ServiceResolver.Resolve<WindowManager>();
 
@@ -244,6 +244,8 @@ namespace Windowmancer.Tests.Tests
       // Modify window styling values for each and refresh the profile.
       windowInfoList.ForEach(w => TestHelper.ModifyStylingInfoOpacity(w.StylingInfo));
       windowManager.RefreshProfile();
+
+      await Task.Delay(500).ConfigureAwait(false);
 
       // Retrieve new process information for each window info and validate.
       foreach (var kv in procDict)
