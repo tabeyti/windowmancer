@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Windows;
 using Windowmancer.Core.Models;
 using Windowmancer.Core.Practices;
@@ -42,7 +41,7 @@ namespace Windowmancer.UI
 
       Task.Run(() =>
       {
-        Task.Delay(5000).Wait();
+        Task.Delay(timeoutSecs*1000).Wait();
         Helper.Dispatcher.Invoke(this.Close);
       });
     }

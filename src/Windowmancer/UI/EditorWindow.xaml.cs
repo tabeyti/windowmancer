@@ -284,34 +284,13 @@ namespace Windowmancer.UI
       var windowHighlight = new WindowHighlight();
       Helper.Dispatcher.Invoke(() =>
       {
-        windowHighlight.UpdateLayout(procRec.Left, procRec.Top, procRec.Width, procRec.Height, 5);
+        windowHighlight.UpdateLayout(procRec.Left, procRec.Top, procRec.Width, procRec.Height, 3);
         windowHighlight.Show();
       });
-
-      //var cancel = new TaskCompletionSource<object>();
-      //var onCancel = cancel.Task;
-
-      //var cancellationTokenSource = new CancellationTokenSource();
-      //var cancelToken = cancellationTokenSource.Token;
-      //cancelToken.Register(() => cancel.SetResult(null));
-
-      //void Deac(object o, EventArgs ev)
-      //{
-      //  cancellationTokenSource?.Cancel();
-      //  this.Deactivated -= Deac
-      //}
-
-      //this.Deactivated += Deac;
-
-      //var timeout = Task.Delay(5000);
-      //var result = await Task.WhenAny(timeout, onCancel).ConfigureAwait(false);
-
-      //Helper.Dispatcher.Invoke(windowHighlight.Close);
     }
 
     private void EditorWindow_OnDeactivated(object sender, EventArgs e)
     {
-      int ham = 9;
     }
   }
 }
