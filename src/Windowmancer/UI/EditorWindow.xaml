@@ -16,6 +16,7 @@
                        LeftWindowCommandsOverlayBehavior="Always"
                        RightWindowCommandsOverlayBehavior="Always"
                        WindowButtonCommandsOverlayBehavior="Always"
+                       Deactivated="EditorWindow_OnDeactivated"
                        Icon="../AppIcon.ico"
                        Title="{Binding EditorViewModel.WindowTitle}"
                        Width="1024" Height="768"

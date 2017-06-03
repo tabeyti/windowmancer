@@ -13,7 +13,19 @@
   <Window.Background>
     <SolidColorBrush Opacity="0" Color="White"/>
   </Window.Background>
-  <Border BorderThickness="5" BorderBrush="Yellow" Margin="0">
+  <Border BorderThickness="1" BorderBrush="Yellow" Margin="0">
+    <Border.Triggers>
+      <EventTrigger RoutedEvent="Border.Loaded">
+        <BeginStoryboard>
+          <Storyboard RepeatBehavior="Forever" AutoReverse="True">
+            <ThicknessAnimation Storyboard.TargetProperty="BorderThickness"
+                                Duration="0:0:1" 
+                                FillBehavior="HoldEnd" 
+                                From="1,1,1,1" To="14,14,14,14" />
+          </Storyboard>
+        </BeginStoryboard>
+      </EventTrigger>
+    </Border.Triggers>
     <Grid/>
   </Border>
 </Window>

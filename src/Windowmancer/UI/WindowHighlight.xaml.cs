@@ -1,5 +1,8 @@
-﻿using System.Windows;
+﻿using System;
+using System.Threading.Tasks;
+using System.Windows;
 using Windowmancer.Core.Models;
+using Windowmancer.Core.Practices;
 
 namespace Windowmancer.UI
 {
@@ -13,12 +16,35 @@ namespace Windowmancer.UI
       InitializeComponent();
     }
 
-    public void UpdateLayout(int x, int y, int width, int height)
+    public void UpdateLayout(
+      int x, 
+      int y, 
+      int width, 
+      int height)
     {
       this.Width = width;
       this.Height = height;
       this.Left = x;
       this.Top = y;
+    }
+
+    public void UpdateLayout(
+      int x,
+      int y,
+      int width,
+      int height,
+      int timeoutSecs)
+    {
+      this.Width = width;
+      this.Height = height;
+      this.Left = x;
+      this.Top = y;
+
+      Task.Run(() =>
+      {
+        Task.Delay(5000).Wait();
+        Helper.Dispatcher.Invoke(this.Close);
+      });
     }
 
     public void UpdateLayout(WindowLayoutInfo layoutInfo)
