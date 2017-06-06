@@ -11,14 +11,29 @@ namespace Windowmancer.Core.Models
 
     public ScreenAspectRatio(Screen screen)
     {
-      Update(screen);
+      Update(screen.Bounds.Width, screen.Bounds.Height);
+    }
+
+    public ScreenAspectRatio(DisplayContainer container)
+    {
+      Update(container.Width, container.Height);
     }
 
     public void Update(Screen screen)
     {
-      var nGCD = Helper.GetGreatestCommonDivisor(screen.Bounds.Height, screen.Bounds.Width);
-      this.XRatio = screen.Bounds.Width / nGCD;
-      this.YRatio = screen.Bounds.Height / nGCD;
+      Update(screen.Bounds.Width, screen.Bounds.Height);
+    }
+
+    public void Update(DisplayContainer container)
+    {
+      Update(container.Width, container.Height);
+    }
+
+    public void Update(int width, int height)
+    {
+      var nGCD = Helper.GetGreatestCommonDivisor(height, width);
+      this.XRatio = width / nGCD;
+      this.YRatio = height / nGCD;
       OnPointPropertyChanged("Width");
       OnPointPropertyChanged("Height");
     }

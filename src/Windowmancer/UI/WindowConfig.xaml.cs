@@ -407,7 +407,7 @@ namespace Windowmancer.UI
     }
   }
 
-  class DisplaySection
+  public class DisplaySection
   {
     public int RowIndex { get; set; }
     public int ColumnIndex { get; set; }
@@ -441,6 +441,26 @@ namespace Windowmancer.UI
 
       var x = (screenWidth / totalCols) * col + screen.Bounds.X;
       var y = (screenHeight / totalRows) * row + screen.Bounds.Y;
+
+      var width = (screenWidth / totalCols);
+      var height = (screenHeight / totalRows);
+
+      return new WindowLayoutInfo(x, y, width, height);
+    }
+
+    public WindowLayoutInfo GetLayoutInfo(DisplayContainer container)
+    {
+      var screenWidth = container.Width;
+      var screenHeight = container.Height;
+
+      var row = this.RowIndex;
+      var col = this.ColumnIndex;
+
+      var totalRows = this.TotalRows;
+      var totalCols = this.TotalColumns;
+
+      var x = (screenWidth / totalCols) * col + container.X;
+      var y = (screenHeight / totalRows) * row + container.Y;
 
       var width = (screenWidth / totalCols);
       var height = (screenHeight / totalRows);

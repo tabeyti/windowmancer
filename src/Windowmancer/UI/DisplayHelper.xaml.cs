@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
@@ -13,6 +14,7 @@ using Windowmancer.Core.Models;
 using Windowmancer.Core.Services;
 using Button = System.Windows.Controls.Button;
 using ButtonBase = System.Windows.Controls.Primitives.ButtonBase;
+using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace Windowmancer.UI
@@ -23,28 +25,56 @@ namespace Windowmancer.UI
   public partial class DisplayHelper : UserControl
   {
     public bool DisplayHelperPreview { get; set; }
-    public WindowLayoutInfo LayoutInfo { get; set; }
-    
-    private static Screen _screen;
-    private static DisplaySection _displaySection = new DisplaySection();
+    private ObservableCollection<DisplayContainer> DisplayContainers { get; }
 
-    private WindowLayoutInfo _originalLayoutInfo;
+    private DisplayContainer _activeDisplayContainer;
+
+    public DisplaySection DisplaySection { get; private set; }
+
     private Process _process;
     private WindowHighlight _windowHighlight;
     private readonly List<Button> _displaySectionButtons = new List<Button>();
     private readonly SolidColorBrush _defaultBrush = Brushes.Turquoise;
-    private ScreenAspectRatio _screenAspectRatio; 
+    private ScreenAspectRatio _screenAspectRatio;
 
     public DisplayHelper()
     {
+      this.DisplaySection = new DisplaySection();
+      this.DisplayContainers = new ObservableCollection<DisplayContainer>();
+      foreach (var s in Screen.AllScreens)
+      {
+        this.DisplayContainers.Add(new DisplayContainer(s));
+      }
+
+      PreInitialize();
       InitializeComponent();
-      Initialize();
+      PostInitialize();
     }
 
-    private void Initialize()
+    public DisplayHelper(List<DisplayContainer> displayContainers)
+    {
+      this.DisplaySection = new DisplaySection();
+      this.DisplayContainers = new ObservableCollection<DisplayContainer>();
+      displayContainers.ForEach(d => DisplayContainers.Add(d));
+
+      PreInitialize();
+      InitializeComponent();
+      PostInitialize();
+    }
+
+    private void PreInitialize()
+    {
+      _screenAspectRatio = new ScreenAspectRatio(Screen.PrimaryScreen);
+    }
+
+    private void PostInitialize()
     {
       this.RowSpinner.ValueChanged += RowColSpinners_ValueChanged;
       this.ColumnSpinner.ValueChanged += RowColSpinners_ValueChanged;
+
+      this.DisplayListBox.ItemsSource = this.DisplayContainers;
+      _activeDisplayContainer = DisplayContainers.First();
+      this.DisplayListBox.SelectedItem = _activeDisplayContainer;
     }
 
     private void DisableScreenHighlight()
@@ -60,7 +90,7 @@ namespace Windowmancer.UI
         return;
       }
 
-      var layoutInfo = _displaySection.GetLayoutInfo(_screen);
+      var layoutInfo = DisplaySection.GetLayoutInfo(_activeDisplayContainer);
 
       // Move process window if process is active.
       if (null != _process)
@@ -114,11 +144,11 @@ namespace Windowmancer.UI
       var dsb = _displaySectionButtons.Find(d =>
       {
         var ds = (DisplaySection)d.Tag;
-        return ds.ColumnIndex == _displaySection.ColumnIndex &&
-               ds.RowIndex == _displaySection.RowIndex;
+        return ds.ColumnIndex == DisplaySection.ColumnIndex &&
+               ds.RowIndex == DisplaySection.RowIndex;
       }) ?? _displaySectionButtons.First();
 
-      _displaySection = (DisplaySection)dsb.Tag;
+      DisplaySection = (DisplaySection)dsb.Tag;
 
       // Select first button.
       dsb.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
@@ -130,25 +160,20 @@ namespace Windowmancer.UI
     /// </summary>
     private void UpdateLayoutValuesFromDisplayHelper()
     {
-      var screenWidth = _screen.Bounds.Width;
-      var screenHeight = _screen.Bounds.Height;
+      var screenWidth = _activeDisplayContainer.Width;
+      var screenHeight = _activeDisplayContainer.Height;
 
-      var row = _displaySection.RowIndex;
-      var col = _displaySection.ColumnIndex;
+      var row = DisplaySection.RowIndex;
+      var col = DisplaySection.ColumnIndex;
 
-      var totalRows = _displaySection.TotalRows;
-      var totalCols = _displaySection.TotalColumns;
+      var totalRows = DisplaySection.TotalRows;
+      var totalCols = DisplaySection.TotalColumns;
 
-      var x = (screenWidth / totalCols) * col + _screen.Bounds.X;
-      var y = (screenHeight / totalRows) * row + _screen.Bounds.Y;
+      var x = (screenWidth / totalCols) * col + _activeDisplayContainer.X;
+      var y = (screenHeight / totalRows) * row + _activeDisplayContainer.Y;
 
       var width = (screenWidth / totalCols);
       var height = (screenHeight / totalRows);
-
-      this.LayoutInfo.SizeInfo.Width = width;
-      this.LayoutInfo.SizeInfo.Height = height;
-      this.LayoutInfo.PositionInfo.X = x;
-      this.LayoutInfo.PositionInfo.Y = y;
     }
 
     private void ClearDisplaySectionPanel()
@@ -156,29 +181,20 @@ namespace Windowmancer.UI
       this.DisplayPanelGrid.Children.RemoveRange(0, this.DisplayPanelGrid.Children.Count);
     }
 
+    #region Event Methods
+
+    private void DisplayHelper_OnLoaded(object sender, RoutedEventArgs e)
+    {
+      _rowColSpinnerEnabled = false;
+      this.RowSpinner.Value = DisplaySection.TotalRows;
+      this.ColumnSpinner.Value = DisplaySection.TotalColumns;
+      _rowColSpinnerEnabled = true;
+      RecreateDisplaySectionControl(DisplaySection.TotalRows, DisplaySection.TotalColumns);
+    }
+
     private void SetDisplayHelperLayoutButton_OnClick(object sender, RoutedEventArgs e)
     {
       UpdateLayoutValuesFromDisplayHelper();
-    }
-
-    private void WindowLayoutPreviewCheckBox_OnChecked(object sender, RoutedEventArgs e)
-    {
-      if (this.DisplayHelperPreview)
-      {
-        (_process != null).RunIfTrue(() =>
-        {
-          this._originalLayoutInfo = WindowInfo.FromProcess(_process).LayoutInfo;
-        });
-        UpdateScreenHighlight();
-        return;
-      }
-
-      // If unchecked, then apply the original layout.
-      (_process != null).RunIfTrue(() =>
-      {
-        WindowManager.ApplyWindowLayout(this._originalLayoutInfo, _process);
-      });
-      DisableScreenHighlight();
     }
 
     private void DisplaySection_OnClick(object sender, EventArgs e)
@@ -189,15 +205,15 @@ namespace Windowmancer.UI
       // Highlight clicked button.
       var button = (Button)sender;
       button.Background = Brushes.Yellow;
-      _displaySection = (DisplaySection)button.Tag;
+      DisplaySection = (DisplaySection)button.Tag;
       UpdateScreenHighlight();
     }
 
     private void DisplayListBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-      _screen = (Screen)this.DisplayListBox.SelectedItem;
-      _screenAspectRatio = new ScreenAspectRatio(_screen);
-      if (_screen.Bounds.Height > _screen.Bounds.Width)
+      _activeDisplayContainer = (DisplayContainer)this.DisplayListBox.SelectedItem;
+      _screenAspectRatio = new ScreenAspectRatio(_activeDisplayContainer);
+      if (_activeDisplayContainer.Height > _activeDisplayContainer.Width)
       {
         this.DisplayPanel.Height = this.DisplayPanel.MaxHeight;
         this.DisplayPanel.Width = this.DisplayPanel.MaxHeight * (_screenAspectRatio.XRatio / _screenAspectRatio.YRatio);
@@ -219,5 +235,7 @@ namespace Windowmancer.UI
       var cols = this.ColumnSpinner?.Value ?? 1;
       RecreateDisplaySectionControl(rows, cols);
     }
+
+    #endregion Event Methods
   }
 }

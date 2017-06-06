@@ -202,6 +202,7 @@
                 <Grid.ColumnDefinitions>
                   <ColumnDefinition MaxWidth="200"/>
                   <ColumnDefinition Width="*"/>
+                  <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Column="0">
                   <Grid.RowDefinitions>
@@ -258,12 +259,12 @@
                      HorizontalAlignment="Left" 
                      VerticalAlignment="Top" />
                     <xctk:IntegerUpDown Name="ColumnSpinner" 
-                                              Grid.Row="1" Grid.Column="1" 
-                                              Foreground="White"
-                                              Value="1"
-                                              Minimum="1"
-                                              Maximum="10"
-                                              Height="20"/>
+                                        Grid.Row="1" Grid.Column="1" 
+                                        Foreground="White"
+                                        Value="1"
+                                        Minimum="1"
+                                        Maximum="10"
+                                        Height="20"/>
                     <CheckBox Name="WindowLayoutPreviewCheckBox" 
                               Grid.Row="3" Grid.Column="0"
                               HorizontalAlignment="Left"
@@ -298,7 +299,9 @@
                     <Grid x:Name="DisplayPanelGrid"/>
                   </Border>
                 </Grid>
+                <local:DisplayHelper Grid.Column="2" />
                 <!--#endregion-->
+                
 
               </Grid>
 

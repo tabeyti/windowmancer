@@ -14,6 +14,8 @@ using Windowmancer.UI.Base;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Documents;
+using System.Windows.Forms;
+using MenuItem = System.Windows.Controls.MenuItem;
 
 namespace Windowmancer.UI
 {
@@ -322,10 +324,9 @@ namespace Windowmancer.UI
       
       if (_windowHostContainer == null)
       {
-        _windowHostContainer = new WindowHostContainer("han", 3, 3);
+        _windowHostContainer = new WindowHostContainer("ham", 2, 2);
         _windowHostContainer.Show();
       }
-
       _windowHostContainer.DockProc(process);
       //_windowHostContainer.DockProc(Process.Start("cmd.exe"));
       //_windowHostContainer.DockProc(Process.Start("notepad.exe"));
@@ -337,7 +338,15 @@ namespace Windowmancer.UI
     {
       var flyout = this.Flyouts.Items[0] as Flyout;
       if (flyout == null) return;
-      var helper = new DisplayHelper(); 
+
+      var list = new List<DisplayContainer>
+      {
+        new DisplayContainer("Container1", 0, 0, 720, 1280),
+        new DisplayContainer("Container2", 0, 0, 1280, 720),
+      };
+
+      var helper = new DisplayHelper(list); 
+      
       flyout.Content = helper;
       flyout.IsOpen = true;
     }

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
+using MahApps.Metro.Controls;
 using Windowmancer.Core.Practices;
 
 namespace Windowmancer.UI
@@ -11,7 +11,7 @@ namespace Windowmancer.UI
   /// <summary>
   /// Interaction logic for WindowHostContainer.xaml
   /// </summary>
-  public partial class WindowHostContainer : Window
+  public partial class WindowHostContainer : MetroWindow
   {
     private readonly Dictionary<IntPtr, DockedWindow> _dockedWindowsDict = new Dictionary<IntPtr, DockedWindow>();
 
@@ -19,6 +19,8 @@ namespace Windowmancer.UI
     public int Columns { get; set; }
     public int CurrentRowIndex { get; private set; }
     public int CurrentColumnIndex { get; private set; }
+
+    private static readonly int _titlebarHeight = (int)SystemParameters.WindowCaptionHeight + 10;
 
     public string ContainerLabel { get; private set; }
 
@@ -122,7 +124,7 @@ namespace Windowmancer.UI
       var totalCols = this.Columns;
 
       var x = (int)(screenWidth / totalCols) * columnIndex;
-      var y = (int)(screenHeight / totalRows) * rowIndex;
+      var y = (int)(((screenHeight / totalRows) * rowIndex) + _titlebarHeight);
 
       var width = (int)(screenWidth / totalCols);
       var height = (int)(screenHeight / totalRows);
