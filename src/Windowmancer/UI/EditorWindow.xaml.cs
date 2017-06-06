@@ -1,7 +1,5 @@
 using System;
 using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Practices.Unity;
 using System.Windows;
 using System.Windows.Input;
@@ -13,6 +11,9 @@ using Windowmancer.Core.Models;
 using Windowmancer.Core.Practices;
 using Windowmancer.Core.Services;
 using Windowmancer.UI.Base;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Windows.Documents;
 
 namespace Windowmancer.UI
 {
@@ -24,8 +25,13 @@ namespace Windowmancer.UI
     public ProfileManager ProfileManager { get; }
     public ProcessMonitor ProcMonitor { get; }
 
+    private readonly Dictionary<string, WindowHostContainer> _windowHostContainers = 
+      new Dictionary<string, WindowHostContainer>();
+
     private readonly WindowManager _windowManager;
     private readonly KeyHookManager _keyHookManager;
+
+    public ObservableCollection<FrameworkElement> ActiveWindowsContextMenuItems { get; set; }
 
     public EditorViewModel EditorViewModel { get; set; }
     
@@ -33,12 +39,26 @@ namespace Windowmancer.UI
     {
       this.ProfileManager = App.ServiceResolver.Resolve<ProfileManager>();
       this.ProcMonitor = App.ServiceResolver.Resolve<ProcessMonitor>();
-
       _windowManager = App.ServiceResolver.Resolve<WindowManager>();
       _keyHookManager = App.ServiceResolver.Resolve<KeyHookManager>();
-      
 
       this.EditorViewModel = new EditorViewModel();
+
+      // Create context menu items for Active Windows datagrid.
+      var addItem = new MenuItem { Header = "Add" };
+      addItem.Click += ActiveWindowsDataGrid_MenuItemClick;
+      var highlightItem = new MenuItem { Header = "Highlight" };
+      highlightItem.Click += ActiveWindowsDataGrid_HighlightClick;
+      var containerizeItem = new MenuItem { Header = "Add to new Container" };
+      containerizeItem.Click += ActiveWindowsDataGrid_ContainerizeClick;
+      this.ActiveWindowsContextMenuItems = new ObservableCollection<FrameworkElement>
+      {
+        addItem,
+        new Separator(),
+        highlightItem,
+        new Separator(),
+        containerizeItem
+      };
 
       InitializeComponent();
       Initialize();
@@ -284,13 +304,33 @@ namespace Windowmancer.UI
       var windowHighlight = new WindowHighlight();
       Helper.Dispatcher.Invoke(() =>
       {
-        windowHighlight.UpdateLayout(procRec.Left, procRec.Top, procRec.Width, procRec.Height, 3);
+        windowHighlight.UpdateLayout(procRec.Left, procRec.Top, procRec.Width, procRec.Height, 4);
         windowHighlight.Show();
       });
     }
 
     private void EditorWindow_OnDeactivated(object sender, EventArgs e)
     {
+    }
+
+
+    private static WindowHostContainer _windowHostContainer = null;
+    private void ActiveWindowsDataGrid_ContainerizeClick(object sender, RoutedEventArgs e)
+    {
+      if (this.ActiveWindowsDataGrid.SelectedItem == null) return;
+      var process = ((MonitoredProcess)this.ActiveWindowsDataGrid.SelectedItem).GetProcess();
+      
+      if (_windowHostContainer == null)
+      {
+        _windowHostContainer = new WindowHostContainer("han", 3, 3);
+        _windowHostContainer.Show();
+      }
+
+      _windowHostContainer.DockProc(process);
+      //_windowHostContainer.DockProc(Process.Start("cmd.exe"));
+      //_windowHostContainer.DockProc(Process.Start("notepad.exe"));
+      //_windowHostContainer.DockProc(Process.Start("cmd.exe"));
+      //_windowHostContainer.DockProc(Process.Start("notepad.exe"));
     }
   }
 }

@@ -86,7 +86,7 @@ namespace Windowmancer.Core.Practices
     public static extern IntPtr SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int x, int Y, int cx, int cy, int wFlags);
 
     [DllImport("user32.dll", SetLastError = true)]
-    public static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int Width, int Height, bool Repaint);
+    public static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int Width, int Height, bool repaint);
 
     [DllImport("user32.DLL")]
     public static extern bool SetForegroundWindow(IntPtr hWnd);
@@ -106,6 +106,45 @@ namespace Windowmancer.Core.Practices
 
     [DllImport("user32.dll")]
     public static extern int SetWindowLong(IntPtr hWnd, int nIndex, uint dwNewLong);
+    
+    [DllImport("user32.dll")]
+    public static extern IntPtr SetWinEventHook(uint eventMin, uint eventMax, IntPtr hmodWinEventProc,
+      WinEventDelegate lpfnWinEventProc, uint idProcess,
+      uint idThread, uint dwFlags);
+
+    [DllImport("user32.dll")]
+    public static extern bool UnhookWinEvent(IntPtr hWinEventHook);
+
+    [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+    public static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
+
+    [DllImport("user32.dll")]
+    public static extern int GetMenuItemCount(IntPtr hMenu);
+
+    [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+    public static extern bool GetMenuItemInfo(IntPtr hMenu, int uItem, bool fByPosition, [In, Out] MENUITEMINFO lpmii);
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    public class MENUITEMINFO
+    {
+      public int cbSize = Marshal.SizeOf(typeof(MENUITEMINFO));
+      public int fMask;
+      public int fType;
+      public int fState;
+      public int wID;
+      public IntPtr hSubMenu;
+      public IntPtr hbmpChecked;
+      public IntPtr hbmpUnchecked;
+      public IntPtr dwItemData;
+      public IntPtr dwTypeData;
+      public int cch;
+    }
+
+    [DllImport("user32.dll")]
+    public static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
+
+    public delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType,
+      IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
 
     public const int GWL_EXSTYLE = -20;
     public const int WS_EX_LAYERED = 0x80000;

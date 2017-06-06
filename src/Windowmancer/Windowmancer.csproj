@@ -184,6 +184,9 @@
     <Compile Include="UI\WindowHighlight.xaml.cs">
       <DependentUpon>WindowHighlight.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\WindowHostContainer.xaml.cs">
+      <DependentUpon>WindowHostContainer.xaml</DependentUpon>
+    </Compile>
     <Page Include="UI\AboutDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -241,6 +244,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\WindowHighlight.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\WindowHostContainer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

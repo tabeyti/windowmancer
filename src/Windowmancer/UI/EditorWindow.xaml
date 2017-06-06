@@ -16,7 +16,6 @@
                        LeftWindowCommandsOverlayBehavior="Always"
                        RightWindowCommandsOverlayBehavior="Always"
                        WindowButtonCommandsOverlayBehavior="Always"
-                       Deactivated="EditorWindow_OnDeactivated"
                        Icon="../AppIcon.ico"
                        Title="{Binding EditorViewModel.WindowTitle}"
                        Width="1024" Height="768"
@@ -182,7 +181,7 @@
     <GridSplitter Grid.Row="2" Background="{StaticResource MainColorTheme}" Height="5" HorizontalAlignment="Stretch" />
     <GroupBox Header="Active Windows" Grid.Row="3"
               Style="{StaticResource MyGroupBoxStyle}">
-      <DataGrid Name="ActiveWindowsDataGrid" 
+      <DataGrid Name="ActiveWindowsDataGrid"
                 ItemsSource="{Binding ProcMonitor.ActiveWindowProcs}"
                 GridLinesVisibility="None"               
                 AutoGenerateColumns="False"
@@ -194,14 +193,18 @@
                 ColumnHeaderStyle="{StaticResource MyColumnHeader}"
                 MouseDoubleClick="ActiveWindowsGrid_OnMouseDoubleClick">
         <DataGrid.Resources>
-          <ContextMenu x:Key="RowMenu">
-            <MenuItem Header="Add" Click="ActiveWindowsDataGrid_MenuItemClick"></MenuItem>
+          <ContextMenu x:Key="RowMenu" 
+                       ItemsSource="{Binding ActiveWindowsContextMenuItems}"
+                       DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}">
+            <!--<MenuItem Header="Add" Click="ActiveWindowsDataGrid_MenuItemClick"></MenuItem>
+            <Separator/>
             <MenuItem Header="Highlight" Click="ActiveWindowsDataGrid_HighlightClick"></MenuItem>
+            <MenuItem Header="Containerize" Click="ActiveWindowsDataGrid_ContainerizeClick"></MenuItem>-->
           </ContextMenu>
         </DataGrid.Resources>
         <DataGrid.RowStyle>
           <Style TargetType="DataGridRow" BasedOn="{StaticResource MetroDataGridRow}">
-            <Setter Property="ContextMenu" Value="{StaticResource RowMenu}"></Setter>
+            <Setter Property="ContextMenu" Value="{StaticResource RowMenu}"/>
           </Style>
         </DataGrid.RowStyle>
         <DataGrid.Columns>
