@@ -166,6 +166,9 @@
     </Compile>
     <Compile Include="UI\Converters\EnumBooleanConverter.cs" />
     <Compile Include="UI\Converters\StringTruncateConverter.cs" />
+    <Compile Include="UI\DisplayHelper.xaml.cs">
+      <DependentUpon>DisplayHelper.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\HotKeyInputBox.xaml.cs">
       <DependentUpon>HotKeyInputBox.xaml</DependentUpon>
     </Compile>
@@ -204,6 +207,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Controls\Controls.TabItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\DisplayHelper.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

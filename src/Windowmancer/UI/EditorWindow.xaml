@@ -221,6 +221,7 @@
         </DataGrid.Columns>
       </DataGrid>
     </GroupBox>
+    <Button Grid.Row="0" Content="BOOP" Click="ButtonBase_OnClick"/>
   </Grid>
 
 </Controls:MetroWindow>

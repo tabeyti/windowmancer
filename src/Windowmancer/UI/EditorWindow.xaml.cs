@@ -332,5 +332,14 @@ namespace Windowmancer.UI
       //_windowHostContainer.DockProc(Process.Start("cmd.exe"));
       //_windowHostContainer.DockProc(Process.Start("notepad.exe"));
     }
+
+    private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+    {
+      var flyout = this.Flyouts.Items[0] as Flyout;
+      if (flyout == null) return;
+      var helper = new DisplayHelper(); 
+      flyout.Content = helper;
+      flyout.IsOpen = true;
+    }
   }
 }
