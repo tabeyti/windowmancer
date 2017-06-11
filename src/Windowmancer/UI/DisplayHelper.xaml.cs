@@ -9,12 +9,10 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
 using System.Windows.Media;
 using Microsoft.Practices.ObjectBuilder2;
-using Windowmancer.Core.Extensions;
 using Windowmancer.Core.Models;
 using Windowmancer.Core.Services;
 using Button = System.Windows.Controls.Button;
 using ButtonBase = System.Windows.Controls.Primitives.ButtonBase;
-using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace Windowmancer.UI
@@ -24,12 +22,15 @@ namespace Windowmancer.UI
   /// </summary>
   public partial class DisplayHelper : UserControl
   {
+    public Action OnClose { get; set; }
+    public Action<WindowInfo> OnSave { get; set; }
+
     public bool DisplayHelperPreview { get; set; }
-    private ObservableCollection<DisplayContainer> DisplayContainers { get; }
-
-    private DisplayContainer _activeDisplayContainer;
-
     public DisplaySection DisplaySection { get; private set; }
+    public bool DisplayContainersSelectable { get; set; }
+
+    private ObservableCollection<DisplayContainer> DisplayContainers { get; }
+    private DisplayContainer _activeDisplayContainer;
 
     private Process _process;
     private WindowHighlight _windowHighlight;
@@ -39,7 +40,6 @@ namespace Windowmancer.UI
 
     public DisplayHelper()
     {
-      this.DisplaySection = new DisplaySection();
       this.DisplayContainers = new ObservableCollection<DisplayContainer>();
       foreach (var s in Screen.AllScreens)
       {
@@ -51,9 +51,16 @@ namespace Windowmancer.UI
       PostInitialize();
     }
 
+    public DisplayHelper(DisplayContainer displayContainer)
+    {
+      this.DisplayContainers = new ObservableCollection<DisplayContainer> {displayContainer};
+      PreInitialize();
+      InitializeComponent();
+      PostInitialize();
+    }
+
     public DisplayHelper(List<DisplayContainer> displayContainers)
     {
-      this.DisplaySection = new DisplaySection();
       this.DisplayContainers = new ObservableCollection<DisplayContainer>();
       displayContainers.ForEach(d => DisplayContainers.Add(d));
 
@@ -64,6 +71,13 @@ namespace Windowmancer.UI
 
     private void PreInitialize()
     {
+      this.DisplayContainersSelectable = true;
+      var container = this.DisplayContainers.First();
+      this.DisplaySection = new DisplaySection
+      {
+        TotalColumns = container.Columns,
+        TotalRows = container.Rows,
+      };
       _screenAspectRatio = new ScreenAspectRatio(Screen.PrimaryScreen);
     }
 
@@ -75,6 +89,7 @@ namespace Windowmancer.UI
       this.DisplayListBox.ItemsSource = this.DisplayContainers;
       _activeDisplayContainer = DisplayContainers.First();
       this.DisplayListBox.SelectedItem = _activeDisplayContainer;
+      this.DisplayListBox.IsEnabled = this.DisplayContainersSelectable;
     }
 
     private void DisableScreenHighlight()

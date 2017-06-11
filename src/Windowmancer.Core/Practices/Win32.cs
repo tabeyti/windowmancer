@@ -124,6 +124,15 @@ namespace Windowmancer.Core.Practices
     [DllImport("user32.dll", CharSet = CharSet.Unicode)]
     public static extern bool GetMenuItemInfo(IntPtr hMenu, int uItem, bool fByPosition, [In, Out] MENUITEMINFO lpmii);
 
+    [DllImport("user32.dll")]
+    public static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
+
+    public delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType,
+      IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
+
+    [DllImport("user32.dll")]
+    public static extern bool PrintWindow(IntPtr hWnd, IntPtr hdcBlt, int nFlags);
+
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     public class MENUITEMINFO
     {
@@ -139,12 +148,6 @@ namespace Windowmancer.Core.Practices
       public IntPtr dwTypeData;
       public int cch;
     }
-
-    [DllImport("user32.dll")]
-    public static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
-
-    public delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType,
-      IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
 
     public const int GWL_EXSTYLE = -20;
     public const int WS_EX_LAYERED = 0x80000;

@@ -6,25 +6,30 @@
                       xmlns:local="clr-namespace:Windowmancer.UI"
                       xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-                      mc:Ignorable="d">
-  <Controls:MetroWindow.RightWindowCommands>
-    <Controls:WindowCommands>
-      <Button>
-        <StackPanel Orientation="Horizontal">
-          <Rectangle Width="20"
-                           Height="20"
-                           Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
-            <Rectangle.OpacityMask>
-              <VisualBrush Stretch="Fill" Visual="{StaticResource ../AppIcon.ico}" />
-            </Rectangle.OpacityMask>
-          </Rectangle>
-          <TextBlock Margin="5,0,0,0">Settings</TextBlock>
-        </StackPanel>
-      </Button>
-    </Controls:WindowCommands>
-  </Controls:MetroWindow.RightWindowCommands>
-  <Grid>
+                      ShowIconOnTitleBar="True"
+                      ShowTitleBar="True"
+                      Title="{Binding ContainerLabel}"
+                      mc:Ignorable="d"
+                      DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
-  </Grid>
+  <Controls:MetroWindow.Flyouts>
+    <Controls:FlyoutsControl x:Name="FlyoutsControl">
+      <Controls:Flyout Header="Layout Helper"
+                       IsModal="True"
+                       Position="Right"
+                       CloseButtonVisibility="Collapsed"
+                       Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}"/>
+      </Controls:FlyoutsControl>
+    </Controls:MetroWindow.Flyouts>
+
+      <Controls:MetroWindow.RightWindowCommands>
+        <Controls:WindowCommands>
+            <Button Name="EditButton" 
+                    Click="EditButton_OnClick"
+                    Content="Edit Layout"
+                    ToolTip="Open the Display Helper Control" />
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.RightWindowCommands>
+    <Grid/>
 </Controls:MetroWindow>
 

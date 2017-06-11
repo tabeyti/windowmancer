@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Reflection;
 using System.Windows;
@@ -11,6 +12,7 @@ using System.Windows.Media.Imaging;
 using Microsoft.Practices.Unity;
 using Newtonsoft.Json;
 using Windowmancer.Core.Services.Base;
+using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace Windowmancer.Core.Practices
 {
@@ -91,6 +93,34 @@ namespace Windowmancer.Core.Practices
         // ignore.
       }
       return ico;
+    }
+
+    public static ImageSource ScreenShotProcessWindow(Process proc)
+    {
+      var rec = new Win32.Win32_Rect();
+      Win32.GetWindowRect(proc.MainWindowHandle, ref rec);
+
+      var bmp = new Bitmap(rec.Width, rec.Height, PixelFormat.Format32bppArgb);
+      var gfxBmp = Graphics.FromImage(bmp);
+      var hdcBitmap = gfxBmp.GetHdc();
+
+      Win32.PrintWindow(proc.MainWindowHandle, hdcBitmap, 0);
+
+      gfxBmp.ReleaseHdc(hdcBitmap);
+      gfxBmp.Dispose();
+
+
+      //var rect = new Win32.Win32_Rect();
+      //Win32.GetWindowRect(proc.MainWindowHandle, ref rect);
+
+      //var width = rect.Width;
+      //var height = rect.Height;
+
+      //var bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+      //var graphics = Graphics.FromImage(bmp);
+      //graphics.CopyFromScreen(rect.X, rect.Y, 0, 0, new System.Drawing.Size(width, height), CopyPixelOperation.SourceCopy);
+
+      return ImageSourceForBitmap(bmp);
     }
 
     public static Icon GetSmallIcon(Icon icon)

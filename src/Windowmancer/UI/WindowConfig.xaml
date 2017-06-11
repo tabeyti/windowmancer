@@ -202,7 +202,6 @@
                 <Grid.ColumnDefinitions>
                   <ColumnDefinition MaxWidth="200"/>
                   <ColumnDefinition Width="*"/>
-                  <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Column="0">
                   <Grid.RowDefinitions>
@@ -299,12 +298,8 @@
                     <Grid x:Name="DisplayPanelGrid"/>
                   </Border>
                 </Grid>
-                <local:DisplayHelper Grid.Column="2" />
                 <!--#endregion-->
-                
-
               </Grid>
-
             </Expander>
           </StackPanel>
         </GroupBox>

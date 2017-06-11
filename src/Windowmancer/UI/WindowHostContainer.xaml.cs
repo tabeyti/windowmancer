@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Interop;
 using MahApps.Metro.Controls;
+using Windowmancer.Core.Models;
 using Windowmancer.Core.Practices;
+using Windowmancer.Core.Services;
 
 namespace Windowmancer.UI
 {
@@ -24,25 +27,30 @@ namespace Windowmancer.UI
 
     public string ContainerLabel { get; private set; }
 
+    public WindowHostContainer(string containerLabel, int rows, int columns)
+    {
+      this.ContainerLabel = containerLabel;
+      this.Rows = rows;
+      this.Columns = columns;
+      InitializeComponent();
+    }
+
     public WindowHostContainer()
     {
+      this.ContainerLabel = "Default";
       this.Rows = this.Columns = 1;
-      InitializeComponent();
+      Initialize();
+    }
 
-      this.Closing += (o,e) =>
+    private void Initialize()
+    {
+      this.Closing += (o, e) =>
       {
         foreach (var kv in _dockedWindowsDict)
         {
           kv.Value.Process?.Kill();
         }
       };
-    }
-
-    public WindowHostContainer(string containerLabel, int rows, int columns)
-    {
-      this.ContainerLabel = containerLabel;
-      this.Rows = rows;
-      this.Columns = columns;
     }
 
     public void DockProc(Process process, int rowIndex, int columnIndex)
@@ -52,7 +60,11 @@ namespace Windowmancer.UI
         return;
       }
 
-      var windowToDock = new DockedWindow(process);
+      var windowToDock = new DockedWindow(process)
+      {
+        Row = rowIndex,
+        Column = columnIndex
+      };
       _dockedWindowsDict.Add(process.Handle, windowToDock);
       while (process.MainWindowHandle == IntPtr.Zero)
       {
@@ -74,7 +86,7 @@ namespace Windowmancer.UI
         }
       }
       // Dock it, bitch!
-      DockIt(windowToDock, rowIndex, columnIndex);
+      RefreshDockedWindow(windowToDock);
     }
 
     /// <summary>
@@ -96,23 +108,23 @@ namespace Windowmancer.UI
       DockProc(process, this.CurrentRowIndex, this.CurrentColumnIndex++);
     }
 
-    private void DockIt(DockedWindow windowToDock, int rowIndex, int columnIndex)
+    private void RefreshDockedWindow(DockedWindow windowToDock)
     {
       // Retrieve the window handle for this host container window.
       var window = Window.GetWindow(this);
       if (null == window)
       {
-        throw new Exception($"{this}.DockIt - Could not retrieve the host container window.");
+        throw new Exception($"{this}.RefreshDockedWindow - Could not retrieve the host container window.");
       }
       var wih = new WindowInteropHelper(window);
       windowToDock.ParentHandle = Win32.SetParent(windowToDock.Process.MainWindowHandle, wih.Handle);
 
       void Resize(object s, SizeChangedEventArgs ev)
       {
-        MoveChildWindow(windowToDock, rowIndex, columnIndex);
+        MoveChildWindow(windowToDock, windowToDock.Row, windowToDock.Column);
       }
       this.SizeChanged += Resize;
-      MoveChildWindow(windowToDock, rowIndex, columnIndex);
+      MoveChildWindow(windowToDock, windowToDock.Row, windowToDock.Column);
     }
 
     private void MoveChildWindow(DockedWindow dockedWindow, int rowIndex, int columnIndex)
@@ -131,17 +143,31 @@ namespace Windowmancer.UI
 
       Win32.MoveWindow(dockedWindow.Process.MainWindowHandle, x, y, (int)width, (int)height, true);
     }
-  }
 
-  public class DockedWindow
-  {
-    public Process Process { get; set; }
-    public IntPtr ParentHandle { get; set; }
-
-    public DockedWindow() { }
-    public DockedWindow(Process process)
+    public void SetChildWindowsVisible(bool isVisible)
     {
-      this.Process = process;
+      foreach (var kv in _dockedWindowsDict)
+      {
+        WindowManager.SetWindowOpacityPercentage(kv.Value.Process, (uint)(isVisible ? 100 : 0));
+      }
+    }
+
+    private void EditButton_OnClick(object sender, RoutedEventArgs e)
+    {
+      SetChildWindowsVisible(false);
+
+      var flyout = this.Flyouts.Items[0] as Flyout;
+      if (flyout == null) return;
+      var displayContainer = new DisplayContainer(this.Title, 0, 0,
+        (int) this.ActualWidth, (int) this.ActualHeight, this.Rows, this.Columns);
+
+      var processList = _dockedWindowsDict.Values.Select(d => d.Process).ToList();
+      var displayHelper = new DisplayHelper2(_dockedWindowsDict.Values, displayContainer)
+      {
+        DisplayContainersSelectable = false
+      };
+      flyout.Content = displayHelper;
+      flyout.IsOpen = true;
     }
   }
 }

@@ -156,6 +156,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Extensions\DisplayContainerExtensions.cs" />
     <Compile Include="Practices\WmServiceResolver.cs" />
     <Compile Include="UI\AboutDialog.xaml.cs">
       <DependentUpon>AboutDialog.xaml</DependentUpon>
@@ -166,6 +167,9 @@
     </Compile>
     <Compile Include="UI\Converters\EnumBooleanConverter.cs" />
     <Compile Include="UI\Converters\StringTruncateConverter.cs" />
+    <Compile Include="UI\DisplayHelper2.xaml.cs">
+      <DependentUpon>DisplayHelper2.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\DisplayHelper.xaml.cs">
       <DependentUpon>DisplayHelper.xaml</DependentUpon>
     </Compile>
@@ -209,6 +213,10 @@
     <Page Include="UI\Controls\Controls.TabItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\DisplayHelper2.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\DisplayHelper.xaml">
       <SubType>Designer</SubType>

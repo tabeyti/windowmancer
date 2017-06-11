@@ -13,8 +13,6 @@ using Windowmancer.Core.Services;
 using Windowmancer.UI.Base;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Windows.Documents;
-using System.Windows.Forms;
 using MenuItem = System.Windows.Controls.MenuItem;
 
 namespace Windowmancer.UI
@@ -314,8 +312,7 @@ namespace Windowmancer.UI
     private void EditorWindow_OnDeactivated(object sender, EventArgs e)
     {
     }
-
-
+    
     private static WindowHostContainer _windowHostContainer = null;
     private void ActiveWindowsDataGrid_ContainerizeClick(object sender, RoutedEventArgs e)
     {
@@ -328,10 +325,6 @@ namespace Windowmancer.UI
         _windowHostContainer.Show();
       }
       _windowHostContainer.DockProc(process);
-      //_windowHostContainer.DockProc(Process.Start("cmd.exe"));
-      //_windowHostContainer.DockProc(Process.Start("notepad.exe"));
-      //_windowHostContainer.DockProc(Process.Start("cmd.exe"));
-      //_windowHostContainer.DockProc(Process.Start("notepad.exe"));
     }
 
     private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
@@ -349,6 +342,19 @@ namespace Windowmancer.UI
       
       flyout.Content = helper;
       flyout.IsOpen = true;
+    }
+
+    // TODO: Debug
+    private void EditorWindow_OnLoaded(object sender, RoutedEventArgs e)
+    {
+      if (_windowHostContainer == null)
+      {
+        _windowHostContainer = new WindowHostContainer("ham", 2, 2);
+        _windowHostContainer.Show();
+      }
+      _windowHostContainer.DockProc(Process.Start("cmd.exe"));
+      _windowHostContainer.DockProc(Process.Start("cmd.exe"));
+      _windowHostContainer.DockProc(Process.Start("notepad.exe"));
     }
   }
 }

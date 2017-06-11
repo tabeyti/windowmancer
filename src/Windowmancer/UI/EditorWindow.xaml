@@ -17,6 +17,7 @@
                        RightWindowCommandsOverlayBehavior="Always"
                        WindowButtonCommandsOverlayBehavior="Always"
                        Icon="../AppIcon.ico"
+                       Loaded="EditorWindow_OnLoaded"
                        Title="{Binding EditorViewModel.WindowTitle}"
                        Width="1024" Height="768"
                        DataContext="{Binding RelativeSource={RelativeSource Self}}">

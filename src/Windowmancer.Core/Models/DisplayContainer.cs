@@ -1,8 +1,10 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Windows.Forms;
 
 namespace Windowmancer.Core.Models
 {
-  public class DisplayContainer : PropertyNotifyBase
+  public class DisplayContainer : PropertyNotifyBase, ICloneable
   {
     public string Name
     {
@@ -45,6 +47,12 @@ namespace Windowmancer.Core.Models
       set => SetProperty(value);
     }
 
+    public ObservableCollection<DockedWindow> DockedWindows
+    {
+      get => GetProperty<ObservableCollection<DockedWindow>>();
+      set => SetProperty(value);
+    }
+
     public DisplayContainer(Screen screen)
     {
       RegisterProperty("Name", screen.DeviceName);
@@ -54,19 +62,9 @@ namespace Windowmancer.Core.Models
       RegisterProperty("Height", screen.Bounds.Height);
       RegisterProperty("Rows", 1);
       RegisterProperty("Columns", 1);
+      RegisterProperty<DockedWindow>("ActiveDockedWindow");
     }
-
-    public DisplayContainer(Screen screen, int rows, int columns)
-    {
-      RegisterProperty("Name", screen.DeviceName);
-      RegisterProperty("X", screen.Bounds.X);
-      RegisterProperty("Y", screen.Bounds.Y);
-      RegisterProperty("Width", screen.Bounds.Width);
-      RegisterProperty("Height", screen.Bounds.Height);
-      RegisterProperty("Rows", rows);
-      RegisterProperty("Columns", columns);
-    }
-
+    
     public DisplayContainer(string name, int x, int y, int width, int height)
     {
       RegisterProperty("Name", name);
@@ -87,6 +85,16 @@ namespace Windowmancer.Core.Models
       RegisterProperty("Height", height);
       RegisterProperty("Rows", rows);
       RegisterProperty("Columns", columns);
+    }
+
+    public object Clone()
+    {
+      var dc = new DisplayContainer(this.Name, this.X, this.Y, this.Width, this.Height);
+      foreach (var d in this.DockedWindows)
+      {
+        dc.DockedWindows.Add(d.Clone() as DockedWindow);
+      }
+      return dc;
     }
   }
 }
