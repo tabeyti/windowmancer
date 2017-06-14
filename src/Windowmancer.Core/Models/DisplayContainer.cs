@@ -63,6 +63,7 @@ namespace Windowmancer.Core.Models
       RegisterProperty("Rows", 1);
       RegisterProperty("Columns", 1);
       RegisterProperty<DockedWindow>("ActiveDockedWindow");
+      RegisterProperty("DockedWindows", new ObservableCollection<DockedWindow>());
     }
     
     public DisplayContainer(string name, int x, int y, int width, int height)
@@ -74,6 +75,8 @@ namespace Windowmancer.Core.Models
       RegisterProperty("Height", height);
       RegisterProperty("Rows", 1);
       RegisterProperty("Columns", 1);
+      RegisterProperty<DockedWindow>("ActiveDockedWindow");
+      RegisterProperty("DockedWindows", new ObservableCollection<DockedWindow>());
     }
 
     public DisplayContainer(string name, int x, int y, int width, int height, int rows, int columns)
@@ -85,6 +88,8 @@ namespace Windowmancer.Core.Models
       RegisterProperty("Height", height);
       RegisterProperty("Rows", rows);
       RegisterProperty("Columns", columns);
+      RegisterProperty<DockedWindow>("ActiveDockedWindow");
+      RegisterProperty("DockedWindows", new ObservableCollection<DockedWindow>());
     }
 
     public object Clone()

@@ -36,7 +36,7 @@ namespace Windowmancer.UI
     private WindowHighlight _windowHighlight;
     private readonly List<Button> _displaySectionButtons = new List<Button>();
     private readonly SolidColorBrush _defaultBrush = Brushes.Turquoise;
-    private ScreenAspectRatio _screenAspectRatio;
+    private DisplayAspectRatio _screenAspectRatio;
 
     public DisplayHelper()
     {
@@ -78,7 +78,7 @@ namespace Windowmancer.UI
         TotalColumns = container.Columns,
         TotalRows = container.Rows,
       };
-      _screenAspectRatio = new ScreenAspectRatio(Screen.PrimaryScreen);
+      _screenAspectRatio = new DisplayAspectRatio(Screen.PrimaryScreen);
     }
 
     private void PostInitialize()
@@ -227,7 +227,7 @@ namespace Windowmancer.UI
     private void DisplayListBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
       _activeDisplayContainer = (DisplayContainer)this.DisplayListBox.SelectedItem;
-      _screenAspectRatio = new ScreenAspectRatio(_activeDisplayContainer);
+      _screenAspectRatio = new DisplayAspectRatio(_activeDisplayContainer);
       if (_activeDisplayContainer.Height > _activeDisplayContainer.Width)
       {
         this.DisplayPanel.Height = this.DisplayPanel.MaxHeight;

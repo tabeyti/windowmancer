@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
@@ -16,10 +17,6 @@ namespace Windowmancer.UI
   /// </summary>
   public partial class WindowHostContainer : MetroWindow
   {
-    private readonly Dictionary<IntPtr, DockedWindow> _dockedWindowsDict = new Dictionary<IntPtr, DockedWindow>();
-
-    public int Rows { get; set; }
-    public int Columns { get; set; }
     public int CurrentRowIndex { get; private set; }
     public int CurrentColumnIndex { get; private set; }
 
@@ -27,18 +24,17 @@ namespace Windowmancer.UI
 
     public string ContainerLabel { get; private set; }
 
-    public WindowHostContainer(string containerLabel, int rows, int columns)
+    public DisplayContainer DisplayContainer { get; set; }
+
+    public WindowHostContainer(DisplayContainer displayContiner)
     {
-      this.ContainerLabel = containerLabel;
-      this.Rows = rows;
-      this.Columns = columns;
+      this.DisplayContainer = displayContiner;
       InitializeComponent();
     }
 
     public WindowHostContainer()
     {
-      this.ContainerLabel = "Default";
-      this.Rows = this.Columns = 1;
+      this.DisplayContainer = new DisplayContainer("Default", 0, 0, 1, 1);
       Initialize();
     }
 
@@ -46,16 +42,16 @@ namespace Windowmancer.UI
     {
       this.Closing += (o, e) =>
       {
-        foreach (var kv in _dockedWindowsDict)
+        foreach (var dw in this.DisplayContainer.DockedWindows)
         {
-          kv.Value.Process?.Kill();
+          dw.Process?.Kill();
         }
       };
     }
 
     public void DockProc(Process process, int rowIndex, int columnIndex)
     {
-      if (_dockedWindowsDict.ContainsKey(process.Handle))
+      if (this.DisplayContainer.DockedWindows.Any(dw => dw.Process.Handle == process.Handle))
       {
         return;
       }
@@ -65,7 +61,9 @@ namespace Windowmancer.UI
         Row = rowIndex,
         Column = columnIndex
       };
-      _dockedWindowsDict.Add(process.Handle, windowToDock);
+
+
+      this.DisplayContainer.DockedWindows.Add(windowToDock);
       while (process.MainWindowHandle == IntPtr.Zero)
       {
         // We try catch here because some windows (e.g. cmd) 
@@ -96,9 +94,9 @@ namespace Windowmancer.UI
     /// <param name="process"></param>
     public void DockProc(Process process)
     {
-      if (this.CurrentColumnIndex >= this.Columns)
+      if (this.CurrentColumnIndex >= this.DisplayContainer.Columns)
       {
-        if (this.CurrentRowIndex >= this.Rows)
+        if (this.CurrentRowIndex >= this.DisplayContainer.Rows)
         {
           return;
         }
@@ -132,8 +130,8 @@ namespace Windowmancer.UI
       var screenWidth = this.ActualWidth;
       var screenHeight = this.ActualHeight;
 
-      var totalRows = this.Rows;
-      var totalCols = this.Columns;
+      var totalRows = this.DisplayContainer.Rows;
+      var totalCols = this.DisplayContainer.Columns;
 
       var x = (int)(screenWidth / totalCols) * columnIndex;
       var y = (int)(((screenHeight / totalRows) * rowIndex) + _titlebarHeight);
@@ -146,9 +144,9 @@ namespace Windowmancer.UI
 
     public void SetChildWindowsVisible(bool isVisible)
     {
-      foreach (var kv in _dockedWindowsDict)
+      foreach (var dw in this.DisplayContainer.DockedWindows)
       {
-        WindowManager.SetWindowOpacityPercentage(kv.Value.Process, (uint)(isVisible ? 100 : 0));
+        WindowManager.SetWindowOpacityPercentage(dw.Process, (uint)(isVisible ? 100 : 0));
       }
     }
 
@@ -158,11 +156,7 @@ namespace Windowmancer.UI
 
       var flyout = this.Flyouts.Items[0] as Flyout;
       if (flyout == null) return;
-      var displayContainer = new DisplayContainer(this.Title, 0, 0,
-        (int) this.ActualWidth, (int) this.ActualHeight, this.Rows, this.Columns);
-
-      var processList = _dockedWindowsDict.Values.Select(d => d.Process).ToList();
-      var displayHelper = new DisplayHelper2(_dockedWindowsDict.Values, displayContainer)
+      var displayHelper = new DisplayHelper2(this.DisplayContainer)
       {
         DisplayContainersSelectable = false
       };

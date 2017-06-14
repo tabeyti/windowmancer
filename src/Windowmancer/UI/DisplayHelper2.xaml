@@ -104,7 +104,7 @@
                    Grid.Column="1"
                    Style="{StaticResource MyListBox}"
                    ItemContainerStyle="{StaticResource MyListBoxItem}"
-                   ItemsSource="{StaticResource DockedWindows}">
+                   ItemsSource="{Binding DisplayHelperViewModel.ActiveDisplayContainer.DockedWindows}">
             <ListBox.ItemTemplate>
               <DataTemplate>
                 <Grid Margin="3,3">

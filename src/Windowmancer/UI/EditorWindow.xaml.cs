@@ -321,10 +321,10 @@ namespace Windowmancer.UI
       
       if (_windowHostContainer == null)
       {
-        _windowHostContainer = new WindowHostContainer("ham", 2, 2);
-        _windowHostContainer.Show();
+        //_windowHostContainer = new WindowHostContainer("ham", 2, 2);
+        //_windowHostContainer.Show();
       }
-      _windowHostContainer.DockProc(process);
+      //_windowHostContainer.DockProc(process);
     }
 
     private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
@@ -349,7 +349,8 @@ namespace Windowmancer.UI
     {
       if (_windowHostContainer == null)
       {
-        _windowHostContainer = new WindowHostContainer("ham", 2, 2);
+        _windowHostContainer = new WindowHostContainer(new DisplayContainer(
+          "Bagel Container", 0, 0, 1152, 648, 2, 2));
         _windowHostContainer.Show();
       }
       _windowHostContainer.DockProc(Process.Start("cmd.exe"));

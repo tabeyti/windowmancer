@@ -11,14 +11,6 @@ namespace Windowmancer.Extensions
 {
   public static class DisplayContainerExtensions
   {
-    public static DisplayContainer FromWindowHost(WindowHostContainer window)
-    {
-      return new DisplayContainer(
-        window.Title, 0, 0, 
-        (int) window.ActualWidth, 
-        (int) window.ActualHeight, 
-        window.Rows, 
-        window.Columns);
-    }
+    
   }
 }

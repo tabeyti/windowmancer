@@ -30,7 +30,7 @@ namespace Windowmancer.UI
     public bool DisplayHelperPreview { get; set; }
     public bool WindowStylingPreview { get; set; }
 
-    public ScreenAspectRatio ScreenAspectRatio { get; set; }
+    public DisplayAspectRatio ScreenAspectRatio { get; set; }
     public WindowInfo WindowInfo { get; set; }
 
     // Container for storing origina values prior to "preview"
@@ -79,7 +79,7 @@ namespace Windowmancer.UI
     /// </summary>
     private void PreInitialization()
     {
-      this.ScreenAspectRatio = new ScreenAspectRatio(Screen.PrimaryScreen);
+      this.ScreenAspectRatio = new DisplayAspectRatio(Screen.PrimaryScreen);
 
       if (_process != null)
       {
@@ -291,7 +291,7 @@ namespace Windowmancer.UI
     private void DisplaysComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
     {
       _screen = (Screen)this.DisplayListBox.SelectedItem;
-      this.ScreenAspectRatio = new ScreenAspectRatio(_screen);
+      this.ScreenAspectRatio = new DisplayAspectRatio(_screen);
       if (_screen.Bounds.Height > _screen.Bounds.Width)
       {
         this.DisplayPanel.Height = this.DisplayPanel.MaxHeight;

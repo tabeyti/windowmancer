@@ -103,7 +103,7 @@
     <Compile Include="Models\PreferencesModel.cs" />
     <Compile Include="Models\Profile.cs" />
     <Compile Include="Models\PropertyNotifyBase.cs" />
-    <Compile Include="Models\ScreenAspectRatio.cs" />
+    <Compile Include="Models\DisplayAspectRatio.cs" />
     <Compile Include="Models\UserData.cs" />
     <Compile Include="Models\WindowInfo.cs" />
     <Compile Include="Models\WindowMatchCriteria.cs" />

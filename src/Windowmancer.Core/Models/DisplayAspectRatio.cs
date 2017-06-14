@@ -4,17 +4,17 @@ using Windowmancer.Core.Practices;
 
 namespace Windowmancer.Core.Models
 {
-  public class ScreenAspectRatio : INotifyPropertyChanged
+  public class DisplayAspectRatio : INotifyPropertyChanged
   {
     public double XRatio { get; set; }
     public double YRatio { get; set; }
 
-    public ScreenAspectRatio(Screen screen)
+    public DisplayAspectRatio(Screen screen)
     {
       Update(screen.Bounds.Width, screen.Bounds.Height);
     }
 
-    public ScreenAspectRatio(DisplayContainer container)
+    public DisplayAspectRatio(DisplayContainer container)
     {
       Update(container.Width, container.Height);
     }
