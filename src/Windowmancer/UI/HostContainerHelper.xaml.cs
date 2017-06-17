@@ -133,16 +133,9 @@ namespace Windowmancer.UI
       var screenWidth = this.DisplayPanelGrid.ActualWidth;
       var screenHeight = this.DisplayPanelGrid.ActualHeight;
 
-      // TODO: Debug
       var container = this.HostContainerHelperViewModel.ActiveDisplayContainer;
-      var totalRows = container.Rows;
-      var totalCols = container.Columns;
-
-      var width = (screenWidth / totalCols);
-      var height = (screenHeight / totalRows);
-
-      image.Width = width;
-      image.Height = height;
+      image.Width = (screenWidth / container.Columns);
+      image.Height = (screenHeight / container.Rows);
     }
 
     private void Canvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -422,6 +415,7 @@ namespace Windowmancer.UI
 
       Canvas.SetLeft(this.HighlightSection.Rectangle, x);
       Canvas.SetTop(this.HighlightSection.Rectangle, y);
+      this.HighlightSection.Rectangle.Visibility = Visibility.Visible;
       Panel.SetZIndex(this.HighlightSection.Rectangle, 0);
     }
 
@@ -432,6 +426,7 @@ namespace Windowmancer.UI
         image.Visibility = Visibility.Hidden;
       }
       this.DockedWindowImageDict.Clear();
+      this.HighlightSection.Rectangle = null;
     }
   }
 
