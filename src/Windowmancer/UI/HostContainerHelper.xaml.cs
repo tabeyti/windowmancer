@@ -77,8 +77,11 @@ namespace Windowmancer.UI
     
     private void RecreateDisplaySectionControl(int rows, int cols)
     {
-      ClearDisplaySectionPanel();
+      // Clear.
+      this.DisplayPanelGrid.Children.Clear();
+      this.CanvasViewModel.Clear();
 
+      // Create.
       this.CanvasViewModel.Canvas = new Canvas { Background = _defaultBrush };
       this.CanvasViewModel.Canvas.MouseLeftButtonDown += Canvas_MouseLeftButtonDown;
       this.CanvasViewModel.Canvas.MouseLeftButtonUp += Canvas_MouseLeftButtonUp;
@@ -88,7 +91,7 @@ namespace Windowmancer.UI
       Enumerable.Range(0, rows).ForEach(r =>
         Enumerable.Range(0, cols).ForEach(c =>
         {
-          var i = (rows * r) + c;
+          var i = (cols * r) + c;
           if (i >= dockedWindows.Count)
           {
             return;
@@ -97,23 +100,14 @@ namespace Windowmancer.UI
           var image = new Image {Source = Helper.ScreenShotProcessWindow(d.Process)};
           SizeImageToCanvas(image);
           this.CanvasViewModel.Canvas.Children.Add(image);
-          SetImageToSection(image, r, c);
-          this.HostContainerHelperViewModel.DockedWindowImageDict.Add(d, image);
+          MoveImageToSection(image, r, c);
+          this.CanvasViewModel.DockedWindowImageDict.Add(d, image);
         }));
 
+      // Add.
       this.DisplayPanelGrid.Children.Add(this.CanvasViewModel.Canvas);
     }
-
-    private void ClearDisplaySectionPanel()
-    {
-      this.DisplayPanelGrid.Children.RemoveRange(0, this.DisplayPanelGrid.Children.Count);
-      foreach (var image in this.HostContainerHelperViewModel.DockedWindowImageDict.Values)
-      {
-        image.Visibility = Visibility.Hidden;
-      }
-      this.HostContainerHelperViewModel.DockedWindowImageDict.Clear();
-    }
-
+    
     private void SizeDisplayHelperBox()
     {
       this.HostContainerHelperViewModel.ActiveDisplayContainer = (DisplayContainer)this.DisplayListBox.SelectedItem;
@@ -162,7 +156,16 @@ namespace Windowmancer.UI
         this.CanvasViewModel.HighlightSection.Rectangle.Visibility = Visibility.Visible;
       }
       this.CanvasViewModel.DraggedImage = image;
-      Panel.SetZIndex(this.CanvasViewModel.DraggedImage, 1); // in case of multiple images
+
+      // Set dragged image as top and other images to bottom.
+      Panel.SetZIndex(this.CanvasViewModel.DraggedImage, 1);
+      foreach (var img in this.CanvasViewModel.DockedWindowImageDict.Values)
+      {
+        if (img != image)
+        {
+          Panel.SetZIndex(img, 0);
+        }
+      }
     }
 
     private void Canvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -170,7 +173,10 @@ namespace Windowmancer.UI
       if (this.CanvasViewModel.DraggedImage == null) return;
       this.CanvasViewModel.Canvas.ReleaseMouseCapture();
       this.CanvasViewModel.HighlightSection.Rectangle.Visibility = Visibility.Hidden;
-      SetImageToSection(this.CanvasViewModel.DraggedImage, this.CanvasViewModel.HighlightSection.Row, this.CanvasViewModel.HighlightSection.Column);
+      MoveImageToSection(
+        this.CanvasViewModel.DraggedImage, 
+        this.CanvasViewModel.HighlightSection.Row, 
+        this.CanvasViewModel.HighlightSection.Column);
       this.CanvasViewModel.DraggedImage = null;
     }
 
@@ -207,8 +213,6 @@ namespace Windowmancer.UI
         Canvas.SetTop(this.CanvasViewModel.DraggedImage, yPos);
 
         // Position relative to mouse.
-        this.CanvasViewModel.CanvasX = (int)Mouse.GetPosition(this.CanvasViewModel.Canvas).X;
-        this.CanvasViewModel.CanvasY = (int)Mouse.GetPosition(this.CanvasViewModel.Canvas).Y;
         var centerX = (int)Mouse.GetPosition(this.CanvasViewModel.Canvas).X;
         var centerY = (int)Mouse.GetPosition(this.CanvasViewModel.Canvas).Y;
         
@@ -218,71 +222,36 @@ namespace Windowmancer.UI
 
     private void HighlightDisplaySection(int x, int y)
     {
-      var rows = (int)this.RowSpinner.Value;
-      var columns = (int)this.ColumnSpinner.Value;
+      var rows = this.HostContainerHelperViewModel.ActiveDisplayContainer.Rows;
+      var columns = this.HostContainerHelperViewModel.ActiveDisplayContainer.Columns;
 
       var sectionWidth = (int)this.CanvasViewModel.Canvas.ActualWidth / columns;
       var sectionHeight = (int)this.CanvasViewModel.Canvas.ActualHeight / rows;
 
-      for (int row = 0; row < rows; ++row)
+      for (var row = 0; row < rows; ++row)
       {
-        for (int col = 0; col < columns; ++col)
+        for (var col = 0; col < columns; ++col)
         {
           var xStart = sectionWidth * (col);
           var xEnd = xStart + sectionWidth;
 
           var yStart = sectionHeight * row;
           var yEnd = yStart + sectionHeight;
-          
-          if (x >= xStart && x <= xEnd &&
-              y >= yStart && y <= yEnd)
-          {
-            this.CanvasViewModel.CanvasRow = row;
-            this.CanvasViewModel.CanvasColumn = col;
-            HightlightCanvasSection(
-              row, 
-              col, 
-              xStart,
-              yStart,
-              sectionWidth, 
-              sectionHeight);
-            return;
-          }
+
+          if (x < xStart || x > xEnd || y < yStart || y > yEnd) continue;
+          this.CanvasViewModel.HightlightCanvasSection(
+            row, 
+            col, 
+            xStart,
+            yStart,
+            sectionWidth, 
+            sectionHeight);
+          return;
         }
       }
     }
 
-    private void HightlightCanvasSection(
-      int row, 
-      int col, 
-      int x,
-      int y,
-      int width, 
-      int height)
-    {
-      if (this.CanvasViewModel.HighlightSection.Row == row && this.CanvasViewModel.HighlightSection.Column == col)
-      {
-        return;
-      }
-      this.CanvasViewModel.HighlightSection.Row = row;
-      this.CanvasViewModel.HighlightSection.Column = col;
-      if (this.CanvasViewModel.HighlightSection.Rectangle == null)
-      {
-        this.CanvasViewModel.HighlightSection.Rectangle = new Rectangle
-        {
-          Width = width,
-          Height = height,
-          Fill = new SolidColorBrush { Color = Color.FromRgb(255, 242, 0) }
-        };
-        this.CanvasViewModel.Canvas.Children.Add(this.CanvasViewModel.HighlightSection.Rectangle);
-      }
-      
-      Canvas.SetLeft(this.CanvasViewModel.HighlightSection.Rectangle, x);
-      Canvas.SetTop(this.CanvasViewModel.HighlightSection.Rectangle, y);
-      Panel.SetZIndex(this.CanvasViewModel.HighlightSection.Rectangle, 0);
-    }
-
-    private void SetImageToSection(Image image, int row, int column)
+    private void MoveImageToSection(Image image, int row, int column)
     {
       var rows = this.HostContainerHelperViewModel.ActiveDisplayContainer.Rows;
       var columns = this.HostContainerHelperViewModel.ActiveDisplayContainer.Columns;
@@ -301,11 +270,9 @@ namespace Windowmancer.UI
 
     private void DisplayHelper_OnLoaded(object sender, RoutedEventArgs e)
     {
-      _rowColSpinnerEnabled = false;
-      var rows = this.RowSpinner.Value = this.HostContainerHelperViewModel.ActiveDisplayContainer.Rows;
-      var columns = this.ColumnSpinner.Value = this.HostContainerHelperViewModel.ActiveDisplayContainer.Columns;
-      _rowColSpinnerEnabled = true;
-      RecreateDisplaySectionControl((int)rows, (int)columns);
+      RecreateDisplaySectionControl(
+        this.HostContainerHelperViewModel.ActiveDisplayContainer.Rows,
+        this.HostContainerHelperViewModel.ActiveDisplayContainer.Columns);
     }
 
     private void SetDisplayHelperLayoutButton_OnClick(object sender, RoutedEventArgs e)
@@ -365,8 +332,6 @@ namespace Windowmancer.UI
       get => GetProperty<DisplayAspectRatio>();
       private set => SetProperty(value);
     }
-
-    public Dictionary<DockedWindow, Image> DockedWindowImageDict { get; set; }
     
     public HostContainerViewModel()
     {
@@ -374,8 +339,6 @@ namespace Windowmancer.UI
       RegisterProperty<DisplayContainer>("ActiveDisplayContainer", null);
       RegisterProperty("DisplayContainers", new ObservableCollection<DisplayContainer>());
       RegisterProperty<DisplayAspectRatio>("DisplayAspectRatio", null);
-
-      DockedWindowImageDict = new Dictionary<DockedWindow, Image>();
     }
   }
 
@@ -393,25 +356,13 @@ namespace Windowmancer.UI
       set => SetProperty(value);
     }
 
-    public int CanvasX
+    public int Row
     {
       get => GetProperty<int>();
       set => SetProperty(value);
     }
 
-    public int CanvasY
-    {
-      get => GetProperty<int>();
-      set => SetProperty(value);
-    }
-
-    public int CanvasRow
-    {
-      get => GetProperty<int>();
-      set => SetProperty(value);
-    }
-
-    public int CanvasColumn
+    public int Column
     {
       get => GetProperty<int>();
       set => SetProperty(value);
@@ -429,16 +380,58 @@ namespace Windowmancer.UI
       set => SetProperty(value);
     }
 
+    public Dictionary<DockedWindow, Image> DockedWindowImageDict { get; set; }
+
     public CanvasViewModel()
     {
       RegisterProperty<int>("CanvasX");
       RegisterProperty<int>("CanvasY");
-      RegisterProperty<int>("CanvasRow");
-      RegisterProperty<int>("CanvasColumn");
+      RegisterProperty<int>("Row");
+      RegisterProperty<int>("Column");
       RegisterProperty<Canvas>("Canvas", null);
       RegisterProperty<Image>("DraggedImage", null);
       RegisterProperty("HighlightSection", new HighlightSection());
       RegisterProperty("MousePosition", new Point());
+      DockedWindowImageDict = new Dictionary<DockedWindow, Image>();
+    }
+
+    public void HightlightCanvasSection(
+      int row,
+      int col,
+      int x,
+      int y,
+      int width,
+      int height)
+    {
+      if (this.HighlightSection.Row == row && this.HighlightSection.Column == col)
+      {
+        return;
+      }
+      this.HighlightSection.Row = row;
+      this.HighlightSection.Column = col;
+      if (this.HighlightSection.Rectangle == null)
+      {
+        this.HighlightSection.Rectangle = new Rectangle
+        {
+          Width = width,
+          Height = height,
+          Fill = new SolidColorBrush { Color = Color.FromRgb(255, 242, 0) }
+        };
+        this.Canvas.Children.Add(this.HighlightSection.Rectangle);
+      }
+
+      Canvas.SetLeft(this.HighlightSection.Rectangle, x);
+      Canvas.SetTop(this.HighlightSection.Rectangle, y);
+      Panel.SetZIndex(this.HighlightSection.Rectangle, 0);
+    }
+
+    public void Clear()
+    {
+      foreach (var image in this.DockedWindowImageDict.Values)
+      {
+        image.Visibility = Visibility.Hidden;
+      }
+      this.DockedWindowImageDict.Clear();
     }
   }
 

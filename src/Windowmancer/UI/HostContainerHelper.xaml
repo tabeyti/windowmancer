@@ -70,10 +70,11 @@
           <xctk:IntegerUpDown Name="RowSpinner" 
                               Grid.Row="0" Grid.Column="1" 
                               Foreground="White"
-                              Value="1"
+                              Value="{Binding HostContainerHelperViewModel.ActiveDisplayContainer.Rows}"
                               Minimum="1"
                               Maximum="10"
-                              Height="20"/>
+                              Height="20"
+                              />
           <Label Grid.Row="1" Grid.Column="0" 
                  Content="Columns:" 
                  HorizontalAlignment="Left" 
@@ -81,7 +82,7 @@
           <xctk:IntegerUpDown Name="ColumnSpinner" 
                               Grid.Row="1" Grid.Column="1" 
                               Foreground="White"
-                              Value="1"
+                              Value="{Binding HostContainerHelperViewModel.ActiveDisplayContainer.Columns}"
                               Minimum="1"
                               Maximum="10"
                               Height="20"/>
@@ -100,38 +101,23 @@
         <StackPanel>
           <GroupBox Header="Windows"
                   Style="{StaticResource MyGroupBoxStyle}">
-          <ListBox Name="DockedWindowsListBox"
+            <ListBox Name="DockedWindowsListBox"
                    Grid.Column="1"
                    Style="{StaticResource MyListBox}"
                    ItemContainerStyle="{StaticResource MyListBoxItem}"
                    ItemsSource="{Binding HostContainerHelperViewModel.ActiveDisplayContainer.DockedWindows}">
-            <ListBox.ItemTemplate>
-              <DataTemplate>
-                <Grid Margin="3,3">
-                  <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                  </Grid.ColumnDefinitions>
-                  <TextBlock Text="{Binding Process.MainWindowTitle}" />
-                </Grid>
-              </DataTemplate>
-            </ListBox.ItemTemplate>
-          </ListBox>
-        </GroupBox>
-          <StackPanel>
-            <StackPanel Grid.Row="6" Grid.Column="0" Orientation="Horizontal">
-              <xctk:IntegerUpDown Value="{Binding HostContainerHelperViewModel.CanvasX}"
-                                Foreground="White"/>
-              <xctk:IntegerUpDown Value="{Binding HostContainerHelperViewModel.CanvasY}"
-                                Foreground="White"/>
-            </StackPanel>
-            <StackPanel Grid.Row="6" Grid.Column="0" Orientation="Horizontal">
-              <xctk:IntegerUpDown Value="{Binding HostContainerHelperViewModel.CanvasRow}"
-                                  Foreground="White"/>
-              <xctk:IntegerUpDown Value="{Binding HostContainerHelperViewModel.CanvasColumn}"
-                                  Foreground="White"/>
-            </StackPanel>
-            <TextBlock Name="DebugTextBox"/>
-          </StackPanel>
+              <ListBox.ItemTemplate>
+                <DataTemplate>
+                  <Grid Margin="3,3">
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{Binding Process.MainWindowTitle}" />
+                  </Grid>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+          </GroupBox>
         </StackPanel>
       </Grid>
 
