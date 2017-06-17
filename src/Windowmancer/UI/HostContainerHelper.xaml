@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Windowmancer.UI.DisplayHelper2"
+﻿<UserControl x:Class="Windowmancer.UI.HostContainerHelper"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -104,7 +104,7 @@
                    Grid.Column="1"
                    Style="{StaticResource MyListBox}"
                    ItemContainerStyle="{StaticResource MyListBoxItem}"
-                   ItemsSource="{Binding DisplayHelperViewModel.ActiveDisplayContainer.DockedWindows}">
+                   ItemsSource="{Binding HostContainerHelperViewModel.ActiveDisplayContainer.DockedWindows}">
             <ListBox.ItemTemplate>
               <DataTemplate>
                 <Grid Margin="3,3">
@@ -119,15 +119,15 @@
         </GroupBox>
           <StackPanel>
             <StackPanel Grid.Row="6" Grid.Column="0" Orientation="Horizontal">
-              <xctk:IntegerUpDown Value="{Binding DisplayHelperViewModel.CanvasX}"
+              <xctk:IntegerUpDown Value="{Binding HostContainerHelperViewModel.CanvasX}"
                                 Foreground="White"/>
-              <xctk:IntegerUpDown Value="{Binding DisplayHelperViewModel.CanvasY}"
+              <xctk:IntegerUpDown Value="{Binding HostContainerHelperViewModel.CanvasY}"
                                 Foreground="White"/>
             </StackPanel>
             <StackPanel Grid.Row="6" Grid.Column="0" Orientation="Horizontal">
-              <xctk:IntegerUpDown Value="{Binding DisplayHelperViewModel.CanvasRow}"
+              <xctk:IntegerUpDown Value="{Binding HostContainerHelperViewModel.CanvasRow}"
                                   Foreground="White"/>
-              <xctk:IntegerUpDown Value="{Binding DisplayHelperViewModel.CanvasColumn}"
+              <xctk:IntegerUpDown Value="{Binding HostContainerHelperViewModel.CanvasColumn}"
                                   Foreground="White"/>
             </StackPanel>
             <TextBlock Name="DebugTextBox"/>

@@ -167,8 +167,8 @@
     </Compile>
     <Compile Include="UI\Converters\EnumBooleanConverter.cs" />
     <Compile Include="UI\Converters\StringTruncateConverter.cs" />
-    <Compile Include="UI\DisplayHelper2.xaml.cs">
-      <DependentUpon>DisplayHelper2.xaml</DependentUpon>
+    <Compile Include="UI\HostContainerHelper.xaml.cs">
+      <DependentUpon>HostContainerHelper.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\DisplayHelper.xaml.cs">
       <DependentUpon>DisplayHelper.xaml</DependentUpon>
@@ -214,7 +214,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\DisplayHelper2.xaml">
+    <Page Include="UI\HostContainerHelper.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

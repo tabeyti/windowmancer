@@ -156,7 +156,7 @@ namespace Windowmancer.UI
 
       var flyout = this.Flyouts.Items[0] as Flyout;
       if (flyout == null) return;
-      var displayHelper = new DisplayHelper2(this.DisplayContainer)
+      var displayHelper = new HostContainerHelper(this.DisplayContainer)
       {
         DisplayContainersSelectable = false
       };
