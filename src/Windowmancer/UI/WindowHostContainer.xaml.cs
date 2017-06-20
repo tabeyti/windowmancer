@@ -163,5 +163,9 @@ namespace Windowmancer.UI
       flyout.Content = displayHelper;
       flyout.IsOpen = true;
     }
+
+    private void WindowHostContainer_OnLoaded(object sender, RoutedEventArgs e)
+    {
+    }
   }
 }

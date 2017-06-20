@@ -10,6 +10,7 @@
                       ShowTitleBar="True"
                       Title="{Binding ContainerLabel}"
                       mc:Ignorable="d"
+                      Loaded="WindowHostContainer_OnLoaded"
                       DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
   <Controls:MetroWindow.Flyouts>

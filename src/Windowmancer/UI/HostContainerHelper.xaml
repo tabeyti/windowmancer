@@ -55,8 +55,8 @@
             <ColumnDefinition Width="*" />
           </Grid.ColumnDefinitions>
           <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="25"/>
             <RowDefinition Height="20"/>
             <RowDefinition />
             <RowDefinition Height="20"/>
@@ -71,10 +71,9 @@
                               Grid.Row="0" Grid.Column="1" 
                               Foreground="White"
                               Value="{Binding HostContainerHelperViewModel.ActiveDisplayContainer.Rows}"
+                              VerticalAlignment="Center"
                               Minimum="1"
-                              Maximum="10"
-                              Height="20"
-                              />
+                              Maximum="10"/>
           <Label Grid.Row="1" Grid.Column="0" 
                  Content="Columns:" 
                  HorizontalAlignment="Left" 
@@ -82,12 +81,12 @@
           <xctk:IntegerUpDown Name="ColumnSpinner" 
                               Grid.Row="1" Grid.Column="1" 
                               Foreground="White"
+                              VerticalAlignment="Center"
                               Value="{Binding HostContainerHelperViewModel.ActiveDisplayContainer.Columns}"
                               Minimum="1"
-                              Maximum="10"
-                              Height="20"/>
+                              Maximum="10"/>
           <Button Name="SetDisplayHelperLayoutButton" 
-                  Grid.Row="5" Grid.ColumnSpan="2" Grid.Column="0"
+                  Grid.Row="2" Grid.ColumnSpan="2" Grid.Column="0"
                   Margin="10"
                   Click="SetDisplayHelperLayoutButton_OnClick"
                   HorizontalAlignment="Stretch"

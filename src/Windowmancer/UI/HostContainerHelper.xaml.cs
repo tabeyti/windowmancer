@@ -86,6 +86,13 @@ namespace Windowmancer.UI
       this.CanvasViewModel.Canvas.MouseLeftButtonDown += Canvas_MouseLeftButtonDown;
       this.CanvasViewModel.Canvas.MouseLeftButtonUp += Canvas_MouseLeftButtonUp;
       this.CanvasViewModel.Canvas.MouseMove += Canvas_MouseMove;
+      this.CanvasViewModel.Canvas.Loaded += (o, e) =>
+      {
+        foreach (var kv in this.CanvasViewModel.DockedWindowImageDict)
+        {
+          MoveImageToSection(kv.Value, kv.Key.Row, kv.Key.Column);
+        }
+      };
 
       var dockedWindows = this.HostContainerHelperViewModel.ActiveDisplayContainer.DockedWindows;
       Enumerable.Range(0, rows).ForEach(r =>
@@ -100,7 +107,7 @@ namespace Windowmancer.UI
           var image = new Image {Source = Helper.ScreenShotProcessWindow(d.Process)};
           SizeImageToCanvas(image);
           this.CanvasViewModel.Canvas.Children.Add(image);
-          MoveImageToSection(image, r, c);
+          //MoveImageToSection(image, r, c);
           this.CanvasViewModel.DockedWindowImageDict.Add(d, image);
         }));
 
