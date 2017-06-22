@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Windowmancer.Core.Models
 {
-  public class DockedWindow : ICloneable
+  public class DockableWindow : ICloneable
   {
     public Process Process { get; set; }
     public IntPtr ParentHandle { get; set; }
@@ -15,15 +15,15 @@ namespace Windowmancer.Core.Models
     public int Row { get; set; }
     public int Column { get; set; }
 
-    public DockedWindow() { }
-    public DockedWindow(Process process)
+    public DockableWindow() { }
+    public DockableWindow(Process process)
     {
       this.Process = process;
     }
 
     public object Clone()
     {
-      return new DockedWindow
+      return new DockableWindow
       {
         Process = this.Process,
         ParentHandle = this.ParentHandle,

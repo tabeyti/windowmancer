@@ -47,9 +47,9 @@ namespace Windowmancer.Core.Models
       set => SetProperty(value);
     }
 
-    public ObservableCollection<DockedWindow> DockedWindows
+    public ObservableCollection<DockableWindow> DockedWindows
     {
-      get => GetProperty<ObservableCollection<DockedWindow>>();
+      get => GetProperty<ObservableCollection<DockableWindow>>();
       set => SetProperty(value);
     }
 
@@ -62,8 +62,8 @@ namespace Windowmancer.Core.Models
       RegisterProperty("Height", screen.Bounds.Height);
       RegisterProperty("Rows", 1);
       RegisterProperty("Columns", 1);
-      RegisterProperty<DockedWindow>("ActiveDockedWindow");
-      RegisterProperty("DockedWindows", new ObservableCollection<DockedWindow>());
+      RegisterProperty<DockableWindow>("ActiveDockedWindow");
+      RegisterProperty("DockedWindows", new ObservableCollection<DockableWindow>());
     }
     
     public DisplayContainer(string name, int x, int y, int width, int height)
@@ -75,8 +75,8 @@ namespace Windowmancer.Core.Models
       RegisterProperty("Height", height);
       RegisterProperty("Rows", 1);
       RegisterProperty("Columns", 1);
-      RegisterProperty<DockedWindow>("ActiveDockedWindow");
-      RegisterProperty("DockedWindows", new ObservableCollection<DockedWindow>());
+      RegisterProperty<DockableWindow>("ActiveDockedWindow");
+      RegisterProperty("DockedWindows", new ObservableCollection<DockableWindow>());
     }
 
     public DisplayContainer(string name, int x, int y, int width, int height, int rows, int columns)
@@ -88,8 +88,8 @@ namespace Windowmancer.Core.Models
       RegisterProperty("Height", height);
       RegisterProperty("Rows", rows);
       RegisterProperty("Columns", columns);
-      RegisterProperty<DockedWindow>("ActiveDockedWindow");
-      RegisterProperty("DockedWindows", new ObservableCollection<DockedWindow>());
+      RegisterProperty<DockableWindow>("ActiveDockedWindow");
+      RegisterProperty("DockedWindows", new ObservableCollection<DockableWindow>());
     }
 
     public object Clone()
@@ -97,7 +97,7 @@ namespace Windowmancer.Core.Models
       var dc = new DisplayContainer(this.Name, this.X, this.Y, this.Width, this.Height);
       foreach (var d in this.DockedWindows)
       {
-        dc.DockedWindows.Add(d.Clone() as DockedWindow);
+        dc.DockedWindows.Add(d.Clone() as DockableWindow);
       }
       return dc;
     }

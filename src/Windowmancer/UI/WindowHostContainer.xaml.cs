@@ -56,7 +56,7 @@ namespace Windowmancer.UI
         return;
       }
 
-      var windowToDock = new DockedWindow(process)
+      var windowToDock = new DockableWindow(process)
       {
         Row = rowIndex,
         Column = columnIndex
@@ -106,7 +106,7 @@ namespace Windowmancer.UI
       DockProc(process, this.CurrentRowIndex, this.CurrentColumnIndex++);
     }
 
-    private void RefreshDockedWindow(DockedWindow windowToDock)
+    private void RefreshDockedWindow(DockableWindow windowToDock)
     {
       // Retrieve the window handle for this host container window.
       var window = Window.GetWindow(this);
@@ -125,7 +125,7 @@ namespace Windowmancer.UI
       MoveChildWindow(windowToDock, windowToDock.Row, windowToDock.Column);
     }
 
-    private void MoveChildWindow(DockedWindow dockedWindow, int rowIndex, int columnIndex)
+    private void MoveChildWindow(DockableWindow dockableWindow, int rowIndex, int columnIndex)
     {
       var screenWidth = this.ActualWidth;
       var screenHeight = this.ActualHeight;
@@ -139,7 +139,7 @@ namespace Windowmancer.UI
       var width = (int)(screenWidth / totalCols);
       var height = (int)(screenHeight / totalRows);
 
-      Win32.MoveWindow(dockedWindow.Process.MainWindowHandle, x, y, (int)width, (int)height, true);
+      Win32.MoveWindow(dockableWindow.Process.MainWindowHandle, x, y, (int)width, (int)height, true);
     }
 
     public void SetChildWindowsVisible(bool isVisible)
