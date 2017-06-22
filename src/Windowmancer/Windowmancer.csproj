@@ -157,6 +157,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Extensions\DisplayContainerExtensions.cs" />
+    <Compile Include="Extensions\UIElementExtensions.cs" />
     <Compile Include="Practices\WmServiceResolver.cs" />
     <Compile Include="UI\AboutDialog.xaml.cs">
       <DependentUpon>AboutDialog.xaml</DependentUpon>

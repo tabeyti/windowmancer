@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -12,7 +11,8 @@ using Windowmancer.Core.Practices;
 using UserControl = System.Windows.Controls.UserControl;
 using System.Windows.Input;
 using System.Windows.Shapes;
-using Panel = System.Windows.Controls.Panel;
+using Windowmancer.Core.Models.Base;
+using Windowmancer.Extensions;
 
 namespace Windowmancer.UI
 {
@@ -37,7 +37,6 @@ namespace Windowmancer.UI
       this.HostContainerHelperViewModel.ActiveDisplayContainer = displayContainer;
       PreInitialize();
       InitializeComponent();
-      this.CanvasViewModel = new CanvasViewModel(this.DebugTextBox);
       PostInitialize();
     }
 
@@ -77,17 +76,14 @@ namespace Windowmancer.UI
     
     private void RecreateDisplaySectionControl(int rows, int cols)
     {
-      // Clear.
+      // Reset.
       this.DisplayPanelGrid.Children.Clear();
-      this.CanvasViewModel.Clear();
+      this.CanvasViewModel.Reset();
 
       // Create.
       this.CanvasViewModel.Rows = this.HostContainerHelperViewModel.ActiveDisplayContainer.Rows;
       this.CanvasViewModel.Columns = this.HostContainerHelperViewModel.ActiveDisplayContainer.Columns;
       this.CanvasViewModel.Canvas = new Canvas { Background = _defaultBrush };
-      this.CanvasViewModel.Canvas.MouseLeftButtonDown += Canvas_MouseLeftButtonDown;
-      this.CanvasViewModel.Canvas.MouseLeftButtonUp += Canvas_MouseLeftButtonUp;
-      this.CanvasViewModel.Canvas.MouseMove += Canvas_MouseMove;
 
       var dockableWindows = this.HostContainerHelperViewModel.ActiveDisplayContainer.DockedWindows;
       Enumerable.Range(0, rows).ForEach(r =>
@@ -125,95 +121,23 @@ namespace Windowmancer.UI
 
     #region Event Methods
 
-    #region Canvas Methods
-
-    private void Canvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-    {
-      var image = e.Source as Image;
-
-      if (image == null || !this.CanvasViewModel.Canvas.CaptureMouse()) return;
-      this.CanvasViewModel.MousePosition = e.GetPosition(this.CanvasViewModel.Canvas);
-      if (this.CanvasViewModel.HighlightSection.Rectangle != null)
-      {
-        this.CanvasViewModel.HighlightSection.Rectangle.Visibility = Visibility.Visible;
-      }
-      this.CanvasViewModel.DraggedImage = image;
-
-      // Set dragged image as top and other images to bottom.
-      Panel.SetZIndex(this.CanvasViewModel.DraggedImage, 1);
-      this.CanvasViewModel.MoveAllImagesToBack();
-    }
-
-    private void Canvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-    {
-      if (this.CanvasViewModel.DraggedImage == null) return;
-      this.CanvasViewModel.Canvas.ReleaseMouseCapture();
-      this.CanvasViewModel.HighlightSection.Rectangle.Visibility = Visibility.Hidden;
-      this.CanvasViewModel.MoveImageToSection(
-        this.CanvasViewModel.DraggedImage, 
-        this.CanvasViewModel.HighlightSection.Row, 
-        this.CanvasViewModel.HighlightSection.Column);
-      this.CanvasViewModel.DraggedImage = null;
-    }
-
-    private void Canvas_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
-    {
-      if (this.CanvasViewModel.DraggedImage != null)
-      {
-        var position = e.GetPosition(this.CanvasViewModel.Canvas);
-        var offset = position - this.CanvasViewModel.MousePosition;
-        this.CanvasViewModel.MousePosition = position;
-
-        var xPos = Canvas.GetLeft(this.CanvasViewModel.DraggedImage) + offset.X;
-        var yPos = Canvas.GetTop(this.CanvasViewModel.DraggedImage) + offset.Y;
-
-        // Prevent image from moving outside of the canvas.
-        if ((xPos + this.CanvasViewModel.DraggedImage.Width) > this.CanvasViewModel.Canvas.ActualWidth)
-        {
-          xPos = this.CanvasViewModel.Canvas.ActualWidth - this.CanvasViewModel.DraggedImage.Width;
-        }
-        else if (xPos < 0)
-        {
-          xPos = 0;
-        }
-        if ((yPos + this.CanvasViewModel.DraggedImage.Height) > this.CanvasViewModel.Canvas.ActualHeight)
-        {
-          yPos = this.CanvasViewModel.Canvas.ActualHeight - this.CanvasViewModel.DraggedImage.Height;
-        }
-        else if (yPos < 0)
-        {
-          yPos = 0;
-        }
-        Canvas.SetLeft(this.CanvasViewModel.DraggedImage, xPos);
-        Canvas.SetTop(this.CanvasViewModel.DraggedImage, yPos);
-
-        // Position relative to mouse.
-        var centerX = (int)Mouse.GetPosition(this.CanvasViewModel.Canvas).X;
-        var centerY = (int)Mouse.GetPosition(this.CanvasViewModel.Canvas).Y;
-        
-        // Update canvas section items.
-        this.CanvasViewModel.UpdateCanvasSection(centerX, centerY);
-      }
-    }
-    
-    #endregion Canvas Methods
-
     private void DisplayHelper_OnLoaded(object sender, RoutedEventArgs e)
     {
+      this.CanvasViewModel = new CanvasViewModel(this.DebugTextBox);
       RecreateDisplaySectionControl(
         this.HostContainerHelperViewModel.ActiveDisplayContainer.Rows,
         this.HostContainerHelperViewModel.ActiveDisplayContainer.Columns);
     }
-
-    private void SetDisplayHelperLayoutButton_OnClick(object sender, RoutedEventArgs e)
-    {
-    }
-
+    
     private void DisplayListBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
       SizeDisplayHelperBox();
     }
 
+    private void SetDisplayHelperLayoutButton_OnClick(object sender, RoutedEventArgs e)
+    {
+    }
+    
     private bool _rowColSpinnerEnabled = true;
     private void RowColSpinners_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
     {
@@ -280,18 +204,7 @@ namespace Windowmancer.UI
       set
       {
         SetProperty(value);
-
-        // Size and set images to their respective sections on load.
-        value.Loaded += (o, e) =>
-        {
-          foreach (var kv in this.DockableWindowImageDict)
-          {
-            var image = kv.Value;
-            SizeImageToCanvas(image);
-            this.Canvas.Children.Add(image);
-            MoveImageToSection(image, kv.Key.Row, kv.Key.Column);
-          }
-        };
+        InitializeNewCanvas();
       }
     }
 
@@ -346,6 +259,12 @@ namespace Windowmancer.UI
       this.DockableWindowImageDict = new Dictionary<DockableWindow, Image>();
     }
 
+    /// <summary>
+    /// Moves the provided image to the row/col section of the canvas.
+    /// </summary>
+    /// <param name="image">The image to move.</param>
+    /// <param name="row">The row index.</param>
+    /// <param name="column">The column index.</param>
     public void MoveImageToSection(
       Image image, 
       int row, 
@@ -364,14 +283,14 @@ namespace Windowmancer.UI
       Canvas.SetTop(image, y);
     }
 
-    public void UpdateCanvasSection(int x, int y)
+    private void UpdateCanvasSection(int x, int y)
     {
       var canvasSection = GetCanvasSection(x, y);
       var dockableWindow = GetDockableWindowForImage(this.DraggedImage);
 
       // If we are on the same section, forgetaboutit.
-      if (null == canvasSection || (this.HighlightSection.Row == canvasSection.Row && 
-        this.HighlightSection.Column == canvasSection.Column))
+      if (null == canvasSection || (dockableWindow.Row == canvasSection.Row && 
+        dockableWindow.Column == canvasSection.Column))
       {
         return;
       }
@@ -391,6 +310,17 @@ namespace Windowmancer.UI
 
       // Our image is over a new section, so let's update the row/col indices
       // and create a new highlight section if none.
+      UpdateHighlightSection(canvasSection);
+
+      // Update docked window container with new row/col indices.
+      dockableWindow.Row = canvasSection.Row;
+      dockableWindow.Column = canvasSection.Column;
+    }
+
+    private void UpdateHighlightSection(CanvasSection canvasSection)
+    {
+      // Our image is over a new section, so let's update the row/col indices
+      // and create a new highlight section if none.
       this.HighlightSection.Row = canvasSection.Row;
       this.HighlightSection.Column = canvasSection.Column;
       if (this.HighlightSection.Rectangle == null)
@@ -399,24 +329,19 @@ namespace Windowmancer.UI
         {
           Width = canvasSection.Width,
           Height = canvasSection.Height,
-          Fill = new SolidColorBrush { Color = Color.FromRgb(255, 242, 0) }
+          Fill = new SolidColorBrush {Color = Color.FromRgb(255, 242, 0)}
         };
         this.Canvas.Children.Add(this.HighlightSection.Rectangle);
       }
-
-      // Update docked window container with new row/col indices.
-      dockableWindow.Row = canvasSection.Row;
-      dockableWindow.Column = canvasSection.Column;
+      // Ensure our highlight section is in the background, and not covering
+      // an image.
+      MoveAllImagesToFront();
+      this.HighlightSection.Rectangle.Visibility = Visibility.Visible;
+      this.HighlightSection.Rectangle.SetBottom();
 
       // Move our highlight section to the cooresponding section.
       Canvas.SetLeft(this.HighlightSection.Rectangle, canvasSection.X);
       Canvas.SetTop(this.HighlightSection.Rectangle, canvasSection.Y);
-
-      // Ensure our highlight section is in the background, and not covering
-      // an image.
-      MoveAllImagesToFront();
-      Panel.SetZIndex(this.HighlightSection.Rectangle, 0);
-      this.HighlightSection.Rectangle.Visibility = Visibility.Visible;
     }
 
     /// <summary>
@@ -433,7 +358,7 @@ namespace Windowmancer.UI
       var sectionWidth = (int)this.Canvas.ActualWidth / columns;
       var sectionHeight = (int)this.Canvas.ActualHeight / rows;
 
-      // Retrive the cooresponding canvas section based on the x/y coordinates.
+      // Retrieve the cooresponding canvas section based on the provided coordinates.
       for (var row = 0; row < rows; ++row)
       {
         for (var col = 0; col < columns; ++col)
@@ -459,12 +384,21 @@ namespace Windowmancer.UI
       return null;
     }
 
+    /// <summary>
+    /// Adds an image to our dockable window to image dictionary.
+    /// </summary>
+    /// <param name="image"></param>
+    /// <param name="dockableWindow"></param>
     public void AddImage(Image image, DockableWindow dockableWindow)
     {
       this.DockableWindowImageDict.Add(dockableWindow, image);
     }
 
-    public void SizeImageToCanvas(Image image)
+    /// <summary>
+    /// Sizes the passed image to our canvas grid.
+    /// </summary>
+    /// <param name="image"></param>
+    private void SizeImageToCanvas(Image image)
     {
       var screenWidth = this.Canvas.ActualWidth;
       var screenHeight = this.Canvas.ActualHeight;
@@ -472,7 +406,10 @@ namespace Windowmancer.UI
       image.Height = (screenHeight / this.Rows);
     }
 
-    public void Clear()
+    /// <summary>
+    /// Resets our canvas grid and associated images.
+    /// </summary>
+    public void Reset()
     {
       foreach (var image in this.DockableWindowImageDict.Values)
       {
@@ -482,28 +419,152 @@ namespace Windowmancer.UI
       this.HighlightSection.Rectangle = null;
     }
 
-    public void MoveAllImagesToBack()
+    /// <summary>
+    /// Moves all dockable window images to the back.
+    /// </summary>
+    public void MoveAllOtherImagesToBack()
     {
       foreach (var img in this.DockableWindowImageDict.Values)
       {
-        Panel.SetZIndex(img, 0);
+        if (img == this.DraggedImage) continue;
+        img.SetBottom();
       }
     }
 
+    /// <summary>
+    /// Moves all dockable window images to the front.
+    /// </summary>
     public void MoveAllImagesToFront()
     {
       foreach (var img in this.DockableWindowImageDict.Values)
       {
-        Panel.SetZIndex(img, 1);
+        img.SetTop();
       }
     }
 
+    /// <summary>
+    /// Controls the visibility of the highlight section.
+    /// </summary>
+    /// <param name="show">True for show, false for not.</param>
+    public void ShowHighlightSection(bool show)
+    {
+      var canvasSection = GetCanvasSection((int)this.MousePosition.X, (int)this.MousePosition.Y);
+      UpdateHighlightSection(canvasSection);
+
+      if (show)
+      {
+        this.HighlightSection.Rectangle.Visibility = Visibility.Visible;
+        this.HighlightSection.Rectangle.SetBottom();
+      }
+      else
+      {
+        this.HighlightSection.Rectangle.Visibility = Visibility.Hidden;
+      }
+    }
+
+    /// <summary>
+    /// Retrieves the associated dockable window object for the passed image.
+    /// </summary>
+    /// <param name="image">The image for which the user wants the dockable window for.</param>
+    /// <returns>The dockable window for the image.</returns>
     private DockableWindow GetDockableWindowForImage(Image image)
     {
       return (from kv in this.DockableWindowImageDict
-              where kv.Value == image
+              where Equals(kv.Value, image)
               select kv.Key).FirstOrDefault();
     }
+
+    private void InitializeNewCanvas()
+    {
+      this.Canvas.MouseLeftButtonDown += Canvas_MouseLeftButtonDown;
+      this.Canvas.MouseLeftButtonUp += Canvas_MouseLeftButtonUp;
+      this.Canvas.MouseMove += Canvas_MouseMove;
+
+      // Size and set images to their respective sections on load.
+      this.Canvas.Loaded += (o, e) =>
+      {
+        foreach (var kv in this.DockableWindowImageDict)
+        {
+          var image = kv.Value;
+          SizeImageToCanvas(image);
+          this.Canvas.Children.Add(image);
+          MoveImageToSection(image, kv.Key.Row, kv.Key.Column);
+        }
+      };
+    }
+
+    #region Canvas Methods
+
+    private void Canvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+      var image = e.Source as Image;
+
+      if (image == null || !this.Canvas.CaptureMouse()) return;
+      this.MousePosition = e.GetPosition(this.Canvas);
+      this.ShowHighlightSection(true);
+      this.DraggedImage = image;
+
+      // Set dragged image as top and other images to bottom.
+      this.DraggedImage.SetTop();
+      this.MoveAllOtherImagesToBack();
+
+      _debugRichTextBox.AppendText($"Dragged Image Pos: {Panel.GetZIndex(this.DraggedImage)}\n");
+      _debugRichTextBox.AppendText($"Highlight Box Pos: {Panel.GetZIndex(this.HighlightSection.Rectangle)}\n");
+    }
+
+    private void Canvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+    {
+      if (this.DraggedImage == null) return;
+      this.Canvas.ReleaseMouseCapture();
+      this.ShowHighlightSection(false);
+      this.MoveImageToSection(
+        this.DraggedImage,
+        this.HighlightSection.Row,
+        this.HighlightSection.Column);
+      this.DraggedImage = null;
+    }
+
+    private void Canvas_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+    {
+      if (this.DraggedImage == null) return;
+
+      // Update new mouse position.
+      var position = e.GetPosition(this.Canvas);
+      var offset = position - this.MousePosition;
+      this.MousePosition = position;
+
+
+      // Prevent image from moving outside of the canvas.
+      var xPos = Canvas.GetLeft(this.DraggedImage) + offset.X;
+      var yPos = Canvas.GetTop(this.DraggedImage) + offset.Y;
+      if ((xPos + this.DraggedImage.Width) > this.Canvas.ActualWidth)
+      {
+        xPos = this.Canvas.ActualWidth - this.DraggedImage.Width;
+      }
+      else if (xPos < 0)
+      {
+        xPos = 0;
+      }
+      if ((yPos + this.DraggedImage.Height) > this.Canvas.ActualHeight)
+      {
+        yPos = this.Canvas.ActualHeight - this.DraggedImage.Height;
+      }
+      else if (yPos < 0)
+      {
+        yPos = 0;
+      }
+      Canvas.SetLeft(this.DraggedImage, xPos);
+      Canvas.SetTop(this.DraggedImage, yPos);
+
+      // Position relative to mouse.
+      var centerX = (int)Mouse.GetPosition(this.Canvas).X;
+      var centerY = (int)Mouse.GetPosition(this.Canvas).Y;
+
+      // Update canvas section items.
+      UpdateCanvasSection(centerX, centerY);
+    }
+
+    #endregion Canvas Methods
   }
 
   // TODO: Debug
@@ -520,13 +581,7 @@ namespace Windowmancer.UI
     }
   }
 
-  public class CanvasSection
+  public class CanvasSection : DisplaySectionBase
   {
-    public int X { get; set; }
-    public int Y { get; set; }
-    public int Row { get; set; }
-    public int Column { get; set; }
-    public int Width { get; set; }
-    public int Height { get; set; }
   }
 }

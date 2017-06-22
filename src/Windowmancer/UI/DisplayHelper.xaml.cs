@@ -26,7 +26,7 @@ namespace Windowmancer.UI
     public Action<WindowInfo> OnSave { get; set; }
 
     public bool DisplayHelperPreview { get; set; }
-    public DisplaySection DisplaySection { get; private set; }
+    public DisplayHelperSection DisplayHelperSection { get; private set; }
     public bool DisplayContainersSelectable { get; set; }
 
     private ObservableCollection<DisplayContainer> DisplayContainers { get; }
@@ -73,7 +73,7 @@ namespace Windowmancer.UI
     {
       this.DisplayContainersSelectable = true;
       var container = this.DisplayContainers.First();
-      this.DisplaySection = new DisplaySection
+      this.DisplayHelperSection = new DisplayHelperSection
       {
         TotalColumns = container.Columns,
         TotalRows = container.Rows,
@@ -105,7 +105,7 @@ namespace Windowmancer.UI
         return;
       }
 
-      var layoutInfo = DisplaySection.GetLayoutInfo(_activeDisplayContainer);
+      var layoutInfo = DisplayHelperSection.GetLayoutInfo(_activeDisplayContainer);
 
       // Move process window if process is active.
       if (null != _process)
@@ -143,7 +143,7 @@ namespace Windowmancer.UI
             IsEnabled = true
           };
           button.Click += DisplaySection_OnClick;
-          button.Tag = new DisplaySection
+          button.Tag = new DisplayHelperSection
           {
             RowIndex = r,
             ColumnIndex = c,
@@ -158,12 +158,12 @@ namespace Windowmancer.UI
 
       var dsb = _displaySectionButtons.Find(d =>
       {
-        var ds = (DisplaySection)d.Tag;
-        return ds.ColumnIndex == DisplaySection.ColumnIndex &&
-               ds.RowIndex == DisplaySection.RowIndex;
+        var ds = (DisplayHelperSection)d.Tag;
+        return ds.ColumnIndex == DisplayHelperSection.ColumnIndex &&
+               ds.RowIndex == DisplayHelperSection.RowIndex;
       }) ?? _displaySectionButtons.First();
 
-      DisplaySection = (DisplaySection)dsb.Tag;
+      DisplayHelperSection = (DisplayHelperSection)dsb.Tag;
 
       // Select first button.
       dsb.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
@@ -178,11 +178,11 @@ namespace Windowmancer.UI
       var screenWidth = _activeDisplayContainer.Width;
       var screenHeight = _activeDisplayContainer.Height;
 
-      var row = DisplaySection.RowIndex;
-      var col = DisplaySection.ColumnIndex;
+      var row = DisplayHelperSection.RowIndex;
+      var col = DisplayHelperSection.ColumnIndex;
 
-      var totalRows = DisplaySection.TotalRows;
-      var totalCols = DisplaySection.TotalColumns;
+      var totalRows = DisplayHelperSection.TotalRows;
+      var totalCols = DisplayHelperSection.TotalColumns;
 
       var x = (screenWidth / totalCols) * col + _activeDisplayContainer.X;
       var y = (screenHeight / totalRows) * row + _activeDisplayContainer.Y;
@@ -201,10 +201,10 @@ namespace Windowmancer.UI
     private void DisplayHelper_OnLoaded(object sender, RoutedEventArgs e)
     {
       _rowColSpinnerEnabled = false;
-      this.RowSpinner.Value = DisplaySection.TotalRows;
-      this.ColumnSpinner.Value = DisplaySection.TotalColumns;
+      this.RowSpinner.Value = DisplayHelperSection.TotalRows;
+      this.ColumnSpinner.Value = DisplayHelperSection.TotalColumns;
       _rowColSpinnerEnabled = true;
-      RecreateDisplaySectionControl(DisplaySection.TotalRows, DisplaySection.TotalColumns);
+      RecreateDisplaySectionControl(DisplayHelperSection.TotalRows, DisplayHelperSection.TotalColumns);
     }
 
     private void SetDisplayHelperLayoutButton_OnClick(object sender, RoutedEventArgs e)
@@ -220,7 +220,7 @@ namespace Windowmancer.UI
       // Highlight clicked button.
       var button = (Button)sender;
       button.Background = Brushes.Yellow;
-      DisplaySection = (DisplaySection)button.Tag;
+      DisplayHelperSection = (DisplayHelperSection)button.Tag;
       UpdateScreenHighlight();
     }
 

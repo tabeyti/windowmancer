@@ -40,7 +40,7 @@ namespace Windowmancer.UI
 
 
     private static Screen _screen;
-    private static DisplaySection _displaySection = new DisplaySection();
+    private static DisplayHelperSection _displayHelperSection = new DisplayHelperSection();
     private WindowHighlight _windowHighlight;
     private Process _process;
 
@@ -126,7 +126,7 @@ namespace Windowmancer.UI
             IsEnabled = true
         };
           button.Click += DisplaySection2_OnClick;
-          button.Tag = new DisplaySection
+          button.Tag = new DisplayHelperSection
           {
             RowIndex = r,
             ColumnIndex = c,
@@ -141,12 +141,12 @@ namespace Windowmancer.UI
 
       var dsb = _displaySectionButtons.Find(d =>
       {
-        var ds = (DisplaySection) d.Tag;
-        return ds.ColumnIndex == _displaySection.ColumnIndex &&
-               ds.RowIndex == _displaySection.RowIndex;
+        var ds = (DisplayHelperSection) d.Tag;
+        return ds.ColumnIndex == _displayHelperSection.ColumnIndex &&
+               ds.RowIndex == _displayHelperSection.RowIndex;
       }) ?? _displaySectionButtons.First();
 
-      _displaySection = (DisplaySection) dsb.Tag;
+      _displayHelperSection = (DisplayHelperSection) dsb.Tag;
 
       // Select first button.
       dsb.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
@@ -161,11 +161,11 @@ namespace Windowmancer.UI
       var screenWidth = _screen.Bounds.Width;
       var screenHeight = _screen.Bounds.Height;
 
-      var row = _displaySection.RowIndex;
-      var col = _displaySection.ColumnIndex;
+      var row = _displayHelperSection.RowIndex;
+      var col = _displayHelperSection.ColumnIndex;
 
-      var totalRows = _displaySection.TotalRows;
-      var totalCols = _displaySection.TotalColumns;
+      var totalRows = _displayHelperSection.TotalRows;
+      var totalCols = _displayHelperSection.TotalColumns;
 
       var x = (screenWidth / totalCols) * col + _screen.Bounds.X;
       var y = (screenHeight / totalRows) * row + _screen.Bounds.Y;
@@ -204,7 +204,7 @@ namespace Windowmancer.UI
       // Highlight clicked button.
       var button = (Button)sender;
       button.Background = Brushes.Yellow;
-      _displaySection = (DisplaySection)button.Tag;
+      _displayHelperSection = (DisplayHelperSection)button.Tag;
       UpdateScreenHighlight();
     }
 
@@ -215,7 +215,7 @@ namespace Windowmancer.UI
         return;
       }
 
-      var layoutInfo = _displaySection.GetLayoutInfo(_screen);
+      var layoutInfo = _displayHelperSection.GetLayoutInfo(_screen);
 
       // Move process window if process is active.
       if (null != _process)
@@ -247,10 +247,10 @@ namespace Windowmancer.UI
       if (enable)
       {
         _rowColSpinnerEnabled = false;
-        this.RowSpinner.Value = _displaySection.TotalRows;
-        this.ColumnSpinner.Value = _displaySection.TotalColumns;
+        this.RowSpinner.Value = _displayHelperSection.TotalRows;
+        this.ColumnSpinner.Value = _displayHelperSection.TotalColumns;
         _rowColSpinnerEnabled = true;
-        RecreateDisplaySectionControl(_displaySection.TotalRows, _displaySection.TotalColumns);
+        RecreateDisplaySectionControl(_displayHelperSection.TotalRows, _displayHelperSection.TotalColumns);
         return;
       }
       
@@ -407,20 +407,20 @@ namespace Windowmancer.UI
     }
   }
 
-  public class DisplaySection
+  public class DisplayHelperSection
   {
     public int RowIndex { get; set; }
     public int ColumnIndex { get; set; }
     public int TotalRows { get; set; }
     public int TotalColumns { get; set; }
 
-    public DisplaySection()
+    public DisplayHelperSection()
     {
       this.RowIndex = this.ColumnIndex = 0;
       this.TotalRows = this.TotalColumns = 1;
     }
 
-    public DisplaySection(int rowIndex, int columnIndex, int totalRows, int totalColumns)
+    public DisplayHelperSection(int rowIndex, int columnIndex, int totalRows, int totalColumns)
     {
       this.RowIndex = rowIndex;
       this.ColumnIndex = columnIndex;

@@ -95,6 +95,7 @@
     <Compile Include="Extensions\BoolExtensions.cs" />
     <Compile Include="Extensions\CollectionExtensions.cs" />
     <Compile Include="Extensions\ObservableCollectionExtensions.cs" />
+    <Compile Include="Models\Base\DisplaySectionBase.cs" />
     <Compile Include="Models\DisplayContainer.cs" />
     <Compile Include="Models\DockableWindow.cs" />
     <Compile Include="Models\EditorViewModel.cs" />
