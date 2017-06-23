@@ -10,10 +10,12 @@
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
   <!--#region Display helper settings -->
   <Grid>
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="*"/>
-    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="50"/>
+    </Grid.RowDefinitions>
     <Grid Margin="5"
+          Grid.Row="0"
           x:Name="LayoutHelperGridControl">
       <Grid.ColumnDefinitions>
         <ColumnDefinition MaxWidth="200"/>
@@ -30,10 +32,10 @@
                   Style="{StaticResource MyGroupBoxStyle}">
 
           <ListBox  Name="DisplayListBox"
-                      Grid.Column="0"
-                      Style="{StaticResource MyListBox}"
-                      ItemContainerStyle="{StaticResource MyListBoxItem}"
-                      SelectionChanged="DisplayListBox_OnSelectionChanged">
+                    Grid.Column="0"
+                    Style="{StaticResource MyListBox}"
+                    ItemContainerStyle="{StaticResource MyListBoxItem}"
+                    SelectionChanged="DisplayListBox_OnSelectionChanged">
             <ListBox.ItemTemplate>
               <DataTemplate>
                 <Grid Margin="3,3">
@@ -99,12 +101,12 @@
       <Grid Grid.Column="1">
         <StackPanel>
           <GroupBox Header="Windows"
-                  Style="{StaticResource MyGroupBoxStyle}">
+                    Style="{StaticResource MyGroupBoxStyle}">
             <ListBox Name="DockedWindowsListBox"
-                   Grid.Column="1"
-                   Style="{StaticResource MyListBox}"
-                   ItemContainerStyle="{StaticResource MyListBoxItem}"
-                   ItemsSource="{Binding HostContainerHelperViewModel.ActiveDisplayContainer.DockedWindows}">
+                     Grid.Column="1"
+                     Style="{StaticResource MyListBox}"
+                     ItemContainerStyle="{StaticResource MyListBoxItem}"
+                     ItemsSource="{Binding HostContainerHelperViewModel.ActiveDisplayContainer.DockedWindows}">
               <ListBox.ItemTemplate>
                 <DataTemplate>
                   <Grid Margin="3,3">
@@ -121,22 +123,37 @@
       </Grid>
       <StackPanel Grid.Column="2">
         <!--#region Display panel -->
-      <Grid Name="DisplayHelperControl" 
-            Grid.Column="2"
-            VerticalAlignment="Top"
-            Margin="10,10, 10,10">
-        <Border Margin="5"
-                MaxWidth="900" MaxHeight="1600"
-                x:Name="DisplayPanel"
-                BorderBrush="Gray"
-                BorderThickness="10" 
-                CornerRadius="2">
-          <Grid x:Name="DisplayPanelGrid"/>
-        </Border>
-      </Grid>
-      <RichTextBox Name="DebugTextBox" Height="200"/>
+        <Grid Name="DisplayHelperControl" 
+              VerticalAlignment="Top"
+              Margin="10,10, 10,10">
+          <Border Margin="5"
+                  MaxWidth="900" MaxHeight="1600"
+                  x:Name="DisplayPanel"
+                  BorderBrush="Gray"
+                  BorderThickness="10" 
+                  CornerRadius="2">
+            <Grid x:Name="DisplayPanelGrid"/>
+          </Border>
+        </Grid>
       </StackPanel>
       <!--#endregion-->
     </Grid>
+    <StackPanel Grid.Row="1" 
+                Orientation="Horizontal">
+      <Button Name="CancelButton"
+              Style="{StaticResource SquareButtonStyle}"
+              Content="Cancel" 
+              Width="75"
+              Margin="10"
+              HorizontalAlignment="Right"
+              IsDefault="False"/>
+      <Button Name="SaveButton"
+              Style="{StaticResource SquareButtonStyle}"
+              Content="Save" 
+              Margin="10"
+              Width="75"
+              IsDefault="True" 
+              HorizontalAlignment="Right"/>
+    </StackPanel>
   </Grid>
 </UserControl>

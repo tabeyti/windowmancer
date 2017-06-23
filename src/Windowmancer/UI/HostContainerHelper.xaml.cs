@@ -13,6 +13,8 @@ using System.Windows.Input;
 using System.Windows.Shapes;
 using Windowmancer.Core.Models.Base;
 using Windowmancer.Extensions;
+using Xceed.Wpf.Toolkit;
+using Xceed.Wpf.Toolkit.Core.Converters;
 
 namespace Windowmancer.UI
 {
@@ -123,11 +125,11 @@ namespace Windowmancer.UI
 
     private void DisplayHelper_OnLoaded(object sender, RoutedEventArgs e)
     {
-      this.CanvasViewModel = new CanvasViewModel(this.DebugTextBox);
+      this.CanvasViewModel = new CanvasViewModel();
       RecreateDisplaySectionControl(
         this.HostContainerHelperViewModel.ActiveDisplayContainer.Rows,
         this.HostContainerHelperViewModel.ActiveDisplayContainer.Columns);
-    }
+  }
     
     private void DisplayListBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
@@ -142,6 +144,19 @@ namespace Windowmancer.UI
     private void RowColSpinners_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
     {
       if (!_rowColSpinnerEnabled) return;
+      if ((int) e.NewValue < (int) e.OldValue)
+      {
+        var currentNumSections = this.RowSpinner.Value * this.ColumnSpinner.Value;
+        if (currentNumSections <
+            this.HostContainerHelperViewModel.ActiveDisplayContainer.DockedWindows.Count)
+        {
+          var spinner = (IntegerUpDown)sender;
+          spinner.Value = (int)e.OldValue;
+          Xceed.Wpf.Toolkit.MessageBox.Show("Can't change grid size to a section count lesser than the amount of docked windows. Main bitch out yo league-to-ahhh; Side bithc outa yo leangue-to-ahhh", "HEY!");
+          return;
+        }
+      }
+
       RecreateDisplaySectionControl(
         this.HostContainerHelperViewModel.ActiveDisplayContainer.Rows,
         this.HostContainerHelperViewModel.ActiveDisplayContainer.Columns);
@@ -239,15 +254,9 @@ namespace Windowmancer.UI
     }
 
     public Dictionary<DockableWindow, Image> DockableWindowImageDict { get; set; }
-
-    // TODO: Debug
-    private readonly RichTextBox _debugRichTextBox;
-
-    public CanvasViewModel(RichTextBox debugTextBox)
+    
+    public CanvasViewModel()
     {
-      // TODO: Debug
-      _debugRichTextBox = debugTextBox;
-
       RegisterProperty<int>("CanvasX");
       RegisterProperty<int>("CanvasY");
       RegisterProperty<int>("Rows");
@@ -288,7 +297,7 @@ namespace Windowmancer.UI
       var canvasSection = GetCanvasSection(x, y);
       var dockableWindow = GetDockableWindowForImage(this.DraggedImage);
 
-      // If we are on the same section, forgetaboutit.
+      // If we are on the same section, forgetaboutit. 
       if (null == canvasSection || (dockableWindow.Row == canvasSection.Row && 
         dockableWindow.Column == canvasSection.Column))
       {
@@ -402,6 +411,8 @@ namespace Windowmancer.UI
     {
       var screenWidth = this.Canvas.ActualWidth;
       var screenHeight = this.Canvas.ActualHeight;
+
+      image.Stretch = Stretch.Fill;
       image.Width = (screenWidth / this.Columns);
       image.Height = (screenHeight / this.Rows);
     }
@@ -497,8 +508,8 @@ namespace Windowmancer.UI
 
     private void Canvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
+      // Grab image and current (relative) canvas mouse position.
       var image = e.Source as Image;
-
       if (image == null || !this.Canvas.CaptureMouse()) return;
       this.MousePosition = e.GetPosition(this.Canvas);
       this.ShowHighlightSection(true);
@@ -507,9 +518,6 @@ namespace Windowmancer.UI
       // Set dragged image as top and other images to bottom.
       this.DraggedImage.SetTop();
       this.MoveAllOtherImagesToBack();
-
-      _debugRichTextBox.AppendText($"Dragged Image Pos: {Panel.GetZIndex(this.DraggedImage)}\n");
-      _debugRichTextBox.AppendText($"Highlight Box Pos: {Panel.GetZIndex(this.HighlightSection.Rectangle)}\n");
     }
 
     private void Canvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -532,7 +540,6 @@ namespace Windowmancer.UI
       var position = e.GetPosition(this.Canvas);
       var offset = position - this.MousePosition;
       this.MousePosition = position;
-
 
       // Prevent image from moving outside of the canvas.
       var xPos = Canvas.GetLeft(this.DraggedImage) + offset.X;
