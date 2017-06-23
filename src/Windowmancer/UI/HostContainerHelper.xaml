@@ -146,14 +146,16 @@
               Width="75"
               Margin="10"
               HorizontalAlignment="Right"
-              IsDefault="False"/>
+              IsDefault="False"
+              Click="CancelButton_OnClick"/>
       <Button Name="SaveButton"
               Style="{StaticResource SquareButtonStyle}"
               Content="Save" 
               Margin="10"
               Width="75"
               IsDefault="True" 
-              HorizontalAlignment="Right"/>
+              HorizontalAlignment="Right"
+              Click="SaveButton_OnClick"/>
     </StackPanel>
   </Grid>
 </UserControl>

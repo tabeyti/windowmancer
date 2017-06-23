@@ -24,7 +24,7 @@ namespace Windowmancer.UI
   public partial class HostContainerHelper : UserControl
   {
     public Action OnClose { get; set; }
-    public Action<WindowInfo> OnSave { get; set; }
+    public Action<List<DisplayContainer>> OnSave { get; set; }
     public bool DisplayContainersSelectable { get; set; }
     public HostContainerViewModel HostContainerHelperViewModel { get; set; }
     public CanvasViewModel CanvasViewModel { get; set; }
@@ -121,10 +121,41 @@ namespace Windowmancer.UI
       }
     }
 
+    private void Close()
+    {
+      var window = Window.GetWindow(this);
+      if (window == null)
+      {
+        throw new Exception("WindowConfig - Could locate active window to unbind the KeyDown listener.");
+      }
+      window.KeyDown -= HostContainerHelper_HandleKeyPress;
+      OnClose?.Invoke();
+    }
+
+    private void Save()
+    {
+    }
+
     #region Event Methods
+
+    private void HostContainerHelper_HandleKeyPress(object sender, System.Windows.Input.KeyEventArgs e)
+    {
+      if (e.Key != Key.Escape)
+      {
+        return;
+      }
+      Close();
+    }
 
     private void DisplayHelper_OnLoaded(object sender, RoutedEventArgs e)
     {
+      var window = Window.GetWindow(this);
+      if (window == null)
+      {
+        throw new Exception("WindowConfig - Could locate active window to bind the KeyDown listener.");
+      }
+      window.KeyDown += HostContainerHelper_HandleKeyPress;
+
       this.CanvasViewModel = new CanvasViewModel();
       RecreateDisplaySectionControl(
         this.HostContainerHelperViewModel.ActiveDisplayContainer.Rows,
@@ -152,7 +183,8 @@ namespace Windowmancer.UI
         {
           var spinner = (IntegerUpDown)sender;
           spinner.Value = (int)e.OldValue;
-          Xceed.Wpf.Toolkit.MessageBox.Show("Can't change grid size to a section count lesser than the amount of docked windows. Main bitch out yo league-to-ahhh; Side bithc outa yo leangue-to-ahhh", "HEY!");
+          Xceed.Wpf.Toolkit.MessageBox.Show(
+            "Can't change grid size to a section count lesser than the amount of docked windows. Main bitch out yo league-to-ahhh; Side bithc outa yo leangue-to-ahhh", "HEY!");
           return;
         }
       }
@@ -160,6 +192,18 @@ namespace Windowmancer.UI
       RecreateDisplaySectionControl(
         this.HostContainerHelperViewModel.ActiveDisplayContainer.Rows,
         this.HostContainerHelperViewModel.ActiveDisplayContainer.Columns);
+    }
+
+    private void CancelButton_OnClick(object sender, RoutedEventArgs e)
+    {
+      Close();
+    }
+
+    private void SaveButton_OnClick(object sender, RoutedEventArgs e)
+    {
+      Save();
+      OnSave?.Invoke(this.HostContainerHelperViewModel.DisplayContainers.ToList());
+      Close();
     }
 
     #endregion Event Methods

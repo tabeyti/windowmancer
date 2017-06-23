@@ -354,8 +354,8 @@ namespace Windowmancer.UI
         _windowHostContainer.Show();
       }
       _windowHostContainer.DockProc(Process.Start("cmd.exe"));
-      _windowHostContainer.DockProc(Process.Start("cmd.exe"));
       _windowHostContainer.DockProc(Process.Start("notepad.exe"));
+      _windowHostContainer.DockProc(Process.Start("mspaint.exe"));
     }
   }
 }

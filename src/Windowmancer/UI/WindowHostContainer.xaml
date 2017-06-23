@@ -3,7 +3,6 @@
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                      xmlns:local="clr-namespace:Windowmancer.UI"
                       xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                       ShowIconOnTitleBar="True"
@@ -20,17 +19,17 @@
                        Position="Right"
                        CloseButtonVisibility="Collapsed"
                        Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Controls:MetroWindow}, Path=ActualWidth}"/>
-      </Controls:FlyoutsControl>
-    </Controls:MetroWindow.Flyouts>
+    </Controls:FlyoutsControl>
+  </Controls:MetroWindow.Flyouts>
 
-      <Controls:MetroWindow.RightWindowCommands>
-        <Controls:WindowCommands>
-            <Button Name="EditButton" 
-                    Click="EditButton_OnClick"
-                    Content="Edit Layout"
-                    ToolTip="Open the Display Helper Control" />
-        </Controls:WindowCommands>
-    </Controls:MetroWindow.RightWindowCommands>
-    <Grid/>
+  <Controls:MetroWindow.RightWindowCommands>
+    <Controls:WindowCommands>
+      <Button Name="EditButton" 
+              Click="EditButton_OnClick"
+              Content="Edit Layout"
+              ToolTip="Open the Display Helper Control" />
+    </Controls:WindowCommands>
+  </Controls:MetroWindow.RightWindowCommands>
+  <Grid/>
 </Controls:MetroWindow>
 
