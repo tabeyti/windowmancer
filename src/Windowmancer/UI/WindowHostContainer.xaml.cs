@@ -153,12 +153,15 @@ namespace Windowmancer.UI
       };
       hostContainerHelper.OnSave += (dcs) =>
       {
-        SetDockableWindowVisibility(true);
         this.DisplayContainer = dcs.First();
         RefreshDisplayContainer();
       };
+      hostContainerHelper.OnClose += () => 
+      {
+        flyout.IsOpen = false;
+        SetDockableWindowVisibility(true);
+      };
 
-      hostContainerHelper.OnClose += () => { flyout.IsOpen = false; };
       flyout.Content = hostContainerHelper;
       flyout.IsOpen = true;
     }

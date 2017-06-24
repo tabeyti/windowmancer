@@ -97,6 +97,21 @@ namespace Windowmancer.UI
             return;
           }
           var d = dockableWindows[i];
+
+          // If row/col doesn't fit into grid, place dockable window in next 
+          // available slot.
+          if (d.Row >= this.CanvasViewModel.Rows || d.Column >= this.CanvasViewModel.Columns)
+          {
+            var ds = this.CanvasViewModel.GetNextAvailableSection();
+            if (null == ds)
+            {
+              throw new Exception(
+                $"RecreateDisplaySectionControl - Could not find another available section on the canvas to place process {d.Process.MainWindowTitle}");
+            }
+            d.Row = ds.Row;
+            d.Column = ds.Column;
+          }
+
           var image = new Image {Source = Helper.ScreenShotProcessWindow(d.Process)};
           this.CanvasViewModel.AddImage(image, d);
         }));
@@ -323,6 +338,11 @@ namespace Windowmancer.UI
       int row, 
       int column)
     {
+      if (row >= this.Rows || column >= this.Columns)
+      {
+        throw new Exception("MoveImageToSection - Cannot move an image to a row/col outside of the current grid.");
+      }
+
       var rows = this.Rows;
       var columns = this.Columns;
 
@@ -382,13 +402,12 @@ namespace Windowmancer.UI
         {
           Width = canvasSection.Width,
           Height = canvasSection.Height,
-          Fill = new SolidColorBrush {Color = Color.FromRgb(255, 242, 0)}
+          Fill = new SolidColorBrush {Color = Color.FromRgb(0, 122, 204)}
         };
         this.Canvas.Children.Add(this.HighlightSection.Rectangle);
       }
       // Ensure our highlight section is in the background, and not covering
       // an image.
-      MoveAllImagesToFront();
       this.HighlightSection.Rectangle.Visibility = Visibility.Visible;
       this.HighlightSection.Rectangle.SetBottom();
 
@@ -493,6 +512,7 @@ namespace Windowmancer.UI
     {
       foreach (var img in this.DockableWindowImageDict.Values)
       {
+        if (img == this.DraggedImage) continue;
         img.SetTop();
       }
     }
@@ -531,9 +551,40 @@ namespace Windowmancer.UI
 
     private void InitializeNewCanvas()
     {
+      // Set up events.
       this.Canvas.MouseLeftButtonDown += Canvas_MouseLeftButtonDown;
       this.Canvas.MouseLeftButtonUp += Canvas_MouseLeftButtonUp;
       this.Canvas.MouseMove += Canvas_MouseMove;
+
+      // Draw gridlines.
+      var brush = new VisualBrush
+      {
+        Viewport = new Rect(0, 0, 10, 10),
+        ViewportUnits = BrushMappingMode.Absolute,
+        TileMode = TileMode.Tile,
+        Stretch = Stretch.Fill
+      };
+
+      var grid = new Grid { Width = this.Canvas.ActualWidth, Height = this.Canvas.ActualHeight };
+      grid.Children.Add(new Rectangle
+      {
+        Width = 1,
+        Height = 0.03,
+        Fill = new SolidColorBrush(Colors.LightGray),
+        HorizontalAlignment = HorizontalAlignment.Left,
+        VerticalAlignment = VerticalAlignment.Top
+      });
+
+      grid.Children.Add(new Rectangle
+      {
+        Height = 1,
+        Width = 0.03,
+        Fill = new SolidColorBrush(Colors.LightGray),
+        HorizontalAlignment = HorizontalAlignment.Left,
+        VerticalAlignment = VerticalAlignment.Top
+      });
+      brush.Visual = grid;
+      this.Canvas.Background = brush;
 
       // Size and set images to their respective sections on load.
       this.Canvas.Loaded += (o, e) =>
@@ -546,6 +597,23 @@ namespace Windowmancer.UI
           MoveImageToSection(image, kv.Key.Row, kv.Key.Column);
         }
       };
+    }
+
+    public CanvasSection GetNextAvailableSection()
+    {
+      for (var row = 0; row < this.Rows; ++row)
+      {
+        for (var column = 0; column < this.Columns; ++column)
+        {
+          if (this.DockableWindowImageDict.Keys.Any(
+            dw => dw.Row == row && dw.Column == column))
+          {
+            continue;
+          }
+          return new CanvasSection {Row = row, Column = column};
+        }
+      }
+      return null;
     }
 
     #region Canvas Methods
