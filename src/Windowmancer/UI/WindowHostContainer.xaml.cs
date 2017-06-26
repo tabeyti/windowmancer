@@ -7,13 +7,14 @@ using MahApps.Metro.Controls;
 using Windowmancer.Core.Models;
 using Windowmancer.Core.Practices;
 using Windowmancer.Core.Services;
+using Windowmancer.Core.Services.Base;
 
 namespace Windowmancer.UI
 {
   /// <summary>
   /// Interaction logic for WindowHostContainer.xaml
   /// </summary>
-  public partial class WindowHostContainer : MetroWindow
+  public partial class WindowHostContainer : IToastHost
   {
     public int CurrentRowIndex { get; private set; }
     public int CurrentColumnIndex { get; private set; }
@@ -167,6 +168,26 @@ namespace Windowmancer.UI
     }
 
     private void WindowHostContainer_OnLoaded(object sender, RoutedEventArgs e)
+    {
+    }
+
+    public void ShowMessageToast(string message)
+    {
+      if (message == null)
+      {
+        return;
+      }
+
+      var flyout = (Flyout)this.FindName("ToastFlyout");
+      if (null == flyout)
+      {
+        throw new Exception($"{this} - Could not find flyout ToastFlyout.");
+      }
+      this.ToastMessage.Text = message;
+      flyout.IsOpen = true;
+    }
+
+    public void ShowItemMessageToast(string itemName, string message)
     {
     }
   }

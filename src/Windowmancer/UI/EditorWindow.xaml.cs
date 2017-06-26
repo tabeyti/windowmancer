@@ -14,13 +14,14 @@ using Windowmancer.UI.Base;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using MenuItem = System.Windows.Controls.MenuItem;
+using Windowmancer.Core.Services.Base;
 
 namespace Windowmancer.UI
 {
   /// <summary>
   /// Interaction logic for MainWindow.xaml
   /// </summary>
-  public partial class EditorWindow
+  public partial class EditorWindow : IToastHost
   {
     public ProfileManager ProfileManager { get; }
     public ProcessMonitor ProcMonitor { get; }
@@ -74,8 +75,13 @@ namespace Windowmancer.UI
       this.ProcMonitor.Start();
     }
 
-    private void ShowItemMessageToast(string itemName, string message = null)
+    public void ShowItemMessageToast(string itemName, string message = null)
     {
+      if (itemName == null && message == null)
+      {
+        return;
+      }
+
       var flyout = this.Flyouts.Items[2] as Flyout;
       if (null == flyout)
       {
@@ -83,6 +89,22 @@ namespace Windowmancer.UI
       }
       this.DeleteToastItem.Text = itemName;
       this.DeleteToastMessage.Text = message ?? this.DeleteToastItem.Text;
+      flyout.IsOpen = true;
+    }
+
+    public void ShowMessageToast(string message)
+    {
+      if (message == null)
+      {
+        return;
+      }
+
+      var flyout = this.Flyouts.Items[2] as Flyout;
+      if (null == flyout)
+      {
+        throw new Exception("HandleProfileConfigEdit - No flyout available at index 1");
+      }
+      this.DeleteToastMessage.Text = message;
       flyout.IsOpen = true;
     }
 

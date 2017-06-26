@@ -112,6 +112,7 @@
     <Compile Include="Practices\Win32.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Base\IDispatcher.cs" />
+    <Compile Include="Services\Base\IToastHost.cs" />
     <Compile Include="Services\KeyHookManager.cs" />
     <Compile Include="Services\ProcessMonitor.cs" />
     <Compile Include="Services\ProfileManager.cs" />

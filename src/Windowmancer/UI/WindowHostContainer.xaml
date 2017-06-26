@@ -25,15 +25,15 @@
                        AutoCloseInterval="3000"
                        TitleVisibility="Collapsed"
                        CloseButtonVisibility="Collapsed"
-                       BorderBrush="{StaticResource TrimColor}"
+                       BorderBrush="Yellow"
                        BorderThickness="1"
                        Height ="75">
-        <TextBlock Name="ItemMessageToast" 
+        <TextBlock Name="MessageToastTextBlock" 
                    HorizontalAlignment="Center" 
                    VerticalAlignment="Center"
                    Margin="10"
                    FontSize="16">
-          <Run Name="ToastMessage" Foreground="White"/>
+          <Run Name="ToastMessage" Foreground="Yellow"/>
         </TextBlock>
       </Controls:Flyout>
     </Controls:FlyoutsControl>
