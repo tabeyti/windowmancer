@@ -11,6 +11,7 @@ using Windowmancer.Core.Practices;
 using UserControl = System.Windows.Controls.UserControl;
 using System.Windows.Input;
 using System.Windows.Shapes;
+using MahApps.Metro.Controls;
 using Windowmancer.Core.Models.Base;
 using Windowmancer.Extensions;
 using Xceed.Wpf.Toolkit;
@@ -198,8 +199,20 @@ namespace Windowmancer.UI
         {
           var spinner = (IntegerUpDown)sender;
           spinner.Value = (int)e.OldValue;
-          Xceed.Wpf.Toolkit.MessageBox.Show(
-            "Can't change grid size to a section count lesser than the amount of docked windows. Main bitch out yo league-to-ahhh; Side bithc outa yo leangue-to-ahhh", "HEY!");
+
+          var message =
+            "Can't change grid size to a section count lesser than the amount of docked windows. Main bitch out yo league-to-ahhh; Side bithc outa yo leangue-to-ahhh";
+          var parentWindow = Window.GetWindow(this);
+          if (null == parentWindow)
+          {
+            Xceed.Wpf.Toolkit.MessageBox.Show(message, "HEY!");
+            return;
+          }
+          //parentWindow.ShowToast(message);
+          var obj = parentWindow.FindName("ToastFlyout");
+          var flyout = (Flyout)obj;
+          flyout.IsOpen = !flyout.IsOpen;
+          
           return;
         }
       }
@@ -216,7 +229,6 @@ namespace Windowmancer.UI
 
     private void SaveButton_OnClick(object sender, RoutedEventArgs e)
     {
-      Save();
       OnSave?.Invoke(this.HostContainerHelperViewModel.DisplayContainers.ToList());
       Close();
     }
