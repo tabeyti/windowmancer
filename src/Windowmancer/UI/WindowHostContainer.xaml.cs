@@ -66,8 +66,8 @@ namespace Windowmancer.UI
 
     public void DockProc(Process process, int rowIndex, int columnIndex)
     {
-      if (this.DisplayContainer.DockedWindows
-        .Any(dw => dw.Process.Handle == process.Handle))
+      if (this.DisplayContainer.DockedWindows.Any(
+        dw => dw.Process.Handle == process.Handle))
       {
         return;
       }

@@ -11,12 +11,10 @@ using Windowmancer.Core.Practices;
 using UserControl = System.Windows.Controls.UserControl;
 using System.Windows.Input;
 using System.Windows.Shapes;
-using MahApps.Metro.Controls;
 using Windowmancer.Core.Models.Base;
 using Windowmancer.Core.Services.Base;
 using Windowmancer.Extensions;
 using Xceed.Wpf.Toolkit;
-using Xceed.Wpf.Toolkit.Core.Converters;
 
 namespace Windowmancer.UI
 {
@@ -322,7 +320,7 @@ namespace Windowmancer.UI
     }
 
     public Dictionary<DockableWindow, Image> DockableWindowImageDict { get; set; }
-    
+
     public CanvasViewModel()
     {
       RegisterProperty<int>("CanvasX");
@@ -337,26 +335,35 @@ namespace Windowmancer.UI
     }
 
     /// <summary>
-    /// Moves the provided image to the row/col section of the canvas.
+    /// Moves the provided image to the row/col section of the canvas,
+    /// updating the associated DockableWindow object as well.
     /// </summary>
     /// <param name="image">The image to move.</param>
     /// <param name="row">The row index.</param>
     /// <param name="column">The column index.</param>
-    public void MoveImageToSection(
-      Image image, 
-      int row, 
+    public void SetImageToSection(
+      Image image,
+      int row,
       int column)
     {
       if (row >= this.Rows || column >= this.Columns)
       {
-        throw new Exception("MoveImageToSection - Cannot move an image to a row/col outside of the current grid.");
+        throw new Exception("SetImageToSection - Cannot move an image to a row/col outside of the current grid.");
       }
+
+      var dockableWindow = GetDockableWindowForImage(image);
+      if (null == dockableWindow)
+      {
+        throw new Exception("No dockable window found for provided image.");
+      }
+      dockableWindow.Row = row;
+      dockableWindow.Column = column;
 
       var rows = this.Rows;
       var columns = this.Columns;
 
-      var sectionWidth = (int)this.Canvas.ActualWidth / columns;
-      var sectionHeight = (int)this.Canvas.ActualHeight / rows;
+      var sectionWidth = (int) this.Canvas.ActualWidth / columns;
+      var sectionHeight = (int) this.Canvas.ActualHeight / rows;
 
       var x = column * sectionWidth;
       var y = row * sectionHeight;
@@ -364,41 +371,7 @@ namespace Windowmancer.UI
       Canvas.SetLeft(image, x);
       Canvas.SetTop(image, y);
     }
-
-    private void UpdateCanvasSection(int x, int y)
-    {
-      var canvasSection = GetCanvasSection(x, y);
-      var dockableWindow = GetDockableWindowForImage(this.DraggedImage);
-
-      // If we are on the same section, forgetaboutit. 
-      if (null == canvasSection || (dockableWindow.Row == canvasSection.Row && 
-        dockableWindow.Column == canvasSection.Column))
-      {
-        return;
-      }
-
-      // If dragged image is over another image, move the other onto the vaccant space.
-      foreach (var kv in this.DockableWindowImageDict)
-      {
-        if (kv.Value == this.DraggedImage) continue;
-        if (canvasSection.Row != kv.Key.Row || canvasSection.Column != kv.Key.Column) continue;
-
-        // Move found image to the current image section.
-        var row = kv.Key.Row = dockableWindow.Row;
-        var col = kv.Key.Column = dockableWindow.Column;
-        MoveImageToSection(kv.Value, row, col);
-        break;
-      }
-
-      // Our image is over a new section, so let's update the row/col indices
-      // and create a new highlight section if none.
-      UpdateHighlightSection(canvasSection);
-
-      // Update docked window container with new row/col indices.
-      dockableWindow.Row = canvasSection.Row;
-      dockableWindow.Column = canvasSection.Column;
-    }
-
+    
     private void UpdateHighlightSection(CanvasSection canvasSection)
     {
       // Our image is over a new section, so let's update the row/col indices
@@ -436,8 +409,8 @@ namespace Windowmancer.UI
     {
       var rows = this.Rows;
       var columns = this.Columns;
-      var sectionWidth = (int)this.Canvas.ActualWidth / columns;
-      var sectionHeight = (int)this.Canvas.ActualHeight / rows;
+      var sectionWidth = (int) this.Canvas.ActualWidth / columns;
+      var sectionHeight = (int) this.Canvas.ActualHeight / rows;
 
       // Retrieve the cooresponding canvas section based on the provided coordinates.
       for (var row = 0; row < rows; ++row)
@@ -532,7 +505,7 @@ namespace Windowmancer.UI
     /// <param name="show">True for show, false for not.</param>
     public void ShowHighlightSection(bool show)
     {
-      var canvasSection = GetCanvasSection((int)this.MousePosition.X, (int)this.MousePosition.Y);
+      var canvasSection = GetCanvasSection((int) this.MousePosition.X, (int) this.MousePosition.Y);
       UpdateHighlightSection(canvasSection);
 
       if (show)
@@ -554,10 +527,13 @@ namespace Windowmancer.UI
     private DockableWindow GetDockableWindowForImage(Image image)
     {
       return (from kv in this.DockableWindowImageDict
-              where Equals(kv.Value, image)
-              select kv.Key).FirstOrDefault();
+        where Equals(kv.Value, image)
+        select kv.Key).FirstOrDefault();
     }
 
+    /// <summary>
+    /// Initializes a new canvas for our canvas view model.
+    /// </summary>
     private void InitializeNewCanvas()
     {
       // Set up events.
@@ -574,7 +550,7 @@ namespace Windowmancer.UI
         Stretch = Stretch.Fill
       };
 
-      var grid = new Grid { Width = this.Canvas.ActualWidth, Height = this.Canvas.ActualHeight };
+      var grid = new Grid {Width = this.Canvas.ActualWidth, Height = this.Canvas.ActualHeight};
       grid.Children.Add(new Rectangle
       {
         Width = 1,
@@ -603,11 +579,16 @@ namespace Windowmancer.UI
           var image = kv.Value;
           SizeImageToCanvas(image);
           this.Canvas.Children.Add(image);
-          MoveImageToSection(image, kv.Key.Row, kv.Key.Column);
+          SetImageToSection(image, kv.Key.Row, kv.Key.Column);
         }
       };
     }
 
+    /// <summary>
+    /// Retrieves an available canvas section for usage, meaning a 
+    /// canvas section currently not occupied by an image.
+    /// </summary>
+    /// <returns></returns>
     public CanvasSection GetNextAvailableSection()
     {
       for (var row = 0; row < this.Rows; ++row)
@@ -646,10 +627,21 @@ namespace Windowmancer.UI
       if (this.DraggedImage == null) return;
       this.Canvas.ReleaseMouseCapture();
       this.ShowHighlightSection(false);
-      this.MoveImageToSection(
-        this.DraggedImage,
-        this.HighlightSection.Row,
-        this.HighlightSection.Column);
+
+      // If we are on top of another image, move that image to where our
+      // draggable image used to be.
+      var c = GetCanvasSection((int) this.MousePosition.X, (int) this.MousePosition.Y);
+      var d = GetDockableWindowForImage(this.DraggedImage);
+      foreach (var kv in this.DockableWindowImageDict)
+      {
+        if (kv.Value == this.DraggedImage) continue;
+
+        if (kv.Key.Row == c.Row && kv.Key.Column == c.Column)
+        {
+          SetImageToSection(kv.Value, d.Row, d.Column);
+        }
+      }
+      SetImageToSection(this.DraggedImage, c.Row, c.Column);
       this.DraggedImage = null;
     }
 
@@ -684,12 +676,13 @@ namespace Windowmancer.UI
       Canvas.SetLeft(this.DraggedImage, xPos);
       Canvas.SetTop(this.DraggedImage, yPos);
 
-      // Position relative to mouse.
-      var centerX = (int)Mouse.GetPosition(this.Canvas).X;
-      var centerY = (int)Mouse.GetPosition(this.Canvas).Y;
+      // Get canvas section from mouse-relative position.
+      var mX = (int) Mouse.GetPosition(this.Canvas).X;
+      var mY = (int) Mouse.GetPosition(this.Canvas).Y;
+      var canvasSection = GetCanvasSection(mX, mY);
 
-      // Update canvas section items.
-      UpdateCanvasSection(centerX, centerY);
+      // Update highlight section.
+      UpdateHighlightSection(canvasSection); 
     }
 
     #endregion Canvas Methods
