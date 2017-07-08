@@ -10,6 +10,7 @@ using Windowmancer.Core.Models;
 using Windowmancer.Core.Practices;
 using UserControl = System.Windows.Controls.UserControl;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Windowmancer.Core.Models.Base;
 using Windowmancer.Core.Services.Base;
@@ -64,6 +65,7 @@ namespace Windowmancer.UI
     private void PreInitialize()
     {
       this.DisplayContainersSelectable = true;
+      this.CanvasViewModel = new CanvasViewModel();
     }
 
     private void PostInitialize()
@@ -171,7 +173,6 @@ namespace Windowmancer.UI
       }
       window.KeyDown += HostContainerHelper_HandleKeyPress;
 
-      this.CanvasViewModel = new CanvasViewModel();
       RecreateDisplaySectionControl(
         this.HostContainerHelperViewModel.ActiveDisplayContainer.Rows,
         this.HostContainerHelperViewModel.ActiveDisplayContainer.Columns);
@@ -321,6 +322,13 @@ namespace Windowmancer.UI
 
     public Dictionary<DockableWindow, Image> DockableWindowImageDict { get; set; }
 
+    // TODO: Debug
+    public string DebugText
+    {
+      get => GetProperty<string>();
+      set => SetProperty(value);
+    }
+
     public CanvasViewModel()
     {
       RegisterProperty<int>("CanvasX");
@@ -332,6 +340,9 @@ namespace Windowmancer.UI
       RegisterProperty("HighlightSection", new HighlightSection());
       RegisterProperty("MousePosition", new Point());
       this.DockableWindowImageDict = new Dictionary<DockableWindow, Image>();
+
+      // TODO: Debug
+      RegisterProperty("DebugText", "");
     }
 
     /// <summary>
@@ -541,39 +552,16 @@ namespace Windowmancer.UI
       this.Canvas.MouseLeftButtonUp += Canvas_MouseLeftButtonUp;
       this.Canvas.MouseMove += Canvas_MouseMove;
 
-      // Draw gridlines.
-      var brush = new VisualBrush
-      {
-        Viewport = new Rect(0, 0, 10, 10),
-        ViewportUnits = BrushMappingMode.Absolute,
-        TileMode = TileMode.Tile,
-        Stretch = Stretch.Fill
-      };
-
-      var grid = new Grid {Width = this.Canvas.ActualWidth, Height = this.Canvas.ActualHeight};
-      grid.Children.Add(new Rectangle
-      {
-        Width = 1,
-        Height = 0.03,
-        Fill = new SolidColorBrush(Colors.LightGray),
-        HorizontalAlignment = HorizontalAlignment.Left,
-        VerticalAlignment = VerticalAlignment.Top
-      });
-
-      grid.Children.Add(new Rectangle
-      {
-        Height = 1,
-        Width = 0.03,
-        Fill = new SolidColorBrush(Colors.LightGray),
-        HorizontalAlignment = HorizontalAlignment.Left,
-        VerticalAlignment = VerticalAlignment.Top
-      });
-      brush.Visual = grid;
-      this.Canvas.Background = brush;
-
+      this.Canvas.Background = Brushes.DarkSlateGray;
+      
       // Size and set images to their respective sections on load.
       this.Canvas.Loaded += (o, e) =>
       {
+        var yOffset = this.Canvas.ActualHeight / this.Rows;
+        var xOffset = this.Canvas.ActualWidth / this.Columns;
+
+        DrawGridLines((int)yOffset, (int)xOffset, this.Canvas);
+
         foreach (var kv in this.DockableWindowImageDict)
         {
           var image = kv.Value;
@@ -582,6 +570,82 @@ namespace Windowmancer.UI
           SetImageToSection(image, kv.Key.Row, kv.Key.Column);
         }
       };
+    }
+
+    /// <summary>
+    /// Draws a grid, using the x/y offset values for the section size,
+    /// onto the provided canvas.
+    /// </summary>
+    /// <param name="yoffSet"></param>
+    /// <param name="xoffSet"></param>
+    /// <param name="mainCanvas"></param>
+    private void DrawGridLines(int yoffSet, int xoffSet, Canvas mainCanvas)
+    {
+      RemoveGraph(mainCanvas);
+      var lines = new Image();
+      lines.SetValue(Panel.ZIndexProperty, 0);
+      //Draw the grid
+      var gridLinesVisual = new DrawingVisual();
+      var dct = gridLinesVisual.RenderOpen();
+      var lightPen = new Pen(new SolidColorBrush(Colors.White), 0.5);
+      var darkPen = new Pen(new SolidColorBrush(Colors.White), 1);
+      lightPen.Freeze();
+      darkPen.Freeze();
+      
+      var canvasHeight = mainCanvas.ActualHeight;
+      var canvasWidth = mainCanvas.ActualWidth;
+
+      int yOffset = yoffSet,
+        xOffset = xoffSet,
+        rows = (int)(canvasHeight),
+        columns = (int)(canvasWidth),
+        alternate = yOffset == 5 ? yOffset : 1,
+        j = 0;
+
+      //Draw the horizontal lines
+      var x = new Point(0, 0.5);
+      var y = new Point(canvasWidth, 0.5);
+
+      for (var i = 0; i <= rows; i++, j++)
+      {
+        dct.DrawLine(j % alternate == 0 ? lightPen : darkPen, x, y);
+        x.Offset(0, yOffset);
+        y.Offset(0, yOffset);
+      }
+      j = 0;
+
+      //Draw the vertical lines
+      x = new Point(0.5, 0);
+      y = new Point(0.5, canvasHeight);
+
+      for (var i = 0; i <= columns; i++, j++)
+      {
+        dct.DrawLine(j % alternate == 0 ? lightPen : darkPen, x, y);
+        x.Offset(xOffset, 0);
+        y.Offset(xOffset, 0);
+      }
+
+      dct.Close();
+
+      var bmp = new RenderTargetBitmap((int)canvasWidth,
+        (int)canvasHeight, 96, 96, PixelFormats.Pbgra32);
+      bmp.Render(gridLinesVisual);
+      bmp.Freeze();
+      lines.Source = bmp;
+
+      mainCanvas.Children.Add(lines);
+    }
+
+    private void RemoveGraph(Canvas mainCanvas)
+    {
+      foreach (UIElement obj in mainCanvas.Children)
+      {
+        if (obj is Image)
+        {
+          mainCanvas.Children.Remove(obj);
+          break;
+        }
+      }
     }
 
     /// <summary>
@@ -630,18 +694,18 @@ namespace Windowmancer.UI
 
       // If we are on top of another image, move that image to where our
       // draggable image used to be.
-      var c = GetCanvasSection((int) this.MousePosition.X, (int) this.MousePosition.Y);
-      var d = GetDockableWindowForImage(this.DraggedImage);
+      var canvasSection = GetCanvasSection((int) this.MousePosition.X, (int) this.MousePosition.Y);
+      var dockableWindow = GetDockableWindowForImage(this.DraggedImage);
       foreach (var kv in this.DockableWindowImageDict)
       {
         if (kv.Value == this.DraggedImage) continue;
 
-        if (kv.Key.Row == c.Row && kv.Key.Column == c.Column)
+        if (kv.Key.Row == canvasSection.Row && kv.Key.Column == canvasSection.Column)
         {
-          SetImageToSection(kv.Value, d.Row, d.Column);
+          SetImageToSection(kv.Value, dockableWindow.Row, dockableWindow.Column);
         }
       }
-      SetImageToSection(this.DraggedImage, c.Row, c.Column);
+      SetImageToSection(this.DraggedImage, canvasSection.Row, canvasSection.Column);
       this.DraggedImage = null;
     }
 
@@ -649,9 +713,13 @@ namespace Windowmancer.UI
     {
       if (this.DraggedImage == null) return;
 
-      // Update new mouse position.
+      // Update new mouse position, preventing mouse coordinates from laying outside the canvas bounds.
       var position = e.GetPosition(this.Canvas);
       var offset = position - this.MousePosition;
+      position.X = position.X < 0 ? 0 : position.X;
+      position.Y = position.Y < 0 ? 0 : position.Y;
+      position.X = position.X > this.Canvas.ActualWidth ? this.Canvas.ActualWidth : position.X;
+      position.Y = position.Y > this.Canvas.ActualHeight ? this.Canvas.ActualHeight : position.Y;
       this.MousePosition = position;
 
       // Prevent image from moving outside of the canvas.
@@ -675,11 +743,9 @@ namespace Windowmancer.UI
       }
       Canvas.SetLeft(this.DraggedImage, xPos);
       Canvas.SetTop(this.DraggedImage, yPos);
-
+      
       // Get canvas section from mouse-relative position.
-      var mX = (int) Mouse.GetPosition(this.Canvas).X;
-      var mY = (int) Mouse.GetPosition(this.Canvas).Y;
-      var canvasSection = GetCanvasSection(mX, mY);
+      var canvasSection = GetCanvasSection((int)this.MousePosition.X, (int)this.MousePosition.Y);
 
       // Update highlight section.
       UpdateHighlightSection(canvasSection); 
