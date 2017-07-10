@@ -10,7 +10,7 @@ namespace Windowmancer.Extensions
     public const int ZAXIS_MIDDLE = 1;
     public const int ZAXIS_TOP = 2;
 
-    public static void SetBottom(this UIElement element)
+    public static void MoveToBack(this UIElement element)
     {
       Panel.SetZIndex(element, ZAXIS_BOTTOM);
     }
@@ -20,7 +20,7 @@ namespace Windowmancer.Extensions
       Panel.SetZIndex(element, ZAXIS_MIDDLE);
     }
 
-    public static void SetTop(this UIElement element)
+    public static void MoveToFront(this UIElement element)
     {
       Panel.SetZIndex(element, ZAXIS_TOP);
     }

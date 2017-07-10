@@ -65,7 +65,7 @@ namespace Windowmancer.UI
     private void PreInitialize()
     {
       this.DisplayContainersSelectable = true;
-      this.CanvasViewModel = new CanvasViewModel();
+      this.CanvasViewModel = new CanvasViewModel(this.HostContainerHelperViewModel);
     }
 
     private void PostInitialize()
@@ -114,7 +114,11 @@ namespace Windowmancer.UI
             d.Column = ds.Column;
           }
 
-          var image = new Image {Source = Helper.ScreenShotProcessWindow(d.Process)};
+          var image = new Image
+          {
+            Source = Helper.ScreenShotProcessWindow(d.Process),
+            ToolTip = $"{d.Process.MainWindowTitle}"
+          };
           this.CanvasViewModel.AddImage(image, d);
         }));
 
@@ -148,11 +152,7 @@ namespace Windowmancer.UI
       window.KeyDown -= HostContainerHelper_HandleKeyPress;
       OnClose?.Invoke();
     }
-
-    private void Save()
-    {
-    }
-
+    
     #region Event Methods
 
     private void HostContainerHelper_HandleKeyPress(object sender, System.Windows.Input.KeyEventArgs e)
@@ -242,7 +242,11 @@ namespace Windowmancer.UI
         this.DisplayAspectRatio = new DisplayAspectRatio(dc);
         return dc;
       }
-      set => SetProperty(value);
+      set
+      {
+        this.ActiveDockableWindow = value.DockedWindows.First();
+        SetProperty(value);
+      } 
     }
 
     public DockableWindow ActiveDockableWindow
@@ -250,13 +254,7 @@ namespace Windowmancer.UI
       get => GetProperty<DockableWindow>();
       set => SetProperty(value);
     }
-
-    public HighlightSection HighlightSection
-    {
-      get => GetProperty<HighlightSection>();
-      set => SetProperty(value);
-    }
-
+    
     public ObservableCollection<DisplayContainer> DisplayContainers
     {
       get => GetProperty<ObservableCollection<DisplayContainer>>();
@@ -321,16 +319,12 @@ namespace Windowmancer.UI
     }
 
     public Dictionary<DockableWindow, Image> DockableWindowImageDict { get; set; }
+    
+    private readonly HostContainerViewModel _hcViewModel;
 
-    // TODO: Debug
-    public string DebugText
+    public CanvasViewModel(HostContainerViewModel hcViewModel)
     {
-      get => GetProperty<string>();
-      set => SetProperty(value);
-    }
-
-    public CanvasViewModel()
-    {
+      _hcViewModel = hcViewModel;
       RegisterProperty<int>("CanvasX");
       RegisterProperty<int>("CanvasY");
       RegisterProperty<int>("Rows");
@@ -340,9 +334,6 @@ namespace Windowmancer.UI
       RegisterProperty("HighlightSection", new HighlightSection());
       RegisterProperty("MousePosition", new Point());
       this.DockableWindowImageDict = new Dictionary<DockableWindow, Image>();
-
-      // TODO: Debug
-      RegisterProperty("DebugText", "");
     }
 
     /// <summary>
@@ -352,10 +343,7 @@ namespace Windowmancer.UI
     /// <param name="image">The image to move.</param>
     /// <param name="row">The row index.</param>
     /// <param name="column">The column index.</param>
-    public void SetImageToSection(
-      Image image,
-      int row,
-      int column)
+    public void SetImageToSection(Image image, int row, int column)
     {
       if (row >= this.Rows || column >= this.Columns)
       {
@@ -402,7 +390,7 @@ namespace Windowmancer.UI
       // Ensure our highlight section is in the background, and not covering
       // an image.
       this.HighlightSection.Rectangle.Visibility = Visibility.Visible;
-      this.HighlightSection.Rectangle.SetBottom();
+      this.HighlightSection.Rectangle.MoveToBack();
 
       // Move our highlight section to the cooresponding section.
       Canvas.SetLeft(this.HighlightSection.Rectangle, canvasSection.X);
@@ -411,7 +399,7 @@ namespace Windowmancer.UI
 
     /// <summary>
     /// Retrieves a canvas section object associated with the 
-    /// provided point.
+    /// provided point location.
     /// </summary>
     /// <param name="x"></param>
     /// <param name="y"></param>
@@ -494,19 +482,7 @@ namespace Windowmancer.UI
       foreach (var img in this.DockableWindowImageDict.Values)
       {
         if (img == this.DraggedImage) continue;
-        img.SetBottom();
-      }
-    }
-
-    /// <summary>
-    /// Moves all dockable window images to the front.
-    /// </summary>
-    public void MoveAllImagesToFront()
-    {
-      foreach (var img in this.DockableWindowImageDict.Values)
-      {
-        if (img == this.DraggedImage) continue;
-        img.SetTop();
+        img.MoveToBack();
       }
     }
 
@@ -522,7 +498,7 @@ namespace Windowmancer.UI
       if (show)
       {
         this.HighlightSection.Rectangle.Visibility = Visibility.Visible;
-        this.HighlightSection.Rectangle.SetBottom();
+        this.HighlightSection.Rectangle.MoveToBack();
       }
       else
       {
@@ -584,11 +560,12 @@ namespace Windowmancer.UI
       RemoveGraph(mainCanvas);
       var lines = new Image();
       lines.SetValue(Panel.ZIndexProperty, 0);
+
       //Draw the grid
       var gridLinesVisual = new DrawingVisual();
       var dct = gridLinesVisual.RenderOpen();
-      var lightPen = new Pen(new SolidColorBrush(Colors.White), 0.5);
-      var darkPen = new Pen(new SolidColorBrush(Colors.White), 1);
+      var lightPen = new Pen(new SolidColorBrush(Colors.White), 1);
+      var darkPen = new Pen(new SolidColorBrush(Colors.White), 1.5);
       lightPen.Freeze();
       darkPen.Freeze();
       
@@ -603,28 +580,26 @@ namespace Windowmancer.UI
         j = 0;
 
       //Draw the horizontal lines
-      var x = new Point(0, 0.5);
-      var y = new Point(canvasWidth, 0.5);
+      var xPoint = new Point(0, 1);
+      var yPoint = new Point(canvasWidth, 1);
 
-      for (var i = 0; i <= rows; i++, j++)
+      for (var i = j = 0; i <= rows; i++, j++)
       {
-        dct.DrawLine(j % alternate == 0 ? lightPen : darkPen, x, y);
-        x.Offset(0, yOffset);
-        y.Offset(0, yOffset);
+        dct.DrawLine(j % alternate == 0 ? lightPen : darkPen, xPoint, yPoint);
+        xPoint.Offset(0, yOffset);
+        yPoint.Offset(0, yOffset);
       }
-      j = 0;
 
       //Draw the vertical lines
-      x = new Point(0.5, 0);
-      y = new Point(0.5, canvasHeight);
+      xPoint = new Point(1, 0);
+      yPoint = new Point(1, canvasHeight);
 
-      for (var i = 0; i <= columns; i++, j++)
+      for (var i = j = 0; i <= columns; i++, j++)
       {
-        dct.DrawLine(j % alternate == 0 ? lightPen : darkPen, x, y);
-        x.Offset(xOffset, 0);
-        y.Offset(xOffset, 0);
+        dct.DrawLine(j % alternate == 0 ? lightPen : darkPen, xPoint, yPoint);
+        xPoint.Offset(xOffset, 0);
+        yPoint.Offset(xOffset, 0);
       }
-
       dct.Close();
 
       var bmp = new RenderTargetBitmap((int)canvasWidth,
@@ -632,7 +607,6 @@ namespace Windowmancer.UI
       bmp.Render(gridLinesVisual);
       bmp.Freeze();
       lines.Source = bmp;
-
       mainCanvas.Children.Add(lines);
     }
 
@@ -681,8 +655,11 @@ namespace Windowmancer.UI
       this.ShowHighlightSection(true);
       this.DraggedImage = image;
 
+      // Notify others we are dragging a dockable window.
+      _hcViewModel.ActiveDockableWindow = GetDockableWindowForImage(this.DraggedImage);
+
       // Set dragged image as top and other images to bottom.
-      this.DraggedImage.SetTop();
+      this.DraggedImage.MoveToFront();
       this.MoveAllOtherImagesToBack();
     }
 
