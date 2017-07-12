@@ -18,14 +18,14 @@
       <Setter.Value>
         <ControlTemplate TargetType="TabItem">
           <Border x:Name="Border"
-                            HorizontalAlignment="Stretch"
-                            Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
+                  HorizontalAlignment="Stretch"
+                  Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
             <Grid HorizontalAlignment="Stretch"
-                              VerticalAlignment="Stretch"
-                              UseLayoutRounding="True">
+                  VerticalAlignment="Stretch"
+                  UseLayoutRounding="True">
               <Grid.ColumnDefinitions>
                 <ColumnDefinition x:Name="PART_ContentLeftCol" Width="Auto" />
                 <ColumnDefinition x:Name="PART_ContentRightCol" Width="Auto" />
@@ -35,34 +35,34 @@
                 <RowDefinition x:Name="PART_ContentBottomRow" Height="Auto" />
               </Grid.RowDefinitions>
               <Controls:ContentControlEx x:Name="ContentSite"
-                                                       Grid.Row="0"
-                                                       Grid.Column="0"
-                                                       Padding="{TemplateBinding Padding}"
-                                                       Content="{TemplateBinding Header}"
-                                                       ContentCharacterCasing="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(Controls:ControlsHelper.ContentCharacterCasing)}"
-                                                       ContentStringFormat="{TemplateBinding HeaderStringFormat}"
-                                                       ContentTemplate="{TemplateBinding HeaderTemplate}"
-                                                       ContentTemplateSelector="{TemplateBinding HeaderTemplateSelector}"
-                                                       FontFamily="{TemplateBinding FontFamily}"
-                                                       FontSize="{TemplateBinding Controls:ControlsHelper.HeaderFontSize}"
-                                                       FontStretch="{TemplateBinding Controls:ControlsHelper.HeaderFontStretch}"
-                                                       FontStyle="{TemplateBinding FontStyle}"
-                                                       FontWeight="{TemplateBinding Controls:ControlsHelper.HeaderFontWeight}"
-                                                       Foreground="{TemplateBinding Foreground}"
-                                                       RecognizesAccessKey="True"
-                                                       SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                                       UseLayoutRounding="False" />
+                                         Grid.Row="0"
+                                         Grid.Column="0"
+                                         Padding="{TemplateBinding Padding}"
+                                         Content="{TemplateBinding Header}"
+                                         ContentCharacterCasing="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(Controls:ControlsHelper.ContentCharacterCasing)}"
+                                         ContentStringFormat="{TemplateBinding HeaderStringFormat}"
+                                         ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                         ContentTemplateSelector="{TemplateBinding HeaderTemplateSelector}"
+                                         FontFamily="{TemplateBinding FontFamily}"
+                                         FontSize="{TemplateBinding Controls:ControlsHelper.HeaderFontSize}"
+                                         FontStretch="{TemplateBinding Controls:ControlsHelper.HeaderFontStretch}"
+                                         FontStyle="{TemplateBinding FontStyle}"
+                                         FontWeight="{TemplateBinding Controls:ControlsHelper.HeaderFontWeight}"
+                                         Foreground="{TemplateBinding Foreground}"
+                                         RecognizesAccessKey="True"
+                                         SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                         UseLayoutRounding="False" />
               <Controls:Underline x:Name="Underline"
-                                                Grid.Row="1"
-                                                Grid.Column="0"
-                                                HorizontalAlignment="Stretch"
-                                                VerticalAlignment="Stretch"
-                                                Background="{TemplateBinding Background}"
-                                                BorderBrush="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type TabControl}}, Path=(Controls:TabControlHelper.UnderlineBrush), Mode=OneWay}"
-                                                LineExtent="3"
-                                                LineThickness="2"
-                                                Placement="Bottom"
-                                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                  Grid.Row="1"
+                                  Grid.Column="0"
+                                  HorizontalAlignment="Stretch"
+                                  VerticalAlignment="Stretch"
+                                  Background="{TemplateBinding Background}"
+                                  BorderBrush="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type TabControl}}, Path=(Controls:TabControlHelper.UnderlineBrush), Mode=OneWay}"
+                                  LineExtent="3"
+                                  LineThickness="2"
+                                  Placement="Bottom"
+                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
             </Grid>
           </Border>
           <ControlTemplate.Triggers>
@@ -128,6 +128,7 @@
             </Trigger>
             <Trigger Property="IsSelected" Value="false">
               <Setter TargetName="ContentSite" Property="TextElement.Foreground" Value="{DynamicResource GrayNormalBrush}" />
+              <Setter TargetName="Border" Property="Background" Value="{DynamicResource MainColorTheme}" />
             </Trigger>
 
             <MultiDataTrigger>

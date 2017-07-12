@@ -19,14 +19,14 @@
           Grid.Row="0"
           x:Name="LayoutHelperGridControl">
       <Grid.ColumnDefinitions>
-        <ColumnDefinition MaxWidth="400"/>
+        <ColumnDefinition MaxWidth="200"/>
+        <ColumnDefinition MaxWidth="200"/>
         <ColumnDefinition Width="*"/>
       </Grid.ColumnDefinitions>
       <Grid Grid.Column="0">
         <Grid.RowDefinitions>
           <RowDefinition Height="200"/>
           <RowDefinition Height="200"/>
-          <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <GroupBox Header="Displays"
@@ -75,6 +75,8 @@
                               Foreground="White"
                               Value="{Binding HostContainerHelperViewModel.ActiveDisplayContainer.Rows}"
                               VerticalAlignment="Center"
+                              HorizontalAlignment="Left"
+                              Width="75"
                               Minimum="1"
                               Maximum="10"/>
           <Label Grid.Row="1" Grid.Column="0" 
@@ -85,6 +87,8 @@
                               Grid.Row="1" Grid.Column="1" 
                               Foreground="White"
                               VerticalAlignment="Center"
+                              HorizontalAlignment="Left"
+                              Width="75"
                               Value="{Binding HostContainerHelperViewModel.ActiveDisplayContainer.Columns}"
                               Minimum="1"
                               Maximum="10"/>
@@ -96,33 +100,32 @@
                   VerticalAlignment="Stretch"
                   Content="Set"/>
         </Grid>
-        <Grid Grid.Row="2">
-          <StackPanel Orientation="Vertical">
-            <GroupBox Header="Windows"
-                      Style="{StaticResource MyGroupBoxStyle}">
-              <ListBox Name="DockedWindowsListBox"
-                       Grid.Column="1"
-                       Style="{StaticResource MyListBox}"
-                       ItemContainerStyle="{StaticResource MyListBoxItem}"
-                       SelectedItem="{Binding HostContainerHelperViewModel.ActiveDockableWindow}"
-                       ItemsSource="{Binding HostContainerHelperViewModel.ActiveDisplayContainer.DockedWindows}">
-                <ListBox.ItemTemplate>
-                  <DataTemplate>
-                    <Grid Margin="3,3">
-                      <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                      </Grid.ColumnDefinitions>
-                      <TextBlock Text="{Binding Process.MainWindowTitle}" />
-                    </Grid>
-                  </DataTemplate>
-                </ListBox.ItemTemplate>
-              </ListBox>
-            </GroupBox>
-          </StackPanel>
-        </Grid>
       </Grid>
       <!--#endregion-->
 
+      <Grid Grid.Column="1">
+        <StackPanel Orientation="Vertical">
+          
+            <ListBox Name="DockedWindowsListBox"
+                     Grid.Column="1"
+                     Style="{StaticResource MyListBox}"
+                     ItemContainerStyle="{StaticResource MyListBoxItem}"
+                     SelectedItem="{Binding HostContainerHelperViewModel.ActiveDockableWindow}"
+                     ItemsSource="{Binding HostContainerHelperViewModel.ActiveDisplayContainer.DockedWindows}">
+              <ListBox.ItemTemplate>
+                <DataTemplate>
+                  <Grid Margin="3,3">
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{Binding Process.MainWindowTitle}" />
+                  </Grid>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+          
+        </StackPanel>
+      </Grid>
       <StackPanel Grid.Column="2">
         <!--#region Display panel -->
         <Grid Name="DisplayHelperControl" 

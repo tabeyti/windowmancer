@@ -103,8 +103,8 @@ namespace Windowmancer.Tests.Tests
       // Create a WindowInfo object from our create process.
       var windowInfo = WindowInfo.FromProcess(proc.Process);
 
-      var originalLayoutInfo = windowInfo.LayoutInfo;
-      var modifiedLayoutInfo = (WindowLayoutInfo)originalLayoutInfo.Clone();
+      var originalLayoutInfo = windowInfo.MonitorLayoutInfo;
+      var modifiedLayoutInfo = (MonitorLayoutInfo)originalLayoutInfo.Clone();
 
       // Modify position values.
       TestHelper.ModifyLayoutInfoPosition(modifiedLayoutInfo);
@@ -127,8 +127,8 @@ namespace Windowmancer.Tests.Tests
       // Create a WindowInfo object from our process.
       var windowInfo = WindowInfo.FromProcess(proc.Process);
 
-      var originalLayoutInfo = windowInfo.LayoutInfo;
-      var modifiedLayoutInfo = (WindowLayoutInfo)originalLayoutInfo.Clone();
+      var originalLayoutInfo = windowInfo.MonitorLayoutInfo;
+      var modifiedLayoutInfo = (MonitorLayoutInfo)originalLayoutInfo.Clone();
 
       // Modify the size values.
       TestHelper.ModifyLayoutInfoSize(modifiedLayoutInfo);
@@ -151,12 +151,12 @@ namespace Windowmancer.Tests.Tests
       var windowInfo = WindowInfo.FromProcess(proc.Process);
 
       // Apply current layout, no change, via window manager.
-      WindowManager.ApplyWindowLayout(windowInfo.LayoutInfo, proc.Process);
+      WindowManager.ApplyWindowLayout(windowInfo.MonitorLayoutInfo, proc.Process);
 
       // Get the process' current position and verify it is the same.
       var newRec = WindowManager.GetWindowRectCurrent(proc.Process);
-      Assert.Equal(windowInfo.LayoutInfo.PositionInfo.X, newRec.Left);
-      Assert.Equal(windowInfo.LayoutInfo.PositionInfo.Y, newRec.Top);
+      Assert.Equal(windowInfo.MonitorLayoutInfo.PositionInfo.X, newRec.Left);
+      Assert.Equal(windowInfo.MonitorLayoutInfo.PositionInfo.Y, newRec.Top);
     }
 
     [Fact]
@@ -191,8 +191,8 @@ namespace Windowmancer.Tests.Tests
       // Modify the size/positioning of each window info object.
       windowInfoList.ForEach(w =>
       {
-        TestHelper.ModifyLayoutInfoSize(w.LayoutInfo);
-        TestHelper.ModifyLayoutInfoPosition(w.LayoutInfo);
+        TestHelper.ModifyLayoutInfoSize(w.MonitorLayoutInfo);
+        TestHelper.ModifyLayoutInfoPosition(w.MonitorLayoutInfo);
       });
       
       windowManager.RefreshProfile();
@@ -204,10 +204,10 @@ namespace Windowmancer.Tests.Tests
         var windowInfo = kv.Value;
 
         var newRec = WindowManager.GetWindowRectCurrent(proc.Process);
-        Assert.Equal(windowInfo.LayoutInfo.SizeInfo.Width, newRec.Width);
-        Assert.Equal(windowInfo.LayoutInfo.SizeInfo.Height, newRec.Height);
-        Assert.Equal(windowInfo.LayoutInfo.PositionInfo.X, newRec.Left);
-        Assert.Equal(windowInfo.LayoutInfo.PositionInfo.Y, newRec.Top);
+        Assert.Equal(windowInfo.MonitorLayoutInfo.SizeInfo.Width, newRec.Width);
+        Assert.Equal(windowInfo.MonitorLayoutInfo.SizeInfo.Height, newRec.Height);
+        Assert.Equal(windowInfo.MonitorLayoutInfo.PositionInfo.X, newRec.Left);
+        Assert.Equal(windowInfo.MonitorLayoutInfo.PositionInfo.Y, newRec.Top);
       }
     }
 
@@ -291,10 +291,10 @@ namespace Windowmancer.Tests.Tests
 
       // Verify process values changed.
       newRec = WindowManager.GetWindowRectCurrent(proc.Process);
-      Assert.Equal(windowInfo.LayoutInfo.PositionInfo.X, newRec.Left);
-      Assert.Equal(windowInfo.LayoutInfo.PositionInfo.Y, newRec.Top);
-      Assert.Equal(windowInfo.LayoutInfo.SizeInfo.Width, newRec.Width);
-      Assert.Equal(windowInfo.LayoutInfo.SizeInfo.Height, newRec.Height);
+      Assert.Equal(windowInfo.MonitorLayoutInfo.PositionInfo.X, newRec.Left);
+      Assert.Equal(windowInfo.MonitorLayoutInfo.PositionInfo.Y, newRec.Top);
+      Assert.Equal(windowInfo.MonitorLayoutInfo.SizeInfo.Width, newRec.Width);
+      Assert.Equal(windowInfo.MonitorLayoutInfo.SizeInfo.Height, newRec.Height);
     }
 
     #region Helper Methods

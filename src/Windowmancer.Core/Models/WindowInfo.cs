@@ -14,9 +14,15 @@ namespace Windowmancer.Core.Models
       set => SetProperty(value);
     }
 
-    public WindowLayoutInfo LayoutInfo
+    public MonitorLayoutInfo MonitorLayoutInfo
     {
-      get => GetProperty<WindowLayoutInfo>();
+      get => GetProperty<MonitorLayoutInfo>();
+      set => SetProperty(value);
+    }
+
+    public ContainerLayoutInfo ContainerLayoutInfo
+    {
+      get => GetProperty<ContainerLayoutInfo>();
       set => SetProperty(value);
     }
 
@@ -44,12 +50,13 @@ namespace Windowmancer.Core.Models
     {
       RegisterProperty<string>("Name");
       RegisterProperty<string>("ApplyOnProcessStart");
-      RegisterProperty<WindowLayoutInfo>("LayoutInfo");
+      RegisterProperty<MonitorLayoutInfo>("MonitorLayoutInfo");
+      RegisterProperty<ContainerLayoutInfo>("ContainerLayoutInfo");
       RegisterProperty<WindowMatchCriteria>("MatchCriteria");
       RegisterProperty<WindowStylingInfo>("StylingInfo");
 
       this.Name = "";
-      this.LayoutInfo = new WindowLayoutInfo();
+      this.MonitorLayoutInfo = new MonitorLayoutInfo();
       this.MatchCriteria = new WindowMatchCriteria(default(WindowMatchCriteriaType), "");
       this.ApplyOnProcessStart = true;
       this.StylingInfo = new WindowStylingInfo();
@@ -66,7 +73,7 @@ namespace Windowmancer.Core.Models
       {
         Name = this.Name,
         ApplyOnProcessStart = this.ApplyOnProcessStart,
-        LayoutInfo = (WindowLayoutInfo)this.LayoutInfo.Clone(),
+        MonitorLayoutInfo = (MonitorLayoutInfo)this.MonitorLayoutInfo.Clone(),
         MatchCriteria = (WindowMatchCriteria)this.MatchCriteria.Clone(),
         StylingInfo = (WindowStylingInfo)this.StylingInfo.Clone()
       };
@@ -81,7 +88,7 @@ namespace Windowmancer.Core.Models
       this.Name = info.Name;
       this.ApplyOnProcessStart = info.ApplyOnProcessStart;
       this.MatchCriteria = info.MatchCriteria;
-      this.LayoutInfo = info.LayoutInfo;
+      this.MonitorLayoutInfo = info.MonitorLayoutInfo;
       this.StylingInfo = info.StylingInfo;
       _userData = _userData ?? Helper.ServiceResolver.Resolve<UserData>();
       _userData.Save();
@@ -93,7 +100,7 @@ namespace Windowmancer.Core.Models
       return new WindowInfo
       {
         Name = process.MainWindowTitle,
-        LayoutInfo = new WindowLayoutInfo(
+        MonitorLayoutInfo = new MonitorLayoutInfo(
           procRec.Left,
           procRec.Top,
           procRec.Width,
@@ -134,7 +141,7 @@ namespace Windowmancer.Core.Models
     }
   }
 
-  public class WindowLayoutInfo : PropertyNotifyBase, ICloneable
+  public class MonitorLayoutInfo : PropertyNotifyBase, ICloneable
   {
     public PositionInfo PositionInfo
     {
@@ -148,16 +155,16 @@ namespace Windowmancer.Core.Models
       set => SetProperty(value);
     }
 
-    public WindowLayoutInfo()
+    public MonitorLayoutInfo()
     {
       RegisterProperty<PositionInfo>("PositionInfo");
       RegisterProperty<SizeInfo>("SizeInfo");
     }
 
-    public WindowLayoutInfo(int x, int y, int width, int height)
+    public MonitorLayoutInfo(int x, int y, int width, int height)
     {
-      RegisterProperty<PositionInfo>("PositionInfo", new PositionInfo(x, y));
-      RegisterProperty<SizeInfo>("SizeInfo", new SizeInfo(width, height));
+      RegisterProperty("PositionInfo", new PositionInfo(x, y));
+      RegisterProperty("SizeInfo", new SizeInfo(width, height));
     }
 
     public override string ToString()
@@ -167,14 +174,14 @@ namespace Windowmancer.Core.Models
 
     public object Clone()
     {
-      return new WindowLayoutInfo
+      return new MonitorLayoutInfo
       {
         PositionInfo = (PositionInfo)this.PositionInfo.Clone(),
         SizeInfo = (SizeInfo)this.SizeInfo.Clone()
       };
     }
 
-    public void Update(WindowLayoutInfo info)
+    public void Update(MonitorLayoutInfo info)
     {
       this.PositionInfo = info.PositionInfo;
       this.SizeInfo = info.SizeInfo;
@@ -212,8 +219,8 @@ namespace Windowmancer.Core.Models
 
     public PositionInfo(int x, int y)
     {
-      RegisterProperty<int>("X", x);
-      RegisterProperty<int>("Y", y);
+      RegisterProperty("X", x);
+      RegisterProperty("Y", y);
     }
   }
 
@@ -248,8 +255,54 @@ namespace Windowmancer.Core.Models
 
     public SizeInfo(int width, int height)
     {
-      this.RegisterProperty<int>("Width", width);
-      this.RegisterProperty<int>("Height", height);
+      this.RegisterProperty("Width", width);
+      this.RegisterProperty("Height", height);
     }
   }
+
+  public class ContainerLayoutInfo : PropertyNotifyBase, ICloneable
+  {
+    public uint Row
+    {
+      get => GetProperty<uint>();
+      set => SetProperty(value);
+    }
+
+    public uint Column
+    {
+      get => GetProperty<uint>();
+      set => SetProperty(value);
+    }
+
+    public string Container
+    {
+      get => GetProperty<string>();
+      set => SetProperty(value);
+    }
+
+    public ContainerLayoutInfo()
+    {
+      RegisterProperty<uint>("Row");
+      RegisterProperty<uint>("Column");
+      RegisterProperty<string>("Container");
+    }
+
+    public ContainerLayoutInfo(uint row, uint column, string container)
+    {
+      RegisterProperty("Row", row);
+      RegisterProperty("Column", column);
+      RegisterProperty("Container", container);
+    }
+
+    public override string ToString()
+    {
+      return $"Row: {Row} - Column: {Column}";
+    }
+
+    public object Clone()
+    {
+      return new ContainerLayoutInfo(this.Row, this.Column, this.Container);
+    }
+  }
+
 }

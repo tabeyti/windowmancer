@@ -2,7 +2,9 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:markup="http://schemas.microsoft.com/winfx/2006/xaml">
   <!--Control styles-->
-  <Style x:Key="MyGroupBoxStyle" BasedOn="{StaticResource MetroGroupBox}" TargetType="{markup:Type GroupBox}">
+  <Style x:Key="MyGroupBoxStyle" 
+         BasedOn="{StaticResource MetroGroupBox}" 
+         TargetType="{markup:Type GroupBox}">
     <Setter Property="Background" Value="{StaticResource GrayBrush9}"/>
     <Setter Property="BorderBrush" Value="{StaticResource GrayBrush9}"/>
   </Style>

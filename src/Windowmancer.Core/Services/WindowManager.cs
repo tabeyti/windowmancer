@@ -55,10 +55,10 @@ namespace Windowmancer.Core.Services
       }
       
       // Set layout values.
-      var x = (int)windowInfo.LayoutInfo.PositionInfo.X;
-      var y = (int)windowInfo.LayoutInfo.PositionInfo.Y;
-      var width = windowInfo.LayoutInfo.SizeInfo.Width;
-      var height = windowInfo.LayoutInfo.SizeInfo.Height;
+      var x = (int)windowInfo.MonitorLayoutInfo.PositionInfo.X;
+      var y = (int)windowInfo.MonitorLayoutInfo.PositionInfo.Y;
+      var width = windowInfo.MonitorLayoutInfo.SizeInfo.Width;
+      var height = windowInfo.MonitorLayoutInfo.SizeInfo.Height;
       ShowWindowNormal(process);
       Win32.MoveWindow(handle, x, y, width, height, true);
 
@@ -110,7 +110,7 @@ namespace Windowmancer.Core.Services
     /// </summary>
     /// <param name="layoutInfo"></param>
     /// <param name="process"></param>
-    public static void ApplyWindowLayout(WindowLayoutInfo layoutInfo, Process process)
+    public static void ApplyWindowLayout(MonitorLayoutInfo layoutInfo, Process process)
     {
       if (null == layoutInfo || null == process)
       {

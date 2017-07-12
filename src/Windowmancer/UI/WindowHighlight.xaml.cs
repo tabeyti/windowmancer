@@ -46,7 +46,7 @@ namespace Windowmancer.UI
       });
     }
 
-    public void UpdateLayout(WindowLayoutInfo layoutInfo)
+    public void UpdateLayout(MonitorLayoutInfo layoutInfo)
     {
       UpdateLayout(
         layoutInfo.PositionInfo.X,

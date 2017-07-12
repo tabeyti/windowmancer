@@ -34,7 +34,7 @@ namespace Windowmancer.UI
     public WindowInfo WindowInfo { get; set; }
 
     // Container for storing origina values prior to "preview"
-    public WindowLayoutInfo OriginalLayoutInfo { get; set; }
+    public MonitorLayoutInfo OriginalLayoutInfo { get; set; }
     // Container for storing origina values prior to "preview"
     public uint OriginalOpacity { get; set; }
 
@@ -173,10 +173,10 @@ namespace Windowmancer.UI
       var width = (screenWidth / totalCols);
       var height = (screenHeight / totalRows);
 
-      this.WindowInfo.LayoutInfo.SizeInfo.Width = width;
-      this.WindowInfo.LayoutInfo.SizeInfo.Height = height;
-      this.WindowInfo.LayoutInfo.PositionInfo.X = x;
-      this.WindowInfo.LayoutInfo.PositionInfo.Y = y;
+      this.WindowInfo.MonitorLayoutInfo.SizeInfo.Width = width;
+      this.WindowInfo.MonitorLayoutInfo.SizeInfo.Height = height;
+      this.WindowInfo.MonitorLayoutInfo.PositionInfo.X = x;
+      this.WindowInfo.MonitorLayoutInfo.PositionInfo.Y = y;
     }
 
     /// <summary>
@@ -190,10 +190,10 @@ namespace Windowmancer.UI
       this.WindowInfo.Name = this.NameTextBox.Text;
       this.WindowInfo.MatchCriteria.MatchType = matchType;
       this.WindowInfo.MatchCriteria.MatchString = this.RegexMatchStringTextBox.Text;
-      this.WindowInfo.LayoutInfo.PositionInfo.X = (int)this.XSpinner.Value;
-      this.WindowInfo.LayoutInfo.PositionInfo.Y = (int)this.YSpinner.Value;
-      this.WindowInfo.LayoutInfo.SizeInfo.Width = (int)this.WidthSpinner.Value;
-      this.WindowInfo.LayoutInfo.SizeInfo.Height = (int)this.HeightSpinner.Value;
+      this.WindowInfo.MonitorLayoutInfo.PositionInfo.X = (int)this.XSpinner.Value;
+      this.WindowInfo.MonitorLayoutInfo.PositionInfo.Y = (int)this.YSpinner.Value;
+      this.WindowInfo.MonitorLayoutInfo.SizeInfo.Width = (int)this.WidthSpinner.Value;
+      this.WindowInfo.MonitorLayoutInfo.SizeInfo.Height = (int)this.HeightSpinner.Value;
     }
 
     private void DisplaySection2_OnClick(object sender, EventArgs e)
@@ -323,7 +323,7 @@ namespace Windowmancer.UI
       {
         (_process != null).RunIfTrue(() =>
         {
-          this.OriginalLayoutInfo = WindowInfo.FromProcess(_process).LayoutInfo;
+          this.OriginalLayoutInfo = WindowInfo.FromProcess(_process).MonitorLayoutInfo;
         });
         UpdateScreenHighlight();
         return;
@@ -428,7 +428,7 @@ namespace Windowmancer.UI
       this.TotalColumns = totalColumns;
     }
 
-    public WindowLayoutInfo GetLayoutInfo(Screen screen)
+    public MonitorLayoutInfo GetLayoutInfo(Screen screen)
     {
       var screenWidth = screen.Bounds.Width;
       var screenHeight = screen.Bounds.Height;
@@ -445,10 +445,10 @@ namespace Windowmancer.UI
       var width = (screenWidth / totalCols);
       var height = (screenHeight / totalRows);
 
-      return new WindowLayoutInfo(x, y, width, height);
+      return new MonitorLayoutInfo(x, y, width, height);
     }
 
-    public WindowLayoutInfo GetLayoutInfo(DisplayContainer container)
+    public MonitorLayoutInfo GetLayoutInfo(DisplayContainer container)
     {
       var screenWidth = container.Width;
       var screenHeight = container.Height;
@@ -465,7 +465,7 @@ namespace Windowmancer.UI
       var width = (screenWidth / totalCols);
       var height = (screenHeight / totalRows);
 
-      return new WindowLayoutInfo(x, y, width, height);
+      return new MonitorLayoutInfo(x, y, width, height);
     }
   }
 }
