@@ -44,7 +44,7 @@
                                          ContentTemplate="{TemplateBinding HeaderTemplate}"
                                          ContentTemplateSelector="{TemplateBinding HeaderTemplateSelector}"
                                          FontFamily="{TemplateBinding FontFamily}"
-                                         FontSize="{TemplateBinding Controls:ControlsHelper.HeaderFontSize}"
+                                         FontSize="16"
                                          FontStretch="{TemplateBinding Controls:ControlsHelper.HeaderFontStretch}"
                                          FontStyle="{TemplateBinding FontStyle}"
                                          FontWeight="{TemplateBinding Controls:ControlsHelper.HeaderFontWeight}"

@@ -44,7 +44,7 @@ namespace Windowmancer.Practices
       userData.SetUserConfig(userConfig);
       container.RegisterInstance(userData, new ContainerControlledLifetimeManager());
       container.RegisterType<ProcessMonitor>(new ContainerControlledLifetimeManager());
-      container.RegisterType<WindowManager>(new ContainerControlledLifetimeManager());
+      container.RegisterType<MonitorWindowManager>(new ContainerControlledLifetimeManager());
       container.RegisterType<ProfileManager>(new ContainerControlledLifetimeManager());
       container.RegisterType<KeyHookManager>(new ContainerControlledLifetimeManager());
     }

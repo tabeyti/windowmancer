@@ -29,16 +29,11 @@ namespace Windowmancer.UI
     // Binding objects.
     public bool DisplayHelperPreview { get; set; }
     public bool WindowStylingPreview { get; set; }
-
     public DisplayAspectRatio ScreenAspectRatio { get; set; }
     public WindowInfo WindowInfo { get; set; }
-
-    // Container for storing origina values prior to "preview"
     public MonitorLayoutInfo OriginalLayoutInfo { get; set; }
-    // Container for storing origina values prior to "preview"
     public uint OriginalOpacity { get; set; }
-
-
+    
     private static Screen _screen;
     private static DisplayHelperSection _displayHelperSection = new DisplayHelperSection();
     private WindowHighlight _windowHighlight;
@@ -88,7 +83,7 @@ namespace Windowmancer.UI
       else
       {
         this.WindowInfo = this.WindowInfo?? new WindowInfo();
-        _process = WindowManager.GetProcess(this.WindowInfo);
+        _process = MonitorWindowManager.GetProcess(this.WindowInfo);
       }
     }
 
@@ -220,7 +215,7 @@ namespace Windowmancer.UI
       // Move process window if process is active.
       if (null != _process)
       {
-        WindowManager.ApplyWindowLayout(layoutInfo, _process);
+        MonitorWindowManager.ApplyWindowLayout(layoutInfo, _process);
       }
 
       var window = Window.GetWindow(this);
@@ -332,7 +327,7 @@ namespace Windowmancer.UI
       // If unchecked, then apply the original layout.
       (_process != null).RunIfTrue(() =>
       {
-        WindowManager.ApplyWindowLayout(this.OriginalLayoutInfo, _process);
+        MonitorWindowManager.ApplyWindowLayout(this.OriginalLayoutInfo, _process);
       }); 
       DisableScreenHighlight();
     }
@@ -389,7 +384,7 @@ namespace Windowmancer.UI
     {
       if (this.WindowStylingPreview && null != _process)
       {
-        WindowManager.SetWindowOpacityPercentage(_process, (uint)WindowOpacitySlider.Value);
+        MonitorWindowManager.SetWindowOpacityPercentage(_process, (uint)WindowOpacitySlider.Value);
       }
     }
 
@@ -397,12 +392,12 @@ namespace Windowmancer.UI
     {
       if (this.WindowStylingPreview)
       {
-        (_process != null).RunIfTrue(() => this.OriginalOpacity = WindowManager.GetWindowOpacityPercentage(_process));
-        WindowManager.SetWindowOpacityPercentage(_process, (uint) WindowOpacitySlider.Value);
+        (_process != null).RunIfTrue(() => this.OriginalOpacity = MonitorWindowManager.GetWindowOpacityPercentage(_process));
+        MonitorWindowManager.SetWindowOpacityPercentage(_process, (uint) WindowOpacitySlider.Value);
       }
       else
       {
-        (_process != null).RunIfTrue(() => WindowManager.SetWindowOpacityPercentage(_process, this.OriginalOpacity));
+        (_process != null).RunIfTrue(() => MonitorWindowManager.SetWindowOpacityPercentage(_process, this.OriginalOpacity));
       }
     }
   }
@@ -441,26 +436,6 @@ namespace Windowmancer.UI
 
       var x = (screenWidth / totalCols) * col + screen.Bounds.X;
       var y = (screenHeight / totalRows) * row + screen.Bounds.Y;
-
-      var width = (screenWidth / totalCols);
-      var height = (screenHeight / totalRows);
-
-      return new MonitorLayoutInfo(x, y, width, height);
-    }
-
-    public MonitorLayoutInfo GetLayoutInfo(DisplayContainer container)
-    {
-      var screenWidth = container.Width;
-      var screenHeight = container.Height;
-
-      var row = this.RowIndex;
-      var col = this.ColumnIndex;
-
-      var totalRows = this.TotalRows;
-      var totalCols = this.TotalColumns;
-
-      var x = (screenWidth / totalCols) * col + container.X;
-      var y = (screenHeight / totalRows) * row + container.Y;
 
       var width = (screenWidth / totalCols);
       var height = (screenHeight / totalRows);

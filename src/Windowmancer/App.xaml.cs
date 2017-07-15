@@ -39,7 +39,7 @@ namespace Windowmancer
 
     private KeyHookManager _keyHookManager;
     private ProfileManager _profileManager;
-    private WindowManager _windowManager;
+    private MonitorWindowManager _monitorWindowManager;
     private ProcessMonitor _procMonitor;
     private UserData _userData;
 
@@ -60,7 +60,7 @@ namespace Windowmancer
 
       _userData = ServiceResolver.Resolve<UserData>();
       _profileManager = ServiceResolver.Resolve<ProfileManager>();
-      _windowManager = ServiceResolver.Resolve<WindowManager>();
+      _monitorWindowManager = ServiceResolver.Resolve<MonitorWindowManager>();
       _keyHookManager = ServiceResolver.Resolve<KeyHookManager>();
       _procMonitor = ServiceResolver.Resolve<ProcessMonitor>();
 
@@ -114,7 +114,7 @@ namespace Windowmancer
       rescanMenuItem.MouseLeave += TrayContextMenuItem_MouseLeave;
       rescanMenuItem.Dock = DockStyle.Fill;
       rescanMenuItem.Font = new Font(rescanMenuItem.Font, System.Drawing.FontStyle.Bold);
-      rescanMenuItem.Click += (s, e) => { _windowManager.RefreshProfile(); };
+      rescanMenuItem.Click += (s, e) => { _monitorWindowManager.RefreshProfile(); };
       rescanMenuItem.Image = wmIcon;
       menuItems.Add(rescanMenuItem);
       menuItems.Add(new ToolStripSeparator());
@@ -187,7 +187,7 @@ namespace Windowmancer
 
     private void OnKeyCombinationSuccess()
     {
-      _windowManager.RefreshProfile();
+      _monitorWindowManager.RefreshProfile();
     }
 
     private void UncheckCheckedMenuItem()

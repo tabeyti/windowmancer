@@ -25,7 +25,7 @@ namespace Windowmancer.UI
   public partial class HostContainerHelper : UserControl
   {
     public Action OnClose { get; set; }
-    public Action<List<DisplayContainer>> OnSave { get; set; }
+    public Action<WindowContainer> OnSave { get; set; }
     public bool DisplayContainersSelectable { get; set; }
     public HostContainerViewModel HostContainerHelperViewModel { get; set; }
     public CanvasViewModel CanvasViewModel { get; set; }
@@ -33,30 +33,9 @@ namespace Windowmancer.UI
     private readonly SolidColorBrush _defaultBrush = Brushes.Turquoise;
     private DisplayAspectRatio _screenAspectRatio;
 
-    public HostContainerHelper(DisplayContainer displayContainer)
+    public HostContainerHelper(WindowContainer windowContainer)
     {
-      this.HostContainerHelperViewModel = new HostContainerViewModel();
-      this.HostContainerHelperViewModel.DisplayContainers.Add(displayContainer);
-      this.HostContainerHelperViewModel.ActiveDisplayContainer = displayContainer;
-      PreInitialize();
-      InitializeComponent();
-      PostInitialize();
-    }
-
-    public HostContainerHelper(List<DisplayContainer> displayContainers)
-    {
-      if (displayContainers == null || displayContainers.Count <= 0)
-      {
-        throw new Exception($"{this} - List of display containers must contain at least one item.");
-      }
-
-      this.HostContainerHelperViewModel = new HostContainerViewModel();
-      displayContainers.ForEach(d =>
-      {
-        this.HostContainerHelperViewModel.DisplayContainers.Add(d);
-      });
-      this.HostContainerHelperViewModel.ActiveDisplayContainer = displayContainers.First();
-
+      this.HostContainerHelperViewModel = new HostContainerViewModel {ActiveWindowContainer = windowContainer};
       PreInitialize();
       InitializeComponent();
       PostInitialize();
@@ -72,10 +51,7 @@ namespace Windowmancer.UI
     {
       this.RowSpinner.ValueChanged += RowColSpinners_ValueChanged;
       this.ColumnSpinner.ValueChanged += RowColSpinners_ValueChanged;
-
-      this.DisplayListBox.ItemsSource = this.HostContainerHelperViewModel.DisplayContainers;
-      this.DisplayListBox.SelectedItem = this.HostContainerHelperViewModel.ActiveDisplayContainer;
-      this.DisplayListBox.IsEnabled = this.DisplayContainersSelectable;
+      SizeDisplayHelperBox();
     }
     
     private void RecreateDisplaySectionControl(int rows, int cols)
@@ -85,11 +61,11 @@ namespace Windowmancer.UI
       this.CanvasViewModel.Reset();
 
       // Create.
-      this.CanvasViewModel.Rows = this.HostContainerHelperViewModel.ActiveDisplayContainer.Rows;
-      this.CanvasViewModel.Columns = this.HostContainerHelperViewModel.ActiveDisplayContainer.Columns;
+      this.CanvasViewModel.Rows = this.HostContainerHelperViewModel.ActiveWindowContainer.Rows;
+      this.CanvasViewModel.Columns = this.HostContainerHelperViewModel.ActiveWindowContainer.Columns;
       this.CanvasViewModel.Canvas = new Canvas { Background = _defaultBrush };
 
-      var dockableWindows = this.HostContainerHelperViewModel.ActiveDisplayContainer.DockedWindows;
+      var dockableWindows = this.HostContainerHelperViewModel.ActiveWindowContainer.DockedWindows;
       Enumerable.Range(0, rows).ForEach(r =>
         Enumerable.Range(0, cols).ForEach(c =>
         {
@@ -128,9 +104,8 @@ namespace Windowmancer.UI
     
     private void SizeDisplayHelperBox()
     {
-      this.HostContainerHelperViewModel.ActiveDisplayContainer = (DisplayContainer)this.DisplayListBox.SelectedItem;
-      _screenAspectRatio = new DisplayAspectRatio(this.HostContainerHelperViewModel.ActiveDisplayContainer);
-      if (this.HostContainerHelperViewModel.ActiveDisplayContainer.Height > this.HostContainerHelperViewModel.ActiveDisplayContainer.Width)
+      _screenAspectRatio = new DisplayAspectRatio(1152, 648);
+      if (this.HostContainerHelperViewModel.ActiveWindowContainer.Height > this.HostContainerHelperViewModel.ActiveWindowContainer.Width)
       {
         this.DisplayPanel.Height = this.DisplayPanel.MaxHeight;
         this.DisplayPanel.Width = this.DisplayPanel.MaxHeight * (_screenAspectRatio.XRatio / _screenAspectRatio.YRatio);
@@ -174,8 +149,8 @@ namespace Windowmancer.UI
       window.KeyDown += HostContainerHelper_HandleKeyPress;
 
       RecreateDisplaySectionControl(
-        this.HostContainerHelperViewModel.ActiveDisplayContainer.Rows,
-        this.HostContainerHelperViewModel.ActiveDisplayContainer.Columns);
+        this.HostContainerHelperViewModel.ActiveWindowContainer.Rows,
+        this.HostContainerHelperViewModel.ActiveWindowContainer.Columns);
   }
     
     private void DisplayListBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -195,7 +170,7 @@ namespace Windowmancer.UI
       {
         var currentNumSections = this.RowSpinner.Value * this.ColumnSpinner.Value;
         if (currentNumSections <
-            this.HostContainerHelperViewModel.ActiveDisplayContainer.DockedWindows.Count)
+            this.HostContainerHelperViewModel.ActiveWindowContainer.DockedWindows.Count)
         {
           var spinner = (IntegerUpDown)sender;
           spinner.Value = (int)e.OldValue;
@@ -214,8 +189,8 @@ namespace Windowmancer.UI
       }
 
       RecreateDisplaySectionControl(
-        this.HostContainerHelperViewModel.ActiveDisplayContainer.Rows,
-        this.HostContainerHelperViewModel.ActiveDisplayContainer.Columns);
+        this.HostContainerHelperViewModel.ActiveWindowContainer.Rows,
+        this.HostContainerHelperViewModel.ActiveWindowContainer.Columns);
     }
 
     private void CancelButton_OnClick(object sender, RoutedEventArgs e)
@@ -225,8 +200,12 @@ namespace Windowmancer.UI
 
     private void SaveButton_OnClick(object sender, RoutedEventArgs e)
     {
-      OnSave?.Invoke(this.HostContainerHelperViewModel.DisplayContainers.ToList());
+      OnSave?.Invoke(this.HostContainerHelperViewModel.ActiveWindowContainer);
       Close();
+    }
+    private void LabelTextBox_OnGotFocus(object sender, RoutedEventArgs e)
+    {
+      (sender as LabelTextBox)?.BaseTextBox.SelectAll();
     }
 
     #endregion Event Methods
@@ -234,11 +213,11 @@ namespace Windowmancer.UI
 
   public class HostContainerViewModel : PropertyNotifyBase
   {
-    public DisplayContainer ActiveDisplayContainer
+    public WindowContainer ActiveWindowContainer
     {
       get 
       {
-        var dc = GetProperty<DisplayContainer>();
+        var dc = GetProperty<WindowContainer>();
         this.DisplayAspectRatio = new DisplayAspectRatio(dc);
         return dc;
       }
@@ -254,12 +233,7 @@ namespace Windowmancer.UI
       get => GetProperty<DockableWindow>();
       set => SetProperty(value);
     }
-    
-    public ObservableCollection<DisplayContainer> DisplayContainers
-    {
-      get => GetProperty<ObservableCollection<DisplayContainer>>();
-      set => SetProperty(value);
-    }
+   
 
     public DisplayAspectRatio DisplayAspectRatio
     {
@@ -270,8 +244,8 @@ namespace Windowmancer.UI
     public HostContainerViewModel()
     {
       RegisterProperty<DockableWindow>("ActiveDockableWindow", null);
-      RegisterProperty<DisplayContainer>("ActiveDisplayContainer", null);
-      RegisterProperty("DisplayContainers", new ObservableCollection<DisplayContainer>());
+      RegisterProperty<WindowContainer>("ActiveWindowContainer", null);
+      RegisterProperty("DisplayContainers", new ObservableCollection<WindowContainer>());
       RegisterProperty<DisplayAspectRatio>("DisplayAspectRatio", null);
     }
   }
@@ -535,7 +509,6 @@ namespace Windowmancer.UI
       {
         var yOffset = this.Canvas.ActualHeight / this.Rows;
         var xOffset = this.Canvas.ActualWidth / this.Columns;
-
         DrawGridLines((int)yOffset, (int)xOffset, this.Canvas);
 
         foreach (var kv in this.DockableWindowImageDict)

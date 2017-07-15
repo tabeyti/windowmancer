@@ -15,6 +15,8 @@ namespace Windowmancer.Core.Models
     public string Id { get; set; }
     public ObservableCollection<WindowInfo> Windows { get; set; }
 
+    public ObservableCollection<WindowContainer> Containers { get; set; }
+    
     private UserData _userData = null;
 
     public bool IsActive
@@ -38,7 +40,13 @@ namespace Windowmancer.Core.Models
 
     public object Clone()
     {
-      return new Profile { Name = this.Name, Id = this.Id };
+      return new Profile
+      {
+        Name = this.Name,
+        Id = this.Id,
+        Windows =  this.Windows,
+        Containers = this.Containers
+      };
     }
   }
 }

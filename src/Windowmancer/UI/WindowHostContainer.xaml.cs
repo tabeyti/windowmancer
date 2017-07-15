@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Interop;
 using MahApps.Metro.Controls;
+using Windowmancer.Core.Extensions;
 using Windowmancer.Core.Models;
 using Windowmancer.Core.Practices;
 using Windowmancer.Core.Services;
@@ -18,19 +19,19 @@ namespace Windowmancer.UI
   {
     public int CurrentRowIndex { get; private set; }
     public int CurrentColumnIndex { get; private set; }
-    public DisplayContainer DisplayContainer { get; set; }
+    public WindowContainer WindowContainer { get; set; }
 
     private static readonly int _titlebarHeight = (int)SystemParameters.WindowCaptionHeight + 10;
 
-    public WindowHostContainer(DisplayContainer displayContiner)
+    public WindowHostContainer(WindowContainer windowContiner)
     {
-      this.DisplayContainer = displayContiner;
+      this.WindowContainer = windowContiner;
       InitializeComponent();
     }
 
     public WindowHostContainer()
     {
-      this.DisplayContainer = new DisplayContainer("Default", 0, 0, 1, 1);
+      this.WindowContainer = new WindowContainer("Default", 0, 0, 1, 1);
       Initialize();
     }
 
@@ -38,7 +39,7 @@ namespace Windowmancer.UI
     {
       this.Closing += (o, e) =>
       {
-        foreach (var dw in this.DisplayContainer.DockedWindows)
+        foreach (var dw in this.WindowContainer.DockedWindows)
         {
           dw.Process?.Kill();
         }
@@ -52,9 +53,9 @@ namespace Windowmancer.UI
     /// <param name="process"></param>
     public void DockProc(Process process)
     {
-      if (this.CurrentColumnIndex >= this.DisplayContainer.Columns)
+      if (this.CurrentColumnIndex >= this.WindowContainer.Columns)
       {
-        if (this.CurrentRowIndex >= this.DisplayContainer.Rows)
+        if (this.CurrentRowIndex >= this.WindowContainer.Rows)
         {
           return;
         }
@@ -66,14 +67,13 @@ namespace Windowmancer.UI
 
     public void DockProc(Process process, int rowIndex, int columnIndex)
     {
-      if (this.DisplayContainer.DockedWindows.Any(
-        dw => dw.Process.Handle == process.Handle))
+      if (this.WindowContainer.DockedWindows.Any(dw => dw.Process.Handle == process.Handle))
       {
         return;
       }
 
       var windowToDock = new DockableWindow(process) { Row = rowIndex, Column = columnIndex };
-      this.DisplayContainer.DockedWindows.Add(windowToDock);
+      this.WindowContainer.DockedWindows.Add(windowToDock);
       while (process.MainWindowHandle == IntPtr.Zero)
       {
         // We try catch here because some windows (e.g. cmd) 
@@ -89,6 +89,14 @@ namespace Windowmancer.UI
         }
         process.Refresh();
         if (process.HasExited) return;
+        process.Exited += (s, e) =>
+        {
+          Helper.Dispatcher.Invoke(() =>
+          {
+            var d = this.WindowContainer.DockedWindows.Find(dw => dw.Process.Id == process.Id);
+            this.WindowContainer.DockedWindows.Remove(d);
+          });
+        };
       }
      
       // Retrieve the window handle for this host container window.
@@ -111,7 +119,7 @@ namespace Windowmancer.UI
     
     private void RefreshDisplayContainer()
     {
-      foreach (var d in this.DisplayContainer.DockedWindows)
+      foreach (var d in this.WindowContainer.DockedWindows)
       {
         RefreshDockableWindow(d);
       }
@@ -122,8 +130,8 @@ namespace Windowmancer.UI
       var screenWidth = this.ActualWidth;
       var screenHeight = this.ActualHeight;
 
-      var totalRows = this.DisplayContainer.Rows;
-      var totalCols = this.DisplayContainer.Columns;
+      var totalRows = this.WindowContainer.Rows;
+      var totalCols = this.WindowContainer.Columns;
 
       var x = (int)(screenWidth / totalCols) * dockableWindow.Column;
       var y = (int)(((screenHeight / totalRows) * dockableWindow.Row) + _titlebarHeight);
@@ -136,9 +144,9 @@ namespace Windowmancer.UI
 
     public void SetDockableWindowVisibility(bool isVisible)
     {
-      foreach (var dw in this.DisplayContainer.DockedWindows)
+      foreach (var dw in this.WindowContainer.DockedWindows)
       {
-        WindowManager.SetWindowOpacityPercentage(dw.Process, (uint)(isVisible ? 100 : 0));
+        MonitorWindowManager.SetWindowOpacityPercentage(dw.Process, (uint)(isVisible ? 100 : 0));
       }
     }
 
@@ -148,13 +156,13 @@ namespace Windowmancer.UI
 
       var flyout = this.Flyouts.Items[0] as Flyout;
       if (flyout == null) return;
-      var hostContainerHelper = new HostContainerHelper(this.DisplayContainer)
+      var hostContainerHelper = new HostContainerHelper(this.WindowContainer)
       { 
         DisplayContainersSelectable = false
       };
       hostContainerHelper.OnSave += (dcs) =>
       {
-        this.DisplayContainer = dcs.First();
+        this.WindowContainer = dcs;
         RefreshDisplayContainer();
       };
       hostContainerHelper.OnClose += () => 

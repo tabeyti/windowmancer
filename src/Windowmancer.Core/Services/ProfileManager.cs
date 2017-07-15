@@ -22,19 +22,19 @@ namespace Windowmancer.Core.Services
         value.IsActive = true;
         _userData.ActiveProfile = value.Id;
         SetProperty(value);
-        _windowManager.ActiveProfile = value;
+        _monitorWindowManager.ActiveProfile = value;
       }
     }
 
     private readonly UserData _userData;
-    private readonly WindowManager _windowManager;
+    private readonly MonitorWindowManager _monitorWindowManager;
 
     public ProfileManager(
       UserData userData, 
-      WindowManager windowManager)
+      MonitorWindowManager monitorWindowManager)
     {
       RegisterProperty<Profile>("ActiveProfile");
-      _windowManager = windowManager;
+      _monitorWindowManager = monitorWindowManager;
       _userData = userData;
       Initialize();
     }
@@ -43,7 +43,7 @@ namespace Windowmancer.Core.Services
     {
       var profile = Profiles.Find(p => p.Id == _userData.ActiveProfile);
       this.ActiveProfile = profile ?? Profiles.FirstOrDefault();
-      _windowManager.ActiveProfile = this.ActiveProfile;
+      _monitorWindowManager.ActiveProfile = this.ActiveProfile;
     }
     
     public void UpdateActiveProfile(Profile newProfile)
@@ -52,7 +52,7 @@ namespace Windowmancer.Core.Services
       var profile = this.Profiles.Find(p => p.Id == id);
       DeselectActiveProfile();
       this.ActiveProfile = profile ?? throw new ExceptionBox($"{this} - Could not find profile from id {id}.");
-      _windowManager.ActiveProfile = this.ActiveProfile;
+      _monitorWindowManager.ActiveProfile = this.ActiveProfile;
       _userData.Save();
       OnActiveProfileUpdate?.Invoke(this, new EventArgs());
     }

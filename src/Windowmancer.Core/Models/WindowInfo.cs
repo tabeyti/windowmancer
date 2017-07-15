@@ -108,7 +108,7 @@ namespace Windowmancer.Core.Models
         MatchCriteria = new WindowMatchCriteria { MatchString = process.MainWindowTitle },
         StylingInfo = new WindowStylingInfo
         {
-          WindowOpacityPercentage = WindowManager.GetWindowOpacityPercentage(process)
+          WindowOpacityPercentage = MonitorWindowManager.GetWindowOpacityPercentage(process)
         }
       };
     }

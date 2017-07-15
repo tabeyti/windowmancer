@@ -6,7 +6,7 @@
                       xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       ShowIconOnTitleBar="True"
                       ShowTitleBar="True"
-                      Title="{Binding ContainerLabel}"
+                      Title="{Binding WindowContainer.Name}"
                       mc:Ignorable="d"
                       Loaded="WindowHostContainer_OnLoaded"
                       DataContext="{Binding RelativeSource={RelativeSource Self}}">
@@ -43,8 +43,8 @@
     <Controls:WindowCommands>
       <Button Name="EditButton" 
               Click="EditButton_OnClick"
-              Content="Edit Layout"
-              ToolTip="Open the Display Helper Control" />
+              Content="Edit"
+              ToolTip="Edit the Window Host Container settings." />
     </Controls:WindowCommands>
   </Controls:MetroWindow.RightWindowCommands>
   <Grid/>

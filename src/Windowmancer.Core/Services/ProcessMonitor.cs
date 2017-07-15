@@ -17,11 +17,11 @@ namespace Windowmancer.Core.Services
 
     private ManagementEventWatcher _startWatch;
     private ManagementEventWatcher _stopWatch;
-    private readonly WindowManager _windowManager;
+    private readonly MonitorWindowManager _monitorWindowManager;
 
-    public ProcessMonitor(WindowManager windowManager)
+    public ProcessMonitor(MonitorWindowManager monitorWindowManager)
     {
-      _windowManager = windowManager;
+      _monitorWindowManager = monitorWindowManager;
       this.ActiveWindowProcs = new ObservableCollection<MonitoredProcess>();
     }
 
@@ -75,7 +75,7 @@ namespace Windowmancer.Core.Services
         return;
       }
       AddToActiveWindows(proc);
-      _windowManager.ApplyWindowInfo(proc, true);
+      _monitorWindowManager.ApplyWindowInfo(proc, true);
     }
 
     private void StopWatch_EventArrived(object sender, EventArrivedEventArgs e)

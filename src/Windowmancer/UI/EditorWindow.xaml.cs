@@ -29,7 +29,7 @@ namespace Windowmancer.UI
     private readonly Dictionary<string, WindowHostContainer> _windowHostContainers = 
       new Dictionary<string, WindowHostContainer>();
 
-    private readonly WindowManager _windowManager;
+    private readonly MonitorWindowManager _monitorWindowManager;
     private readonly KeyHookManager _keyHookManager;
 
     public ObservableCollection<FrameworkElement> ActiveWindowsContextMenuItems { get; set; }
@@ -40,7 +40,7 @@ namespace Windowmancer.UI
     {
       this.ProfileManager = App.ServiceResolver.Resolve<ProfileManager>();
       this.ProcMonitor = App.ServiceResolver.Resolve<ProcessMonitor>();
-      _windowManager = App.ServiceResolver.Resolve<WindowManager>();
+      _monitorWindowManager = App.ServiceResolver.Resolve<MonitorWindowManager>();
       _keyHookManager = App.ServiceResolver.Resolve<KeyHookManager>();
 
       this.EditorViewModel = new EditorViewModel();
@@ -287,7 +287,7 @@ namespace Windowmancer.UI
 
     private void RunProfileButton_OnClick(object sender, RoutedEventArgs e)
     {
-      _windowManager.RefreshProfile();
+      _monitorWindowManager.RefreshProfile();
     }
 
     private void ProfileListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -319,8 +319,8 @@ namespace Windowmancer.UI
       var process = ((MonitoredProcess)this.ActiveWindowsDataGrid.SelectedItem).GetProcess();
 
       // Restore window (if minimized) and bring to fore-ground
-      WindowManager.ShowWindowNormal(process);
-      var procRec = WindowManager.GetWindowRectCurrent(process);
+      MonitorWindowManager.ShowWindowNormal(process);
+      var procRec = MonitorWindowManager.GetWindowRectCurrent(process);
 
       // Highlight the window temporarily.
       var windowHighlight = new WindowHighlight();
@@ -348,36 +348,19 @@ namespace Windowmancer.UI
       }
       //_windowHostContainer.DockProc(process);
     }
-
-    private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
-    {
-      var flyout = this.Flyouts.Items[0] as Flyout;
-      if (flyout == null) return;
-
-      var list = new List<DisplayContainer>
-      {
-        new DisplayContainer("Container1", 0, 0, 720, 1280),
-        new DisplayContainer("Container2", 0, 0, 1280, 720),
-      };
-
-      var helper = new DisplayHelper(list); 
-      
-      flyout.Content = helper;
-      flyout.IsOpen = true;
-    }
-
+    
     // TODO: Debug
     private void EditorWindow_OnLoaded(object sender, RoutedEventArgs e)
     {
-      //if (_windowHostContainer == null)
-      //{
-      //  _windowHostContainer = new WindowHostContainer(new DisplayContainer(
-      //    "Bagel Container", 0, 0, 1152, 648, 2, 2));
-      //  _windowHostContainer.Show();
-      //}
-      //_windowHostContainer.DockProc(Process.Start("cmd.exe"));
-      //_windowHostContainer.DockProc(Process.Start("notepad.exe"));
-      //_windowHostContainer.DockProc(Process.Start("mspaint.exe"));
+      if (_windowHostContainer == null)
+      {
+        _windowHostContainer = new WindowHostContainer(new WindowContainer(
+          "Bagel Container", 1152, 648, 2, 2));
+        _windowHostContainer.Show();
+      }
+      _windowHostContainer.DockProc(Process.Start("notepad.exe"));
+      _windowHostContainer.DockProc(Process.Start("notepad.exe"));
+      _windowHostContainer.DockProc(Process.Start("mspaint.exe"));
     }
   }
 }

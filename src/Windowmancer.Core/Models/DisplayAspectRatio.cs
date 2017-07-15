@@ -9,12 +9,17 @@ namespace Windowmancer.Core.Models
     public double XRatio { get; set; }
     public double YRatio { get; set; }
 
+    public DisplayAspectRatio(int width, int height)
+    {
+      Update(width, height);
+    }
+
     public DisplayAspectRatio(Screen screen)
     {
       Update(screen.Bounds.Width, screen.Bounds.Height);
     }
 
-    public DisplayAspectRatio(DisplayContainer container)
+    public DisplayAspectRatio(WindowContainer container)
     {
       Update(container.Width, container.Height);
     }
@@ -24,7 +29,7 @@ namespace Windowmancer.Core.Models
       Update(screen.Bounds.Width, screen.Bounds.Height);
     }
 
-    public void Update(DisplayContainer container)
+    public void Update(WindowContainer container)
     {
       Update(container.Width, container.Height);
     }

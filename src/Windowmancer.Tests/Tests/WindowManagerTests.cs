@@ -14,7 +14,7 @@ using Xunit.Abstractions;
 namespace Windowmancer.Tests.Tests
 {
   /// <summary>
-  /// Validates the API of the WindowManager service.
+  /// Validates the API of the MonitorWindowManager service.
   /// </summary>
   public class WindowManagerTests : TestClassBase
   {
@@ -34,12 +34,12 @@ namespace Windowmancer.Tests.Tests
       await Task.Delay(1000).ConfigureAwait(false);
 
       // Retrieve the current opacity of the window and verify it's at max.
-      var origOpacity = WindowManager.GetWindowOpacityPercentage(proc.Process);
+      var origOpacity = MonitorWindowManager.GetWindowOpacityPercentage(proc.Process);
       Assert.Equal((uint)100, origOpacity);
 
       // Set the desired opacity and validate.
-      WindowManager.SetWindowOpacityPercentage(proc.Process, opacity);
-      var alter = WindowManager.GetWindowOpacityPercentage(proc.Process);
+      MonitorWindowManager.SetWindowOpacityPercentage(proc.Process, opacity);
+      var alter = MonitorWindowManager.GetWindowOpacityPercentage(proc.Process);
       Assert.Equal((uint)opacity, alter);
     }
 
@@ -55,19 +55,19 @@ namespace Windowmancer.Tests.Tests
       await Task.Delay(1000).ConfigureAwait(false);
 
       // Verify it's in a normal state.
-      var state = WindowManager.GetWindowState(proc.Process);
+      var state = MonitorWindowManager.GetWindowState(proc.Process);
       Assert.Equal(ProcessWindowState.Normal, state);
 
       // Alter window placement and verify it's correct.
-      WindowManager.SetWindowState(proc.Process, setState);
+      MonitorWindowManager.SetWindowState(proc.Process, setState);
       await Task.Delay(1000).ConfigureAwait(false);
-      state = WindowManager.GetWindowState(proc.Process);
+      state = MonitorWindowManager.GetWindowState(proc.Process);
       Assert.Equal(setState, state);
 
       // Show it in a normal position and verify.
-      WindowManager.ShowWindowNormal(proc.Process);
+      MonitorWindowManager.ShowWindowNormal(proc.Process);
       await Task.Delay(1000).ConfigureAwait(false);
-      state = WindowManager.GetWindowState(proc.Process);
+      state = MonitorWindowManager.GetWindowState(proc.Process);
       Assert.Equal(ProcessWindowState.Normal, state);
     }
 
@@ -79,18 +79,18 @@ namespace Windowmancer.Tests.Tests
       var proc = AddResource(TestHelper.CreateWindowProcess());
       await Task.Delay(1000).ConfigureAwait(false);
 
-      var originalRec = WindowManager.GetWindowRectCurrent(proc.Process);
+      var originalRec = MonitorWindowManager.GetWindowRectCurrent(proc.Process);
 
       // Maximize window and verify the resulting rec.
-      WindowManager.SetWindowState(proc.Process, ProcessWindowState.Maximized);
+      MonitorWindowManager.SetWindowState(proc.Process, ProcessWindowState.Maximized);
       await Task.Delay(1000).ConfigureAwait(false);
-      var newRec = WindowManager.GetWindowRectCurrent(proc.Process);
+      var newRec = MonitorWindowManager.GetWindowRectCurrent(proc.Process);
       Assert.False(TestHelper.RecsMatch(originalRec, newRec));
 
       // Restore window size and verify it matches original rec.
-      WindowManager.SetWindowState(proc.Process, ProcessWindowState.Normal);
+      MonitorWindowManager.SetWindowState(proc.Process, ProcessWindowState.Normal);
       await Task.Delay(1000).ConfigureAwait(false);
-      newRec = WindowManager.GetWindowRectCurrent(proc.Process);
+      newRec = MonitorWindowManager.GetWindowRectCurrent(proc.Process);
       Assert.True(TestHelper.RecsMatch(originalRec, newRec));
     }
 
@@ -110,10 +110,10 @@ namespace Windowmancer.Tests.Tests
       TestHelper.ModifyLayoutInfoPosition(modifiedLayoutInfo);
 
       // Apply modified layout via window manager.
-      WindowManager.ApplyWindowLayout(modifiedLayoutInfo, proc.Process);
+      MonitorWindowManager.ApplyWindowLayout(modifiedLayoutInfo, proc.Process);
 
       // Get the process' current position and verify it matches our modified one.
-      var newRec = WindowManager.GetWindowRectCurrent(proc.Process);
+      var newRec = MonitorWindowManager.GetWindowRectCurrent(proc.Process);
       Assert.Equal(modifiedLayoutInfo.PositionInfo.X, newRec.Left);
       Assert.Equal(modifiedLayoutInfo.PositionInfo.Y, newRec.Top);
     }
@@ -134,10 +134,10 @@ namespace Windowmancer.Tests.Tests
       TestHelper.ModifyLayoutInfoSize(modifiedLayoutInfo);
 
       // Apply modified layout via window manager.
-      WindowManager.ApplyWindowLayout(modifiedLayoutInfo, proc.Process);
+      MonitorWindowManager.ApplyWindowLayout(modifiedLayoutInfo, proc.Process);
 
       // Get the process' current position and verify it matches our modified one.
-      var newRec = WindowManager.GetWindowRectCurrent(proc.Process);
+      var newRec = MonitorWindowManager.GetWindowRectCurrent(proc.Process);
       Assert.Equal(modifiedLayoutInfo.SizeInfo.Width, newRec.Width);
       Assert.Equal(modifiedLayoutInfo.SizeInfo.Height, newRec.Height);
     }
@@ -151,10 +151,10 @@ namespace Windowmancer.Tests.Tests
       var windowInfo = WindowInfo.FromProcess(proc.Process);
 
       // Apply current layout, no change, via window manager.
-      WindowManager.ApplyWindowLayout(windowInfo.MonitorLayoutInfo, proc.Process);
+      MonitorWindowManager.ApplyWindowLayout(windowInfo.MonitorLayoutInfo, proc.Process);
 
       // Get the process' current position and verify it is the same.
-      var newRec = WindowManager.GetWindowRectCurrent(proc.Process);
+      var newRec = MonitorWindowManager.GetWindowRectCurrent(proc.Process);
       Assert.Equal(windowInfo.MonitorLayoutInfo.PositionInfo.X, newRec.Left);
       Assert.Equal(windowInfo.MonitorLayoutInfo.PositionInfo.Y, newRec.Top);
     }
@@ -163,7 +163,7 @@ namespace Windowmancer.Tests.Tests
     [Trait("Priority", "3")]
     public void WindowManagerTests_RefreshProfile_LayoutInfo()
     {
-      var windowManager = ServiceResolver.Resolve<WindowManager>();
+      var windowManager = ServiceResolver.Resolve<MonitorWindowManager>();
 
       // Create three process windows.
       var procList = new List<TestProcessWrapper>
@@ -203,7 +203,7 @@ namespace Windowmancer.Tests.Tests
         var proc = kv.Key;
         var windowInfo = kv.Value;
 
-        var newRec = WindowManager.GetWindowRectCurrent(proc.Process);
+        var newRec = MonitorWindowManager.GetWindowRectCurrent(proc.Process);
         Assert.Equal(windowInfo.MonitorLayoutInfo.SizeInfo.Width, newRec.Width);
         Assert.Equal(windowInfo.MonitorLayoutInfo.SizeInfo.Height, newRec.Height);
         Assert.Equal(windowInfo.MonitorLayoutInfo.PositionInfo.X, newRec.Left);
@@ -215,7 +215,7 @@ namespace Windowmancer.Tests.Tests
     [Trait("Priority", "3")]
     public async void WindowManagerTests_RefreshProfile_StylingInfo()
     {
-      var windowManager = ServiceResolver.Resolve<WindowManager>();
+      var windowManager = ServiceResolver.Resolve<MonitorWindowManager>();
 
       // Create three process windows.
       var procList = new List<TestProcessWrapper>
@@ -252,7 +252,7 @@ namespace Windowmancer.Tests.Tests
       {
         var proc = kv.Key;
         var windowInfo = kv.Value;
-        var currentOpacity = WindowManager.GetWindowOpacityPercentage(proc.Process);
+        var currentOpacity = MonitorWindowManager.GetWindowOpacityPercentage(proc.Process);
         Assert.Equal(windowInfo.StylingInfo.WindowOpacityPercentage, currentOpacity);
       }
     }
@@ -261,7 +261,7 @@ namespace Windowmancer.Tests.Tests
     [Trait("Priority", "3")]
     public async void WindowManagerTests_ApplyWindowInfo_ApplyOnProcessStart()
     {
-      var windowManager = ServiceResolver.Resolve<WindowManager>();
+      var windowManager = ServiceResolver.Resolve<MonitorWindowManager>();
 
       // Create profile with window info object.
       var profile = TestHelper.CreateNewProfile();
@@ -272,14 +272,14 @@ namespace Windowmancer.Tests.Tests
       // Create associated process.
       var proc = AddResource(TestHelper.CreateWindowProcess(windowInfo.Name));
       await Task.Delay(1000).ConfigureAwait(false);
-      var oldRec = WindowManager.GetWindowRectCurrent(proc.Process);
+      var oldRec = MonitorWindowManager.GetWindowRectCurrent(proc.Process);
 
       // Apply window info via manager.
       windowManager.ApplyWindowInfo(proc.Process, true);
       Task.Delay(1000).Wait();
 
       // Verify process values are the same.
-      var newRec = WindowManager.GetWindowRectCurrent(proc.Process);
+      var newRec = MonitorWindowManager.GetWindowRectCurrent(proc.Process);
       Assert.Equal(oldRec.Left, newRec.Left);
       Assert.Equal(oldRec.Top, newRec.Top);
       Assert.Equal(oldRec.Width, newRec.Width);
@@ -290,7 +290,7 @@ namespace Windowmancer.Tests.Tests
       windowManager.ApplyWindowInfo(proc.Process, true);
 
       // Verify process values changed.
-      newRec = WindowManager.GetWindowRectCurrent(proc.Process);
+      newRec = MonitorWindowManager.GetWindowRectCurrent(proc.Process);
       Assert.Equal(windowInfo.MonitorLayoutInfo.PositionInfo.X, newRec.Left);
       Assert.Equal(windowInfo.MonitorLayoutInfo.PositionInfo.Y, newRec.Top);
       Assert.Equal(windowInfo.MonitorLayoutInfo.SizeInfo.Width, newRec.Width);

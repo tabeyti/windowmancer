@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:ui="clr-namespace:Windowmancer.UI"
              mc:Ignorable="d"
              Loaded="DisplayHelper_OnLoaded"
              HorizontalAlignment="Stretch"
@@ -19,114 +20,107 @@
           Grid.Row="0"
           x:Name="LayoutHelperGridControl">
       <Grid.ColumnDefinitions>
-        <ColumnDefinition MaxWidth="200"/>
-        <ColumnDefinition MaxWidth="200"/>
+        <ColumnDefinition MaxWidth="500"/>
         <ColumnDefinition Width="*"/>
       </Grid.ColumnDefinitions>
       <Grid Grid.Column="0">
         <Grid.RowDefinitions>
-          <RowDefinition Height="200"/>
+          <RowDefinition Height="250"/>
           <RowDefinition Height="200"/>
         </Grid.RowDefinitions>
-
-        <GroupBox Header="Displays"
+        <GroupBox Name="GeneralSettingsGroupBox"
+                  Grid.Row="0"
+                  Header="General Settings"
+                  Style="{StaticResource MyGroupBoxStyle}"
+                  Margin="20">
+          <StackPanel Orientation="Vertical">
+            <ui:LabelTextBox Label="Name" 
+                              HorizontalAlignment="Stretch" 
+                              Margin="10,10,10,10"
+                              VerticalAlignment="Top" 
+                              Height="Auto"
+                              GotFocus="LabelTextBox_OnGotFocus"
+                              Text="{Binding HostContainerHelperViewModel.ActiveWindowContainer.Name}"/>      
+            <Grid HorizontalAlignment="Stretch" 
+                  Margin="20"
+                  VerticalAlignment="Top">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="75" />
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="20"/>
+                <RowDefinition />
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="65"/>
+                <RowDefinition Height="*"/>
+              </Grid.RowDefinitions>
+              <Label Grid.Row="0" Grid.Column="0" 
+                     Content="Rows:" 
+                     HorizontalAlignment="Left" 
+                     VerticalAlignment="Center"/>
+              <xctk:IntegerUpDown Name="RowSpinner" 
+                                  Grid.Row="0" Grid.Column="1" 
+                                  Foreground="White"
+                                  Value="{Binding HostContainerHelperViewModel.ActiveWindowContainer.Rows}"
+                                  VerticalAlignment="Center"
+                                  HorizontalAlignment="Left"
+                                  Width="75"
+                                  Minimum="1"
+                                  Maximum="10"/>
+              <Label Grid.Row="1" Grid.Column="0" 
+                     Content="Columns:" 
+                     HorizontalAlignment="Left" 
+                     VerticalAlignment="Top" />
+              <xctk:IntegerUpDown Name="ColumnSpinner" 
+                                  Grid.Row="1" Grid.Column="1" 
+                                  Foreground="White"
+                                  VerticalAlignment="Center"
+                                  HorizontalAlignment="Left"
+                                  Width="75"
+                                  Value="{Binding HostContainerHelperViewModel.ActiveWindowContainer.Columns}"
+                                  Minimum="1"
+                                  Maximum="10"/>
+              <Button Name="SetDisplayHelperLayoutButton" 
+                      Grid.Row="2" Grid.ColumnSpan="2" Grid.Column="0"
+                      Margin="10"
+                      Click="SetDisplayHelperLayoutButton_OnClick"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
+                      Content="Set"/>
+            </Grid>
+          </StackPanel>
+        </GroupBox>
+          
+        
+        <GroupBox Header="Docked Windows"
+                  Grid.Row="1"
+                  Margin="20"
+                  IsEnabled="False"
                   Style="{StaticResource MyGroupBoxStyle}">
-
-          <ListBox  Name="DisplayListBox"
-                    Grid.Column="0"
-                    Style="{StaticResource MyListBox}"
-                    ItemContainerStyle="{StaticResource MyListBoxItem}"
-                    SelectionChanged="DisplayListBox_OnSelectionChanged">
+          <ListBox Name="DockedWindowsListBox"
+                   Style="{StaticResource MyListBox}"
+                   ItemContainerStyle="{StaticResource MyListBoxItem}"
+                   SelectedItem="{Binding HostContainerHelperViewModel.ActiveDockableWindow}"
+                   ItemsSource="{Binding HostContainerHelperViewModel.ActiveWindowContainer.DockedWindows}">
             <ListBox.ItemTemplate>
               <DataTemplate>
                 <Grid Margin="3,3">
                   <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                   </Grid.ColumnDefinitions>
-                  <TextBlock Text="{Binding Name}" />
+                  <TextBlock Text="{Binding Process.MainWindowTitle}" />
                 </Grid>
               </DataTemplate>
             </ListBox.ItemTemplate>
           </ListBox>
         </GroupBox>
-        <Grid Grid.Row="1" 
-              HorizontalAlignment="Stretch" 
-              Margin="10,10,10,10" 
-              VerticalAlignment="Top">
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="75" />
-            <ColumnDefinition Width="*" />
-          </Grid.ColumnDefinitions>
-          <Grid.RowDefinitions>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition />
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="65"/>
-            <RowDefinition Height="*"/>
-          </Grid.RowDefinitions>
-          <Label Grid.Row="0" Grid.Column="0" 
-                 Content="Rows:" 
-                 HorizontalAlignment="Left" 
-                 VerticalAlignment="Center"/>
-          <xctk:IntegerUpDown Name="RowSpinner" 
-                              Grid.Row="0" Grid.Column="1" 
-                              Foreground="White"
-                              Value="{Binding HostContainerHelperViewModel.ActiveDisplayContainer.Rows}"
-                              VerticalAlignment="Center"
-                              HorizontalAlignment="Left"
-                              Width="75"
-                              Minimum="1"
-                              Maximum="10"/>
-          <Label Grid.Row="1" Grid.Column="0" 
-                 Content="Columns:" 
-                 HorizontalAlignment="Left" 
-                 VerticalAlignment="Top" />
-          <xctk:IntegerUpDown Name="ColumnSpinner" 
-                              Grid.Row="1" Grid.Column="1" 
-                              Foreground="White"
-                              VerticalAlignment="Center"
-                              HorizontalAlignment="Left"
-                              Width="75"
-                              Value="{Binding HostContainerHelperViewModel.ActiveDisplayContainer.Columns}"
-                              Minimum="1"
-                              Maximum="10"/>
-          <Button Name="SetDisplayHelperLayoutButton" 
-                  Grid.Row="2" Grid.ColumnSpan="2" Grid.Column="0"
-                  Margin="10"
-                  Click="SetDisplayHelperLayoutButton_OnClick"
-                  HorizontalAlignment="Stretch"
-                  VerticalAlignment="Stretch"
-                  Content="Set"/>
-        </Grid>
       </Grid>
       <!--#endregion-->
 
-      <Grid Grid.Column="1">
-        <StackPanel Orientation="Vertical">
-          
-            <ListBox Name="DockedWindowsListBox"
-                     Grid.Column="1"
-                     Style="{StaticResource MyListBox}"
-                     ItemContainerStyle="{StaticResource MyListBoxItem}"
-                     SelectedItem="{Binding HostContainerHelperViewModel.ActiveDockableWindow}"
-                     ItemsSource="{Binding HostContainerHelperViewModel.ActiveDisplayContainer.DockedWindows}">
-              <ListBox.ItemTemplate>
-                <DataTemplate>
-                  <Grid Margin="3,3">
-                    <Grid.ColumnDefinitions>
-                      <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="{Binding Process.MainWindowTitle}" />
-                  </Grid>
-                </DataTemplate>
-              </ListBox.ItemTemplate>
-            </ListBox>
-          
-        </StackPanel>
-      </Grid>
-      <StackPanel Grid.Column="2">
+      <StackPanel Grid.Column="1">
         <!--#region Display panel -->
         <Grid Name="DisplayHelperControl" 
               VerticalAlignment="Top"

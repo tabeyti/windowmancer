@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Windowmancer.Core.Models
 {
@@ -12,6 +8,8 @@ namespace Windowmancer.Core.Models
     public Process Process { get; set; }
     public IntPtr ParentHandle { get; set; }
 
+    public EventHandler OnProcessExited { get; set; }
+
     public int Row { get; set; }
     public int Column { get; set; }
 
@@ -19,6 +17,7 @@ namespace Windowmancer.Core.Models
     public DockableWindow(Process process)
     {
       this.Process = process;
+      process.EnableRaisingEvents = true;
     }
 
     public object Clone()
@@ -28,7 +27,8 @@ namespace Windowmancer.Core.Models
         Process = this.Process,
         ParentHandle = this.ParentHandle,
         Row = this.Row,
-        Column = this.Column
+        Column = this.Column,
+        OnProcessExited = this.OnProcessExited
       };
     }
   }

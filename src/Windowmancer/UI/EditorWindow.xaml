@@ -148,36 +148,67 @@
         </ListBox>
       </GroupBox>
       <GridSplitter Background="{StaticResource MainColorTheme}" Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
-      <GroupBox Header="Window Configurations" Grid.Column="2"
-                Style="{StaticResource MyGroupBoxStyle}">
-        <DataGrid Name="WindowConfigDataGrid" 
-                  GridLinesVisibility="None" 
-                  IsReadOnly="True" 
-                  SelectionMode="Single" 
-                  SelectionUnit="FullRow"
-                  Background="{StaticResource AccentViewBackgroundColorBrush}"
-                  CanUserResizeColumns="False"
-                  ColumnHeaderStyle="{StaticResource MyColumnHeader}"
-                  ItemsSource="{Binding ProfileManager.ActiveProfile.Windows}"
-                  MouseDoubleClick="WindowConfigDataGrid_OnMouseDoubleClick">
-          <DataGrid.Resources>
-            <ContextMenu x:Key="RowMenu">
-              <MenuItem Header="Edit" Click="WindowConfigDataGrid_MenuItemClick"></MenuItem>
-              <MenuItem Header="Delete" Click="WindowConfigDataGrid_MenuItemClick"></MenuItem>
-            </ContextMenu>
-          </DataGrid.Resources>
-          <DataGrid.ContextMenu>
-            <ContextMenu>
-              <MenuItem Header="Add" Click="WindowConfigDataGrid_MenuItemClick"></MenuItem>
-            </ContextMenu>
-          </DataGrid.ContextMenu>
-          <DataGrid.RowStyle>
-            <Style TargetType="DataGridRow" BasedOn="{StaticResource MetroDataGridRow}">
-              <Setter Property="ContextMenu" Value="{StaticResource RowMenu}"></Setter>
-            </Style>
-          </DataGrid.RowStyle>
-        </DataGrid>
-      </GroupBox>
+      <TabControl Grid.Column="2" 
+                  ItemContainerStyle="{StaticResource MyTabItem}">
+        <TabItem Header="Window Configurations">
+          
+          <DataGrid Name="WindowConfigDataGrid" 
+                    GridLinesVisibility="None" 
+                    IsReadOnly="True" 
+                    SelectionMode="Single" 
+                    SelectionUnit="FullRow"
+                    Background="{StaticResource AccentViewBackgroundColorBrush}"
+                    ColumnHeaderStyle="{StaticResource MyColumnHeader}"
+                    ItemsSource="{Binding ProfileManager.ActiveProfile.Windows}"
+                    MouseDoubleClick="WindowConfigDataGrid_OnMouseDoubleClick">
+            <DataGrid.Resources>
+              <ContextMenu x:Key="RowMenu">
+                <MenuItem Header="Edit" Click="WindowConfigDataGrid_MenuItemClick"></MenuItem>
+                <MenuItem Header="Delete" Click="WindowConfigDataGrid_MenuItemClick"></MenuItem>
+              </ContextMenu>
+            </DataGrid.Resources>
+            <DataGrid.ContextMenu>
+              <ContextMenu>
+                <MenuItem Header="Add" Click="WindowConfigDataGrid_MenuItemClick"></MenuItem>
+              </ContextMenu>
+            </DataGrid.ContextMenu>
+            <DataGrid.RowStyle>
+              <Style TargetType="DataGridRow" BasedOn="{StaticResource MetroDataGridRow}">
+                <Setter Property="ContextMenu" Value="{StaticResource RowMenu}"></Setter>
+              </Style>
+            </DataGrid.RowStyle>
+          </DataGrid>
+          
+        </TabItem>
+        <TabItem Header="Window Containers"
+                 Name="WindowHostContainersTabItem">
+          <DataGrid Name="WindowContainersDataGrid"
+                    GridLinesVisibility="None" 
+                    IsReadOnly="True" 
+                    SelectionMode="Single" 
+                    SelectionUnit="FullRow"
+                    Background="{StaticResource AccentViewBackgroundColorBrush}"
+                    ColumnHeaderStyle="{StaticResource MyColumnHeader}"
+                    ItemsSource="{Binding ProfileManager.ActiveProfile.Containers}">
+            <DataGrid.Resources>
+              <ContextMenu x:Key="RowMenu">
+                <MenuItem Header="Edit"></MenuItem>
+                <MenuItem Header="Delete"></MenuItem>
+              </ContextMenu>
+            </DataGrid.Resources>
+            <DataGrid.ContextMenu>
+              <ContextMenu>
+                <MenuItem Header="Add" />
+              </ContextMenu>
+            </DataGrid.ContextMenu>
+            <DataGrid.RowStyle>
+              <Style TargetType="DataGridRow" BasedOn="{StaticResource MetroDataGridRow}">
+                <Setter Property="ContextMenu" Value="{StaticResource RowMenu}"></Setter>
+              </Style>
+            </DataGrid.RowStyle>
+          </DataGrid>
+        </TabItem>
+      </TabControl>
     </Grid>
     <GridSplitter Grid.Row="2" Background="{StaticResource MainColorTheme}" Height="5" HorizontalAlignment="Stretch" />
     <GroupBox Header="Active Windows" Grid.Row="3"
@@ -222,7 +253,6 @@
         </DataGrid.Columns>
       </DataGrid>
     </GroupBox>
-    <Button Grid.Row="0" Content="BOOP" Click="ButtonBase_OnClick"/>
   </Grid>
 
 </Controls:MetroWindow>

@@ -7,13 +7,13 @@ using Windowmancer.Core.Practices;
 
 namespace Windowmancer.Core.Services
 {
-  public class WindowManager : IDisposable
+  public class MonitorWindowManager : IDisposable
   {
     public Profile ActiveProfile { get; set; }
 
     #region Constructors
 
-    public WindowManager()
+    public MonitorWindowManager()
     {
     }
 
@@ -202,7 +202,7 @@ namespace Windowmancer.Core.Services
     {
       if (opacityPercentage > 100)
       {
-        throw new Exception($"WindowManager.SetWindowOpacityPercentage - Opacity percentage cannot be above 100. Value given: {opacityPercentage}");
+        throw new Exception($"MonitorWindowManager.SetWindowOpacityPercentage - Opacity percentage cannot be above 100. Value given: {opacityPercentage}");
       }
       
       var handle = process.MainWindowHandle;
