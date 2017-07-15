@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using Microsoft.Practices.Unity;
 using Windowmancer.Core.Practices;
@@ -20,6 +21,7 @@ namespace Windowmancer.Core.Models
       set => SetProperty(value);
     }
 
+    [Browsable(false)]
     public ContainerLayoutInfo ContainerLayoutInfo
     {
       get => GetProperty<ContainerLayoutInfo>();

@@ -13,6 +13,7 @@ using Windowmancer.Core.Services;
 using Windowmancer.UI.Base;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using MenuItem = System.Windows.Controls.MenuItem;
 using Windowmancer.Core.Services.Base;
 
@@ -361,6 +362,12 @@ namespace Windowmancer.UI
       _windowHostContainer.DockProc(Process.Start("notepad.exe"));
       _windowHostContainer.DockProc(Process.Start("notepad.exe"));
       _windowHostContainer.DockProc(Process.Start("mspaint.exe"));
+    }
+
+    private void WindowConfigDataGrid_OnAutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+    {
+      if (((PropertyDescriptor)e.PropertyDescriptor).IsBrowsable == false)
+        e.Cancel = true;
     }
   }
 }

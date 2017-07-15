@@ -160,6 +160,7 @@
                     Background="{StaticResource AccentViewBackgroundColorBrush}"
                     ColumnHeaderStyle="{StaticResource MyColumnHeader}"
                     ItemsSource="{Binding ProfileManager.ActiveProfile.Windows}"
+                    AutoGeneratingColumn="WindowConfigDataGrid_OnAutoGeneratingColumn"
                     MouseDoubleClick="WindowConfigDataGrid_OnMouseDoubleClick">
             <DataGrid.Resources>
               <ContextMenu x:Key="RowMenu">
