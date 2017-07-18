@@ -12,18 +12,6 @@ namespace Windowmancer.Core.Models
       set => SetProperty(value);
     }
     
-    public int Width
-    {
-      get => GetProperty<int>();
-      set => SetProperty(value);
-    }
-
-    public int Height
-    {
-      get => GetProperty<int>();
-      set => SetProperty(value);
-    }
-
     public int Rows
     {
       get => GetProperty<int>();
@@ -53,22 +41,18 @@ namespace Windowmancer.Core.Models
       RegisterProperty("DockedWindows", new ObservableCollection<DockableWindow>());
     }
     
-    public WindowContainer(string name, int width, int height)
+    public WindowContainer(string name)
     {
       RegisterProperty("Name", name);
-      RegisterProperty("Width", width);
-      RegisterProperty("Height", height);
       RegisterProperty("Rows", 1);
       RegisterProperty("Columns", 1);
       RegisterProperty<DockableWindow>("ActiveDockedWindow");
       RegisterProperty("DockedWindows", new ObservableCollection<DockableWindow>());
     }
 
-    public WindowContainer(string name, int width, int height, int rows, int columns)
+    public WindowContainer(string name, int rows, int columns)
     {
       RegisterProperty("Name", name);
-      RegisterProperty("Width", width);
-      RegisterProperty("Height", height);
       RegisterProperty("Rows", rows);
       RegisterProperty("Columns", columns);
       RegisterProperty<DockableWindow>("ActiveDockedWindow");
@@ -77,7 +61,7 @@ namespace Windowmancer.Core.Models
 
     public object Clone()
     {
-      var dc = new WindowContainer(this.Name, this.Width, this.Height);
+      var dc = new WindowContainer(this.Name);
       foreach (var d in this.DockedWindows)
       {
         dc.DockedWindows.Add(d.Clone() as DockableWindow);

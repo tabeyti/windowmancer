@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Media;
 using Microsoft.Practices.ObjectBuilder2;
 using Windowmancer.Core.Models;
@@ -16,6 +17,7 @@ using Windowmancer.Core.Models.Base;
 using Windowmancer.Core.Services.Base;
 using Windowmancer.Extensions;
 using Xceed.Wpf.Toolkit;
+using Panel = System.Windows.Controls.Panel;
 
 namespace Windowmancer.UI
 {
@@ -33,9 +35,13 @@ namespace Windowmancer.UI
     private readonly SolidColorBrush _defaultBrush = Brushes.Turquoise;
     private DisplayAspectRatio _screenAspectRatio;
 
-    public HostContainerHelper(WindowContainer windowContainer)
+    public HostContainerHelper(WindowContainer windowContainer, SizeInfo sizeInfo)
     {
-      this.HostContainerHelperViewModel = new HostContainerViewModel {ActiveWindowContainer = windowContainer};
+      this.HostContainerHelperViewModel = new HostContainerViewModel
+      {
+        ActiveWindowContainer = windowContainer,
+        SizeInfo = sizeInfo
+      };
       PreInitialize();
       InitializeComponent();
       PostInitialize();
@@ -105,7 +111,7 @@ namespace Windowmancer.UI
     private void SizeDisplayHelperBox()
     {
       _screenAspectRatio = new DisplayAspectRatio(1152, 648);
-      if (this.HostContainerHelperViewModel.ActiveWindowContainer.Height > this.HostContainerHelperViewModel.ActiveWindowContainer.Width)
+      if (this.HostContainerHelperViewModel.SizeInfo.Height > this.HostContainerHelperViewModel.SizeInfo.Width)
       {
         this.DisplayPanel.Height = this.DisplayPanel.MaxHeight;
         this.DisplayPanel.Width = this.DisplayPanel.MaxHeight * (_screenAspectRatio.XRatio / _screenAspectRatio.YRatio);
@@ -218,7 +224,7 @@ namespace Windowmancer.UI
       get 
       {
         var dc = GetProperty<WindowContainer>();
-        this.DisplayAspectRatio = new DisplayAspectRatio(dc);
+        this.DisplayAspectRatio = new DisplayAspectRatio(Screen.PrimaryScreen);
         return dc;
       }
       set
@@ -233,12 +239,17 @@ namespace Windowmancer.UI
       get => GetProperty<DockableWindow>();
       set => SetProperty(value);
     }
-   
 
     public DisplayAspectRatio DisplayAspectRatio
     {
       get => GetProperty<DisplayAspectRatio>();
       private set => SetProperty(value);
+    }
+
+    public SizeInfo SizeInfo
+    {
+      get => GetProperty<SizeInfo>();
+      set => SetProperty(value);
     }
     
     public HostContainerViewModel()
@@ -247,6 +258,7 @@ namespace Windowmancer.UI
       RegisterProperty<WindowContainer>("ActiveWindowContainer", null);
       RegisterProperty("DisplayContainers", new ObservableCollection<WindowContainer>());
       RegisterProperty<DisplayAspectRatio>("DisplayAspectRatio", null);
+      RegisterProperty<SizeInfo>("SizeInfo", null);
     }
   }
 

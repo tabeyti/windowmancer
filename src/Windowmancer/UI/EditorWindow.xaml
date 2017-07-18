@@ -151,7 +151,7 @@
       <TabControl Grid.Column="2" 
                   ItemContainerStyle="{StaticResource MyTabItem}">
         <TabItem Header="Window Configurations">
-          
+
           <DataGrid Name="WindowConfigDataGrid" 
                     GridLinesVisibility="None" 
                     IsReadOnly="True" 
@@ -164,50 +164,66 @@
                     MouseDoubleClick="WindowConfigDataGrid_OnMouseDoubleClick">
             <DataGrid.Resources>
               <ContextMenu x:Key="RowMenu">
-                <MenuItem Header="Edit" Click="WindowConfigDataGrid_MenuItemClick"></MenuItem>
-                <MenuItem Header="Delete" Click="WindowConfigDataGrid_MenuItemClick"></MenuItem>
+                <MenuItem Header="Edit" Click="WindowConfigDataGrid_MenuItemClick"/>
+                <MenuItem Header="Delete" Click="WindowConfigDataGrid_MenuItemClick"/>
               </ContextMenu>
             </DataGrid.Resources>
             <DataGrid.ContextMenu>
               <ContextMenu>
-                <MenuItem Header="Add" Click="WindowConfigDataGrid_MenuItemClick"></MenuItem>
+                <MenuItem Header="Add" Click="WindowConfigDataGrid_MenuItemClick"/>
               </ContextMenu>
             </DataGrid.ContextMenu>
             <DataGrid.RowStyle>
               <Style TargetType="DataGridRow" BasedOn="{StaticResource MetroDataGridRow}">
-                <Setter Property="ContextMenu" Value="{StaticResource RowMenu}"></Setter>
+                <Setter Property="ContextMenu" Value="{StaticResource RowMenu}"/>
               </Style>
             </DataGrid.RowStyle>
           </DataGrid>
-          
         </TabItem>
         <TabItem Header="Window Containers"
                  Name="WindowHostContainersTabItem">
-          <DataGrid Name="WindowContainersDataGrid"
-                    GridLinesVisibility="None" 
-                    IsReadOnly="True" 
-                    SelectionMode="Single" 
-                    SelectionUnit="FullRow"
-                    Background="{StaticResource AccentViewBackgroundColorBrush}"
-                    ColumnHeaderStyle="{StaticResource MyColumnHeader}"
-                    ItemsSource="{Binding ProfileManager.ActiveProfile.Containers}">
-            <DataGrid.Resources>
-              <ContextMenu x:Key="RowMenu">
-                <MenuItem Header="Edit"></MenuItem>
-                <MenuItem Header="Delete"></MenuItem>
-              </ContextMenu>
-            </DataGrid.Resources>
-            <DataGrid.ContextMenu>
-              <ContextMenu>
-                <MenuItem Header="Add" />
-              </ContextMenu>
-            </DataGrid.ContextMenu>
-            <DataGrid.RowStyle>
-              <Style TargetType="DataGridRow" BasedOn="{StaticResource MetroDataGridRow}">
-                <Setter Property="ContextMenu" Value="{StaticResource RowMenu}"></Setter>
-              </Style>
-            </DataGrid.RowStyle>
-          </DataGrid>
+          <StackPanel Orientation="Horizontal">
+            <ListBox Name="WindowContainersListBox"
+                     Style="{StaticResource MyListBox}"
+                     ItemContainerStyle="{StaticResource MyListBoxItem}"
+                     ItemsSource="{Binding ProfileManager.ActiveProfile.Containers}">
+              <ListBox.ItemTemplate>
+                <DataTemplate>
+                  <Grid Margin="3,3">
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{Binding Name}" />
+                  </Grid>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+            <DataGrid Name="WindowContainersDataGrid"
+                      GridLinesVisibility="None" 
+                      IsReadOnly="True" 
+                      SelectionMode="Single" 
+                      SelectionUnit="FullRow"
+                      Background="{StaticResource AccentViewBackgroundColorBrush}"
+                      ColumnHeaderStyle="{StaticResource MyColumnHeader}"
+                      ItemsSource="{Binding ProfileManager.ActiveProfile.Containers}">
+              <DataGrid.Resources>
+                <ContextMenu x:Key="RowMenu">
+                  <MenuItem Header="Edit"></MenuItem>
+                  <MenuItem Header="Delete"></MenuItem>
+                </ContextMenu>
+              </DataGrid.Resources>
+              <DataGrid.ContextMenu>
+                <ContextMenu>
+                  <MenuItem Header="Add" />
+                </ContextMenu>
+              </DataGrid.ContextMenu>
+              <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow" BasedOn="{StaticResource MetroDataGridRow}">
+                  <Setter Property="ContextMenu" Value="{StaticResource RowMenu}"></Setter>
+                </Style>
+              </DataGrid.RowStyle>
+            </DataGrid>
+          </StackPanel>
         </TabItem>
       </TabControl>
     </Grid>

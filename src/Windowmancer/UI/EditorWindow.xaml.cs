@@ -355,8 +355,7 @@ namespace Windowmancer.UI
     {
       if (_windowHostContainer == null)
       {
-        _windowHostContainer = new WindowHostContainer(new WindowContainer(
-          "Bagel Container", 1152, 648, 2, 2));
+        _windowHostContainer = new WindowHostContainer(new WindowContainer("Bagel Container", 2, 2));
         _windowHostContainer.Show();
       }
       _windowHostContainer.DockProc(Process.Start("notepad.exe"));

@@ -31,7 +31,7 @@ namespace Windowmancer.UI
 
     public WindowHostContainer()
     {
-      this.WindowContainer = new WindowContainer("Default", 0, 0, 1, 1);
+      this.WindowContainer = new WindowContainer("Default", 1, 1);
       Initialize();
     }
 
@@ -156,7 +156,9 @@ namespace Windowmancer.UI
 
       var flyout = this.Flyouts.Items[0] as Flyout;
       if (flyout == null) return;
-      var hostContainerHelper = new HostContainerHelper(this.WindowContainer)
+      var hostContainerHelper = new HostContainerHelper(
+        this.WindowContainer, 
+        new SizeInfo((int)this.ActualWidth, (int)this.ActualHeight))
       { 
         DisplayContainersSelectable = false
       };

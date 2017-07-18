@@ -19,19 +19,9 @@ namespace Windowmancer.Core.Models
       Update(screen.Bounds.Width, screen.Bounds.Height);
     }
 
-    public DisplayAspectRatio(WindowContainer container)
-    {
-      Update(container.Width, container.Height);
-    }
-
     public void Update(Screen screen)
     {
       Update(screen.Bounds.Width, screen.Bounds.Height);
-    }
-
-    public void Update(WindowContainer container)
-    {
-      Update(container.Width, container.Height);
     }
 
     public void Update(int width, int height)
