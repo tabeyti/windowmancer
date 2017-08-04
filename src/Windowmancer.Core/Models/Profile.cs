@@ -1,6 +1,10 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
+using Microsoft.Practices.ObjectBuilder2;
 using Microsoft.Practices.Unity;
+using Newtonsoft.Json;
+using Windowmancer.Core.Extensions;
 using Windowmancer.Core.Practices;
 
 namespace Windowmancer.Core.Models
@@ -16,7 +20,37 @@ namespace Windowmancer.Core.Models
     public ObservableCollection<WindowInfo> Windows { get; set; }
 
     public ObservableCollection<WindowContainer> Containers { get; set; }
-    
+
+    private readonly ObservableCollection<WindowInfo> _monitorWindows = new ObservableCollection<WindowInfo>();
+    [JsonIgnore]
+    public ObservableCollection<WindowInfo> MonitorWindows
+    {
+      get
+      {
+        _monitorWindows.Clear();
+        this.Windows.ForEach(c =>
+        {
+          if (c.ContainerLayoutInfo == null) _monitorWindows.Add(c);
+        });
+        return _monitorWindows;
+      }
+    }
+
+    private readonly ObservableCollection<WindowInfo> _containerWindows = new ObservableCollection<WindowInfo>();
+    [JsonIgnore]
+    public ObservableCollection<WindowInfo> ContainerWindows
+    {
+      get
+      {
+        _containerWindows.Clear();
+        this.Windows.ForEach(c =>
+        {
+          if (c.ContainerLayoutInfo != null) _containerWindows.Add(c);
+        });
+        return _containerWindows;
+      }
+    }
+
     private UserData _userData = null;
 
     public bool IsActive

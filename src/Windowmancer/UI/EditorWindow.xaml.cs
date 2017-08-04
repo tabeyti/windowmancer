@@ -222,8 +222,8 @@ namespace Windowmancer.UI
 
     private void WindowConfigDataGrid_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
     {
-      if (this.WindowConfigDataGrid.SelectedItem == null) return;
-      var item = (WindowInfo)WindowConfigDataGrid.SelectedItem;
+      if (this.MonitorWindowConfigDataGrid.SelectedItem == null) return;
+      var item = (WindowInfo)MonitorWindowConfigDataGrid.SelectedItem;
       HandleWindowConfigEdit(item);
     }
 
@@ -234,7 +234,7 @@ namespace Windowmancer.UI
       HandleWindowConfigEdit(item);
     }
 
-    private void WindowConfigDataGrid_MenuItemClick(object sender, RoutedEventArgs e)
+    private void MonitorWindowConfigDataGrid_MenuItemClick(object sender, RoutedEventArgs e)
     {
       WindowInfo item = null;
       switch ((string) ((MenuItem) sender).Header)
@@ -243,11 +243,11 @@ namespace Windowmancer.UI
           HandleWindowConfigEdit();
           break;
         case "Edit":
-          item = (WindowInfo)WindowConfigDataGrid.SelectedItem;
+          item = (WindowInfo)MonitorWindowConfigDataGrid.SelectedItem;
           HandleWindowConfigEdit(item);
           break;
         case "Delete":
-          item = (WindowInfo)WindowConfigDataGrid.SelectedItem;
+          item = (WindowInfo)MonitorWindowConfigDataGrid.SelectedItem;
           ProfileManager.RemoveFromActiveProfile(item);
           ShowItemMessageToast(item.Name, "window configuration deleted.");
           break;
