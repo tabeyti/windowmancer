@@ -111,7 +111,7 @@ namespace Windowmancer.UI
 
     private void HandleProfileConfigEdit(Profile profile = null)
     {
-      var flyout = this.Flyouts.Items[1] as Flyout;
+      var flyout = (Flyout)this.FindName("LeftFlyout");
       if (null == flyout)
       {
         throw new Exception("HandleProfileConfigEdit - No flyout available at index 1");
@@ -120,7 +120,7 @@ namespace Windowmancer.UI
       ProfileConfig content;
       if (null == profile)
       {
-        flyout.Header = "Add Profile";
+        flyout.Header = "Add Container";
         content = new ProfileConfig((p) => 
         {
           ProfileManager.AddNewProfile(p);
@@ -131,7 +131,7 @@ namespace Windowmancer.UI
       }
       else
       {
-        flyout.Header = "Edit Profile";
+        flyout.Header = "Edit Container";
         content = new ProfileConfig(profile, (p) =>
         {
           profile.Update(p);
@@ -142,7 +142,43 @@ namespace Windowmancer.UI
       flyout.Content = content;
       flyout.IsOpen = true;
     }
-    
+
+    private void HandleContainerConfigEdit(WindowContainer container = null)
+    {
+      var flyout = (Flyout)this.FindName("LeftFlyout");
+      if (null == flyout)
+      {
+        throw new Exception("HandleContainerConfigEdit - No flyout available.");
+      }
+
+      ContainerConfig content;
+      if (null == container)
+      {
+        flyout.Header = "Add Container";
+        content = new ContainerConfig((p) =>
+        {
+
+
+          //ProfileManager.AddNewProfile(p);
+          //this.ProfileListBox.SelectedItem = p;
+          //this.EditorViewModel.Update();
+          //ShowItemMessageToast(p.Name, "profile added.");
+        });
+      }
+      else
+      {
+        flyout.Header = "Edit Container";
+        content = new ContainerConfig(container, (p) =>
+        {
+          //profile.Update(p);
+          //ShowItemMessageToast(p.Name, "profile updated.");
+        });
+      }
+      content.OnClose = () => { flyout.IsOpen = false; };
+      flyout.Content = content;
+      flyout.IsOpen = true;
+    }
+
     private void HandleWindowConfigEdit(WindowInfo item = null)
     {
       var flyout = this.Flyouts.Items[0] as Flyout;
@@ -331,10 +367,6 @@ namespace Windowmancer.UI
         windowHighlight.Show();
       });
     }
-
-    private void EditorWindow_OnDeactivated(object sender, EventArgs e)
-    {
-    }
     
     private static WindowHostContainer _windowHostContainer = null;
     private void ActiveWindowsDataGrid_ContainerizeClick(object sender, RoutedEventArgs e)
@@ -353,20 +385,38 @@ namespace Windowmancer.UI
     // TODO: Debug
     private void EditorWindow_OnLoaded(object sender, RoutedEventArgs e)
     {
-      if (_windowHostContainer == null)
-      {
-        _windowHostContainer = new WindowHostContainer(new WindowContainer("Bagel Container", 2, 2));
-        _windowHostContainer.Show();
-      }
-      _windowHostContainer.DockProc(Process.Start("notepad.exe"));
-      _windowHostContainer.DockProc(Process.Start("notepad.exe"));
-      _windowHostContainer.DockProc(Process.Start("mspaint.exe"));
+      //if (_windowHostContainer == null)
+      //{
+      //  _windowHostContainer = new WindowHostContainer(new WindowContainer("Bagel Container", 2, 2));
+      //  _windowHostContainer.Show();
+      //}
+      //_windowHostContainer.DockProc(Process.Start("notepad.exe"));
+      //_windowHostContainer.DockProc(Process.Start("notepad.exe"));
+      //_windowHostContainer.DockProc(Process.Start("mspaint.exe"));
     }
 
     private void WindowConfigDataGrid_OnAutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
-    {
+    { 
       if (((PropertyDescriptor)e.PropertyDescriptor).IsBrowsable == false)
         e.Cancel = true;
+    }
+
+    private void WindowContainers_MenuItemClick(object sender, RoutedEventArgs e)
+    {
+      var menuItem = (MenuItem)sender;
+      switch (menuItem.Header as string)
+      {
+        case "Add":
+          HandleContainerConfigEdit();
+          break;
+        case "Edit":
+          var item = (WindowContainer)this.WindowContainersListBox.SelectedItem;
+          HandleContainerConfigEdit(item);
+          break;
+        case "Delete":
+          //ShowItemMessageToast(this.ProfileManager.ActiveProfile.Name, "profile deleted.");
+          break;
+      }
     }
   }
 }

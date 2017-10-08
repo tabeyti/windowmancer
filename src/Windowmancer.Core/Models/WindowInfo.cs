@@ -21,7 +21,6 @@ namespace Windowmancer.Core.Models
       set => SetProperty(value);
     }
 
-    [Browsable(false)]
     public ContainerLayoutInfo ContainerLayoutInfo
     {
       get => GetProperty<ContainerLayoutInfo>();

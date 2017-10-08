@@ -177,6 +177,9 @@
     <Compile Include="UI\LabelTextBox.xaml.cs">
       <DependentUpon>LabelTextBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\ContainerConfig.xaml.cs">
+      <DependentUpon>ContainerConfig.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\ProfileConfig.xaml.cs">
       <DependentUpon>ProfileConfig.xaml</DependentUpon>
     </Compile>
@@ -235,6 +238,10 @@
     <Page Include="UI\LabelTextBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\ContainerConfig.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="UI\ProfileConfig.xaml">
       <SubType>Designer</SubType>

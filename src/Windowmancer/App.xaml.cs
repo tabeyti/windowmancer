@@ -97,7 +97,7 @@ namespace Windowmancer
 
     private string TrayIconTooltipText()
     {
-      return $"Windowmancer\nActive Profile - {_profileManager.ActiveProfile.Name}";
+      return $"Windowmancer\nActive Container - {_profileManager.ActiveProfile.Name}";
     }
     
     private ContextMenuStrip BuildContextMenu()
@@ -109,7 +109,7 @@ namespace Windowmancer
       var menuItems = new List<ToolStripItem>();
 
       // Create fresh button as first item.
-      var rescanMenuItem = new ToolStripButton("Rescan Profile");
+      var rescanMenuItem = new ToolStripButton("Rescan Container");
       rescanMenuItem.MouseEnter += TrayContextMenuItem_MouseEnter;
       rescanMenuItem.MouseLeave += TrayContextMenuItem_MouseLeave;
       rescanMenuItem.Dock = DockStyle.Fill;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Windows.Forms;
+using Newtonsoft.Json;
 
 namespace Windowmancer.Core.Models
 {
@@ -24,10 +25,27 @@ namespace Windowmancer.Core.Models
       set => SetProperty(value);
     }
 
+    [JsonIgnore]
     public ObservableCollection<DockableWindow> DockedWindows
     {
       get => GetProperty<ObservableCollection<DockableWindow>>();
       set => SetProperty(value);
+    }
+
+    public WindowContainer()
+    {
+      RegisterProperty("Name", "");
+      RegisterProperty("Rows", 1);
+      RegisterProperty("Columns", 1);
+      RegisterProperty("DockedWindows", new ObservableCollection<DockableWindow>());
+    }
+
+    public WindowContainer(string name)
+    {
+      RegisterProperty("Name", name);
+      RegisterProperty("Rows", 1);
+      RegisterProperty("Columns", 1);
+      RegisterProperty("DockedWindows", new ObservableCollection<DockableWindow>());
     }
 
     public WindowContainer(Screen screen)
@@ -37,16 +55,6 @@ namespace Windowmancer.Core.Models
       RegisterProperty("Height", screen.Bounds.Height);
       RegisterProperty("Rows", 1);
       RegisterProperty("Columns", 1);
-      RegisterProperty<DockableWindow>("ActiveDockedWindow");
-      RegisterProperty("DockedWindows", new ObservableCollection<DockableWindow>());
-    }
-    
-    public WindowContainer(string name)
-    {
-      RegisterProperty("Name", name);
-      RegisterProperty("Rows", 1);
-      RegisterProperty("Columns", 1);
-      RegisterProperty<DockableWindow>("ActiveDockedWindow");
       RegisterProperty("DockedWindows", new ObservableCollection<DockableWindow>());
     }
 
@@ -55,7 +63,6 @@ namespace Windowmancer.Core.Models
       RegisterProperty("Name", name);
       RegisterProperty("Rows", rows);
       RegisterProperty("Columns", columns);
-      RegisterProperty<DockableWindow>("ActiveDockedWindow");
       RegisterProperty("DockedWindows", new ObservableCollection<DockableWindow>());
     }
 
