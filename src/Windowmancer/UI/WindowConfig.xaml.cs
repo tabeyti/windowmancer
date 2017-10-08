@@ -8,6 +8,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
+using Microsoft.Practices.Unity;
 using Windowmancer.Core.Extensions;
 using Windowmancer.Core.Models;
 using Windowmancer.Core.Services;
@@ -33,6 +34,7 @@ namespace Windowmancer.UI
     public WindowInfo WindowInfo { get; set; }
     public MonitorLayoutInfo OriginalLayoutInfo { get; set; }
     public uint OriginalOpacity { get; set; }
+    public ProfileManager ProfileManager { get; set; }
     
     private static Screen _screen;
     private static DisplayHelperSection _displayHelperSection = new DisplayHelperSection();
@@ -75,7 +77,7 @@ namespace Windowmancer.UI
     private void PreInitialization()
     {
       this.ScreenAspectRatio = new DisplayAspectRatio(Screen.PrimaryScreen);
-
+      this.ProfileManager = App.ServiceResolver.Resolve<ProfileManager>();
       if (_process != null)
       {
         this.WindowInfo = WindowInfo.FromProcess(_process);

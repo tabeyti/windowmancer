@@ -108,10 +108,31 @@ namespace Windowmancer.Core.Services
     }
 
     /// <summary>
+    /// Adds a new window container to the active profile.
+    /// </summary>
+    /// <param name="container">The container to add.</param>
+    /// <returns>True of container was added. False if not.</returns>
+    public bool AddToActiveProfile(WindowContainer container)
+    {
+      if (null == container)
+      {
+        return false;
+      }
+
+      if (this.ActiveProfile.Containers.Any(c => 
+        c.Name.ToLower().Trim() == container.Name.ToLower().Trim()))
+      {
+        return false;
+      }
+      this.ActiveProfile.Containers.Add(container);
+      return true;
+    }
+
+    /// <summary>
     /// Adds a window info instance to the active profile.
     /// </summary>
     /// <param name="info"></param>
-    /// <returns></returns>
+    /// <returns>True of window info was added. False if not.</returns>
     public bool AddToActiveProfile(WindowInfo info)
     {
       if (null == info)

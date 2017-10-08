@@ -44,6 +44,7 @@
                        Position="Left"
                        Width="400"/>
       <Controls:Flyout IsModal="False"
+                       Name="BottomFlyout"
                        Position="Bottom"                       
                        IsAutoCloseEnabled="True"
                        AutoCloseInterval="3000"
@@ -57,8 +58,28 @@
                    VerticalAlignment="Center"
                    Margin="10"
                    FontSize="16">
-          <Run Name="DeleteToastItem" Foreground="DeepSkyBlue"/>
-          <Run Name="DeleteToastMessage" Foreground="White"/>
+          <Run Name="InfoItemLabel" Foreground="DeepSkyBlue"/>
+          <Run Name="InfoMessageLabel" Foreground="White"/>
+        </TextBlock>
+      </Controls:Flyout>
+      <Controls:Flyout IsModal="False"
+                       Name="ErrorFlyout"
+                       Position="Bottom"                       
+                       IsAutoCloseEnabled="True"
+                       AutoCloseInterval="3000"
+                       TitleVisibility="Collapsed"
+                       CloseButtonVisibility="Collapsed"
+                       Background="Red"
+                       BorderBrush="{StaticResource TrimColor}"
+                       BorderThickness="1"
+                       Height ="75">
+        <TextBlock Name="ErrorItemToast" 
+                   HorizontalAlignment="Center" 
+                   VerticalAlignment="Center"
+                   Margin="10"
+                   FontSize="16">
+          <Run Name="ErrorItemLabel" Foreground="DeepSkyBlue"/>
+          <Run Name="ErrorMessageLabel" Foreground="White"/>
         </TextBlock>
       </Controls:Flyout>
     </Controls:FlyoutsControl>

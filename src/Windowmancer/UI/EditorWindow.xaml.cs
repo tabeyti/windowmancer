@@ -14,6 +14,7 @@ using Windowmancer.UI.Base;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows.Media;
 using MenuItem = System.Windows.Controls.MenuItem;
 using Windowmancer.Core.Services.Base;
 
@@ -83,13 +84,30 @@ namespace Windowmancer.UI
         return;
       }
 
-      var flyout = this.Flyouts.Items[2] as Flyout;
+      var flyout = (Flyout)this.FindName("BottomFlyout");
       if (null == flyout)
       {
-        throw new Exception("HandleProfileConfigEdit - No flyout available at index 1");
+        throw new Exception("No flyout available for BottomFlyout.");
       }
-      this.DeleteToastItem.Text = itemName;
-      this.DeleteToastMessage.Text = message ?? this.DeleteToastItem.Text;
+      this.InfoItemLabel.Text = itemName;
+      this.InfoMessageLabel.Text = message ?? this.InfoItemLabel.Text;
+      flyout.IsOpen = true;
+    }
+
+    public void ShowErrorItemToast(string itemName, string message = null)
+    {
+      if (itemName == null && message == null)
+      {
+        return;
+      }
+
+      var flyout = (Flyout)this.FindName("ErrorFlyout");
+      if (null == flyout)
+      {
+        throw new Exception("No flyout available for BottomFlyout.");
+      }
+      this.ErrorItemLabel.Text = itemName;
+      this.ErrorMessageLabel.Text = message ?? this.InfoItemLabel.Text;
       flyout.IsOpen = true;
     }
 
@@ -100,12 +118,12 @@ namespace Windowmancer.UI
         return;
       }
 
-      var flyout = this.Flyouts.Items[2] as Flyout;
+      var flyout = (Flyout)this.FindName("BottomFlyout");
       if (null == flyout)
       {
         throw new Exception("HandleProfileConfigEdit - No flyout available at index 1");
       }
-      this.DeleteToastMessage.Text = message;
+      this.InfoMessageLabel.Text = message;
       flyout.IsOpen = true;
     }
 
@@ -114,29 +132,29 @@ namespace Windowmancer.UI
       var flyout = (Flyout)this.FindName("LeftFlyout");
       if (null == flyout)
       {
-        throw new Exception("HandleProfileConfigEdit - No flyout available at index 1");
+        throw new Exception("Could not locate flyout LeftFlyout.");
       }
       
       ProfileConfig content;
       if (null == profile)
       {
-        flyout.Header = "Add Container";
+        flyout.Header = "Add Profile";
         content = new ProfileConfig((p) => 
         {
           ProfileManager.AddNewProfile(p);
           this.ProfileListBox.SelectedItem = p;
           this.EditorViewModel.Update();
-          ShowItemMessageToast(p.Name, "profile added.");
+          ShowItemMessageToast(p.Name, "Profile added.");
         });
       }
       else
       {
-        flyout.Header = "Edit Container";
+        flyout.Header = "Edit Profile";
         content = new ProfileConfig(profile, (p) =>
         {
           profile.Update(p);
-          ShowItemMessageToast(p.Name, "profile updated.");
-        } );
+          ShowItemMessageToast(p.Name, "Profile updated.");
+        });
       }
       content.OnClose = () => { flyout.IsOpen = false; };
       flyout.Content = content;
@@ -155,23 +173,22 @@ namespace Windowmancer.UI
       if (null == container)
       {
         flyout.Header = "Add Container";
-        content = new ContainerConfig((p) =>
+        content = new ContainerConfig((c) =>
         {
-
-
-          //ProfileManager.AddNewProfile(p);
-          //this.ProfileListBox.SelectedItem = p;
-          //this.EditorViewModel.Update();
-          //ShowItemMessageToast(p.Name, "profile added.");
+          if (!this.ProfileManager.AddToActiveProfile(c))
+          {
+            ShowErrorItemToast(c.Name, "Container already exists.");
+            return;
+          }
+          ShowItemMessageToast(c.Name, "Container added.");
         });
       }
       else
       {
         flyout.Header = "Edit Container";
-        content = new ContainerConfig(container, (p) =>
+        content = new ContainerConfig(container, (c) =>
         {
-          //profile.Update(p);
-          //ShowItemMessageToast(p.Name, "profile updated.");
+          ShowItemMessageToast(c.Name, "Container updated.");
         });
       }
       content.OnClose = () => { flyout.IsOpen = false; };

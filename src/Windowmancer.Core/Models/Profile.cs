@@ -63,6 +63,7 @@ namespace Windowmancer.Core.Models
     {
       RegisterProperty<string>("Name");
       RegisterProperty<bool>("IsActive");
+      this.Containers = new ObservableCollection<WindowContainer>();
     }
 
     public void Update(Profile profile)

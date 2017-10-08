@@ -307,6 +307,22 @@
               </StackPanel>
             </TabItem>
             <TabItem Header="Container">
+              <ListBox  Name="ContainersListBox" 
+                        Style="{StaticResource MyListBox}"
+                        ItemContainerStyle="{StaticResource MyListBoxItem}"
+                        SelectionChanged="DisplaysComboBox_SelectionChanged"
+                        ItemsSource="{Binding ProfileManager.ActiveProfile.Containers}">
+                <ListBox.ItemTemplate>
+                  <DataTemplate>
+                    <Grid Margin="3,3">
+                      <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                      </Grid.ColumnDefinitions>
+                      <TextBlock Text="{Binding Name}" />
+                    </Grid>
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+              </ListBox>
             </TabItem>
           </TabControl>
         </GroupBox>
