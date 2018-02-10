@@ -125,6 +125,7 @@ namespace Windowmancer.Core.Services
         return false;
       }
       this.ActiveProfile.Containers.Add(container);
+      _userData.Save();
       return true;
     }
 
