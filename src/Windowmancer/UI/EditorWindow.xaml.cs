@@ -435,5 +435,25 @@ namespace Windowmancer.UI
           break;
       }
     }
+
+    private void ContainerWindowConfig_MenuItemClick(object sender, RoutedEventArgs e)
+    {
+      WindowInfo item = null;
+      switch ((string)((MenuItem)sender).Header)
+      {
+        case "Add":
+          //HandleWindowConfigEdit();
+          break;
+        case "Edit":
+          item = (WindowInfo)ContainerWindowConfigDataGrid.SelectedItem;
+          //HandleWindowConfigEdit(item);
+          break;
+        case "Delete":
+          item = (WindowInfo)ContainerWindowConfigDataGrid.SelectedItem;
+          //ProfileManager.RemoveFromActiveProfile(item);
+          //ShowItemMessageToast(item.Name, "window configuration deleted.");
+          break;
+      }
+    }
   }
 }

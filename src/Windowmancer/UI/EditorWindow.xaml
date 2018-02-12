@@ -228,6 +228,7 @@
                   <ListBox.ContextMenu>
                     <ContextMenu>
                       <MenuItem Header="Add" Click="WindowContainers_MenuItemClick"></MenuItem>
+                      <MenuItem Header="Edit" Click="WindowContainers_MenuItemClick"></MenuItem>
                     </ContextMenu>
                   </ListBox.ContextMenu>
                   <ListBox.ItemTemplate>
@@ -254,13 +255,13 @@
                           ItemsSource="{Binding ProfileManager.ActiveProfile.ContainerWindows}">
                   <DataGrid.Resources>
                     <ContextMenu x:Key="RowMenu">
-                      <MenuItem Header="Edit"></MenuItem>
-                      <MenuItem Header="Delete"></MenuItem>
+                      <MenuItem Header="Edit" />
+                      <MenuItem Header="Delete" />
                     </ContextMenu>
                   </DataGrid.Resources>
                   <DataGrid.ContextMenu>
                     <ContextMenu>
-                      <MenuItem Header="Add" />
+                      <MenuItem Header="Add" Click="ContainerWindowConfig_MenuItemClick"/>
                     </ContextMenu>
                   </DataGrid.ContextMenu>
                   <DataGrid.RowStyle>
@@ -322,6 +323,18 @@
   </Grid>
 
 </Controls:MetroWindow>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
