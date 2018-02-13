@@ -30,6 +30,16 @@
       <Setter Property="Controls:ControlsHelper.ContentCharacterCasing" Value="Normal"/>
       <Setter Property="SeparatorBrush" Value="{StaticResource MainColorTheme}" />
     </Style>
+    <CollectionViewSource x:Key="MonitorWindowConfigCollectionView" 
+                          Source="{Binding ProfileManager.ActiveProfile.Windows}"
+                          Filter="MonitorWindowConfigList_OnFilter">
+      
+    </CollectionViewSource>
+    <CollectionViewSource x:Key="ContainerWindowConfigCollectionView" 
+                          Source="{Binding ProfileManager.ActiveProfile.Windows}"
+                          Filter="ContainerWindowConfigCollectionView_OnFilter">
+
+    </CollectionViewSource>
   </Controls:MetroWindow.Resources>
 
   <Controls:MetroWindow.Flyouts>
@@ -182,9 +192,9 @@
                       SelectionUnit="FullRow"
                       Background="{StaticResource AccentViewBackgroundColorBrush}"
                       ColumnHeaderStyle="{StaticResource MyColumnHeader}"
-                      ItemsSource="{Binding ProfileManager.ActiveProfile.MonitorWindows}"
-                      AutoGeneratingColumn="WindowConfigDataGrid_OnAutoGeneratingColumn"
-                      MouseDoubleClick="WindowConfigDataGrid_OnMouseDoubleClick">
+                      ItemsSource="{Binding Source={StaticResource MonitorWindowConfigCollectionView}}"
+                      AutoGeneratingColumn="MonitorWindowConfigDataGrid_OnAutoGeneratingColumn"
+                      MouseDoubleClick="MonitorWindowConfigDataGrid_OnMouseDoubleClick">
               <DataGrid.Resources>
                 <ContextMenu x:Key="RowMenu">
                   <MenuItem Header="Edit" Click="MonitorWindowConfigDataGrid_MenuItemClick"/>
@@ -252,7 +262,7 @@
                           SelectionUnit="FullRow"
                           Background="{StaticResource AccentViewBackgroundColorBrush}"
                           ColumnHeaderStyle="{StaticResource MyColumnHeader}"
-                          ItemsSource="{Binding ProfileManager.ActiveProfile.ContainerWindows}">
+                          ItemsSource="{Binding Source={StaticResource ContainerWindowConfigCollectionView}}">
                   <DataGrid.Resources>
                     <ContextMenu x:Key="RowMenu">
                       <MenuItem Header="Edit" />

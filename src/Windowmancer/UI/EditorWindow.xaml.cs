@@ -14,6 +14,7 @@ using Windowmancer.UI.Base;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows.Data;
 using System.Windows.Media;
 using MenuItem = System.Windows.Controls.MenuItem;
 using Windowmancer.Core.Services.Base;
@@ -201,7 +202,7 @@ namespace Windowmancer.UI
       var flyout = this.Flyouts.Items[0] as Flyout;
       if (flyout == null) return;
 
-      var windowConfig = null == item ? 
+      var windowConfig = null == item ?
         new WindowConfig(w =>
         {
           ProfileManager.AddToActiveProfile(w);
@@ -273,7 +274,7 @@ namespace Windowmancer.UI
       this.ShowMetroDialogAsync(dialog, settings);
     }
 
-    private void WindowConfigDataGrid_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+    private void MonitorWindowConfigDataGrid_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
     {
       if (this.MonitorWindowConfigDataGrid.SelectedItem == null) return;
       var item = (WindowInfo)MonitorWindowConfigDataGrid.SelectedItem;
@@ -412,7 +413,7 @@ namespace Windowmancer.UI
       //_windowHostContainer.DockProc(Process.Start("mspaint.exe"));
     }
 
-    private void WindowConfigDataGrid_OnAutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+    private void MonitorWindowConfigDataGrid_OnAutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
     { 
       if (((PropertyDescriptor)e.PropertyDescriptor).IsBrowsable == false)
         e.Cancel = true;
@@ -454,6 +455,18 @@ namespace Windowmancer.UI
           //ShowItemMessageToast(item.Name, "window configuration deleted.");
           break;
       }
+    }
+
+    private void MonitorWindowConfigList_OnFilter(object sender, FilterEventArgs e)
+    {
+      var item = (WindowInfo) e.Item;
+      e.Accepted = item.MonitorLayoutInfo != null;
+    }
+
+    private void ContainerWindowConfigCollectionView_OnFilter(object sender, FilterEventArgs e)
+    {
+      var item = (WindowInfo)e.Item;
+      e.Accepted = item.MonitorLayoutInfo == null;
     }
   }
 }

@@ -74,7 +74,8 @@ namespace Windowmancer.Core.Models
       {
         Name = this.Name,
         ApplyOnProcessStart = this.ApplyOnProcessStart,
-        MonitorLayoutInfo = (MonitorLayoutInfo)this.MonitorLayoutInfo.Clone(),
+        MonitorLayoutInfo = (MonitorLayoutInfo)this.MonitorLayoutInfo?.Clone(),
+        ContainerLayoutInfo= (ContainerLayoutInfo)this.ContainerLayoutInfo?.Clone(),
         MatchCriteria = (WindowMatchCriteria)this.MatchCriteria.Clone(),
         StylingInfo = (WindowStylingInfo)this.StylingInfo.Clone()
       };
@@ -90,6 +91,7 @@ namespace Windowmancer.Core.Models
       this.ApplyOnProcessStart = info.ApplyOnProcessStart;
       this.MatchCriteria = info.MatchCriteria;
       this.MonitorLayoutInfo = info.MonitorLayoutInfo;
+      this.ContainerLayoutInfo = info.ContainerLayoutInfo;
       this.StylingInfo = info.StylingInfo;
       _userData = _userData ?? Helper.ServiceResolver.Resolve<UserData>();
       _userData.Save();
