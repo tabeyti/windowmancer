@@ -159,6 +159,7 @@
     <Compile Include="Extensions\DisplayContainerExtensions.cs" />
     <Compile Include="Extensions\UIElementExtensions.cs" />
     <Compile Include="Practices\WmServiceResolver.cs" />
+    <Compile Include="Services\HostContainerManager.cs" />
     <Compile Include="UI\AboutDialog.xaml.cs">
       <DependentUpon>AboutDialog.xaml</DependentUpon>
     </Compile>

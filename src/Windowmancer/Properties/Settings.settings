@@ -1,7 +1,7 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
 <SettingsFile xmlns="uri:settings" CurrentContainer="(Default)">
-  <Containers>
+  <HostContainers>
     <Container Name="(Default)" />
-  </Containers>
+  </HostContainers>
   <Settings />
 </SettingsFile>

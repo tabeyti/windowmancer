@@ -119,12 +119,12 @@ namespace Windowmancer.Core.Services
         return false;
       }
 
-      if (this.ActiveProfile.Containers.Any(c => 
+      if (this.ActiveProfile.HostContainers.Any(c => 
         c.Name.ToLower().Trim() == container.Name.ToLower().Trim()))
       {
         return false;
       }
-      this.ActiveProfile.Containers.Add(container);
+      this.ActiveProfile.HostContainers.Add(container);
       _userData.Save();
       return true;
     }

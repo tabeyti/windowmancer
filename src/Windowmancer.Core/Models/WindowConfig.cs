@@ -21,9 +21,9 @@ namespace Windowmancer.Core.Models
       set => SetProperty(value);
     }
 
-    public ContainerLayoutInfo ContainerLayoutInfo
+    public HostContainerLayoutInfo HostContainerLayoutInfo
     {
-      get => GetProperty<ContainerLayoutInfo>();
+      get => GetProperty<HostContainerLayoutInfo>();
       set => SetProperty(value);
     }
 
@@ -49,12 +49,12 @@ namespace Windowmancer.Core.Models
 
     public WindowConfig()
     {
-      RegisterProperty<string>("Name");
-      RegisterProperty<string>("ApplyOnProcessStart");
-      RegisterProperty<MonitorLayoutInfo>("MonitorLayoutInfo");
-      RegisterProperty<ContainerLayoutInfo>("ContainerLayoutInfo");
-      RegisterProperty<WindowMatchCriteria>("MatchCriteria");
-      RegisterProperty<WindowStylingInfo>("StylingInfo");
+      RegisterProperty<string>(nameof(this.Name));
+      RegisterProperty<string>(nameof(this.ApplyOnProcessStart));
+      RegisterProperty<MonitorLayoutInfo>(nameof(this.MonitorLayoutInfo));
+      RegisterProperty<HostContainerLayoutInfo>(nameof(this.HostContainerLayoutInfo));
+      RegisterProperty<WindowMatchCriteria>(nameof(this.MatchCriteria));
+      RegisterProperty<WindowStylingInfo>(nameof(this.StylingInfo));
 
       this.Name = "";
       this.MonitorLayoutInfo = new MonitorLayoutInfo();
@@ -75,7 +75,7 @@ namespace Windowmancer.Core.Models
         Name = this.Name,
         ApplyOnProcessStart = this.ApplyOnProcessStart,
         MonitorLayoutInfo = (MonitorLayoutInfo)this.MonitorLayoutInfo?.Clone(),
-        ContainerLayoutInfo= (ContainerLayoutInfo)this.ContainerLayoutInfo?.Clone(),
+        HostContainerLayoutInfo= (HostContainerLayoutInfo)this.HostContainerLayoutInfo?.Clone(),
         MatchCriteria = (WindowMatchCriteria)this.MatchCriteria.Clone(),
         StylingInfo = (WindowStylingInfo)this.StylingInfo.Clone()
       };
@@ -91,7 +91,7 @@ namespace Windowmancer.Core.Models
       this.ApplyOnProcessStart = info.ApplyOnProcessStart;
       this.MatchCriteria = info.MatchCriteria;
       this.MonitorLayoutInfo = info.MonitorLayoutInfo;
-      this.ContainerLayoutInfo = info.ContainerLayoutInfo;
+      this.HostContainerLayoutInfo = info.HostContainerLayoutInfo;
       this.StylingInfo = info.StylingInfo;
       _userData = _userData ?? Helper.ServiceResolver.Resolve<UserData>();
       _userData.Save();
@@ -127,7 +127,7 @@ namespace Windowmancer.Core.Models
 
     public WindowStylingInfo()
     {
-      RegisterProperty<uint>("WindowOpacityPercentage", 100);
+      RegisterProperty<uint>(nameof(this.WindowOpacityPercentage), 100);
     }
 
     public override string ToString()
@@ -160,14 +160,14 @@ namespace Windowmancer.Core.Models
 
     public MonitorLayoutInfo()
     {
-      RegisterProperty<PositionInfo>("PositionInfo");
-      RegisterProperty<SizeInfo>("SizeInfo");
+      RegisterProperty<PositionInfo>(nameof(PositionInfo));
+      RegisterProperty<SizeInfo>(nameof(this.SizeInfo));
     }
 
     public MonitorLayoutInfo(int x, int y, int width, int height)
     {
-      RegisterProperty("PositionInfo", new PositionInfo(x, y));
-      RegisterProperty("SizeInfo", new SizeInfo(width, height));
+      RegisterProperty(nameof(this.PositionInfo), new PositionInfo(x, y));
+      RegisterProperty(nameof(this.SizeInfo), new SizeInfo(width, height));
     }
 
     public override string ToString()
@@ -216,14 +216,14 @@ namespace Windowmancer.Core.Models
 
     public PositionInfo()
     {
-      RegisterProperty<int>("X");
-      RegisterProperty<int>("Y");
+      RegisterProperty<int>(nameof(this.X));
+      RegisterProperty<int>(nameof(this.Y));
     }
 
     public PositionInfo(int x, int y)
     {
-      RegisterProperty("X", x);
-      RegisterProperty("Y", y);
+      RegisterProperty(nameof(this.X), x);
+      RegisterProperty(nameof(this.Y), y);
     }
   }
 
@@ -252,18 +252,18 @@ namespace Windowmancer.Core.Models
 
     public SizeInfo()
     {
-      this.RegisterProperty<int>("Width");
-      this.RegisterProperty<int>("Height");
+      this.RegisterProperty<int>(nameof(this.Width));
+      this.RegisterProperty<int>(nameof(this.Height));
     }
 
     public SizeInfo(int width, int height)
     {
-      this.RegisterProperty("Width", width);
-      this.RegisterProperty("Height", height);
+      this.RegisterProperty(nameof(this.Width), width);
+      this.RegisterProperty(nameof(this.Height), height);
     }
   }
 
-  public class ContainerLayoutInfo : PropertyNotifyBase, ICloneable
+  public class HostContainerLayoutInfo : PropertyNotifyBase, ICloneable
   {
     public uint Row
     {
@@ -277,24 +277,25 @@ namespace Windowmancer.Core.Models
       set => SetProperty(value);
     }
 
-    public string Container
+    public string HostContainerId
     {
       get => GetProperty<string>();
       set => SetProperty(value);
     }
 
-    public ContainerLayoutInfo()
+    public HostContainerLayoutInfo()
     {
-      RegisterProperty<uint>("Row");
-      RegisterProperty<uint>("Column");
-      RegisterProperty<string>("Container");
+      RegisterProperty<uint>(nameof(this.Row));
+      RegisterProperty<uint>(nameof(this.Column));
+      RegisterProperty<string>(nameof(this.HostContainerId));
     }
 
-    public ContainerLayoutInfo(uint row, uint column, string container)
+    public HostContainerLayoutInfo(uint row, uint column, string container)
     {
-      RegisterProperty("Row", row);
-      RegisterProperty("Column", column);
-      RegisterProperty("Container", container);
+      
+      RegisterProperty(nameof(this.Row), row);
+      RegisterProperty(nameof(this.Column), column);
+      RegisterProperty(nameof(this.HostContainerId), container);
     }
 
     public override string ToString()
@@ -304,7 +305,7 @@ namespace Windowmancer.Core.Models
 
     public object Clone()
     {
-      return new ContainerLayoutInfo(this.Row, this.Column, this.Container);
+      return new HostContainerLayoutInfo(this.Row, this.Column, this.HostContainerId);
     }
   }
 

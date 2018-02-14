@@ -307,11 +307,11 @@
               </StackPanel>
             </TabItem>
             <TabItem Header="Container">
-              <ListBox  Name="ContainersListBox" 
+              <ListBox  Name="HostContainersListBox" 
                         Style="{StaticResource MyListBox}"
                         ItemContainerStyle="{StaticResource MyListBoxItem}"
                         SelectionChanged="DisplaysComboBox_SelectionChanged"
-                        ItemsSource="{Binding ProfileManager.ActiveProfile.Containers}">
+                        ItemsSource="{Binding ProfileManager.ActiveProfile.HostContainers}">
                 <ListBox.ItemTemplate>
                   <DataTemplate>
                     <Grid Margin="3,3">

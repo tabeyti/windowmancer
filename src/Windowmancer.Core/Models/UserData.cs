@@ -26,7 +26,7 @@ namespace Windowmancer.Core.Models
           Id = Guid.NewGuid().ToString(),
           Name = "My Profile",
           Windows = new ObservableCollection<WindowConfig>(),
-          Containers = new ObservableCollection<HostContainerConfig>()
+          HostContainers = new ObservableCollection<HostContainerConfig>()
         }
       };
 

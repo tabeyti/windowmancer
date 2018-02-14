@@ -35,6 +35,8 @@ namespace Windowmancer.Practices
     private static void RegisterServices(IUnityContainer container)
     {
       var userConfig = container.Resolve<UserConfig>();
+      // If our user data file doesn't exist yet, create one based on 
+      // an instance of UserData with no config passed in.
       if (!File.Exists(userConfig.UserDataPath))
       {
         File.WriteAllText(userConfig.UserDataPath, JsonConvert.SerializeObject(new UserData(null)));

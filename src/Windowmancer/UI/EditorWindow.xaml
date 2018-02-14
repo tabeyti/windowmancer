@@ -181,11 +181,11 @@
       </GroupBox>
       <GridSplitter Background="{StaticResource MainColorTheme}" Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
 
-      <GroupBox Header="Window Configurations" Grid.Column="2" 
-                Style="{StaticResource MyGroupBoxStyle}">
+      <Grid Grid.Column="2">
         <TabControl ItemContainerStyle="{StaticResource MyTabItem}">
           <TabItem Header="Monitor">
-            <DataGrid Name="MonitorWindowConfigDataGrid" 
+            <GroupBox Header="Window Configurations" Style="{StaticResource MyGroupBoxStyle}">
+              <DataGrid Name="MonitorWindowConfigDataGrid" 
                       GridLinesVisibility="None" 
                       IsReadOnly="True" 
                       SelectionMode="Single" 
@@ -212,6 +212,7 @@
                 </Style>
               </DataGrid.RowStyle>
             </DataGrid>
+            </GroupBox>
           </TabItem>
           <TabItem Header="Container"
                    Name="WindowHostContainersTabItem">
@@ -221,14 +222,14 @@
                 <ColumnDefinition Width="*"/>
               </Grid.ColumnDefinitions>
               <!--<StackPanel Orientation="Horizontal">-->
-              <GroupBox Header="Containers"
-                        Name="ContainersListBox"
+              <GroupBox Header="HostContainers"
+                        Name="HostContainersListBox"
                         Grid.Column="0">
-                <ListBox Name="WindowContainersListBox"
+                <ListBox Name="WindowHostContainersListBox"
                          Margin="5"
                          Style="{StaticResource MyListBox}"
                          ItemContainerStyle="{StaticResource MyListBoxItem}"
-                         ItemsSource="{Binding ProfileManager.ActiveProfile.Containers}">
+                         ItemsSource="{Binding ProfileManager.ActiveProfile.HostContainers}">
                   <ListBox.Resources>
                     <ContextMenu x:Key="ContainerRowMenu">
                       <MenuItem Header="Edit" Click="WindowContainers_MenuItemClick"></MenuItem>
@@ -285,7 +286,7 @@
             <!--StackPanel-->
           </TabItem>
         </TabControl>
-      </GroupBox>
+      </Grid>
     </Grid>
     <GridSplitter Grid.Row="2" Background="{StaticResource MainColorTheme}" Height="5" HorizontalAlignment="Stretch" />
     <GroupBox Header="Active Windows" Grid.Row="3"

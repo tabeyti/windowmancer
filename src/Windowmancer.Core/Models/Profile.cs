@@ -17,7 +17,7 @@ namespace Windowmancer.Core.Models
     public string Id { get; set; }
     public ObservableCollection<WindowConfig> Windows { get; set; }
 
-    public ObservableCollection<HostContainerConfig> Containers { get; set; }
+    public ObservableCollection<HostContainerConfig> HostContainers { get; set; }
     
     private UserData _userData = null;
 
@@ -34,7 +34,7 @@ namespace Windowmancer.Core.Models
     {
       RegisterProperty<string>("Name");
       RegisterProperty<bool>("IsActive");
-      this.Containers = new ObservableCollection<HostContainerConfig>();
+      this.HostContainers = new ObservableCollection<HostContainerConfig>();
     }
 
     /// <summary>
@@ -59,7 +59,7 @@ namespace Windowmancer.Core.Models
         Name = this.Name,
         Id = this.Id,
         Windows =  this.Windows,
-        Containers = this.Containers
+        HostContainers = this.HostContainers
       };
     }
   }
