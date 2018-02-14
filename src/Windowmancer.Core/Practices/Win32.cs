@@ -31,7 +31,7 @@ namespace Windowmancer.Core.Practices
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct Win32_WindowInfo
+    public struct Win32_WindowConfig
     {
       public uint cbSize;
       public Win32.Win32_Rect rcWindow;
@@ -44,10 +44,10 @@ namespace Windowmancer.Core.Practices
       public ushort atomWindowType;
       public ushort wCreatorVersion;
 
-      public Win32_WindowInfo(bool? filler)
-       : this()   // Allows automatic initialization of "cbSize" with "new Win32_WindowInfo(null/true/false)".
+      public Win32_WindowConfig(bool? filler)
+       : this()   // Allows automatic initialization of "cbSize" with "new Win32_WindowConfig(null/true/false)".
       {
-        cbSize = (uint)(Marshal.SizeOf(typeof(Win32_WindowInfo)));
+        cbSize = (uint)(Marshal.SizeOf(typeof(Win32_WindowConfig)));
       }
     }
 
@@ -72,7 +72,7 @@ namespace Windowmancer.Core.Practices
 
     [DllImport("user32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    public static extern bool GetWindowInfo(IntPtr hwnd, ref Win32_WindowInfo pwi);
+    public static extern bool GetWindowConfig(IntPtr hwnd, ref Win32_WindowConfig pwi);
 
     [DllImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
@@ -237,10 +237,10 @@ namespace Windowmancer.Core.Practices
     /// <returns></returns>
     public static Win32.Win32_Rect GetProcessWindowRec(Process process)
     {
-      var info = new Win32.Win32_WindowInfo();
+      var info = new Win32.Win32_WindowConfig();
       var rec = new Win32.Win32_Rect();
 
-      Win32.GetWindowInfo(process.MainWindowHandle, ref info);
+      Win32.GetWindowConfig(process.MainWindowHandle, ref info);
       rec = info.rcWindow;
 
       if (!Win32.IsIconic(process.MainWindowHandle))

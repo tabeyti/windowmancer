@@ -31,7 +31,7 @@ namespace Windowmancer.Tests.Tests
       var windowManager = ServiceResolver.Resolve<MonitorWindowManager>();
 
       var originalProfile = profileManager.ActiveProfile;
-      profileManager.AddNewProfile(TestHelper.CreateNewProfile(new List<WindowInfo>()));
+      profileManager.AddNewProfile(TestHelper.CreateNewProfile(new List<WindowConfig>()));
 
       Assert.NotEqual(originalProfile, profileManager.ActiveProfile);
       Assert.NotEqual(originalProfile.Id, profileManager.ActiveProfile.Id);
@@ -46,7 +46,7 @@ namespace Windowmancer.Tests.Tests
       var windowManager = ServiceResolver.Resolve<MonitorWindowManager>();
 
       // Add another profile so we have and save the one we added as the original.
-      profileManager.AddNewProfile(TestHelper.CreateNewProfile(new List<WindowInfo>()));
+      profileManager.AddNewProfile(TestHelper.CreateNewProfile(new List<WindowConfig>()));
       var originalProfile = profileManager.ActiveProfile;
 
       // Update active profile to the first profile.
@@ -65,7 +65,7 @@ namespace Windowmancer.Tests.Tests
       var profileManager = ServiceResolver.Resolve<ProfileManager>();
       var windowManager = ServiceResolver.Resolve<MonitorWindowManager>();
 
-      profileManager.AddNewProfile(TestHelper.CreateNewProfile(new List<WindowInfo>()));
+      profileManager.AddNewProfile(TestHelper.CreateNewProfile(new List<WindowConfig>()));
       var firstProfile = profileManager.Profiles.First();
       profileManager.DeleteActiveProfile();
 

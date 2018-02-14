@@ -13,25 +13,25 @@ using Windowmancer.Core.Services.Base;
 namespace Windowmancer.UI
 {
   /// <summary>
-  /// Interaction logic for WindowHostContainer.xaml
+  /// Interaction logic for HostContainer.xaml
   /// </summary>
-  public partial class WindowHostContainer : IToastHost
+  public partial class HostContainer : IToastHost
   {
     public int CurrentRowIndex { get; private set; }
     public int CurrentColumnIndex { get; private set; }
-    public WindowContainer WindowContainer { get; set; }
+    public HostContainerConfig WindowContainer { get; set; }
 
     private static readonly int _titlebarHeight = (int)SystemParameters.WindowCaptionHeight + 10;
 
-    public WindowHostContainer(WindowContainer windowContiner)
+    public HostContainer(HostContainerConfig windowContiner)
     {
       this.WindowContainer = windowContiner;
       InitializeComponent();
     }
 
-    public WindowHostContainer()
+    public HostContainer()
     {
-      this.WindowContainer = new WindowContainer("Default", 1, 1);
+      this.WindowContainer = new HostContainerConfig("Default", 1, 1);
       Initialize();
     }
 
@@ -156,7 +156,7 @@ namespace Windowmancer.UI
 
       var flyout = this.Flyouts.Items[0] as Flyout;
       if (flyout == null) return;
-      var hostContainerHelper = new HostContainerHelper(
+      var hostContainerHelper = new HostContainerConfigEditor(
         this.WindowContainer, 
         new SizeInfo((int)this.ActualWidth, (int)this.ActualHeight))
       { 
@@ -177,7 +177,7 @@ namespace Windowmancer.UI
       flyout.IsOpen = true;
     }
 
-    private void WindowHostContainer_OnLoaded(object sender, RoutedEventArgs e)
+    private void HostContainer_OnLoaded(object sender, RoutedEventArgs e)
     {
     }
 

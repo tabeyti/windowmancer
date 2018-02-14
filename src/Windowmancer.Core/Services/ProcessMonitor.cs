@@ -75,7 +75,7 @@ namespace Windowmancer.Core.Services
         return;
       }
       AddToActiveWindows(proc);
-      _monitorWindowManager.ApplyWindowInfo(proc, true);
+      _monitorWindowManager.ApplyWindowConfig(proc, true);
     }
 
     private void StopWatch_EventArrived(object sender, EventArrivedEventArgs e)

@@ -112,7 +112,7 @@ namespace Windowmancer.Core.Services
     /// </summary>
     /// <param name="container">The container to add.</param>
     /// <returns>True of container was added. False if not.</returns>
-    public bool AddToActiveProfile(WindowContainer container)
+    public bool AddToActiveProfile(HostContainerConfig container)
     {
       if (null == container)
       {
@@ -134,7 +134,7 @@ namespace Windowmancer.Core.Services
     /// </summary>
     /// <param name="info"></param>
     /// <returns>True of window info was added. False if not.</returns>
-    public bool AddToActiveProfile(WindowInfo info)
+    public bool AddToActiveProfile(WindowConfig info)
     {
       if (null == info)
       {
@@ -150,7 +150,7 @@ namespace Windowmancer.Core.Services
     /// list of window info objects.
     /// </summary>
     /// <param name="info"></param>
-    public void RemoveFromActiveProfile(WindowInfo info)
+    public void RemoveFromActiveProfile(WindowConfig info)
     {
       if (null == info)
       {

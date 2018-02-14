@@ -63,27 +63,27 @@ namespace Windowmancer.Tests.Practices
     }
 
     private static uint _profileIncrement = 1;
-    public static Profile CreateNewProfile(List<WindowInfo> windowInfos = null)
+    public static Profile CreateNewProfile(List<WindowConfig> WindowConfigs = null)
     {
-      windowInfos = windowInfos ?? new List<WindowInfo> {CreateNewWindowInfo()};
+      WindowConfigs = WindowConfigs ?? new List<WindowConfig> {CreateNewWindowConfig()};
       var profile = new Profile
       {
         Id = Guid.NewGuid().ToString(),
         IsActive = true,
         Name = $"TestProfile_{_profileIncrement++}",
-        Windows = new ObservableCollection<WindowInfo>()
+        Windows = new ObservableCollection<WindowConfig>()
       };
-      windowInfos.ForEach(w => profile.Windows.Add(w));
+      WindowConfigs.ForEach(w => profile.Windows.Add(w));
       return profile;
     }
 
-    public static WindowInfo CreateNewWindowInfo(string name = null)
+    public static WindowConfig CreateNewWindowConfig(string name = null)
     {
       name = name ?? CreateWindowTitle();
       var sizeVal = _modifyLayoutRand.Next(200, 500);
       var posVal = _modifyLayoutRand.Next(0, 1024);
 
-      return new WindowInfo
+      return new WindowConfig
       {
         Name = name,
         ApplyOnProcessStart = true,

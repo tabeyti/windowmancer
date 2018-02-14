@@ -97,7 +97,7 @@
     <Compile Include="Extensions\CollectionExtensions.cs" />
     <Compile Include="Extensions\ObservableCollectionExtensions.cs" />
     <Compile Include="Models\Base\DisplaySectionBase.cs" />
-    <Compile Include="Models\WindowContainer.cs" />
+    <Compile Include="Models\HostContainerConfig.cs" />
     <Compile Include="Models\DockableWindow.cs" />
     <Compile Include="Models\EditorViewModel.cs" />
     <Compile Include="Models\ExceptionBox.cs" />
@@ -107,7 +107,7 @@
     <Compile Include="Models\PropertyNotifyBase.cs" />
     <Compile Include="Models\DisplayAspectRatio.cs" />
     <Compile Include="Models\UserData.cs" />
-    <Compile Include="Models\WindowInfo.cs" />
+    <Compile Include="Models\WindowConfig.cs" />
     <Compile Include="Models\WindowMatchCriteria.cs" />
     <Compile Include="Practices\Helper.cs" />
     <Compile Include="Practices\Win32.cs" />

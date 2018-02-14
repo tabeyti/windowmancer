@@ -15,7 +15,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
-using System.Windows.Media;
 using MenuItem = System.Windows.Controls.MenuItem;
 using Windowmancer.Core.Services.Base;
 
@@ -29,8 +28,8 @@ namespace Windowmancer.UI
     public ProfileManager ProfileManager { get; }
     public ProcessMonitor ProcMonitor { get; }
 
-    private readonly Dictionary<string, WindowHostContainer> _windowHostContainers = 
-      new Dictionary<string, WindowHostContainer>();
+    private readonly Dictionary<string, HostContainer> _windowHostContainers = 
+      new Dictionary<string, HostContainer>();
 
     private readonly MonitorWindowManager _monitorWindowManager;
     private readonly KeyHookManager _keyHookManager;
@@ -122,13 +121,13 @@ namespace Windowmancer.UI
       var flyout = (Flyout)this.FindName("BottomFlyout");
       if (null == flyout)
       {
-        throw new Exception("HandleProfileConfigEdit - No flyout available at index 1");
+        throw new Exception("HandleProfileEdit - No flyout available at index 1");
       }
       this.InfoMessageLabel.Text = message;
       flyout.IsOpen = true;
     }
 
-    private void HandleProfileConfigEdit(Profile profile = null)
+    private void HandleProfileEdit(Profile profile = null)
     {
       var flyout = (Flyout)this.FindName("LeftFlyout");
       if (null == flyout)
@@ -136,11 +135,11 @@ namespace Windowmancer.UI
         throw new Exception("Could not locate flyout LeftFlyout.");
       }
       
-      ProfileConfig content;
+      ProfileEditor content;
       if (null == profile)
       {
         flyout.Header = "Add Profile";
-        content = new ProfileConfig((p) => 
+        content = new ProfileEditor((p) => 
         {
           ProfileManager.AddNewProfile(p);
           this.ProfileListBox.SelectedItem = p;
@@ -151,7 +150,7 @@ namespace Windowmancer.UI
       else
       {
         flyout.Header = "Edit Profile";
-        content = new ProfileConfig(profile, (p) =>
+        content = new ProfileEditor(profile, (p) =>
         {
           profile.Update(p);
           ShowItemMessageToast(p.Name, "Profile updated.");
@@ -162,53 +161,22 @@ namespace Windowmancer.UI
       flyout.IsOpen = true;
     }
 
-    private void HandleContainerConfigEdit(WindowContainer container = null)
+    private void HandleContainerConfigEdit(HostContainerConfig container = null)
     {
-      var flyout = (Flyout)this.FindName("LeftFlyout");
-      if (null == flyout)
-      {
-        throw new Exception("HandleContainerConfigEdit - No flyout available.");
-      }
-
-      ContainerConfig content;
-      if (null == container)
-      {
-        flyout.Header = "Add Container";
-        content = new ContainerConfig((c) =>
-        {
-          if (!this.ProfileManager.AddToActiveProfile(c))
-          {
-            ShowErrorItemToast(c.Name, "Container already exists.");
-            return;
-          }
-          ShowItemMessageToast(c.Name, "Container added.");
-        });
-      }
-      else
-      {
-        flyout.Header = "Edit Container";
-        content = new ContainerConfig(container, (c) =>
-        {
-          ShowItemMessageToast(c.Name, "Container updated.");
-        });
-      }
-      content.OnClose = () => { flyout.IsOpen = false; };
-      flyout.Content = content;
-      flyout.IsOpen = true;
     }
 
-    private void HandleWindowConfigEdit(WindowInfo item = null)
+    private void HandleWindowConfigEdit(WindowConfig item = null)
     {
       var flyout = this.Flyouts.Items[0] as Flyout;
       if (flyout == null) return;
 
       var windowConfig = null == item ?
-        new WindowConfig(w =>
+        new WindowConfigEditor(w =>
         {
           ProfileManager.AddToActiveProfile(w);
           ShowItemMessageToast(w.Name, "window configuration added.");
         }) : 
-        new WindowConfig(item, (w) =>
+        new WindowConfigEditor(item, (w) =>
         {
           item.Update(w);
           ShowItemMessageToast(w.Name, "window configuration updated");
@@ -226,7 +194,7 @@ namespace Windowmancer.UI
       {
         return;
       }
-      var windowConfig = new WindowConfig(item, c =>
+      var windowConfig = new WindowConfigEditor(item, c =>
       {
         ProfileManager.AddToActiveProfile(c);
         ShowItemMessageToast(c.Name, "added to window configuration list.");
@@ -277,7 +245,7 @@ namespace Windowmancer.UI
     private void MonitorWindowConfigDataGrid_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
     {
       if (this.MonitorWindowConfigDataGrid.SelectedItem == null) return;
-      var item = (WindowInfo)MonitorWindowConfigDataGrid.SelectedItem;
+      var item = (WindowConfig)MonitorWindowConfigDataGrid.SelectedItem;
       HandleWindowConfigEdit(item);
     }
 
@@ -290,18 +258,18 @@ namespace Windowmancer.UI
 
     private void MonitorWindowConfigDataGrid_MenuItemClick(object sender, RoutedEventArgs e)
     {
-      WindowInfo item = null;
+      WindowConfig item = null;
       switch ((string) ((MenuItem) sender).Header)
       {
         case "Add":
           HandleWindowConfigEdit();
           break;
         case "Edit":
-          item = (WindowInfo)MonitorWindowConfigDataGrid.SelectedItem;
+          item = (WindowConfig)MonitorWindowConfigDataGrid.SelectedItem;
           HandleWindowConfigEdit(item);
           break;
         case "Delete":
-          item = (WindowInfo)MonitorWindowConfigDataGrid.SelectedItem;
+          item = (WindowConfig)MonitorWindowConfigDataGrid.SelectedItem;
           ProfileManager.RemoveFromActiveProfile(item);
           ShowItemMessageToast(item.Name, "window configuration deleted.");
           break;
@@ -321,11 +289,11 @@ namespace Windowmancer.UI
       switch (menuItem.Header as string)
       {
         case "Add":
-          HandleProfileConfigEdit();
+          HandleProfileEdit();
           break;
         case "Edit":
           var item = (Profile)this.ProfileListBox.SelectedItem;
-          HandleProfileConfigEdit(item);
+          HandleProfileEdit(item);
           break;
         case "Delete":
           ShowItemMessageToast(this.ProfileManager.ActiveProfile.Name, "profile deleted.");
@@ -348,7 +316,7 @@ namespace Windowmancer.UI
     private void ProfileListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
     {
       var item = (Profile)this.ProfileListBox.SelectedItem;
-      HandleProfileConfigEdit(item);
+      HandleProfileEdit(item);
     }
 
     private void Preferences_Click(object sender, RoutedEventArgs e)
@@ -386,7 +354,7 @@ namespace Windowmancer.UI
       });
     }
     
-    private static WindowHostContainer _windowHostContainer = null;
+    private static HostContainer _windowHostContainer = null;
     private void ActiveWindowsDataGrid_ContainerizeClick(object sender, RoutedEventArgs e)
     {
       if (this.ActiveWindowsDataGrid.SelectedItem == null) return;
@@ -394,10 +362,10 @@ namespace Windowmancer.UI
       
       if (_windowHostContainer == null)
       {
-        //_windowHostContainer = new WindowHostContainer("ham", 2, 2);
-        //_windowHostContainer.Show();
+        _windowHostContainer = new HostContainer(new HostContainerConfig("pickles", 3, 3));
+        _windowHostContainer.Show();
       }
-      //_windowHostContainer.DockProc(process);
+      _windowHostContainer.DockProc(process);
     }
     
     // TODO: Debug
@@ -428,7 +396,7 @@ namespace Windowmancer.UI
           HandleContainerConfigEdit();
           break;
         case "Edit":
-          var item = (WindowContainer)this.WindowContainersListBox.SelectedItem;
+          var item = (HostContainerConfig)this.WindowContainersListBox.SelectedItem;
           HandleContainerConfigEdit(item);
           break;
         case "Delete":
@@ -439,18 +407,18 @@ namespace Windowmancer.UI
 
     private void ContainerWindowConfig_MenuItemClick(object sender, RoutedEventArgs e)
     {
-      WindowInfo item = null;
+      WindowConfig item = null;
       switch ((string)((MenuItem)sender).Header)
       {
         case "Add":
           //HandleWindowConfigEdit();
           break;
         case "Edit":
-          item = (WindowInfo)ContainerWindowConfigDataGrid.SelectedItem;
+          item = (WindowConfig)ContainerWindowConfigDataGrid.SelectedItem;
           //HandleWindowConfigEdit(item);
           break;
         case "Delete":
-          item = (WindowInfo)ContainerWindowConfigDataGrid.SelectedItem;
+          item = (WindowConfig)ContainerWindowConfigDataGrid.SelectedItem;
           //ProfileManager.RemoveFromActiveProfile(item);
           //ShowItemMessageToast(item.Name, "window configuration deleted.");
           break;
@@ -459,13 +427,13 @@ namespace Windowmancer.UI
 
     private void MonitorWindowConfigList_OnFilter(object sender, FilterEventArgs e)
     {
-      var item = (WindowInfo) e.Item;
+      var item = (WindowConfig) e.Item;
       e.Accepted = item.MonitorLayoutInfo != null;
     }
 
     private void ContainerWindowConfigCollectionView_OnFilter(object sender, FilterEventArgs e)
     {
-      var item = (WindowInfo)e.Item;
+      var item = (WindowConfig)e.Item;
       e.Accepted = item.MonitorLayoutInfo == null;
     }
   }

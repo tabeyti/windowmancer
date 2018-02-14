@@ -1,4 +1,4 @@
-﻿<Controls:MetroWindow x:Class="Windowmancer.UI.WindowHostContainer"
+﻿<Controls:MetroWindow x:Class="Windowmancer.UI.HostContainer"
                       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,7 +8,7 @@
                       ShowTitleBar="True"
                       Title="{Binding WindowContainer.Name}"
                       mc:Ignorable="d"
-                      Loaded="WindowHostContainer_OnLoaded"
+                      Loaded="HostContainer_OnLoaded"
                       DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
   <Controls:MetroWindow.Flyouts>

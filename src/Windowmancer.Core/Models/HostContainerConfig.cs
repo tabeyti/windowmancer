@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace Windowmancer.Core.Models
 {
-  public class WindowContainer : PropertyNotifyBase, ICloneable
+  public class HostContainerConfig : PropertyNotifyBase, ICloneable
   {
     public string Name
     {
@@ -32,7 +32,7 @@ namespace Windowmancer.Core.Models
       set => SetProperty(value);
     }
 
-    public WindowContainer()
+    public HostContainerConfig()
     {
       RegisterProperty("Name", "");
       RegisterProperty("Rows", 1);
@@ -40,7 +40,7 @@ namespace Windowmancer.Core.Models
       RegisterProperty("DockedWindows", new ObservableCollection<DockableWindow>());
     }
 
-    public WindowContainer(string name)
+    public HostContainerConfig(string name)
     {
       RegisterProperty("Name", name);
       RegisterProperty("Rows", 1);
@@ -48,7 +48,7 @@ namespace Windowmancer.Core.Models
       RegisterProperty("DockedWindows", new ObservableCollection<DockableWindow>());
     }
 
-    public WindowContainer(Screen screen)
+    public HostContainerConfig(Screen screen)
     {
       RegisterProperty("Name", screen.DeviceName);
       RegisterProperty("Width", screen.Bounds.Width);
@@ -58,7 +58,7 @@ namespace Windowmancer.Core.Models
       RegisterProperty("DockedWindows", new ObservableCollection<DockableWindow>());
     }
 
-    public WindowContainer(string name, int rows, int columns)
+    public HostContainerConfig(string name, int rows, int columns)
     {
       RegisterProperty("Name", name);
       RegisterProperty("Rows", rows);
@@ -68,7 +68,7 @@ namespace Windowmancer.Core.Models
 
     public object Clone()
     {
-      var dc = new WindowContainer(this.Name);
+      var dc = new HostContainerConfig(this.Name);
       foreach (var d in this.DockedWindows)
       {
         dc.DockedWindows.Add(d.Clone() as DockableWindow);

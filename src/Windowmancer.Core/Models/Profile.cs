@@ -15,9 +15,9 @@ namespace Windowmancer.Core.Models
       set => SetProperty(value);
     }
     public string Id { get; set; }
-    public ObservableCollection<WindowInfo> Windows { get; set; }
+    public ObservableCollection<WindowConfig> Windows { get; set; }
 
-    public ObservableCollection<WindowContainer> Containers { get; set; }
+    public ObservableCollection<HostContainerConfig> Containers { get; set; }
     
     private UserData _userData = null;
 
@@ -34,7 +34,7 @@ namespace Windowmancer.Core.Models
     {
       RegisterProperty<string>("Name");
       RegisterProperty<bool>("IsActive");
-      this.Containers = new ObservableCollection<WindowContainer>();
+      this.Containers = new ObservableCollection<HostContainerConfig>();
     }
 
     /// <summary>

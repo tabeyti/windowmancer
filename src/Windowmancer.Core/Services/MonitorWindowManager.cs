@@ -30,13 +30,13 @@ namespace Windowmancer.Core.Services
     /// </summary>
     /// <param name="process"></param>
     /// <param name="newProcess"></param>
-    public void ApplyWindowInfo(Process process, bool newProcess = false)
+    public void ApplyWindowConfig(Process process, bool newProcess = false)
     {
       var windowInfo = ActiveProfile?.Windows.Find(p => p.IsMatch(process));
       if (windowInfo == null) return;
       if (!newProcess || windowInfo.ApplyOnProcessStart)
       {
-        ApplyWindowInfo(windowInfo, process);
+        ApplyWindowConfig(windowInfo, process);
       }
     }
 
@@ -46,7 +46,7 @@ namespace Windowmancer.Core.Services
     /// </summary>
     /// <param name="windowInfo"></param>
     /// <param name="process"></param>
-    public void ApplyWindowInfo(WindowInfo windowInfo, Process process)
+    public void ApplyWindowConfig(WindowConfig windowInfo, Process process)
     {
       var handle = process.MainWindowHandle;
       if (handle == IntPtr.Zero)
@@ -82,7 +82,7 @@ namespace Windowmancer.Core.Services
         }
         var windowInfo = this.ActiveProfile.Windows.Find(pr => pr.IsMatch(p));
         if (null == windowInfo) continue;
-        ApplyWindowInfo(windowInfo, p);
+        ApplyWindowConfig(windowInfo, p);
       }
     }
 
@@ -94,7 +94,7 @@ namespace Windowmancer.Core.Services
     /// </summary>
     /// <param name="windowInfo"></param>
     /// <returns></returns>
-    public static Process GetProcess(WindowInfo windowInfo)
+    public static Process GetProcess(WindowConfig windowInfo)
     {
       if (null == windowInfo)
       {

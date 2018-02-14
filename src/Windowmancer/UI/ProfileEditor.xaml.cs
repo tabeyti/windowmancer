@@ -1,33 +1,35 @@
 using System;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using Windowmancer.Core.Models;
 
 namespace Windowmancer.UI
 {
   /// <summary>
-  /// Configuration dialog for the window host container.
+  /// Interaction logic for ProfileConfig.xaml
   /// </summary>
-  public partial class ContainerConfig : UserControl
+  public partial class ProfileEditor : UserControl
   {
     public Action OnClose { get; set; }
 
-    public Action<WindowContainer> OnSave { get; set; }
+    public Action<Profile> OnSave { get; set; }
 
-    public WindowContainer Container { get; set; }
+    public Profile Profile { get; set; }
 
-    public ContainerConfig(Action<WindowContainer> onSave)
+    public ProfileEditor(Action<Profile> onSave)
     {
       this.OnSave = onSave;
       PreInitialize();
       InitializeComponent();
     }
 
-    public ContainerConfig(WindowContainer container, Action<WindowContainer> onSave)
+    public ProfileEditor(Profile profile, Action<Profile> onSave)
     {
       this.OnSave = onSave;
-      this.Container = (WindowContainer)container.Clone();
+      this.Profile = (Profile)profile.Clone();
       PreInitialize();
       InitializeComponent();
       Initialize();
@@ -35,14 +37,19 @@ namespace Windowmancer.UI
 
     private void PreInitialize()
     {
-      if (null == this.Container)
+      if (null == this.Profile)
       {
-        this.Container = new WindowContainer();
+        this.Profile = new Profile
+        {
+          Id = Guid.NewGuid().ToString(),
+          Name = "",
+          Windows = new ObservableCollection<WindowConfig>()
+        };
       }
     }
     private void Initialize()
     {
-      this.ContainerNameTextBox.Text = this.Container.Name;
+      this.ProfileNameTextBox.Text = this.Profile.Name;
     }
 
     private void Close()
@@ -50,18 +57,18 @@ namespace Windowmancer.UI
       var window = Window.GetWindow(this);
       if (window == null)
       {
-        throw new Exception($"{this} - Could locate active window to unbind the KeyDown listener.");
+        throw new Exception("ProfileConfig - Could locate active window to unbind the KeyDown listener.");
       }
       window.KeyDown -= ProfileConfig_HandleKeyPress;
       OnClose?.Invoke();
     }
 
-    private void ContainerConfig_OnLoaded(object sender, RoutedEventArgs e)
+    private void ProfileEditor_OnLoaded(object sender, RoutedEventArgs e)
     {
       var window = Window.GetWindow(this);
       if (window == null)
       {
-        throw new Exception($"{this} - Could locate active window to bind the KeyDown listener.");
+        throw new Exception("ProfileConfig - Could locate active window to bind the KeyDown listener.");
       }
       window.KeyDown += ProfileConfig_HandleKeyPress;
     }
@@ -83,7 +90,7 @@ namespace Windowmancer.UI
     private void OkayButton_Click(object sender, RoutedEventArgs e)
     {
       ForceDataValidation();
-      OnSave?.Invoke(this.Container);
+      OnSave?.Invoke(this.Profile);
       Close();
     }
 
@@ -93,10 +100,13 @@ namespace Windowmancer.UI
     private static void ForceDataValidation()
     {
       var textBox = Keyboard.FocusedElement as TextBox;
-      var be = textBox?.GetBindingExpression(TextBox.TextProperty);
-      if (be != null && !textBox.IsReadOnly && textBox.IsEnabled)
+      if (textBox != null)
       {
-        be.UpdateSource();
+        BindingExpression be = textBox.GetBindingExpression(TextBox.TextProperty);
+        if (be != null && !textBox.IsReadOnly && textBox.IsEnabled)
+        {
+          be.UpdateSource();
+        }
       }
     }
   }

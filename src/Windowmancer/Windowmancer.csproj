@@ -168,8 +168,8 @@
     </Compile>
     <Compile Include="UI\Converters\EnumBooleanConverter.cs" />
     <Compile Include="UI\Converters\StringTruncateConverter.cs" />
-    <Compile Include="UI\HostContainerHelper.xaml.cs">
-      <DependentUpon>HostContainerHelper.xaml</DependentUpon>
+    <Compile Include="UI\HostContainerConfigEditor.xaml.cs">
+      <DependentUpon>HostContainerConfigEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\HotKeyInputBox.xaml.cs">
       <DependentUpon>HotKeyInputBox.xaml</DependentUpon>
@@ -177,23 +177,20 @@
     <Compile Include="UI\LabelTextBox.xaml.cs">
       <DependentUpon>LabelTextBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\ContainerConfig.xaml.cs">
-      <DependentUpon>ContainerConfig.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\ProfileConfig.xaml.cs">
-      <DependentUpon>ProfileConfig.xaml</DependentUpon>
+    <Compile Include="UI\ProfileEditor.xaml.cs">
+      <DependentUpon>ProfileEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\PreferencesDialog.xaml.cs">
       <DependentUpon>PreferencesDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\WindowConfig.xaml.cs">
-      <DependentUpon>WindowConfig.xaml</DependentUpon>
+    <Compile Include="UI\WindowConfigEditor.xaml.cs">
+      <DependentUpon>WindowConfigEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\WindowHighlight.xaml.cs">
       <DependentUpon>WindowHighlight.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\WindowHostContainer.xaml.cs">
-      <DependentUpon>WindowHostContainer.xaml</DependentUpon>
+    <Compile Include="UI\HostContainer.xaml.cs">
+      <DependentUpon>HostContainer.xaml</DependentUpon>
     </Compile>
     <Page Include="UI\AboutDialog.xaml">
       <SubType>Designer</SubType>
@@ -215,7 +212,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\HostContainerHelper.xaml">
+    <Page Include="UI\HostContainerConfigEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -239,11 +236,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\ContainerConfig.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UI\ProfileConfig.xaml">
+    <Page Include="UI\ProfileEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -255,7 +248,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\WindowConfig.xaml">
+    <Page Include="UI\WindowConfigEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -263,7 +256,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\WindowHostContainer.xaml">
+    <Page Include="UI\HostContainer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

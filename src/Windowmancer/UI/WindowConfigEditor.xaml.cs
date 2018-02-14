@@ -18,24 +18,24 @@ using ButtonBase = System.Windows.Controls.Primitives.ButtonBase;
 namespace Windowmancer.UI
 {
   /// <summary>
-  /// Interaction logic for WindowConfigDialog.xaml
+  /// Interaction logic for WindowConfigEditor.xaml
   /// </summary>
   /// 
-  public partial class WindowConfig
+  public partial class WindowConfigEditor
   {
     public Action OnClose;
 
-    public Action<WindowInfo> OnSave;
+    public Action<WindowConfig> OnSave;
 
     // Binding objects.
     public bool DisplayHelperPreview { get; set; }
     public bool WindowStylingPreview { get; set; }
     public DisplayAspectRatio ScreenAspectRatio { get; set; }
-    public WindowInfo WindowInfo { get; set; }
+    public WindowConfig WindowInfo { get; set; }
     public MonitorLayoutInfo OriginalLayoutInfo { get; set; }
     public uint OriginalOpacity { get; set; }
     public ProfileManager ProfileManager { get; set; }
-    
+
     private static Screen _screen;
     private static DisplayHelperSection _displayHelperSection = new DisplayHelperSection();
     private WindowHighlight _windowHighlight;
@@ -44,7 +44,7 @@ namespace Windowmancer.UI
     private readonly List<Button> _displaySectionButtons = new List<Button>();
     private readonly SolidColorBrush _defaultBrush = Brushes.Turquoise;
 
-    public WindowConfig(Action<WindowInfo> onSave)
+    public WindowConfigEditor(Action<WindowConfig> onSave)
     {
       this.OnSave = onSave;
       PreInitialization();
@@ -52,16 +52,16 @@ namespace Windowmancer.UI
       Initialize();
     }
 
-    public WindowConfig(WindowInfo windowInfo, Action<WindowInfo> onSave)
+    public WindowConfigEditor(WindowConfig windowInfo, Action<WindowConfig> onSave)
     {
       this.OnSave = onSave;
-      this.WindowInfo = (WindowInfo)windowInfo?.Clone();
+      this.WindowInfo = (WindowConfig)windowInfo?.Clone();
       PreInitialization();
       InitializeComponent();
       Initialize();
     }
 
-    public WindowConfig(Process process, Action<WindowInfo> onSave)
+    public WindowConfigEditor(Process process, Action<WindowConfig> onSave)
     {
       this.OnSave = onSave;
       _process = process;
@@ -80,18 +80,18 @@ namespace Windowmancer.UI
       this.ProfileManager = App.ServiceResolver.Resolve<ProfileManager>();
       if (_process != null)
       {
-        this.WindowInfo = WindowInfo.FromProcess(_process);
+        this.WindowInfo = WindowConfig.FromProcess(_process);
       }
       else
       {
-        this.WindowInfo = this.WindowInfo?? new WindowInfo();
+        this.WindowInfo = this.WindowInfo ?? new WindowConfig();
         _process = MonitorWindowManager.GetProcess(this.WindowInfo);
       }
     }
 
     private void Initialize()
     {
-      EnableDisableLayoutHelper(false); 
+      EnableDisableLayoutHelper(false);
       this.RowSpinner.ValueChanged += RowColSpinners_ValueChanged;
       this.ColumnSpinner.ValueChanged += RowColSpinners_ValueChanged;
 
@@ -100,7 +100,7 @@ namespace Windowmancer.UI
       _screen = _screen ?? Screen.PrimaryScreen;
       this.DisplayListBox.SelectedItem = _screen;
     }
-    
+
     private void ClearDisplaySectionPanel()
     {
       this.DisplayPanelGrid.Children.RemoveRange(0, this.DisplayPanelGrid.Children.Count);
@@ -121,7 +121,7 @@ namespace Windowmancer.UI
             Foreground = Brushes.Black,
             Style = (Style)FindResource("SquareButtonStyle"),
             IsEnabled = true
-        };
+          };
           button.Click += DisplaySection2_OnClick;
           button.Tag = new DisplayHelperSection
           {
@@ -138,12 +138,12 @@ namespace Windowmancer.UI
 
       var dsb = _displaySectionButtons.Find(d =>
       {
-        var ds = (DisplayHelperSection) d.Tag;
+        var ds = (DisplayHelperSection)d.Tag;
         return ds.ColumnIndex == _displayHelperSection.ColumnIndex &&
                ds.RowIndex == _displayHelperSection.RowIndex;
       }) ?? _displaySectionButtons.First();
 
-      _displayHelperSection = (DisplayHelperSection) dsb.Tag;
+      _displayHelperSection = (DisplayHelperSection)dsb.Tag;
 
       // Select first button.
       dsb.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
@@ -238,7 +238,7 @@ namespace Windowmancer.UI
       _windowHighlight?.Close();
       _windowHighlight = null;
     }
-    
+
     private void EnableDisableLayoutHelper(bool enable)
     {
       if (enable)
@@ -250,7 +250,7 @@ namespace Windowmancer.UI
         RecreateDisplaySectionControl(_displayHelperSection.TotalRows, _displayHelperSection.TotalColumns);
         return;
       }
-      
+
       ClearDisplaySectionPanel();
       if (this.WindowLayoutPreviewCheckBox.IsChecked.Value)
       {
@@ -258,7 +258,7 @@ namespace Windowmancer.UI
         DisableScreenHighlight();
       }
     }
-    
+
     private void Close()
     {
       // Uncheck previews, restoring old window values.
@@ -268,9 +268,9 @@ namespace Windowmancer.UI
       var window = Window.GetWindow(this);
       if (window == null)
       {
-        throw new Exception("WindowConfig - Could locate active window to unbind the KeyDown listener.");
+        throw new Exception("WindowConfigEditor - Could locate active window to unbind the KeyDown listener.");
       }
-      window.KeyDown -= WindowConfig_HandleKeyPress;
+      window.KeyDown -= WindowConfigEditor_HandleKeyPress;
       _windowHighlight?.Close();
       OnClose?.Invoke();
     }
@@ -292,12 +292,12 @@ namespace Windowmancer.UI
       if (_screen.Bounds.Height > _screen.Bounds.Width)
       {
         this.DisplayPanel.Height = this.DisplayPanel.MaxHeight;
-        this.DisplayPanel.Width = this.DisplayPanel.MaxHeight * (this.ScreenAspectRatio.XRatio/this.ScreenAspectRatio.YRatio);
+        this.DisplayPanel.Width = this.DisplayPanel.MaxHeight * (this.ScreenAspectRatio.XRatio / this.ScreenAspectRatio.YRatio);
       }
       else
       {
         this.DisplayPanel.Width = this.DisplayPanel.MaxWidth;
-        this.DisplayPanel.Height = this.DisplayPanel.MaxWidth * (this.ScreenAspectRatio.YRatio/ this.ScreenAspectRatio.XRatio);
+        this.DisplayPanel.Height = this.DisplayPanel.MaxWidth * (this.ScreenAspectRatio.YRatio / this.ScreenAspectRatio.XRatio);
       }
       UpdateScreenHighlight();
     }
@@ -313,14 +313,14 @@ namespace Windowmancer.UI
     {
       Close();
     }
-    
+
     private void WindowLayoutPreviewCheckBox_OnChecked(object sender, RoutedEventArgs e)
     {
       if (this.DisplayHelperPreview)
       {
         (_process != null).RunIfTrue(() =>
         {
-          this.OriginalLayoutInfo = WindowInfo.FromProcess(_process).MonitorLayoutInfo;
+          this.OriginalLayoutInfo = WindowConfig.FromProcess(_process).MonitorLayoutInfo;
         });
         UpdateScreenHighlight();
         return;
@@ -330,21 +330,21 @@ namespace Windowmancer.UI
       (_process != null).RunIfTrue(() =>
       {
         MonitorWindowManager.ApplyWindowLayout(this.OriginalLayoutInfo, _process);
-      }); 
+      });
       DisableScreenHighlight();
     }
 
-    private void WindowConfig_OnLoaded(object sender, RoutedEventArgs e)
+    private void WindowConfigEditor_OnLoaded(object sender, RoutedEventArgs e)
     {
       var window = Window.GetWindow(this);
       if (window == null)
       {
-        throw new Exception("WindowConfig - Could locate active window to bind the KeyDown listener.");
+        throw new Exception("WindowConfigEditor - Could locate active window to bind the KeyDown listener.");
       }
-      window.KeyDown += WindowConfig_HandleKeyPress;
+      window.KeyDown += WindowConfigEditor_HandleKeyPress;
     }
 
-    private void WindowConfig_HandleKeyPress(object sender, System.Windows.Input.KeyEventArgs e)
+    private void WindowConfigEditor_HandleKeyPress(object sender, System.Windows.Input.KeyEventArgs e)
     {
       if (e.Key != Key.Escape)
       {
@@ -352,7 +352,7 @@ namespace Windowmancer.UI
       }
       Close();
     }
-    
+
     private void LayoutHelperExpander_OnExpanded(object sender, RoutedEventArgs e)
     {
       var expander = (sender as System.Windows.Controls.Expander);
@@ -395,7 +395,7 @@ namespace Windowmancer.UI
       if (this.WindowStylingPreview)
       {
         (_process != null).RunIfTrue(() => this.OriginalOpacity = MonitorWindowManager.GetWindowOpacityPercentage(_process));
-        MonitorWindowManager.SetWindowOpacityPercentage(_process, (uint) WindowOpacitySlider.Value);
+        MonitorWindowManager.SetWindowOpacityPercentage(_process, (uint)WindowOpacitySlider.Value);
       }
       else
       {

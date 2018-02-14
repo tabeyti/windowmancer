@@ -7,7 +7,7 @@ using Windowmancer.Core.Services;
 
 namespace Windowmancer.Core.Models
 {
-  public class WindowInfo : PropertyNotifyBase, ICloneable
+  public class WindowConfig : PropertyNotifyBase, ICloneable
   {
     public string Name
     {
@@ -47,7 +47,7 @@ namespace Windowmancer.Core.Models
 
     private UserData _userData;
 
-    public WindowInfo()
+    public WindowConfig()
     {
       RegisterProperty<string>("Name");
       RegisterProperty<string>("ApplyOnProcessStart");
@@ -70,7 +70,7 @@ namespace Windowmancer.Core.Models
 
     public object Clone()
     {
-      return new WindowInfo
+      return new WindowConfig
       {
         Name = this.Name,
         ApplyOnProcessStart = this.ApplyOnProcessStart,
@@ -85,7 +85,7 @@ namespace Windowmancer.Core.Models
     /// Updates the current instance with values held within the passed instance,
     /// saving to user data the changes.
     /// </summary>
-    public void Update(WindowInfo info)
+    public void Update(WindowConfig info)
     {
       this.Name = info.Name;
       this.ApplyOnProcessStart = info.ApplyOnProcessStart;
@@ -97,10 +97,10 @@ namespace Windowmancer.Core.Models
       _userData.Save();
     }
 
-    public static WindowInfo FromProcess(Process process)
+    public static WindowConfig FromProcess(Process process)
     {
       var procRec = Win32.GetProcessWindowRec(process);
-      return new WindowInfo
+      return new WindowConfig
       {
         Name = process.MainWindowTitle,
         MonitorLayoutInfo = new MonitorLayoutInfo(
