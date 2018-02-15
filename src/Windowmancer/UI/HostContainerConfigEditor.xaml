@@ -39,7 +39,7 @@
                               VerticalAlignment="Top" 
                               Height="Auto"
                               GotFocus="LabelTextBox_OnGotFocus"
-                              Text="{Binding HostContainerHelperViewModel.ActiveWindowContainer.Name}"/>      
+                              Text="{Binding HostContainerConfigEditorViewModel.ActiveHostContainerConfig.Name}"/>      
             <Grid HorizontalAlignment="Stretch" 
                   Margin="20"
                   VerticalAlignment="Top">
@@ -63,7 +63,7 @@
               <xctk:IntegerUpDown Name="RowSpinner" 
                                   Grid.Row="0" Grid.Column="1" 
                                   Foreground="White"
-                                  Value="{Binding HostContainerHelperViewModel.ActiveWindowContainer.Rows}"
+                                  Value="{Binding HostContainerConfigEditorViewModel.ActiveHostContainerConfig.Rows}"
                                   VerticalAlignment="Center"
                                   HorizontalAlignment="Left"
                                   Width="75"
@@ -79,7 +79,7 @@
                                   VerticalAlignment="Center"
                                   HorizontalAlignment="Left"
                                   Width="75"
-                                  Value="{Binding HostContainerHelperViewModel.ActiveWindowContainer.Columns}"
+                                  Value="{Binding HostContainerConfigEditorViewModel.ActiveHostContainerConfig.Columns}"
                                   Minimum="1"
                                   Maximum="10"/>
               <Button Name="SetDisplayHelperLayoutButton" 
@@ -102,8 +102,8 @@
           <ListBox Name="DockedWindowsListBox"
                    Style="{StaticResource MyListBox}"
                    ItemContainerStyle="{StaticResource MyListBoxItem}"
-                   SelectedItem="{Binding HostContainerHelperViewModel.ActiveDockableWindow}"
-                   ItemsSource="{Binding HostContainerHelperViewModel.ActiveWindowContainer.DockedWindows}">
+                   SelectedItem="{Binding HostContainerConfigEditorViewModel.ActiveDockableWindow}"
+                   ItemsSource="{Binding HostContainerConfigEditorViewModel.ActiveHostContainerConfig.DockedWindows}">
             <ListBox.ItemTemplate>
               <DataTemplate>
                 <Grid Margin="3,3">

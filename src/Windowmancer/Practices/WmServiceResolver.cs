@@ -7,6 +7,7 @@ using Windowmancer.Core.Configuration;
 using Windowmancer.Core.Models;
 using Windowmancer.Core.Practices;
 using Windowmancer.Core.Services;
+using Windowmancer.Services;
 
 namespace Windowmancer.Practices
 {

@@ -45,6 +45,7 @@
   <Controls:MetroWindow.Flyouts>
     <Controls:FlyoutsControl x:Name="FlyoutsControl">
       <Controls:Flyout Header="Window Configuration"
+                       Name="RightFlyout"
                        IsModal="True"
                        Position="Right"
                        CloseButtonVisibility="Collapsed"
@@ -231,14 +232,13 @@
                          ItemsSource="{Binding ProfileManager.ActiveProfile.HostContainers}">
                   <ListBox.Resources>
                     <ContextMenu x:Key="ContainerRowMenu">
-                      <MenuItem Header="Edit" Click="WindowContainers_MenuItemClick"></MenuItem>
-                      <MenuItem Header="Delete" Click="WindowContainers_MenuItemClick"></MenuItem>
+                      <MenuItem Header="Add" Click="HostContainersListBox_MenuItemClick"></MenuItem>
                     </ContextMenu>
                   </ListBox.Resources>
                   <ListBox.ContextMenu>
                     <ContextMenu>
-                      <MenuItem Header="Add" Click="WindowContainers_MenuItemClick"></MenuItem>
-                      <MenuItem Header="Edit" Click="WindowContainers_MenuItemClick"></MenuItem>
+                      <MenuItem Header="Edit" Click="HostContainersListBox_MenuItemClick"></MenuItem>
+                      <MenuItem Header="Delete" Click="HostContainersListBox_MenuItemClick"></MenuItem>
                     </ContextMenu>
                   </ListBox.ContextMenu>
                   <ListBox.ItemTemplate>
@@ -305,10 +305,13 @@
           <ContextMenu x:Key="RowMenu" 
                        ItemsSource="{Binding ActiveWindowsContextMenuItems}"
                        DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}">
-            <!--<MenuItem Header="Add" Click="ActiveWindowsDataGrid_MenuItemClick"></MenuItem>
+            <MenuItem Header="Add" Click="ActiveWindowsDataGrid_MenuItemClick"></MenuItem>
             <Separator/>
             <MenuItem Header="Highlight" Click="ActiveWindowsDataGrid_HighlightClick"></MenuItem>
-            <MenuItem Header="Containerize" Click="ActiveWindowsDataGrid_ContainerizeClick"></MenuItem>-->
+            <Separator/>
+            <MenuItem Header="Containerize" Click="ActiveWindowsDataGrid_ContainerizeClick">
+                      <!--ItemsSource="{Binding ProfileManager.ActiveProfile.HostContainers.Nam}">-->
+            </MenuItem>
           </ContextMenu>
         </DataGrid.Resources>
         <DataGrid.RowStyle>

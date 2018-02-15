@@ -7,6 +7,12 @@ namespace Windowmancer.Core.Models
 {
   public class HostContainerConfig : PropertyNotifyBase, ICloneable
   {
+    public string Id
+    {
+      get => GetProperty<string>();
+      set => SetProperty(value);
+    }
+
     public string Name
     {
       get => GetProperty<string>();
@@ -34,41 +40,50 @@ namespace Windowmancer.Core.Models
 
     public HostContainerConfig()
     {
-      RegisterProperty("Name", "");
-      RegisterProperty("Rows", 1);
-      RegisterProperty("Columns", 1);
-      RegisterProperty("DockedWindows", new ObservableCollection<DockableWindow>());
+      RegisterProperty(nameof(this.Name), "");
+      RegisterProperty(nameof(this.Rows), 1);
+      RegisterProperty(nameof(this.Columns), 1);
+      RegisterProperty(nameof(this.DockedWindows), new ObservableCollection<DockableWindow>());
+      RegisterProperty(nameof(this.Id), Guid.NewGuid().ToString());
     }
 
     public HostContainerConfig(string name)
     {
-      RegisterProperty("Name", name);
-      RegisterProperty("Rows", 1);
-      RegisterProperty("Columns", 1);
-      RegisterProperty("DockedWindows", new ObservableCollection<DockableWindow>());
+      RegisterProperty(nameof(this.Name), name);
+      RegisterProperty(nameof(this.Rows), 1);
+      RegisterProperty(nameof(this.Columns), 1);
+      RegisterProperty(nameof(this.DockedWindows), new ObservableCollection<DockableWindow>());
+      RegisterProperty(nameof(this.Id), Guid.NewGuid().ToString());
     }
 
     public HostContainerConfig(Screen screen)
     {
-      RegisterProperty("Name", screen.DeviceName);
-      RegisterProperty("Width", screen.Bounds.Width);
-      RegisterProperty("Height", screen.Bounds.Height);
-      RegisterProperty("Rows", 1);
-      RegisterProperty("Columns", 1);
-      RegisterProperty("DockedWindows", new ObservableCollection<DockableWindow>());
+      RegisterProperty(nameof(this.Name), screen.DeviceName);
+      RegisterProperty(nameof(this.Rows), 1);
+      RegisterProperty(nameof(this.Columns), 1);
+      RegisterProperty(nameof(this.DockedWindows), new ObservableCollection<DockableWindow>());
+      RegisterProperty(nameof(this.Id), Guid.NewGuid().ToString());
     }
 
     public HostContainerConfig(string name, int rows, int columns)
     {
-      RegisterProperty("Name", name);
-      RegisterProperty("Rows", rows);
-      RegisterProperty("Columns", columns);
-      RegisterProperty("DockedWindows", new ObservableCollection<DockableWindow>());
+      RegisterProperty(nameof(this.Name), name);
+      RegisterProperty(nameof(this.Rows), rows);
+      RegisterProperty(nameof(this.Columns), columns);
+      RegisterProperty(nameof(this.DockedWindows), new ObservableCollection<DockableWindow>());
+      RegisterProperty(nameof(this.Id), Guid.NewGuid().ToString());
     }
 
     public object Clone()
     {
-      var dc = new HostContainerConfig(this.Name);
+      var dc = new HostContainerConfig
+      {
+        Id = this.Id,
+        Name = this.Name,
+        Rows = this.Rows,
+        Columns = this.Columns
+      };
+
       foreach (var d in this.DockedWindows)
       {
         dc.DockedWindows.Add(d.Clone() as DockableWindow);

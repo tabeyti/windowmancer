@@ -1,8 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
-using Microsoft.Practices.ObjectBuilder2;
 using Microsoft.Practices.Unity;
-using Newtonsoft.Json;
 using Windowmancer.Core.Practices;
 
 namespace Windowmancer.Core.Models
@@ -14,12 +12,6 @@ namespace Windowmancer.Core.Models
       get => GetProperty<string>();
       set => SetProperty(value);
     }
-    public string Id { get; set; }
-    public ObservableCollection<WindowConfig> Windows { get; set; }
-
-    public ObservableCollection<HostContainerConfig> HostContainers { get; set; }
-    
-    private UserData _userData = null;
 
     public bool IsActive
     {
@@ -27,13 +19,19 @@ namespace Windowmancer.Core.Models
       set => SetProperty(value);
     }
 
+    public string Id { get; set; }
+    public ObservableCollection<WindowConfig> Windows { get; set; }
+    public ObservableCollection<HostContainerConfig> HostContainers { get; set; }
+    
+    private UserData _userData = null;
+
     /// <summary>
     /// Constructor.
     /// </summary>
     public Profile()
     {
-      RegisterProperty<string>("Name");
-      RegisterProperty<bool>("IsActive");
+      RegisterProperty<string>(nameof(Name));
+      RegisterProperty<bool>(nameof(this.IsActive));
       this.HostContainers = new ObservableCollection<HostContainerConfig>();
     }
 

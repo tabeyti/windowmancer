@@ -14,6 +14,7 @@ using Microsoft.Practices.Unity;
 using Windowmancer.Core.Models;
 using Windowmancer.Core.Practices;
 using Windowmancer.Core.Services;
+using Windowmancer.Services;
 using Windowmancer.UI;
 using Application = System.Windows.Application;
 using Control = System.Windows.Controls.Control;

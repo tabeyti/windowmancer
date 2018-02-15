@@ -108,7 +108,7 @@ namespace Windowmancer.Core.Services
     }
 
     /// <summary>
-    /// Adds a new window container to the active profile.
+    /// Adds a new host container to the active profile.
     /// </summary>
     /// <param name="container">The container to add.</param>
     /// <returns>True of container was added. False if not.</returns>
@@ -130,7 +130,7 @@ namespace Windowmancer.Core.Services
     }
 
     /// <summary>
-    /// Adds a window info instance to the active profile.
+    /// Adds a window config instance to the active profile.
     /// </summary>
     /// <param name="info"></param>
     /// <returns>True of window info was added. False if not.</returns>
@@ -146,7 +146,7 @@ namespace Windowmancer.Core.Services
     }
 
     /// <summary>
-    /// Removes the passed window info instance from the active profile's
+    /// Removes the passed window config instance from the active profile's
     /// list of window info objects.
     /// </summary>
     /// <param name="info"></param>
@@ -159,11 +159,7 @@ namespace Windowmancer.Core.Services
       this.ActiveProfile.Windows.Remove(info);
       _userData.Save();
     }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="profile"></param>
+    
     private void DeselectActiveProfile()
     {
       foreach (var p in this.Profiles) { p.IsActive = false; }

@@ -17,6 +17,7 @@ using System.ComponentModel;
 using System.Windows.Data;
 using MenuItem = System.Windows.Controls.MenuItem;
 using Windowmancer.Core.Services.Base;
+using Windowmancer.Services;
 
 namespace Windowmancer.UI
 {
@@ -50,20 +51,22 @@ namespace Windowmancer.UI
       this.EditorViewModel = new EditorViewModel();
 
       // Create context menu items for Active Windows datagrid.
-      var addItem = new MenuItem { Header = "Add" };
-      addItem.Click += ActiveWindowsDataGrid_MenuItemClick;
-      var highlightItem = new MenuItem { Header = "Highlight" };
-      highlightItem.Click += ActiveWindowsDataGrid_HighlightClick;
-      var containerizeItem = new MenuItem { Header = "Add to new Container" };
-      containerizeItem.Click += ActiveWindowsDataGrid_ContainerizeClick;
-      this.ActiveWindowsContextMenuItems = new ObservableCollection<FrameworkElement>
-      {
-        addItem,
-        new Separator(),
-        highlightItem,
-        new Separator(),
-        containerizeItem
-      };
+      //var addItem = new MenuItem { Header = "Add" };
+      //addItem.Click += ActiveWindowsDataGrid_MenuItemClick;
+      //var highlightItem = new MenuItem { Header = "Highlight" };
+      //highlightItem.Click += ActiveWindowsDataGrid_HighlightClick;
+      //var containerizeItem = new MenuItem { Header = "Add to new Container" };
+      //containerizeItem.Click += ActiveWindowsDataGrid_ContainerizeClick;
+      //this.ActiveWindowsContextMenuItems = new ObservableCollection<FrameworkElement>
+      //{
+      //  addItem,
+      //  new Separator(),
+      //  highlightItem,
+      //  new Separator(),
+      //  containerizeItem
+      //};
+
+      
 
       InitializeComponent();
       Initialize();
@@ -165,6 +168,17 @@ namespace Windowmancer.UI
 
     private void HandleContainerConfigEdit(HostContainerConfig container = null)
     {
+      var flyout = (Flyout)this.FindName("RightFlyout");
+      if (flyout == null) return;
+
+      // TODO: temp until default constructor for hostcontainerconfigeditor is done.
+      if (null == container) return;
+
+      var containerConfig = new HostContainerConfigEditor(container, new SizeInfo((int)this.ActualWidth, (int)this.ActualHeight));
+      containerConfig.OnClose += () => { flyout.IsOpen = false; };
+
+      flyout.Content = containerConfig;
+      flyout.IsOpen = true;
     }
 
     private void HandleWindowConfigEdit(WindowConfig item = null)
@@ -389,7 +403,7 @@ namespace Windowmancer.UI
         e.Cancel = true;
     }
 
-    private void WindowContainers_MenuItemClick(object sender, RoutedEventArgs e)
+    private void HostContainersListBox_MenuItemClick(object sender, RoutedEventArgs e)
     {
       var menuItem = (MenuItem)sender;
       switch (menuItem.Header as string)
