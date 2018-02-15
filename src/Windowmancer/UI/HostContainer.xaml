@@ -6,7 +6,7 @@
                       xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       ShowIconOnTitleBar="True"
                       ShowTitleBar="True"
-                      Title="{Binding WindowContainer.Name}"
+                      Title="{Binding HostContainerConfig.Name}"
                       mc:Ignorable="d"
                       Loaded="HostContainer_OnLoaded"
                       DataContext="{Binding RelativeSource={RelativeSource Self}}">

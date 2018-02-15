@@ -223,9 +223,8 @@
               </Grid.ColumnDefinitions>
               <!--<StackPanel Orientation="Horizontal">-->
               <GroupBox Header="HostContainers"
-                        Name="HostContainersListBox"
                         Grid.Column="0">
-                <ListBox Name="WindowHostContainersListBox"
+                <ListBox Name="HostContainersListBox"
                          Margin="5"
                          Style="{StaticResource MyListBox}"
                          ItemContainerStyle="{StaticResource MyListBoxItem}"

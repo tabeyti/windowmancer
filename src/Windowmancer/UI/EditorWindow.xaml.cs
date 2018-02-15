@@ -32,6 +32,7 @@ namespace Windowmancer.UI
       new Dictionary<string, HostContainer>();
 
     private readonly MonitorWindowManager _monitorWindowManager;
+    private readonly HostContainerManager _hostContainerManager;
     private readonly KeyHookManager _keyHookManager;
 
     public ObservableCollection<FrameworkElement> ActiveWindowsContextMenuItems { get; set; }
@@ -44,6 +45,7 @@ namespace Windowmancer.UI
       this.ProcMonitor = App.ServiceResolver.Resolve<ProcessMonitor>();
       _monitorWindowManager = App.ServiceResolver.Resolve<MonitorWindowManager>();
       _keyHookManager = App.ServiceResolver.Resolve<KeyHookManager>();
+      _hostContainerManager = App.ServiceResolver.Resolve<HostContainerManager>();
 
       this.EditorViewModel = new EditorViewModel();
 
@@ -373,7 +375,7 @@ namespace Windowmancer.UI
     {
       //if (_windowHostContainer == null)
       //{
-      //  _windowHostContainer = new WindowHostContainer(new WindowContainer("Bagel Container", 2, 2));
+      //  _windowHostContainer = new WindowHostContainer(new HostContainerConfig("Bagel Container", 2, 2));
       //  _windowHostContainer.Show();
       //}
       //_windowHostContainer.DockProc(Process.Start("notepad.exe"));
@@ -396,7 +398,7 @@ namespace Windowmancer.UI
           HandleContainerConfigEdit();
           break;
         case "Edit":
-          var item = (HostContainerConfig)this.WindowContainersListBox.SelectedItem;
+          var item = (HostContainerConfig)this.HostContainersListBox.SelectedItem;
           HandleContainerConfigEdit(item);
           break;
         case "Delete":

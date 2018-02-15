@@ -23,12 +23,6 @@ namespace Windowmancer.Services
     private void Initialize()
     {
       this.HostContainers = new Dictionary<string, HostContainer>();
-
-
-      var profile = Profiles.Find(p => p.Id == _userData.ActiveProfile);
-      this.ActiveProfile = profile ?? Profiles.FirstOrDefault();
-      _monitorWindowManager.ActiveProfile = this.ActiveProfile;
-      
     }
   }
 }

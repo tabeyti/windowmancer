@@ -14,7 +14,6 @@ using Microsoft.Practices.Unity;
 using Windowmancer.Core.Models;
 using Windowmancer.Core.Practices;
 using Windowmancer.Core.Services;
-using Windowmancer.Practices;
 using Windowmancer.UI;
 using Application = System.Windows.Application;
 using Control = System.Windows.Controls.Control;
@@ -40,6 +39,7 @@ namespace Windowmancer
     private KeyHookManager _keyHookManager;
     private ProfileManager _profileManager;
     private MonitorWindowManager _monitorWindowManager;
+    private HostContainerManager _hostContainerManager;
     private ProcessMonitor _procMonitor;
     private UserData _userData;
 
@@ -61,6 +61,7 @@ namespace Windowmancer
       _userData = ServiceResolver.Resolve<UserData>();
       _profileManager = ServiceResolver.Resolve<ProfileManager>();
       _monitorWindowManager = ServiceResolver.Resolve<MonitorWindowManager>();
+      _hostContainerManager = ServiceResolver.Resolve<HostContainerManager>();
       _keyHookManager = ServiceResolver.Resolve<KeyHookManager>();
       _procMonitor = ServiceResolver.Resolve<ProcessMonitor>();
 
