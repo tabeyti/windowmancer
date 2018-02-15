@@ -29,9 +29,6 @@ namespace Windowmancer.UI
     public ProfileManager ProfileManager { get; }
     public ProcessMonitor ProcMonitor { get; }
 
-    private readonly Dictionary<string, HostContainer> _windowHostContainers = 
-      new Dictionary<string, HostContainer>();
-
     private readonly MonitorWindowManager _monitorWindowManager;
     private readonly HostContainerManager _hostContainerManager;
     private readonly KeyHookManager _keyHookManager;
@@ -50,23 +47,7 @@ namespace Windowmancer.UI
 
       this.EditorViewModel = new EditorViewModel();
 
-      // Create context menu items for Active Windows datagrid.
-      //var addItem = new MenuItem { Header = "Add" };
-      //addItem.Click += ActiveWindowsDataGrid_MenuItemClick;
-      //var highlightItem = new MenuItem { Header = "Highlight" };
-      //highlightItem.Click += ActiveWindowsDataGrid_HighlightClick;
-      //var containerizeItem = new MenuItem { Header = "Add to new Container" };
-      //containerizeItem.Click += ActiveWindowsDataGrid_ContainerizeClick;
-      //this.ActiveWindowsContextMenuItems = new ObservableCollection<FrameworkElement>
-      //{
-      //  addItem,
-      //  new Separator(),
-      //  highlightItem,
-      //  new Separator(),
-      //  containerizeItem
-      //};
-
-      
+      BuildActiveWindowsContextMenu();
 
       InitializeComponent();
       Initialize();
@@ -81,6 +62,8 @@ namespace Windowmancer.UI
       // Start process monitor.
       this.ProcMonitor.Start();
     }
+
+#region Toast Methods
 
     public void ShowItemMessageToast(string itemName, string message = null)
     {
@@ -131,6 +114,10 @@ namespace Windowmancer.UI
       this.InfoMessageLabel.Text = message;
       flyout.IsOpen = true;
     }
+
+    #endregion
+
+#region Handle Config Edit Methods
 
     private void HandleProfileEdit(Profile profile = null)
     {
@@ -221,6 +208,8 @@ namespace Windowmancer.UI
       flyout.IsOpen = true;
     }
 
+
+
     private void HandleSettingsDialog()
     {
       var flyout = this.Flyouts.Items[1] as Flyout;
@@ -240,6 +229,8 @@ namespace Windowmancer.UI
       flyout.IsOpen = true;
     }
 
+#endregion
+
     private void AboutBox_Click(object sender, RoutedEventArgs e)
     {
       var dialog = new MyCustomDialog();
@@ -256,6 +247,34 @@ namespace Windowmancer.UI
       };
       dialog.Content = about;
       this.ShowMetroDialogAsync(dialog, settings);
+    }
+
+    private void BuildActiveWindowsContextMenu()
+    {
+      // Dynamically populate the submenus relating to the 'add to container' menu item.
+
+      // Create context menu items for Active Windows datagrid.
+      var addItem = new MenuItem { Header = "Add" };
+      addItem.Click += ActiveWindowsDataGrid_MenuItemClick;
+      var highlightItem = new MenuItem { Header = "Highlight" };
+      highlightItem.Click += ActiveWindowsDataGrid_HighlightClick;
+      var containerizeItem = new MenuItem { Header = "Add to Container" };
+      containerizeItem.Click += ActiveWindowsDataGrid_ContainerizeClick;
+
+      // Add a submenu for each container.
+      foreach (var c in this.ProfileManager.ActiveProfile.HostContainers)
+      {
+        containerizeItem.Items.Add(new MenuItem { Header = c.Name, Tag = c });
+      }
+
+      this.ActiveWindowsContextMenuItems = new ObservableCollection<FrameworkElement>
+      {
+        addItem,
+        new Separator(),
+        highlightItem,
+        new Separator(),
+        containerizeItem
+      };
     }
 
     private void MonitorWindowConfigDataGrid_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -370,31 +389,17 @@ namespace Windowmancer.UI
       });
     }
     
-    private static HostContainer _windowHostContainer = null;
     private void ActiveWindowsDataGrid_ContainerizeClick(object sender, RoutedEventArgs e)
     {
       if (this.ActiveWindowsDataGrid.SelectedItem == null) return;
       var process = ((MonitoredProcess)this.ActiveWindowsDataGrid.SelectedItem).GetProcess();
-      
-      if (_windowHostContainer == null)
-      {
-        _windowHostContainer = new HostContainer(new HostContainerConfig("pickles", 3, 3));
-        _windowHostContainer.Show();
-      }
-      _windowHostContainer.DockProc(process);
+      var config = (HostContainerConfig)((MenuItem)e.Source).Tag; 
+
+      _hostContainerManager.ActivateHostContainer(config, process);
     }
     
-    // TODO: Debug
     private void EditorWindow_OnLoaded(object sender, RoutedEventArgs e)
     {
-      //if (_windowHostContainer == null)
-      //{
-      //  _windowHostContainer = new WindowHostContainer(new HostContainerConfig("Bagel Container", 2, 2));
-      //  _windowHostContainer.Show();
-      //}
-      //_windowHostContainer.DockProc(Process.Start("notepad.exe"));
-      //_windowHostContainer.DockProc(Process.Start("notepad.exe"));
-      //_windowHostContainer.DockProc(Process.Start("mspaint.exe"));
     }
 
     private void MonitorWindowConfigDataGrid_OnAutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
@@ -451,6 +456,11 @@ namespace Windowmancer.UI
     {
       var item = (WindowConfig)e.Item;
       e.Accepted = item.MonitorLayoutInfo == null;
+    }
+
+    private void ActiveWindowsDataGrid_OnContextMenuOpening(object sender, ContextMenuEventArgs e)
+    {
+      BuildActiveWindowsContextMenu();
     }
   }
 }

@@ -181,7 +181,6 @@
         </ListBox>
       </GroupBox>
       <GridSplitter Background="{StaticResource MainColorTheme}" Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
-
       <Grid Grid.Column="2">
         <TabControl ItemContainerStyle="{StaticResource MyTabItem}">
           <TabItem Header="Monitor">
@@ -231,7 +230,7 @@
                          ItemContainerStyle="{StaticResource MyListBoxItem}"
                          ItemsSource="{Binding ProfileManager.ActiveProfile.HostContainers}">
                   <ListBox.Resources>
-                    <ContextMenu x:Key="ContainerRowMenu">
+                    <ContextMenu x:Key="RowMenu">
                       <MenuItem Header="Add" Click="HostContainersListBox_MenuItemClick"></MenuItem>
                     </ContextMenu>
                   </ListBox.Resources>
@@ -300,18 +299,15 @@
                 CanUserResizeColumns="False"
                 Background="{StaticResource AccentViewBackgroundColorBrush}"
                 ColumnHeaderStyle="{StaticResource MyColumnHeader}"
-                MouseDoubleClick="ActiveWindowsGrid_OnMouseDoubleClick">
+                MouseDoubleClick="ActiveWindowsGrid_OnMouseDoubleClick"
+                ContextMenuOpening="ActiveWindowsDataGrid_OnContextMenuOpening">
         <DataGrid.Resources>
           <ContextMenu x:Key="RowMenu" 
                        ItemsSource="{Binding ActiveWindowsContextMenuItems}"
                        DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}">
-            <MenuItem Header="Add" Click="ActiveWindowsDataGrid_MenuItemClick"></MenuItem>
+            <!--<MenuItem Header="Add" Click="ActiveWindowsDataGrid_MenuItemClick"></MenuItem>
             <Separator/>
-            <MenuItem Header="Highlight" Click="ActiveWindowsDataGrid_HighlightClick"></MenuItem>
-            <Separator/>
-            <MenuItem Header="Containerize" Click="ActiveWindowsDataGrid_ContainerizeClick">
-                      <!--ItemsSource="{Binding ProfileManager.ActiveProfile.HostContainers.Nam}">-->
-            </MenuItem>
+            <MenuItem Header="Highlight" Click="ActiveWindowsDataGrid_HighlightClick"></MenuItem>-->
           </ContextMenu>
         </DataGrid.Resources>
         <DataGrid.RowStyle>
