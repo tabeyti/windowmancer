@@ -254,7 +254,7 @@
               </GroupBox>
               <GroupBox Header="Container Window Configurations"
                         Grid.Column="1">
-                <DataGrid Name="ContainerWindowConfigDataGrid"
+                <DataGrid Name="HostContainerWindowConfigDataGrid"
                           GridLinesVisibility="None" 
                           IsReadOnly="True" 
                           SelectionMode="Single" 
@@ -270,7 +270,7 @@
                   </DataGrid.Resources>
                   <DataGrid.ContextMenu>
                     <ContextMenu>
-                      <MenuItem Header="Add" Click="ContainerWindowConfig_MenuItemClick"/>
+                      <MenuItem Header="Add" Click="HostContainerWindowConfig_MenuItemClick"/>
                     </ContextMenu>
                   </DataGrid.ContextMenu>
                   <DataGrid.RowStyle>
@@ -305,9 +305,6 @@
           <ContextMenu x:Key="RowMenu" 
                        ItemsSource="{Binding ActiveWindowsContextMenuItems}"
                        DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}">
-            <!--<MenuItem Header="Add" Click="ActiveWindowsDataGrid_MenuItemClick"></MenuItem>
-            <Separator/>
-            <MenuItem Header="Highlight" Click="ActiveWindowsDataGrid_HighlightClick"></MenuItem>-->
           </ContextMenu>
         </DataGrid.Resources>
         <DataGrid.RowStyle>

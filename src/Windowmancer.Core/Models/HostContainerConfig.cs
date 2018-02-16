@@ -32,6 +32,7 @@ namespace Windowmancer.Core.Models
     }
 
     [JsonIgnore]
+    // Used specifically for HostContainer.xaml.cs.
     public ObservableCollection<DockableWindow> DockedWindows
     {
       get => GetProperty<ObservableCollection<DockableWindow>>();

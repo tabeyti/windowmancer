@@ -170,7 +170,7 @@ namespace Windowmancer.UI
 
     private void HandleWindowConfigEdit(WindowConfig item = null)
     {
-      var flyout = this.Flyouts.Items[0] as Flyout;
+      var flyout = (Flyout)this.FindName("RightFlyout");
       if (flyout == null) return;
 
       var windowConfig = null == item ?
@@ -192,7 +192,7 @@ namespace Windowmancer.UI
 
     private void HandleWindowConfigEdit(Process item)
     {
-      var flyout = this.Flyouts.Items[0] as Flyout;
+      var flyout = (Flyout)this.FindName("RightFlyout");
       if (flyout == null)
       {
         return;
@@ -208,11 +208,9 @@ namespace Windowmancer.UI
       flyout.IsOpen = true;
     }
 
-
-
     private void HandleSettingsDialog()
     {
-      var flyout = this.Flyouts.Items[1] as Flyout;
+      var flyout = (Flyout)this.FindName("LeftFlyout");
       if (flyout == null)
       {
         return;
@@ -231,28 +229,8 @@ namespace Windowmancer.UI
 
 #endregion
 
-    private void AboutBox_Click(object sender, RoutedEventArgs e)
-    {
-      var dialog = new MyCustomDialog();
-      var about = new AboutDialog(() =>
-      {
-        this.HideMetroDialogAsync(dialog);
-      });
-      var settings = new MetroDialogSettings
-      {
-        AffirmativeButtonText = "Okay",
-        AnimateShow = true,
-        FirstAuxiliaryButtonText = "Okay",
-        ColorScheme = MetroDialogColorScheme.Theme
-      };
-      dialog.Content = about;
-      this.ShowMetroDialogAsync(dialog, settings);
-    }
-
     private void BuildActiveWindowsContextMenu()
     {
-      // Dynamically populate the submenus relating to the 'add to container' menu item.
-
       // Create context menu items for Active Windows datagrid.
       var addItem = new MenuItem { Header = "Add" };
       addItem.Click += ActiveWindowsDataGrid_MenuItemClick;
@@ -267,6 +245,7 @@ namespace Windowmancer.UI
         containerizeItem.Items.Add(new MenuItem { Header = c.Name, Tag = c });
       }
 
+      // Set the source.
       this.ActiveWindowsContextMenuItems = new ObservableCollection<FrameworkElement>
       {
         addItem,
@@ -421,27 +400,29 @@ namespace Windowmancer.UI
           HandleContainerConfigEdit(item);
           break;
         case "Delete":
-          //ShowItemMessageToast(this.ProfileManager.ActiveProfile.Name, "profile deleted.");
+          item = (HostContainerConfig)HostContainersListBox.SelectedItem;
+          ProfileManager.RemoveFromActiveProfile(item);
+          ShowItemMessageToast(this.ProfileManager.ActiveProfile.Name, "container deleted.");
           break;
       }
     }
 
-    private void ContainerWindowConfig_MenuItemClick(object sender, RoutedEventArgs e)
+    private void HostContainerWindowConfig_MenuItemClick(object sender, RoutedEventArgs e)
     {
       WindowConfig item = null;
       switch ((string)((MenuItem)sender).Header)
       {
         case "Add":
-          //HandleWindowConfigEdit();
+          HandleWindowConfigEdit();
           break;
         case "Edit":
-          item = (WindowConfig)ContainerWindowConfigDataGrid.SelectedItem;
-          //HandleWindowConfigEdit(item);
+          item = (WindowConfig)HostContainerWindowConfigDataGrid.SelectedItem;
+          HandleWindowConfigEdit(item);
           break;
         case "Delete":
-          item = (WindowConfig)ContainerWindowConfigDataGrid.SelectedItem;
-          //ProfileManager.RemoveFromActiveProfile(item);
-          //ShowItemMessageToast(item.Name, "window configuration deleted.");
+          item = (WindowConfig)HostContainerWindowConfigDataGrid.SelectedItem;
+          ProfileManager.RemoveFromActiveProfile(item);
+          ShowItemMessageToast(item.Name, "window configuration deleted.");
           break;
       }
     }
@@ -461,6 +442,24 @@ namespace Windowmancer.UI
     private void ActiveWindowsDataGrid_OnContextMenuOpening(object sender, ContextMenuEventArgs e)
     {
       BuildActiveWindowsContextMenu();
+    }
+
+    private void AboutBox_Click(object sender, RoutedEventArgs e)
+    {
+      var dialog = new MyCustomDialog();
+      var about = new AboutDialog(() =>
+      {
+        this.HideMetroDialogAsync(dialog);
+      });
+      var settings = new MetroDialogSettings
+      {
+        AffirmativeButtonText = "Okay",
+        AnimateShow = true,
+        FirstAuxiliaryButtonText = "Okay",
+        ColorScheme = MetroDialogColorScheme.Theme
+      };
+      dialog.Content = about;
+      this.ShowMetroDialogAsync(dialog, settings);
     }
   }
 }

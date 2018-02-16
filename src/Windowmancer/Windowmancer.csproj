@@ -187,6 +187,9 @@
     <Compile Include="UI\WindowConfigEditor.xaml.cs">
       <DependentUpon>WindowConfigEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\WindowConfigLayoutEditor.xaml.cs">
+      <DependentUpon>WindowConfigLayoutEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\WindowHighlight.xaml.cs">
       <DependentUpon>WindowHighlight.xaml</DependentUpon>
     </Compile>
@@ -250,6 +253,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\WindowConfigEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\WindowConfigLayoutEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

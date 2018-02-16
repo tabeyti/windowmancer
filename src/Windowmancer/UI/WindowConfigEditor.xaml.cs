@@ -31,7 +31,7 @@ namespace Windowmancer.UI
     public bool DisplayHelperPreview { get; set; }
     public bool WindowStylingPreview { get; set; }
     public DisplayAspectRatio ScreenAspectRatio { get; set; }
-    public WindowConfig WindowInfo { get; set; }
+    public WindowConfig WindowConfig { get; set; }
     public MonitorLayoutInfo OriginalLayoutInfo { get; set; }
     public uint OriginalOpacity { get; set; }
     public ProfileManager ProfileManager { get; set; }
@@ -55,7 +55,7 @@ namespace Windowmancer.UI
     public WindowConfigEditor(WindowConfig windowInfo, Action<WindowConfig> onSave)
     {
       this.OnSave = onSave;
-      this.WindowInfo = (WindowConfig)windowInfo?.Clone();
+      this.WindowConfig = (WindowConfig)windowInfo?.Clone();
       PreInitialization();
       InitializeComponent();
       Initialize();
@@ -80,12 +80,12 @@ namespace Windowmancer.UI
       this.ProfileManager = App.ServiceResolver.Resolve<ProfileManager>();
       if (_process != null)
       {
-        this.WindowInfo = WindowConfig.FromProcess(_process);
+        this.WindowConfig = WindowConfig.FromProcess(_process);
       }
       else
       {
-        this.WindowInfo = this.WindowInfo ?? new WindowConfig();
-        _process = MonitorWindowManager.GetProcess(this.WindowInfo);
+        this.WindowConfig = this.WindowConfig ?? new WindowConfig();
+        _process = MonitorWindowManager.GetProcess(this.WindowConfig);
       }
     }
 
@@ -150,7 +150,7 @@ namespace Windowmancer.UI
     }
 
     /// <summary>
-    /// Updates our WindowInfo's layout values with values gathered
+    /// Updates our WindowConfig's layout values with values gathered
     /// from the current display section and screen.
     /// </summary>
     private void UpdateLayoutValuesFromDisplayHelper()
@@ -170,27 +170,27 @@ namespace Windowmancer.UI
       var width = (screenWidth / totalCols);
       var height = (screenHeight / totalRows);
 
-      this.WindowInfo.MonitorLayoutInfo.SizeInfo.Width = width;
-      this.WindowInfo.MonitorLayoutInfo.SizeInfo.Height = height;
-      this.WindowInfo.MonitorLayoutInfo.PositionInfo.X = x;
-      this.WindowInfo.MonitorLayoutInfo.PositionInfo.Y = y;
+      this.WindowConfig.MonitorLayoutInfo.SizeInfo.Width = width;
+      this.WindowConfig.MonitorLayoutInfo.SizeInfo.Height = height;
+      this.WindowConfig.MonitorLayoutInfo.PositionInfo.X = x;
+      this.WindowConfig.MonitorLayoutInfo.PositionInfo.Y = y;
     }
 
     /// <summary>
-    /// Saves all input data into the WindowInfo instance.
+    /// Saves all input data into the WindowConfig instance.
     /// </summary>
     private void SaveConfig()
     {
       var matchType = this.MatchByProcesNameRadioButton.IsChecked.Value ?
         WindowMatchCriteriaType.ProcessName : WindowMatchCriteriaType.WindowTitle;
 
-      this.WindowInfo.Name = this.NameTextBox.Text;
-      this.WindowInfo.MatchCriteria.MatchType = matchType;
-      this.WindowInfo.MatchCriteria.MatchString = this.RegexMatchStringTextBox.Text;
-      this.WindowInfo.MonitorLayoutInfo.PositionInfo.X = (int)this.XSpinner.Value;
-      this.WindowInfo.MonitorLayoutInfo.PositionInfo.Y = (int)this.YSpinner.Value;
-      this.WindowInfo.MonitorLayoutInfo.SizeInfo.Width = (int)this.WidthSpinner.Value;
-      this.WindowInfo.MonitorLayoutInfo.SizeInfo.Height = (int)this.HeightSpinner.Value;
+      this.WindowConfig.Name = this.NameTextBox.Text;
+      this.WindowConfig.MatchCriteria.MatchType = matchType;
+      this.WindowConfig.MatchCriteria.MatchString = this.RegexMatchStringTextBox.Text;
+      this.WindowConfig.MonitorLayoutInfo.PositionInfo.X = (int)this.XSpinner.Value;
+      this.WindowConfig.MonitorLayoutInfo.PositionInfo.Y = (int)this.YSpinner.Value;
+      this.WindowConfig.MonitorLayoutInfo.SizeInfo.Width = (int)this.WidthSpinner.Value;
+      this.WindowConfig.MonitorLayoutInfo.SizeInfo.Height = (int)this.HeightSpinner.Value;
     }
 
     private void DisplaySection2_OnClick(object sender, EventArgs e)
@@ -305,7 +305,7 @@ namespace Windowmancer.UI
     private void SaveButton_Click(object sender, RoutedEventArgs e)
     {
       SaveConfig();
-      OnSave?.Invoke(this.WindowInfo);
+      OnSave?.Invoke(this.WindowConfig);
       Close();
     }
 

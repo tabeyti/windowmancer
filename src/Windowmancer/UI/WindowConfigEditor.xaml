@@ -42,7 +42,7 @@
                                   VerticalAlignment="Top" 
                                   Height="Auto"
                                   GotFocus="LabelTextBox_OnGotFocus"
-                                  Text="{Binding WindowInfo.Name}"/>
+                                  Text="{Binding WindowConfig.Name}"/>
               <GroupBox Grid.Row="1"
                         x:Name="MatchGroupBox"
                         Header="Matching Rules" 
@@ -62,17 +62,17 @@
                                       VerticalAlignment="Top" 
                                       Width="Auto"
                                       GotFocus="LabelTextBox_OnGotFocus"
-                                      Text="{Binding Mode=TwoWay, Path=WindowInfo.MatchCriteria.MatchString}"/>
+                                      Text="{Binding Mode=TwoWay, Path=WindowConfig.MatchCriteria.MatchString}"/>
                   <RadioButton  Name="MatchByWindowTitleRadioButton" 
                                 Content="Match by Window Title" 
                                 GroupName="MatchOptions" 
                                 Margin="5,0,0,5"
-                                IsChecked="{Binding Path=WindowInfo.MatchCriteria.MatchType, Converter={StaticResource EnumBooleanConverter}, ConverterParameter=WindowTitle}"/>
+                                IsChecked="{Binding Path=WindowConfig.MatchCriteria.MatchType, Converter={StaticResource EnumBooleanConverter}, ConverterParameter=WindowTitle}"/>
                   <RadioButton  Name="MatchByProcesNameRadioButton" 
                                 Content="Match by Process Name" 
                                 GroupName="MatchOptions" 
                                 Margin="5,0,0,5"
-                                IsChecked="{Binding Path=WindowInfo.MatchCriteria.MatchType, Converter={StaticResource EnumBooleanConverter}, ConverterParameter=ProcessName}"/>
+                                IsChecked="{Binding Path=WindowConfig.MatchCriteria.MatchType, Converter={StaticResource EnumBooleanConverter}, ConverterParameter=ProcessName}"/>
                 </StackPanel>
               </GroupBox>
               <CheckBox Name="ApplyOnProcessStartCheckbox" Grid.Row="2"
@@ -80,7 +80,7 @@
                         VerticalAlignment="Top"
                         Content="Apply on process start" 
                         Margin="10" 
-                        IsChecked="{Binding WindowInfo.ApplyOnProcessStart}"/>
+                        IsChecked="{Binding WindowConfig.ApplyOnProcessStart}"/>
             </Grid>
           </Grid>
         </GroupBox>
@@ -113,7 +113,7 @@
                       VerticalAlignment="Center"
                       IsSnapToTickEnabled="True"
                       MouseWheel="WindowOpacitySlider_OnMouseWheel"
-                      Value="{Binding Mode=TwoWay, Path=WindowInfo.StylingInfo.WindowOpacityPercentage}"/>
+                      Value="{Binding Mode=TwoWay, Path=WindowConfig.StylingInfo.WindowOpacityPercentage}"/>
               <xctk:IntegerUpDown x:Name="WindowOpacityValueTextBox"
                                   Height="28"
                                   Grid.Column="2"
@@ -122,7 +122,7 @@
                                   TextAlignment="Right"
                                   Minimum="0"
                                   Maximum="100"
-                                  Value="{Binding Mode=TwoWay, Path=WindowInfo.StylingInfo.WindowOpacityPercentage}" 
+                                  Value="{Binding Mode=TwoWay, Path=WindowConfig.StylingInfo.WindowOpacityPercentage}" 
                                   ValueChanged="WindowOpacityValueTextBox_OnValueChanged"/>
             </Grid>
             <CheckBox x:Name="WindowStylingPreviewCheckBox"
@@ -160,7 +160,7 @@
                   <xctk:IntegerUpDown Name="XSpinner" 
                                     Grid.Column="1" Grid.Row="0"
                                     Foreground="White"
-                                    Value="{Binding Mode=TwoWay, Path=WindowInfo.MonitorLayoutInfo.PositionInfo.X}"
+                                    Value="{Binding Mode=TwoWay, Path=WindowConfig.MonitorLayoutInfo.PositionInfo.X}"
                                     Height="20" 
                                     ShowButtonSpinner="False"
                                     Margin="0,5"/>
@@ -169,7 +169,7 @@
                                     Grid.Column="3"
                                     Grid.Row="0"
                                     Foreground="White"
-                                    Value="{Binding Mode=TwoWay, Path=WindowInfo.MonitorLayoutInfo.PositionInfo.Y}"
+                                    Value="{Binding Mode=TwoWay, Path=WindowConfig.MonitorLayoutInfo.PositionInfo.Y}"
                                     Height="20" 
                                     Margin="0,5"
                                     ShowButtonSpinner="False"/>
@@ -178,7 +178,7 @@
                   <xctk:IntegerUpDown Name="WidthSpinner" 
                                     Grid.Column="1" Grid.Row="1"
                                     Foreground="White"
-                                    Value="{Binding Mode=TwoWay, Path=WindowInfo.MonitorLayoutInfo.SizeInfo.Width}"
+                                    Value="{Binding Mode=TwoWay, Path=WindowConfig.MonitorLayoutInfo.SizeInfo.Width}"
                                     Height="20" 
                                     Margin="0,5"
                                     ShowButtonSpinner="False"/>
@@ -186,7 +186,7 @@
                   <xctk:IntegerUpDown Name="HeightSpinner" 
                                     Grid.Column="3" Grid.Row="1"
                                     Foreground="White"
-                                    Value="{Binding Mode=TwoWay, Path=WindowInfo.MonitorLayoutInfo.SizeInfo.Height}"
+                                    Value="{Binding Mode=TwoWay, Path=WindowConfig.MonitorLayoutInfo.SizeInfo.Height}"
                                     Height="20" 
                                     Margin="0,5"
                                     ShowButtonSpinner="False"/>
