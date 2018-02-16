@@ -10,6 +10,7 @@ using System.Windows.Media;
 using Windowmancer.Core.Extensions;
 using Windowmancer.Core.Models;
 using Windowmancer.Core.Services;
+using Windowmancer.UI.Base;
 using Button = System.Windows.Controls.Button;
 using ButtonBase = System.Windows.Controls.Primitives.ButtonBase;
 
@@ -18,11 +19,11 @@ namespace Windowmancer.UI
   /// <summary>
   /// Interaction logic for WindowConfigLayoutEditor.xaml
   /// </summary>
-  public partial class WindowConfigLayoutEditor : Window
+  public partial class MonitorLayoutEditor : IConfigEditor<MonitorLayoutInfo>
   {
+    public Action OnClose { get; set; }
+    public Action<MonitorLayoutInfo> OnSave { get; set; }
     public MonitorLayoutInfo MonitorLayoutInfo { get; set; }
-    public HostContainerLayoutInfo HostContainerLayoutInfo { get; set; }
-
 
     // Binding objects.
     public DisplayAspectRatio ScreenAspectRatio { get; set; }
@@ -37,12 +38,35 @@ namespace Windowmancer.UI
     private readonly List<Button> _displaySectionButtons = new List<Button>();
     private readonly SolidColorBrush _defaultBrush = Brushes.Turquoise;
 
-    public WindowConfigLayoutEditor()
+#region Constructors
+
+    public MonitorLayoutEditor()
     {
+      this.MonitorLayoutInfo = new MonitorLayoutInfo();
+      PreInitialization();
+      InitializeComponent();
+      Initialize();
+
+    }
+
+    public MonitorLayoutEditor(MonitorLayoutInfo layoutInfo)
+    {
+      this.MonitorLayoutInfo = (MonitorLayoutInfo)layoutInfo.Clone();
       PreInitialization();
       InitializeComponent();
       Initialize();
     }
+
+    public MonitorLayoutEditor(Process process)
+    {
+      this.MonitorLayoutInfo = MonitorWindowManager.GetLayout(process);
+
+      PreInitialization();
+      InitializeComponent();
+      Initialize();
+    }
+
+#endregion
 
     private void PreInitialization()
     {
@@ -145,7 +169,7 @@ namespace Windowmancer.UI
       // Move process window if process is active.
       if (null != _process)
       {
-        MonitorWindowManager.ApplyWindowLayout(layoutInfo, _process);
+        MonitorWindowManager.ApplyLayout(layoutInfo, _process);
       }
 
       var window = Window.GetWindow(this);
@@ -165,6 +189,20 @@ namespace Windowmancer.UI
     {
       _windowHighlight?.Close();
       _windowHighlight = null;
+    }
+
+    private void SaveConfig()
+    {
+      this.MonitorLayoutInfo.PositionInfo.X = (int)this.XSpinner.Value;
+      this.MonitorLayoutInfo.PositionInfo.Y = (int)this.YSpinner.Value;
+      this.MonitorLayoutInfo.SizeInfo.Width = (int)this.WidthSpinner.Value;
+      this.MonitorLayoutInfo.SizeInfo.Height = (int)this.HeightSpinner.Value;
+    }
+
+    private void Close()
+    {
+      _windowHighlight?.Close();
+      OnClose?.Invoke();
     }
 
     /// <summary>
@@ -258,7 +296,7 @@ namespace Windowmancer.UI
       // If unchecked, then apply the original layout.
       (_process != null).RunIfTrue(() =>
       {
-        MonitorWindowManager.ApplyWindowLayout(this.OriginalLayoutInfo, _process);
+        MonitorWindowManager.ApplyLayout(this.OriginalLayoutInfo, _process);
       });
       DisableScreenHighlight();
     }
@@ -267,7 +305,17 @@ namespace Windowmancer.UI
     {
       UpdateLayoutValuesFromDisplayHelper();
     }
+
+    private void CancelButton_Click(object sender, RoutedEventArgs e)
+    {
+      Close();
+    }
+
+    private void SaveButton_Click(object sender, RoutedEventArgs e)
+    {
+      SaveConfig();
+      OnSave?.Invoke(this.MonitorLayoutInfo);
+      Close();
+    }
   }
 }
-  
-

@@ -217,7 +217,7 @@ namespace Windowmancer.UI
       // Move process window if process is active.
       if (null != _process)
       {
-        MonitorWindowManager.ApplyWindowLayout(layoutInfo, _process);
+        MonitorWindowManager.ApplyLayout(layoutInfo, _process);
       }
 
       var window = Window.GetWindow(this);
@@ -329,7 +329,7 @@ namespace Windowmancer.UI
       // If unchecked, then apply the original layout.
       (_process != null).RunIfTrue(() =>
       {
-        MonitorWindowManager.ApplyWindowLayout(this.OriginalLayoutInfo, _process);
+        MonitorWindowManager.ApplyLayout(this.OriginalLayoutInfo, _process);
       });
       DisableScreenHighlight();
     }

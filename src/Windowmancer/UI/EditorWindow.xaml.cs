@@ -227,32 +227,53 @@ namespace Windowmancer.UI
       flyout.IsOpen = true;
     }
 
+    private void HandleQuickLayoutEdit(Process process)
+    {
+      var flyout = (Flyout)this.FindName("RightFlyout");
+      if (flyout == null) return;
+
+      flyout.Header = "Monitor Layout Editor";
+      var layoutEditor = new MonitorLayoutEditor(process)
+      {
+        OnSave = l => { MonitorWindowManager.ApplyLayout(l, process); },
+        OnClose = () => { flyout.IsOpen = false; }
+      };
+
+      flyout.Content = layoutEditor;
+      flyout.IsOpen = true;
+    }
+
 #endregion
 
     private void BuildActiveWindowsContextMenu()
     {
       // Create context menu items for Active Windows datagrid.
-      var addItem = new MenuItem { Header = "Add" };
+      var addItem = new MenuItem { Header = "Add Window Configuration" };
       addItem.Click += ActiveWindowsDataGrid_MenuItemClick;
+
       var highlightItem = new MenuItem { Header = "Highlight" };
       highlightItem.Click += ActiveWindowsDataGrid_HighlightClick;
-      var containerizeItem = new MenuItem { Header = "Add to Container" };
-      containerizeItem.Click += ActiveWindowsDataGrid_ContainerizeClick;
 
       // Add a submenu for each container.
+      var containerizeItem = new MenuItem { Header = "Add to Container" };
+      containerizeItem.Click += ActiveWindowsDataGrid_ContainerizeClick;
       foreach (var c in this.ProfileManager.ActiveProfile.HostContainers)
       {
         containerizeItem.Items.Add(new MenuItem { Header = c.Name, Tag = c });
       }
 
+      var quickLayoutEditItem = new MenuItem {Header = "Quick layout edit."};
+      quickLayoutEditItem.Click += ActiveWindowsDataGrid_QuickMonitorLayoutEditClick;
+
       // Set the source.
       this.ActiveWindowsContextMenuItems = new ObservableCollection<FrameworkElement>
       {
         addItem,
+        containerizeItem,
         new Separator(),
         highlightItem,
         new Separator(),
-        containerizeItem
+        quickLayoutEditItem
       };
     }
 
@@ -376,7 +397,15 @@ namespace Windowmancer.UI
 
       _hostContainerManager.ActivateHostContainer(config, process);
     }
-    
+
+    private void ActiveWindowsDataGrid_QuickMonitorLayoutEditClick(object sender, RoutedEventArgs e)
+    {
+      if (this.ActiveWindowsDataGrid.SelectedItem == null) return;
+      var process = ((MonitoredProcess)this.ActiveWindowsDataGrid.SelectedItem).GetProcess();
+      HandleQuickLayoutEdit(process);
+    }
+
+
     private void EditorWindow_OnLoaded(object sender, RoutedEventArgs e)
     {
     }

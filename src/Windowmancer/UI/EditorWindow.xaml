@@ -44,8 +44,7 @@
 
   <Controls:MetroWindow.Flyouts>
     <Controls:FlyoutsControl x:Name="FlyoutsControl">
-      <Controls:Flyout Header="Window Configuration"
-                       Name="RightFlyout"
+      <Controls:Flyout Name="RightFlyout"
                        IsModal="True"
                        Position="Right"
                        CloseButtonVisibility="Collapsed"

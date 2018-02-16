@@ -110,7 +110,7 @@ namespace Windowmancer.Core.Services
     /// </summary>
     /// <param name="layoutInfo"></param>
     /// <param name="process"></param>
-    public static void ApplyWindowLayout(MonitorLayoutInfo layoutInfo, Process process)
+    public static void ApplyLayout(MonitorLayoutInfo layoutInfo, Process process)
     {
       if (null == layoutInfo || null == process)
       {
@@ -130,6 +130,21 @@ namespace Windowmancer.Core.Services
       var height = layoutInfo.SizeInfo.Height;
       ShowWindowNormal(process);
       Win32.MoveWindow(handle, x, y, width, height, true);
+    }
+
+    /// <summary>
+    /// Retrieves the layout object for the provided process window.
+    /// </summary>
+    /// <param name="process"></param>
+    /// <returns></returns>
+    public static MonitorLayoutInfo GetLayout(Process process)
+    {
+      var rect = GetWindowRectCurrent(process);
+      return new MonitorLayoutInfo(
+        rect.X,
+        rect.Y,
+        rect.Width,
+        rect.Height);
     }
 
     /// <summary>

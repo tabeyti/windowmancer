@@ -163,6 +163,7 @@
     <Compile Include="UI\AboutDialog.xaml.cs">
       <DependentUpon>AboutDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Base\IConfigEditor.cs" />
     <Compile Include="UI\Base\MyCustomDialog.cs" />
     <Compile Include="UI\Base\MyCustomDialog.Designer.cs">
       <DependentUpon>MyCustomDialog.cs</DependentUpon>
@@ -187,8 +188,8 @@
     <Compile Include="UI\WindowConfigEditor.xaml.cs">
       <DependentUpon>WindowConfigEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\WindowConfigLayoutEditor.xaml.cs">
-      <DependentUpon>WindowConfigLayoutEditor.xaml</DependentUpon>
+    <Compile Include="UI\MonitorLayoutEditor.xaml.cs">
+      <DependentUpon>MonitorLayoutEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\WindowHighlight.xaml.cs">
       <DependentUpon>WindowHighlight.xaml</DependentUpon>
@@ -256,7 +257,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UI\WindowConfigLayoutEditor.xaml">
+    <Page Include="UI\MonitorLayoutEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
