@@ -27,7 +27,7 @@ namespace Windowmancer.UI
 
     // Binding objects.
     public DisplayAspectRatio ScreenAspectRatio { get; set; }
-    public bool DisplayHelperPreview { get; set; }
+    public bool LayoutHelperEnabled { get; set; }
     public MonitorLayoutInfo OriginalLayoutInfo { get; set; }
 
     private static Screen _screen;
@@ -70,6 +70,7 @@ namespace Windowmancer.UI
 
     private void PreInitialization()
     {
+      this.LayoutHelperEnabled = false;
       this.ScreenAspectRatio = new DisplayAspectRatio(Screen.PrimaryScreen);
     }
 
@@ -97,16 +98,15 @@ namespace Windowmancer.UI
         this.RowSpinner.Value = _displayHelperSection.TotalRows;
         this.ColumnSpinner.Value = _displayHelperSection.TotalColumns;
         _rowColSpinnerEnabled = true;
+        this.LayoutHelperEnabled = true;
         RecreateDisplaySectionControl(_displayHelperSection.TotalRows, _displayHelperSection.TotalColumns);
+        UpdateScreenHighlight();
         return;
       }
 
+      this.LayoutHelperEnabled = false;
       ClearDisplaySectionPanel();
-      if (this.WindowLayoutPreviewCheckBox.IsChecked.Value)
-      {
-        this.WindowLayoutPreviewCheckBox.IsChecked = false;
-        DisableScreenHighlight();
-      }
+      DisableScreenHighlight();
     }
 
     private void RecreateDisplaySectionControl(int rows, int cols)
@@ -159,7 +159,7 @@ namespace Windowmancer.UI
 
     private void UpdateScreenHighlight()
     {
-      if (!this.DisplayHelperPreview)
+      if (!this.LayoutHelperEnabled)
       {
         return;
       }
@@ -232,6 +232,24 @@ namespace Windowmancer.UI
       this.MonitorLayoutInfo.PositionInfo.Y = y;
     }
 
+    private void OpenLayoutHelper()
+    {
+      (_process != null).RunIfTrue(() =>
+      {
+        this.OriginalLayoutInfo = WindowConfig.FromProcess(_process).MonitorLayoutInfo;
+      });
+      UpdateScreenHighlight();
+    }
+
+    private void CloseLayoutHelper()
+    {
+      (_process != null).RunIfTrue(() =>
+      {
+        MonitorWindowManager.ApplyLayout(this.OriginalLayoutInfo, _process);
+      });
+      DisableScreenHighlight();
+    }
+
     private void DisplaySection_OnClick(object sender, EventArgs e)
     {
       // Reset the previous button highlight.
@@ -281,25 +299,18 @@ namespace Windowmancer.UI
       EnableDisableLayoutHelper(expander.IsExpanded);
     }
 
-    private void WindowLayoutPreviewCheckBox_OnChecked(object sender, RoutedEventArgs e)
-    {
-      if (this.DisplayHelperPreview)
-      {
-        (_process != null).RunIfTrue(() =>
-        {
-          this.OriginalLayoutInfo = WindowConfig.FromProcess(_process).MonitorLayoutInfo;
-        });
-        UpdateScreenHighlight();
-        return;
-      }
-
-      // If unchecked, then apply the original layout.
-      (_process != null).RunIfTrue(() =>
-      {
-        MonitorWindowManager.ApplyLayout(this.OriginalLayoutInfo, _process);
-      });
-      DisableScreenHighlight();
-    }
+    //private void WindowLayoutPreviewCheckBox_OnChecked(object sender, RoutedEventArgs e)
+    //{
+    //  if (this.LayoutHelperEnabled)
+    //  {
+    //    (_process != null).RunIfTrue(() =>
+    //    {
+    //      this.OriginalLayoutInfo = WindowConfig.FromProcess(_process).MonitorLayoutInfo;
+    //    });
+    //    UpdateScreenHighlight();
+    //    return;
+    //  }
+    //}
 
     private void SetDisplayHelperLayoutButton_OnClick(object sender, RoutedEventArgs e)
     {

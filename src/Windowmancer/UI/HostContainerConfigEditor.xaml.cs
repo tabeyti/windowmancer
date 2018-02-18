@@ -28,7 +28,7 @@ namespace Windowmancer.UI
     public Action OnClose { get; set; }
     public Action<HostContainerConfig> OnSave { get; set; }
     public bool DisplayContainersSelectable { get; set; }
-    public HostContainerViewModel HostContainerConfigEditorViewModel { get; set; }
+    public HostContainerEditorViewModel HostContainerEditorConfigEditorViewModel { get; set; }
     public CanvasViewModel CanvasViewModel { get; set; }
 
     private readonly SolidColorBrush _defaultBrush = Brushes.Turquoise;
@@ -36,7 +36,7 @@ namespace Windowmancer.UI
 
     public HostContainerConfigEditor(HostContainerConfig containerConfig, SizeInfo sizeInfo)
     {
-      this.HostContainerConfigEditorViewModel = new HostContainerViewModel
+      this.HostContainerEditorConfigEditorViewModel = new HostContainerEditorViewModel
       {
         ActiveHostContainerConfig = containerConfig,
         SizeInfo = sizeInfo
@@ -49,7 +49,7 @@ namespace Windowmancer.UI
     private void PreInitialize()
     {
       this.DisplayContainersSelectable = true;
-      this.CanvasViewModel = new CanvasViewModel(this.HostContainerConfigEditorViewModel);
+      this.CanvasViewModel = new CanvasViewModel(this.HostContainerEditorConfigEditorViewModel);
     }
 
     private void PostInitialize()
@@ -66,11 +66,11 @@ namespace Windowmancer.UI
       this.CanvasViewModel.Reset();
 
       // Create.
-      this.CanvasViewModel.Rows = this.HostContainerConfigEditorViewModel.ActiveHostContainerConfig.Rows;
-      this.CanvasViewModel.Columns = this.HostContainerConfigEditorViewModel.ActiveHostContainerConfig.Columns;
+      this.CanvasViewModel.Rows = this.HostContainerEditorConfigEditorViewModel.ActiveHostContainerConfig.Rows;
+      this.CanvasViewModel.Columns = this.HostContainerEditorConfigEditorViewModel.ActiveHostContainerConfig.Columns;
       this.CanvasViewModel.Canvas = new Canvas { Background = _defaultBrush };
 
-      var dockableWindows = this.HostContainerConfigEditorViewModel.ActiveHostContainerConfig.DockedWindows;
+      var dockableWindows = this.HostContainerEditorConfigEditorViewModel.ActiveHostContainerConfig.DockedWindows;
       Enumerable.Range(0, rows).ForEach(r =>
         Enumerable.Range(0, cols).ForEach(c =>
         {
@@ -110,7 +110,7 @@ namespace Windowmancer.UI
     private void SizeDisplayHelperBox()
     {
       _screenAspectRatio = new DisplayAspectRatio(1152, 648);
-      if (this.HostContainerConfigEditorViewModel.SizeInfo.Height > this.HostContainerConfigEditorViewModel.SizeInfo.Width)
+      if (this.HostContainerEditorConfigEditorViewModel.SizeInfo.Height > this.HostContainerEditorConfigEditorViewModel.SizeInfo.Width)
       {
         this.DisplayPanel.Height = this.DisplayPanel.MaxHeight;
         this.DisplayPanel.Width = this.DisplayPanel.MaxHeight * (_screenAspectRatio.XRatio / _screenAspectRatio.YRatio);
@@ -154,8 +154,8 @@ namespace Windowmancer.UI
       window.KeyDown += HostContainerConfigEditor_HandleKeyPress;
 
       RecreateDisplaySectionControl(
-        this.HostContainerConfigEditorViewModel.ActiveHostContainerConfig.Rows,
-        this.HostContainerConfigEditorViewModel.ActiveHostContainerConfig.Columns);
+        this.HostContainerEditorConfigEditorViewModel.ActiveHostContainerConfig.Rows,
+        this.HostContainerEditorConfigEditorViewModel.ActiveHostContainerConfig.Columns);
   }
     
     private void DisplayListBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -175,7 +175,7 @@ namespace Windowmancer.UI
       {
         var currentNumSections = this.RowSpinner.Value * this.ColumnSpinner.Value;
         if (currentNumSections <
-            this.HostContainerConfigEditorViewModel.ActiveHostContainerConfig.DockedWindows.Count)
+            this.HostContainerEditorConfigEditorViewModel.ActiveHostContainerConfig.DockedWindows.Count)
         {
           var spinner = (IntegerUpDown)sender;
           spinner.Value = (int)e.OldValue;
@@ -194,8 +194,8 @@ namespace Windowmancer.UI
       }
 
       RecreateDisplaySectionControl(
-        this.HostContainerConfigEditorViewModel.ActiveHostContainerConfig.Rows,
-        this.HostContainerConfigEditorViewModel.ActiveHostContainerConfig.Columns);
+        this.HostContainerEditorConfigEditorViewModel.ActiveHostContainerConfig.Rows,
+        this.HostContainerEditorConfigEditorViewModel.ActiveHostContainerConfig.Columns);
     }
 
     private void CancelButton_OnClick(object sender, RoutedEventArgs e)
@@ -205,7 +205,7 @@ namespace Windowmancer.UI
 
     private void SaveButton_OnClick(object sender, RoutedEventArgs e)
     {
-      OnSave?.Invoke(this.HostContainerConfigEditorViewModel.ActiveHostContainerConfig);
+      OnSave?.Invoke(this.HostContainerEditorConfigEditorViewModel.ActiveHostContainerConfig);
       Close();
     }
     private void LabelTextBox_OnGotFocus(object sender, RoutedEventArgs e)
@@ -216,7 +216,7 @@ namespace Windowmancer.UI
     #endregion Event Methods
   }
 
-  public class HostContainerViewModel : PropertyNotifyBase
+  public class HostContainerEditorViewModel : PropertyNotifyBase
   {
     public HostContainerConfig ActiveHostContainerConfig
     {
@@ -251,7 +251,7 @@ namespace Windowmancer.UI
       set => SetProperty(value);
     }
     
-    public HostContainerViewModel()
+    public HostContainerEditorViewModel()
     {
       RegisterProperty<DockableWindow>(nameof(this.ActiveDockableWindow), null);
       RegisterProperty<HostContainerConfig>(nameof(this.ActiveHostContainerConfig), null);
@@ -304,11 +304,11 @@ namespace Windowmancer.UI
 
     public Dictionary<DockableWindow, Image> DockableWindowImageDict { get; set; }
     
-    private readonly HostContainerViewModel _hcViewModel;
+    private readonly HostContainerEditorViewModel _hcEditorViewModel;
 
-    public CanvasViewModel(HostContainerViewModel hcViewModel)
+    public CanvasViewModel(HostContainerEditorViewModel hcEditorViewModel)
     {
-      _hcViewModel = hcViewModel;
+      _hcEditorViewModel = hcEditorViewModel;
       RegisterProperty<int>("CanvasX");
       RegisterProperty<int>("CanvasY");
       RegisterProperty<int>("Rows");
@@ -639,7 +639,7 @@ namespace Windowmancer.UI
       this.DraggedImage = image;
 
       // Notify others we are dragging a dockable window.
-      _hcViewModel.ActiveDockableWindow = GetDockableWindowForImage(this.DraggedImage);
+      _hcEditorViewModel.ActiveDockableWindow = GetDockableWindowForImage(this.DraggedImage);
 
       // Set dragged image as top and other images to bottom.
       this.DraggedImage.MoveToFront();

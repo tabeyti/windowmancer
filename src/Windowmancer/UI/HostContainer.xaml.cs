@@ -22,16 +22,14 @@ namespace Windowmancer.UI
     public HostContainerConfig HostContainerConfig { get; set; }
 
     private static readonly int _titlebarHeight = (int)SystemParameters.WindowCaptionHeight + 10;
+    private static readonly string _defaultContainerName = "My Container";
+    private readonly bool _stupidFlag = false;
 
-    public HostContainer(HostContainerConfig hostContiner)
+    public HostContainer(HostContainerConfig hostContiner, bool enableEditorOnLoad = false)
     {
+      _stupidFlag = enableEditorOnLoad;
       this.HostContainerConfig = hostContiner;
       InitializeComponent();
-    }
-
-    public HostContainer()
-    {
-      this.HostContainerConfig = new HostContainerConfig("Default", 1, 1);
       Initialize();
     }
 
@@ -150,7 +148,7 @@ namespace Windowmancer.UI
       }
     }
 
-    private void EditButton_OnClick(object sender, RoutedEventArgs e)
+    public void HandleHostConfigEdit()
     {
       SetDockableWindowVisibility(false);
 
@@ -158,7 +156,7 @@ namespace Windowmancer.UI
       if (flyout == null) return;
       var containerConfigEditor = new HostContainerConfigEditor(
         this.HostContainerConfig, new SizeInfo((int)this.ActualWidth, (int)this.ActualHeight))
-      { 
+      {
         DisplayContainersSelectable = false
       };
       containerConfigEditor.OnSave += (dcs) =>
@@ -166,7 +164,7 @@ namespace Windowmancer.UI
         this.HostContainerConfig = dcs;
         RefreshDisplayContainer();
       };
-      containerConfigEditor.OnClose += () => 
+      containerConfigEditor.OnClose += () =>
       {
         flyout.IsOpen = false;
         SetDockableWindowVisibility(true);
@@ -175,9 +173,20 @@ namespace Windowmancer.UI
       flyout.Content = containerConfigEditor;
       flyout.IsOpen = true;
     }
+    
+
+
+    private void EditButton_OnClick(object sender, RoutedEventArgs e)
+    {
+      HandleHostConfigEdit();
+    }
 
     private void HostContainer_OnLoaded(object sender, RoutedEventArgs e)
     {
+      if (_stupidFlag)
+      {
+        HandleHostConfigEdit();
+      }
     }
 
     public void ShowMessageToast(string message)

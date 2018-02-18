@@ -153,19 +153,35 @@ namespace Windowmancer.UI
       flyout.IsOpen = true;
     }
 
-    private void HandleContainerConfigEdit(HostContainerConfig container = null)
+    private void HandleContainerConfigEdit(HostContainerConfig config = null)
     {
-      var flyout = (Flyout)this.FindName("RightFlyout");
-      if (flyout == null) return;
+      // If this is an edit, then check if the container is active.
+      if (null != config)
+      {
+        // If it's not active, activate it with the config editor on
+        // startup.
+        if (!_hostContainerManager.IsHostContainerActive(config))
+        {
+          _hostContainerManager.RunHostContainer(config, true);
+        }
+        else
+        {
+          // If it's already active, bring the window to the fore,
+          // and remotely open/trigger the config editor.
+          var hcw = _hostContainerManager.GetHostContainerWindow(config);
+          hcw.Activate();
+          hcw.HandleHostConfigEdit();
+        }
 
-      // TODO: temp until default constructor for hostcontainerconfigeditor is done.
-      if (null == container) return;
+        return;
+      }
 
-      var containerConfig = new HostContainerConfigEditor(container, new SizeInfo((int)this.ActualWidth, (int)this.ActualHeight));
-      containerConfig.OnClose += () => { flyout.IsOpen = false; };
-
-      flyout.Content = containerConfig;
-      flyout.IsOpen = true;
+      // If this is a new container, create with default constructor and
+      // add it to the list of host containers.
+      var container = _hostContainerManager.CreateNewHostContainer();
+      this.ProfileManager.AddToActiveProfile(container.HostContainerConfig);
+      container.Show();
+      //_hostContainerManager.CreateNewHostContainer();
     }
 
     private void HandleWindowConfigEdit(WindowConfig item = null)
@@ -173,7 +189,7 @@ namespace Windowmancer.UI
       var flyout = (Flyout)this.FindName("RightFlyout");
       if (flyout == null) return;
 
-      var windowConfig = null == item ?
+      var wce = null == item ?
         new WindowConfigEditor(w =>
         {
           ProfileManager.AddToActiveProfile(w);
@@ -184,9 +200,9 @@ namespace Windowmancer.UI
           item.Update(w);
           ShowItemMessageToast(w.Name, "window configuration updated");
         });
-      windowConfig.OnClose += () => { flyout.IsOpen = false; };
+      wce.OnClose += () => { flyout.IsOpen = false; };
 
-      flyout.Content = windowConfig;
+      flyout.Content = wce;
       flyout.IsOpen = true;
     }
 
@@ -197,14 +213,14 @@ namespace Windowmancer.UI
       {
         return;
       }
-      var windowConfig = new WindowConfigEditor(item, c =>
+      var wce = new WindowConfigEditor(item, c =>
       {
         ProfileManager.AddToActiveProfile(c);
         ShowItemMessageToast(c.Name, "added to window configuration list.");
       });
-      windowConfig.OnClose += () => { flyout.IsOpen = false; };
+      wce.OnClose += () => { flyout.IsOpen = false; };
 
-      flyout.Content = windowConfig;
+      flyout.Content = wce;
       flyout.IsOpen = true;
     }
 
@@ -391,11 +407,13 @@ namespace Windowmancer.UI
     
     private void ActiveWindowsDataGrid_ContainerizeClick(object sender, RoutedEventArgs e)
     {
-      if (this.ActiveWindowsDataGrid.SelectedItem == null) return;
-      var process = ((MonitoredProcess)this.ActiveWindowsDataGrid.SelectedItem).GetProcess();
-      var config = (HostContainerConfig)((MenuItem)e.Source).Tag; 
+      // 
 
-      _hostContainerManager.ActivateHostContainer(config, process);
+      //if (this.ActiveWindowsDataGrid.SelectedItem == null) return;
+      //var process = ((MonitoredProcess)this.ActiveWindowsDataGrid.SelectedItem).GetProcess();
+      //var config = (HostContainerConfig)((MenuItem)e.Source).Tag; 
+
+      //_hostContainerManager.RunHostContainer(config, process);
     }
 
     private void ActiveWindowsDataGrid_QuickMonitorLayoutEditClick(object sender, RoutedEventArgs e)

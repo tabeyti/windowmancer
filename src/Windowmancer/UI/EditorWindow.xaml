@@ -183,7 +183,7 @@
       <Grid Grid.Column="2">
         <TabControl ItemContainerStyle="{StaticResource MyTabItem}">
           <TabItem Header="Monitor">
-            <GroupBox Header="Window Configurations" Style="{StaticResource MyGroupBoxStyle}">
+            <GroupBox Header="Monitor Window Configurations" Style="{StaticResource MyGroupBoxStyle}">
               <DataGrid Name="MonitorWindowConfigDataGrid" 
                       GridLinesVisibility="None" 
                       IsReadOnly="True" 
@@ -214,29 +214,36 @@
             </GroupBox>
           </TabItem>
           <TabItem Header="Container"
-                   Name="WindowHostContainersTabItem">
+                   Name="HostContainersTabItem">
             <Grid>
               <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="*"/>
               </Grid.ColumnDefinitions>
               <!--<StackPanel Orientation="Horizontal">-->
-              <GroupBox Header="HostContainers"
-                        Grid.Column="0">
+              <GroupBox Header="Containers"
+                        Grid.Column="0"
+                        Style="{StaticResource MyGroupBoxStyle}">
                 <ListBox Name="HostContainersListBox"
                          Margin="5"
                          Style="{StaticResource MyListBox}"
-                         ItemContainerStyle="{StaticResource MyListBoxItem}"
                          ItemsSource="{Binding ProfileManager.ActiveProfile.HostContainers}">
                   <ListBox.Resources>
                     <ContextMenu x:Key="RowMenu">
-                      <MenuItem Header="Add" Click="HostContainersListBox_MenuItemClick"></MenuItem>
-                    </ContextMenu>
-                  </ListBox.Resources>
-                  <ListBox.ContextMenu>
-                    <ContextMenu>
                       <MenuItem Header="Edit" Click="HostContainersListBox_MenuItemClick"></MenuItem>
                       <MenuItem Header="Delete" Click="HostContainersListBox_MenuItemClick"></MenuItem>
+                    </ContextMenu>
+                  </ListBox.Resources>
+                  <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem" BasedOn="{StaticResource MyListBoxItem}">
+                      <Setter Property="ContextMenu" Value="{StaticResource RowMenu}"/>
+                      <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                      <EventSetter Event="MouseDoubleClick" Handler="ProfileListBox_MouseDoubleClick"/>
+                    </Style>
+                  </ListBox.ItemContainerStyle>
+                  <ListBox.ContextMenu>
+                    <ContextMenu>
+                      <MenuItem Header="Add" Click="HostContainersListBox_MenuItemClick"></MenuItem>
                     </ContextMenu>
                   </ListBox.ContextMenu>
                   <ListBox.ItemTemplate>
@@ -252,7 +259,8 @@
                 </ListBox>
               </GroupBox>
               <GroupBox Header="Container Window Configurations"
-                        Grid.Column="1">
+                        Grid.Column="1"
+                        Style="{StaticResource MyGroupBoxStyle}">
                 <DataGrid Name="HostContainerWindowConfigDataGrid"
                           GridLinesVisibility="None" 
                           IsReadOnly="True" 

@@ -145,14 +145,14 @@
                                             Minimum="1"
                                             Maximum="10"
                                             Height="20"/>
-                        <CheckBox Name="WindowLayoutPreviewCheckBox" 
+                        <!--<CheckBox Name="WindowLayoutPreviewCheckBox" 
                                   Grid.Row="3" Grid.Column="0"
                                   HorizontalAlignment="Left"
                                   VerticalAlignment="Center"
                                   Content="Preview"
                                   IsChecked="{Binding DisplayHelperPreview}"
                                   Checked="WindowLayoutPreviewCheckBox_OnChecked"
-                                  Unchecked="WindowLayoutPreviewCheckBox_OnChecked"/>
+                                  Unchecked="WindowLayoutPreviewCheckBox_OnChecked"/>-->
                         <Button Name="SetDisplayHelperLayoutButton" 
                                 Grid.Row="5" Grid.ColumnSpan="2" Grid.Column="0"
                                 Margin="10"
