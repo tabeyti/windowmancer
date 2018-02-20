@@ -322,11 +322,54 @@ namespace Windowmancer.UI
       Close();
     }
 
-    private void SaveButton_Click(object sender, RoutedEventArgs e)
+    private void OkayButton_OnClick(object sender, RoutedEventArgs e)
     {
       SaveConfig();
       OnSave?.Invoke(this.MonitorLayoutInfo);
       Close();
     }
   }
+
+  public class DisplayHelperSection
+  {
+    public int RowIndex { get; set; }
+    public int ColumnIndex { get; set; }
+    public int TotalRows { get; set; }
+    public int TotalColumns { get; set; }
+
+    public DisplayHelperSection()
+    {
+      this.RowIndex = this.ColumnIndex = 0;
+      this.TotalRows = this.TotalColumns = 1;
+    }
+
+    public DisplayHelperSection(int rowIndex, int columnIndex, int totalRows, int totalColumns)
+    {
+      this.RowIndex = rowIndex;
+      this.ColumnIndex = columnIndex;
+      this.TotalRows = totalRows;
+      this.TotalColumns = totalColumns;
+    }
+
+    public MonitorLayoutInfo GetLayoutInfo(Screen screen)
+    {
+      var screenWidth = screen.Bounds.Width;
+      var screenHeight = screen.Bounds.Height;
+
+      var row = this.RowIndex;
+      var col = this.ColumnIndex;
+
+      var totalRows = this.TotalRows;
+      var totalCols = this.TotalColumns;
+
+      var x = (screenWidth / totalCols) * col + screen.Bounds.X;
+      var y = (screenHeight / totalRows) * row + screen.Bounds.Y;
+
+      var width = (screenWidth / totalCols);
+      var height = (screenHeight / totalRows);
+
+      return new MonitorLayoutInfo(x, y, width, height);
+    }
+  }
+
 }

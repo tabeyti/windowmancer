@@ -4,6 +4,7 @@
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:converters="clr-namespace:Windowmancer.UI.Converters"
              ShutdownMode="OnExplicitShutdown"
+             DispatcherUnhandledException ="App_OnDispatcherUnhandledException"
              Startup="App_OnStartup"
              Exit="App_OnExit">
   <Application.Resources>

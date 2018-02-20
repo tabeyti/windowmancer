@@ -66,7 +66,7 @@ namespace Windowmancer.Core.Services
     {
       if (Profiles.Any(p => p.Name == profile.Name))
       {
-        return false;
+        throw new Exception($"Profile '{profile.Name}' already exists dingus!");
       }
       DeselectActiveProfile();
       this.Profiles.Add(profile);
@@ -116,13 +116,13 @@ namespace Windowmancer.Core.Services
     {
       if (null == container)
       {
-        return false;
+        throw new Exception($"You can't pass a null container config ya idgit!");
       }
 
       if (this.ActiveProfile.HostContainers.Any(c => 
         c.Name.ToLower().Trim() == container.Name.ToLower().Trim()))
       {
-        return false;
+        throw new Exception($"{nameof(HostContainerConfig)} of name {container.Name} already exists, ya dingle berry!.");
       }
       this.ActiveProfile.HostContainers.Add(container);
       _userData.Save();
@@ -132,15 +132,19 @@ namespace Windowmancer.Core.Services
     /// <summary>
     /// Adds a window config instance to the active profile.
     /// </summary>
-    /// <param name="info"></param>
+    /// <param name="config"></param>
     /// <returns>True of window config was added. False if not.</returns>
-    public bool AddToActiveProfile(WindowConfig info)
+    public bool AddToActiveProfile(WindowConfig config)
     {
-      if (null == info)
+      if (null == config)
       {
-        return false;
+        throw new Exception("Why are you passing a no window config? Whatsamattawit YOU!");
       }
-      this.ActiveProfile.Windows.Add(info);
+      if (this.ActiveProfile.Windows.Any(c => c.Name.ToLower().Trim() == config.Name))
+      {
+        throw new Exception($"{nameof(WindowConfig)} of name {config.Name} already exists. You born in a barn or something that doesn't make sense. I'm sorry.");
+      }
+      this.ActiveProfile.Windows.Add(config);
       _userData.Save();
       return true;
     }
@@ -149,14 +153,14 @@ namespace Windowmancer.Core.Services
     /// Removes the passed window config instance from the active profile's
     /// list of window config objects.
     /// </summary>
-    /// <param name="info"></param>
-    public void RemoveFromActiveProfile(WindowConfig info)
+    /// <param name="config"></param>
+    public void RemoveFromActiveProfile(WindowConfig config)
     {
-      if (null == info)
+      if (null == config)
       {
         return;
       }
-      this.ActiveProfile.Windows.Remove(info);
+      this.ActiveProfile.Windows.Remove(config);
       _userData.Save();
     }
 
@@ -164,15 +168,39 @@ namespace Windowmancer.Core.Services
     /// Removes the passed container config instance from the active profile's
     /// list of container config objects.
     /// </summary>
-    /// <param name="info"></param>
-    public void RemoveFromActiveProfile(HostContainerConfig info)
+    /// <param name="config"></param>
+    public void RemoveFromActiveProfile(HostContainerConfig config)
     {
-      if (null == info)
+      if (null == config)
       {
         return;
       }
-      this.ActiveProfile.HostContainers.Remove(info);
+      this.ActiveProfile.HostContainers.Remove(config);
       _userData.Save();
+    }
+    public bool IsInActiveProfile(WindowConfig config)
+    {
+      if (null == config)
+      {
+        throw new Exception("Why you pass null config? This thing make no sense.");
+      }
+
+      return this.ActiveProfile.Windows.Any(c =>
+        c.Name.ToLower().Trim() == config.Name.ToLower().Trim());
+    }
+
+    public string DefaultWindowConfigName(string prefix = "My Window Config")
+    {
+      var configs = this.ActiveProfile.Windows;
+      var i = 0;
+      var name = $"{prefix} 0";
+
+      while (configs.Any(c => c.Name == name))
+      {
+        name = $"{prefix} {i++}";
+      }
+
+      return name;
     }
 
     private void DeselectActiveProfile()

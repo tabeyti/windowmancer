@@ -4,11 +4,13 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Interop;
 using MahApps.Metro.Controls;
+using Microsoft.Practices.Unity;
 using Windowmancer.Core.Extensions;
 using Windowmancer.Core.Models;
 using Windowmancer.Core.Practices;
 using Windowmancer.Core.Services;
 using Windowmancer.Core.Services.Base;
+using Windowmancer.Services;
 
 namespace Windowmancer.UI
 {
@@ -20,6 +22,8 @@ namespace Windowmancer.UI
     public int CurrentRowIndex { get; private set; }
     public int CurrentColumnIndex { get; private set; }
     public HostContainerConfig HostContainerConfig { get; set; }
+
+    private ProfileManager ProfileManager { get; set; }
 
     private static readonly int _titlebarHeight = (int)SystemParameters.WindowCaptionHeight + 10;
     private static readonly string _defaultContainerName = "My Container";
@@ -35,6 +39,7 @@ namespace Windowmancer.UI
 
     private void Initialize()
     {
+      this.ProfileManager = Helper.ServiceResolver.Resolve<ProfileManager>();
       this.Closing += (o, e) =>
       {
         foreach (var dw in this.HostContainerConfig.DockedWindows)
@@ -42,6 +47,29 @@ namespace Windowmancer.UI
           dw.Process?.Kill();
         }
       };
+    }
+
+    public Tuple<int, int> NextDockProcRowColumn()
+    {
+      var rowIndex = this.CurrentRowIndex;
+      var columnIndex = this.CurrentColumnIndex;
+
+      if (columnIndex >= this.HostContainerConfig.Columns)
+      {
+        if (rowIndex >= this.HostContainerConfig.Rows)
+        {
+          return null;
+        }
+        rowIndex++;
+        columnIndex = 0;
+      }
+      return Tuple.Create(rowIndex, columnIndex);
+    }
+
+    public void DockProc(Process process, WindowConfig windowConfig)
+    {
+      DockProc(process);
+      HandleWindowConfigEdit(process);
     }
 
     /// <summary>
@@ -114,7 +142,59 @@ namespace Windowmancer.UI
       this.SizeChanged += Resize;
       RefreshDockableWindow(windowToDock);
     }
-    
+
+    public void SetDockableWindowVisibility(bool isVisible)
+    {
+      foreach (var dw in this.HostContainerConfig.DockedWindows)
+      {
+        MonitorWindowManager.SetWindowOpacityPercentage(dw.Process, (uint)(isVisible ? 100 : 0));
+      }
+    }
+
+    public void HandleWindowConfigEdit(Process process)
+    {
+      SetDockableWindowVisibility(false);
+      var flyout = (Flyout)this.FindName("RightFlyout");
+      if (flyout == null) return;
+
+      var config = WindowConfig.FromProcess(process, false);
+      var wce = new WindowConfigEditor(config, c =>
+      {
+        this.ProfileManager.AddToActiveProfile(c);
+        ShowItemMessageToast(c.Name, "added to window configuration list.");
+      });
+      wce.OnClose += () => { flyout.IsOpen = false; };
+
+      flyout.Content = wce;
+      flyout.IsOpen = true;
+    }
+
+    public void HandleHostConfigEdit()
+    {
+      SetDockableWindowVisibility(false);
+
+      var flyout = this.Flyouts.Items[0] as Flyout;
+      if (flyout == null) return;
+      var containerConfigEditor = new HostContainerConfigEditor(
+        this.HostContainerConfig, new SizeInfo((int)this.ActualWidth, (int)this.ActualHeight))
+      {
+        DisplayContainersSelectable = false
+      };
+      containerConfigEditor.OnSave += (dcs) =>
+      {
+        this.HostContainerConfig.UpdateUserData(dcs);
+        RefreshDisplayContainer();
+      };
+      containerConfigEditor.OnClose += () =>
+      {
+        flyout.IsOpen = false;
+        SetDockableWindowVisibility(true);
+      };
+
+      flyout.Content = containerConfigEditor;
+      flyout.IsOpen = true;
+    }
+
     private void RefreshDisplayContainer()
     {
       foreach (var d in this.HostContainerConfig.DockedWindows)
@@ -139,42 +219,6 @@ namespace Windowmancer.UI
 
       Win32.MoveWindow(dockableWindow.Process.MainWindowHandle, x, y, (int)width, (int)height, true);
     }
-
-    public void SetDockableWindowVisibility(bool isVisible)
-    {
-      foreach (var dw in this.HostContainerConfig.DockedWindows)
-      {
-        MonitorWindowManager.SetWindowOpacityPercentage(dw.Process, (uint)(isVisible ? 100 : 0));
-      }
-    }
-
-    public void HandleHostConfigEdit()
-    {
-      SetDockableWindowVisibility(false);
-
-      var flyout = this.Flyouts.Items[0] as Flyout;
-      if (flyout == null) return;
-      var containerConfigEditor = new HostContainerConfigEditor(
-        this.HostContainerConfig, new SizeInfo((int)this.ActualWidth, (int)this.ActualHeight))
-      {
-        DisplayContainersSelectable = false
-      };
-      containerConfigEditor.OnSave += (dcs) =>
-      {
-        this.HostContainerConfig = dcs;
-        RefreshDisplayContainer();
-      };
-      containerConfigEditor.OnClose += () =>
-      {
-        flyout.IsOpen = false;
-        SetDockableWindowVisibility(true);
-      };
-
-      flyout.Content = containerConfigEditor;
-      flyout.IsOpen = true;
-    }
-    
-
 
     private void EditButton_OnClick(object sender, RoutedEventArgs e)
     {
@@ -207,6 +251,12 @@ namespace Windowmancer.UI
 
     public void ShowItemMessageToast(string itemName, string message)
     {
+    }
+
+    private void HostContainer_OnClosed(object sender, EventArgs e)
+    {
+      var hcm = App.ServiceResolver.Resolve<HostContainerManager>();
+      hcm.RemoveHostContainer(this);
     }
   }
 }

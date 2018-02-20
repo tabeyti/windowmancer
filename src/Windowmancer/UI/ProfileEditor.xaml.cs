@@ -100,13 +100,10 @@ namespace Windowmancer.UI
     private static void ForceDataValidation()
     {
       var textBox = Keyboard.FocusedElement as TextBox;
-      if (textBox != null)
+      BindingExpression be = textBox?.GetBindingExpression(TextBox.TextProperty);
+      if (be != null && !textBox.IsReadOnly && textBox.IsEnabled)
       {
-        BindingExpression be = textBox.GetBindingExpression(TextBox.TextProperty);
-        if (be != null && !textBox.IsReadOnly && textBox.IsEnabled)
-        {
-          be.UpdateSource();
-        }
+        be.UpdateSource();
       }
     }
   }

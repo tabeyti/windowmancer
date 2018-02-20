@@ -219,7 +219,9 @@ namespace Windowmancer.Core.Services
       {
         throw new Exception($"MonitorWindowManager.SetWindowOpacityPercentage - Opacity percentage cannot be above 100. Value given: {opacityPercentage}");
       }
-      
+
+      if (null == process) return;
+
       var handle = process.MainWindowHandle;
 
       // Only set the layered window attribute if it hasn't already been set for this

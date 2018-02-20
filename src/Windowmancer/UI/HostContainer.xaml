@@ -9,11 +9,12 @@
                       Title="{Binding HostContainerConfig.Name}"
                       mc:Ignorable="d"
                       Loaded="HostContainer_OnLoaded"
+                      Closed="HostContainer_OnClosed"
                       DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
   <Controls:MetroWindow.Flyouts>
     <Controls:FlyoutsControl x:Name="FlyoutsControl">
-      <Controls:Flyout Header="Layout Helper"
+      <Controls:Flyout Name="RightFlyout"
                        IsModal="True"
                        Position="Right"
                        CloseButtonVisibility="Collapsed"

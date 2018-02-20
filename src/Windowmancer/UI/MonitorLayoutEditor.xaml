@@ -189,20 +189,14 @@
     <Grid Grid.Row="1" Margin="10,10,0,10" HorizontalAlignment="Right">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="100"></ColumnDefinition>
-        <ColumnDefinition Width="100"></ColumnDefinition>
       </Grid.ColumnDefinitions>
-      <Button Name="CancelButton"
+      <Button Name="OkayButton"
               Style="{StaticResource SquareButtonStyle}"
-              Content="Cancel" 
+              Content="Okay" 
               Grid.Column="0"
               Width="75"
-              IsDefault="False" Click="CancelButton_Click"/>
-      <Button Name="SaveButton"
-              Style="{StaticResource SquareButtonStyle}"
-              Content="Save" 
-              Grid.Column="1"
-              Width="75"
-              IsDefault="True" Click="SaveButton_Click"/>
+              IsDefault="True" 
+              Click="OkayButton_OnClick"/>
     </Grid>
   </Grid>
 </UserControl>

@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Threading;
 using Microsoft.Practices.Unity;
 using Windowmancer.Core.Models;
 using Windowmancer.Core.Practices;
@@ -265,6 +266,11 @@ namespace Windowmancer
           e.Graphics.FillRectangle(bgBrush, bgRectangle);
         }
       }
+    }
+
+    private void App_OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+    {
+      System.Windows.MessageBox.Show(e.Exception.Message, "Error");
     }
   }
 }

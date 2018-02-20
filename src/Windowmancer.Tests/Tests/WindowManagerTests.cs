@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Practices.Unity;
 using Windowmancer.Core.Models;
-using Windowmancer.Core.Practices;
 using Windowmancer.Core.Services;
 using Windowmancer.Tests.Models;
 using Windowmancer.Tests.Practices;

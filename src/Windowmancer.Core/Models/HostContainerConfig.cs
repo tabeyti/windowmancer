@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Windows.Forms;
+using Microsoft.Practices.Unity;
 using Newtonsoft.Json;
+using Windowmancer.Core.Practices;
 
 namespace Windowmancer.Core.Models
 {
@@ -32,6 +34,13 @@ namespace Windowmancer.Core.Models
     }
 
     [JsonIgnore]
+    public bool IsActive
+    {
+      get => GetProperty<bool>();
+      set => SetProperty(value);
+    }
+
+    [JsonIgnore]
     // Used specifically for HostContainer.xaml.cs.
     public ObservableCollection<DockableWindow> DockedWindows
     {
@@ -45,6 +54,7 @@ namespace Windowmancer.Core.Models
       RegisterProperty(nameof(this.Rows), 1);
       RegisterProperty(nameof(this.Columns), 1);
       RegisterProperty(nameof(this.DockedWindows), new ObservableCollection<DockableWindow>());
+      RegisterProperty(nameof(this.IsActive), false);
       RegisterProperty(nameof(this.Id), Guid.NewGuid().ToString());
     }
 
@@ -54,6 +64,7 @@ namespace Windowmancer.Core.Models
       RegisterProperty(nameof(this.Rows), 1);
       RegisterProperty(nameof(this.Columns), 1);
       RegisterProperty(nameof(this.DockedWindows), new ObservableCollection<DockableWindow>());
+      RegisterProperty(nameof(this.IsActive), false);
       RegisterProperty(nameof(this.Id), Guid.NewGuid().ToString());
     }
 
@@ -63,6 +74,7 @@ namespace Windowmancer.Core.Models
       RegisterProperty(nameof(this.Rows), 1);
       RegisterProperty(nameof(this.Columns), 1);
       RegisterProperty(nameof(this.DockedWindows), new ObservableCollection<DockableWindow>());
+      RegisterProperty(nameof(this.IsActive), false);
       RegisterProperty(nameof(this.Id), Guid.NewGuid().ToString());
     }
 
@@ -72,7 +84,18 @@ namespace Windowmancer.Core.Models
       RegisterProperty(nameof(this.Rows), rows);
       RegisterProperty(nameof(this.Columns), columns);
       RegisterProperty(nameof(this.DockedWindows), new ObservableCollection<DockableWindow>());
+      RegisterProperty(nameof(this.IsActive), false);
       RegisterProperty(nameof(this.Id), Guid.NewGuid().ToString());
+    }
+
+    private UserData _userData;
+    public void UpdateUserData(HostContainerConfig config)
+    {
+      this.Name = config.Name;
+      this.Rows = config.Rows;
+      this.Columns = config.Columns;
+      _userData = _userData ?? Helper.ServiceResolver.Resolve<UserData>();
+      _userData.Save();
     }
 
     public object Clone()

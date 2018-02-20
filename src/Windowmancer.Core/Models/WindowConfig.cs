@@ -15,6 +15,12 @@ namespace Windowmancer.Core.Models
       set => SetProperty(value);
     }
 
+    public WindowConfigLayoutType LayoutType
+    {
+      get => GetProperty<WindowConfigLayoutType>();
+      set => SetProperty(value);
+    }
+
     public MonitorLayoutInfo MonitorLayoutInfo
     {
       get => GetProperty<MonitorLayoutInfo>();
@@ -49,18 +55,24 @@ namespace Windowmancer.Core.Models
 
     public WindowConfig()
     {
-      RegisterProperty<string>(nameof(this.Name));
-      RegisterProperty<string>(nameof(this.ApplyOnProcessStart));
-      RegisterProperty<MonitorLayoutInfo>(nameof(this.MonitorLayoutInfo));
+      RegisterProperty(nameof(this.Name), "");
+      RegisterProperty(nameof(this.ApplyOnProcessStart), true);
+      RegisterProperty(nameof(this.LayoutType), WindowConfigLayoutType.Monitor);
+      RegisterProperty(nameof(this.MonitorLayoutInfo), new MonitorLayoutInfo());
       RegisterProperty<HostContainerLayoutInfo>(nameof(this.HostContainerLayoutInfo));
-      RegisterProperty<WindowMatchCriteria>(nameof(this.MatchCriteria));
-      RegisterProperty<WindowStylingInfo>(nameof(this.StylingInfo));
+      RegisterProperty(nameof(this.MatchCriteria), new WindowMatchCriteria(default(WindowMatchCriteriaType), ""));
+      RegisterProperty(nameof(this.StylingInfo), new WindowStylingInfo());
+    }
 
-      this.Name = "";
-      this.MonitorLayoutInfo = new MonitorLayoutInfo();
-      this.MatchCriteria = new WindowMatchCriteria(default(WindowMatchCriteriaType), "");
-      this.ApplyOnProcessStart = true;
-      this.StylingInfo = new WindowStylingInfo();
+    public WindowConfig(WindowConfigLayoutType layoutType)
+    {
+      RegisterProperty(nameof(this.Name), "");
+      RegisterProperty(nameof(this.ApplyOnProcessStart), true);
+      RegisterProperty(nameof(this.LayoutType), layoutType);
+      RegisterProperty(nameof(this.MonitorLayoutInfo), new MonitorLayoutInfo());
+      RegisterProperty<HostContainerLayoutInfo>(nameof(this.HostContainerLayoutInfo));
+      RegisterProperty(nameof(this.MatchCriteria), new WindowMatchCriteria(default(WindowMatchCriteriaType), ""));
+      RegisterProperty(nameof(this.StylingInfo), new WindowStylingInfo());
     }
 
     public bool IsMatch(Process p)
@@ -97,17 +109,17 @@ namespace Windowmancer.Core.Models
       _userData.Save();
     }
 
-    public static WindowConfig FromProcess(Process process)
+    public static WindowConfig FromProcess(Process process, bool monitorLayoutInfo = true)
     {
       var procRec = Win32.GetProcessWindowRec(process);
       return new WindowConfig
       {
         Name = process.MainWindowTitle,
-        MonitorLayoutInfo = new MonitorLayoutInfo(
+        MonitorLayoutInfo = monitorLayoutInfo ? new MonitorLayoutInfo(
           procRec.Left,
           procRec.Top,
           procRec.Width,
-          procRec.Height),
+          procRec.Height) : null,
         MatchCriteria = new WindowMatchCriteria { MatchString = process.MainWindowTitle },
         StylingInfo = new WindowStylingInfo
         {
@@ -160,8 +172,8 @@ namespace Windowmancer.Core.Models
 
     public MonitorLayoutInfo()
     {
-      RegisterProperty<PositionInfo>(nameof(PositionInfo));
-      RegisterProperty<SizeInfo>(nameof(this.SizeInfo));
+      RegisterProperty(nameof(PositionInfo), new PositionInfo());
+      RegisterProperty(nameof(this.SizeInfo), new SizeInfo());
     }
 
     public MonitorLayoutInfo(int x, int y, int width, int height)
@@ -309,4 +321,9 @@ namespace Windowmancer.Core.Models
     }
   }
 
+  public enum WindowConfigLayoutType
+  {
+    Monitor,
+    HostContainer
+  }
 }

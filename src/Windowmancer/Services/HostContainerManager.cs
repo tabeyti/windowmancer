@@ -7,6 +7,7 @@ using Windowmancer.Core.Models;
 using Windowmancer.Core.Services;
 using Windowmancer.UI;
 using Microsoft.Practices.Unity;
+using System;
 
 namespace Windowmancer.Services
 {
@@ -33,7 +34,7 @@ namespace Windowmancer.Services
       // Create new host container config.
       var config = new HostContainerConfig(DefaultName());
 
-      RunHostContainer(config, true);
+      ActivateHostContainer(config, true);
       return GetHostContainerWindow(config);
     }
 
@@ -41,11 +42,15 @@ namespace Windowmancer.Services
     /// Activates (creates) the window for the provided host container config.
     /// </summary>
     /// <param name="config"></param>
-    public void RunHostContainer(HostContainerConfig config, bool enableEditor)
+    /// <param name="enableEditor"></param>
+    public void ActivateHostContainer(HostContainerConfig config, bool enableEditor)
     {
-      var hostContainerWindow = new HostContainer(config, enableEditor);
-      hostContainerWindow.Show();
-      this.HostContainerWindows.Add(hostContainerWindow);
+      var hcw = IsHostContainerActive(config) ? 
+        GetHostContainerWindow(config) : 
+        new HostContainer(config, enableEditor);
+      hcw.Show();
+      hcw.Activate();
+      this.HostContainerWindows.Add(hcw);
     }
 
     /// <summary>
@@ -54,12 +59,26 @@ namespace Windowmancer.Services
     /// </summary>
     /// <param name="config"></param>
     /// <param name="process"></param>
-    public void RunHostContainer(HostContainerConfig config, Process process)
+    public void ActivateHostContainer(HostContainerConfig config, Process process)
     {
-      var hostContainerWindow = new HostContainer(config);
-      hostContainerWindow.Show();
-      hostContainerWindow.DockProc(process);
-      this.HostContainerWindows.Add(hostContainerWindow);
+      var hcw = IsHostContainerActive(config) ? 
+        GetHostContainerWindow(config) : 
+        new HostContainer(config);
+      hcw.Show();
+      hcw.Activate();
+      hcw.DockProc(process);
+      this.HostContainerWindows.Add(hcw);
+    }
+
+    public void ActivateHostContainer(HostContainerConfig config, Process process, WindowConfig windowConfig)
+    {
+      var hcw = IsHostContainerActive(config) ?
+        GetHostContainerWindow(config) :
+        new HostContainer(config);
+      hcw.Show();
+      hcw.Activate();
+      hcw.DockProc(process, windowConfig);
+      this.HostContainerWindows.Add(hcw);
     }
 
     public HostContainer GetHostContainerWindow(HostContainerConfig config)
@@ -90,6 +109,11 @@ namespace Windowmancer.Services
       }
 
       return name;
+    }
+
+    internal void RemoveHostContainer(HostContainer hostContainer)
+    {
+      this.HostContainerWindows.Remove(hostContainer);
     }
   }
 }

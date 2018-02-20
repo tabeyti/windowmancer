@@ -72,7 +72,7 @@ namespace Windowmancer.Core.Practices
 
     [DllImport("user32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    public static extern bool GetWindowConfig(IntPtr hwnd, ref Win32_WindowConfig pwi);
+    public static extern bool GetWindowInfo(IntPtr hwnd, ref Win32_WindowConfig pwi);
 
     [DllImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
@@ -240,7 +240,7 @@ namespace Windowmancer.Core.Practices
       var info = new Win32.Win32_WindowConfig();
       var rec = new Win32.Win32_Rect();
 
-      Win32.GetWindowConfig(process.MainWindowHandle, ref info);
+      Win32.GetWindowInfo(process.MainWindowHandle, ref info);
       rec = info.rcWindow;
 
       if (!Win32.IsIconic(process.MainWindowHandle))
