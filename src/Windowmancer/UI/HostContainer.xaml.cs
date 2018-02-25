@@ -22,7 +22,6 @@ namespace Windowmancer.UI
     public int CurrentRowIndex { get; private set; }
     public int CurrentColumnIndex { get; private set; }
     public HostContainerConfig HostContainerConfig { get; set; }
-
     private ProfileManager ProfileManager { get; set; }
 
     private static readonly int _titlebarHeight = (int)SystemParameters.WindowCaptionHeight + 10;
@@ -49,7 +48,7 @@ namespace Windowmancer.UI
       };
     }
 
-    public Tuple<int, int> NextDockProcRowColumn()
+    public Tuple<uint, uint> NextDockProcRowColumn()
     {
       var rowIndex = this.CurrentRowIndex;
       var columnIndex = this.CurrentColumnIndex;
@@ -63,13 +62,25 @@ namespace Windowmancer.UI
         rowIndex++;
         columnIndex = 0;
       }
-      return Tuple.Create(rowIndex, columnIndex);
+      return Tuple.Create((uint)rowIndex, (uint)columnIndex);
     }
 
-    public void DockProc(Process process, WindowConfig windowConfig)
+    public void DockNewProc(Process process)
     {
+      var xy = NextDockProcRowColumn();
+      if (null == xy)
+      {
+        throw new Exception($"No more space to put {process.ProcessName} in container {this.HostContainerConfig.Name}");
+      }
       DockProc(process);
-      HandleWindowConfigEdit(process);
+
+      var config = WindowConfig.FromProcess(process, false);
+      config.HostContainerLayoutInfo = new HostContainerLayoutInfo(xy.Item1, xy.Item2, this.HostContainerConfig.Name);
+
+      // The the layout information for the config, then 
+      // open the window config editor.
+      this.ProfileManager.AddToActiveProfile(config);
+      HandleWindowConfigEdit(config);
     }
 
     /// <summary>
@@ -95,7 +106,7 @@ namespace Windowmancer.UI
     {
       if (this.HostContainerConfig.DockedWindows.Any(dw => dw.Process.Handle == process.Handle))
       {
-        return;
+        throw new Exception("You are docking the same window twice. Just herpin and derpin, aren't ya?");
       }
 
       var windowToDock = new DockableWindow(process) { Row = rowIndex, Column = columnIndex };
@@ -151,19 +162,21 @@ namespace Windowmancer.UI
       }
     }
 
-    public void HandleWindowConfigEdit(Process process)
+    public void HandleWindowConfigEdit(WindowConfig config)
     {
       SetDockableWindowVisibility(false);
       var flyout = (Flyout)this.FindName("RightFlyout");
       if (flyout == null) return;
 
-      var config = WindowConfig.FromProcess(process, false);
       var wce = new WindowConfigEditor(config, c =>
       {
-        this.ProfileManager.AddToActiveProfile(c);
         ShowItemMessageToast(c.Name, "added to window configuration list.");
       });
-      wce.OnClose += () => { flyout.IsOpen = false; };
+      wce.OnClose += () =>
+      {
+        flyout.IsOpen = false;
+        SetDockableWindowVisibility(true);
+      };
 
       flyout.Content = wce;
       flyout.IsOpen = true;

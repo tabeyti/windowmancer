@@ -118,6 +118,7 @@
     <Compile Include="Services\ProcessMonitor.cs" />
     <Compile Include="Services\ProfileManager.cs" />
     <Compile Include="Services\MonitorWindowManager.cs" />
+    <Compile Include="Services\WindowConfigManager.cs" />
     <Compile Include="Services\WmDispatcher.cs" />
   </ItemGroup>
   <ItemGroup />

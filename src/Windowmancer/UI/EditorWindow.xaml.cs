@@ -296,10 +296,7 @@ namespace Windowmancer.UI
       {
         containerizeItem.Items.Add(new MenuItem { Header = c.Name, Tag = c });
       }
-
-      var quickLayoutEditItem = new MenuItem {Header = "Quick layout edit."};
-      quickLayoutEditItem.Click += ActiveWindowsDataGrid_QuickMonitorLayoutEditClick;
-
+      
       // Set the source.
       this.ActiveWindowsContextMenuItems = new ObservableCollection<FrameworkElement>
       {
@@ -307,8 +304,6 @@ namespace Windowmancer.UI
         containerizeItem,
         new Separator(),
         highlightItem,
-        new Separator(),
-        quickLayoutEditItem
       };
     }
 
@@ -316,13 +311,6 @@ namespace Windowmancer.UI
     {
       if (this.MonitorWindowConfigDataGrid.SelectedItem == null) return;
       var item = (WindowConfig)MonitorWindowConfigDataGrid.SelectedItem;
-      HandleWindowConfigEdit(item);
-    }
-
-    private void ActiveWindowsGrid_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
-    {
-      if (this.ActiveWindowsDataGrid.SelectedItem == null) return;
-      var item = ((MonitoredProcess)this.ActiveWindowsDataGrid.SelectedItem).GetProcess();
       HandleWindowConfigEdit(item);
     }
 
@@ -371,15 +359,15 @@ namespace Windowmancer.UI
       this.EditorViewModel.Update();
     }
 
-    private void RunProfileButton_OnClick(object sender, RoutedEventArgs e)
-    {
-      _monitorWindowManager.RefreshProfile();
-    }
-
     private void ProfileListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
     {
       var item = (Profile)this.ProfileListBox.SelectedItem;
       HandleProfileEdit(item);
+    }
+
+    private void RunProfileButton_OnClick(object sender, RoutedEventArgs e)
+    {
+      _monitorWindowManager.RefreshProfile();
     }
 
     private void Preferences_Click(object sender, RoutedEventArgs e)
@@ -433,7 +421,7 @@ namespace Windowmancer.UI
 
       // Add the process to the host container. The host container will
       // manage the window config.
-      _hostContainerManager.ActivateHostContainer(hostContainerConfig, process, null);
+      _hostContainerManager.ActivateHostContainer(hostContainerConfig, process);
 
 
       /////////////////////////////////////////////////////////////////////////
@@ -463,16 +451,22 @@ namespace Windowmancer.UI
 
     }
 
-    private void ActiveWindowsDataGrid_QuickMonitorLayoutEditClick(object sender, RoutedEventArgs e)
+    private void ActiveWindowsDataGrid_OnContextMenuOpening(object sender, ContextMenuEventArgs e)
     {
-      if (this.ActiveWindowsDataGrid.SelectedItem == null) return;
-      var process = ((MonitoredProcess)this.ActiveWindowsDataGrid.SelectedItem).GetProcess();
-      HandleQuickLayoutEdit(process);
+      BuildActiveWindowsContextMenu();
     }
 
+    private void ActiveWindowsGrid_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+    {
+      if (this.ActiveWindowsDataGrid.SelectedItem == null) return;
+      var item = ((MonitoredProcess)this.ActiveWindowsDataGrid.SelectedItem).GetProcess();
+      HandleWindowConfigEdit(item);
+    }
 
     private void EditorWindow_OnLoaded(object sender, RoutedEventArgs e)
     {
+      // TODO: Debug
+      Process.Start("notepad.exe");
     }
 
     private void MonitorWindowConfigDataGrid_OnAutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
@@ -531,11 +525,6 @@ namespace Windowmancer.UI
     {
       var item = (WindowConfig)e.Item;
       e.Accepted = item.MonitorLayoutInfo == null;
-    }
-
-    private void ActiveWindowsDataGrid_OnContextMenuOpening(object sender, ContextMenuEventArgs e)
-    {
-      BuildActiveWindowsContextMenu();
     }
 
     private void AboutBox_Click(object sender, RoutedEventArgs e)

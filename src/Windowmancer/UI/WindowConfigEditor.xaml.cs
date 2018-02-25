@@ -168,13 +168,10 @@ namespace Windowmancer.UI
         (_process != null).RunIfTrue(() => MonitorWindowManager.SetWindowOpacityPercentage(_process, this.OriginalOpacity));
       }
     }
+
     private void LabelTextBox_OnGotFocus(object sender, RoutedEventArgs e)
     {
       (sender as LabelTextBox)?.BaseTextBox.SelectAll();
-    }
-
-    private void LayoutEditorButton_OnClick(object sender, RoutedEventArgs e)
-    {
     }
   }
 

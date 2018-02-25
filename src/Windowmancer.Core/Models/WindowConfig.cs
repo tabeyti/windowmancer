@@ -85,6 +85,7 @@ namespace Windowmancer.Core.Models
       return new WindowConfig
       {
         Name = this.Name,
+        LayoutType = this.LayoutType,
         ApplyOnProcessStart = this.ApplyOnProcessStart,
         MonitorLayoutInfo = (MonitorLayoutInfo)this.MonitorLayoutInfo?.Clone(),
         HostContainerLayoutInfo= (HostContainerLayoutInfo)this.HostContainerLayoutInfo?.Clone(),
@@ -105,6 +106,14 @@ namespace Windowmancer.Core.Models
       this.MonitorLayoutInfo = info.MonitorLayoutInfo;
       this.HostContainerLayoutInfo = info.HostContainerLayoutInfo;
       this.StylingInfo = info.StylingInfo;
+      Save();
+    }
+
+    /// <summary>
+    /// Saves the current values held in the config to user data.
+    /// </summary>
+    public void Save()
+    {
       _userData = _userData ?? Helper.ServiceResolver.Resolve<UserData>();
       _userData.Save();
     }
@@ -115,6 +124,7 @@ namespace Windowmancer.Core.Models
       return new WindowConfig
       {
         Name = process.MainWindowTitle,
+        LayoutType = monitorLayoutInfo ? WindowConfigLayoutType.Monitor : WindowConfigLayoutType.HostContainer,
         MonitorLayoutInfo = monitorLayoutInfo ? new MonitorLayoutInfo(
           procRec.Left,
           procRec.Top,
