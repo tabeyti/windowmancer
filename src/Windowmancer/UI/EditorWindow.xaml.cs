@@ -544,5 +544,11 @@ namespace Windowmancer.UI
       dialog.Content = about;
       this.ShowMetroDialogAsync(dialog, settings);
     }
+
+    private void HostContainersListBox_ItemDoubleClick(object sender, MouseButtonEventArgs e)
+    {
+      var item = (HostContainerConfig)this.HostContainersListBox.SelectedItem;
+      _hostContainerManager.ActivateHostContainer(item, false);
+    }
   }
 }
