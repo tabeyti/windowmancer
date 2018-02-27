@@ -236,7 +236,7 @@ namespace Windowmancer.UI
     {
       (_process != null).RunIfTrue(() =>
       {
-        this.OriginalLayoutInfo = WindowConfig.FromProcess(_process).MonitorLayoutInfo;
+        this.OriginalLayoutInfo = WindowConfig.FromProcess(_process, Core.Models.WindowConfigLayoutType.Monitor).MonitorLayoutInfo;
       });
       UpdateScreenHighlight();
     }

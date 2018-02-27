@@ -67,10 +67,7 @@ namespace Windowmancer.UI
 
     public void ShowItemMessageToast(string itemName, string message = null)
     {
-      if (itemName == null && message == null)
-      {
-        return;
-      }
+      if (itemName == null && message == null) return;
 
       var flyout = (Flyout)this.FindName("BottomFlyout");
       if (null == flyout)
@@ -84,10 +81,7 @@ namespace Windowmancer.UI
 
     public void ShowErrorItemToast(string itemName, string message = null)
     {
-      if (itemName == null && message == null)
-      {
-        return;
-      }
+      if (itemName == null && message == null) return;
 
       var flyout = (Flyout)this.FindName("ErrorFlyout");
       if (null == flyout)
@@ -101,10 +95,7 @@ namespace Windowmancer.UI
 
     public void ShowMessageToast(string message)
     {
-      if (message == null)
-      {
-        return;
-      }
+      if (message == null) return;
 
       var flyout = (Flyout)this.FindName("BottomFlyout");
       if (null == flyout)
@@ -195,14 +186,17 @@ namespace Windowmancer.UI
       if (flyout == null) return;
 
       var config = new WindowConfig();
-
-      var wce = new WindowConfigEditor(config, w =>
+      var wce = new WindowConfigEditor(config)
       {
-        //ProfileManager.AddToActiveProfile(w);
-        //ShowItemMessageToast(w.Name, "window configuration added.");
-      });
+        OnSave = w =>
+        {
+          ProfileManager.AddToActiveProfile(w);
+          ShowItemMessageToast(w.Name, "window configuration added.");
+        }
+      };
+      
       wce.OnClose += () => { flyout.IsOpen = false; };
-
+      
       flyout.Content = wce;
       flyout.IsOpen = true;
     }
@@ -212,11 +206,14 @@ namespace Windowmancer.UI
       var flyout = (Flyout)this.FindName("RightFlyout");
       if (flyout == null || item == null) return;
 
-      var wce = new WindowConfigEditor(item, (w) =>
+      var wce = new WindowConfigEditor(item)
+      {
+        OnSave = (w) =>
         {
-          //item.Update(w);
-          //ShowItemMessageToast(w.Name, "window configuration updated");
-        });
+          item.Update(w);
+          ShowItemMessageToast(w.Name, "window configuration updated");
+        }
+      };
       wce.OnClose += () => { flyout.IsOpen = false; };
 
       flyout.Content = wce;
@@ -226,17 +223,18 @@ namespace Windowmancer.UI
     private void HandleWindowConfigEdit(Process item)
     {
       var flyout = (Flyout)this.FindName("RightFlyout");
-      if (flyout == null)
-      {
-        return;
-      }
+      if (flyout == null) return;
 
-      var config = WindowConfig.FromProcess(item);
-      var wce = new WindowConfigEditor(config, c =>
+      var config = WindowConfig.FromProcess(item, Core.Models.WindowConfigLayoutType.Monitor);
+      var wce = new WindowConfigEditor(config)
       {
-        ProfileManager.AddToActiveProfile(c);
-        ShowItemMessageToast(c.Name, "added to window configuration list.");
-      });
+        OnSave = c =>
+        {
+          ProfileManager.AddToActiveProfile(c);
+          ShowItemMessageToast(c.Name, "added to window configuration list.");
+        }
+      };
+      ;
       wce.OnClose += () => { flyout.IsOpen = false; };
 
       flyout.Content = wce;
@@ -246,10 +244,8 @@ namespace Windowmancer.UI
     private void HandleSettingsDialog()
     {
       var flyout = (Flyout)this.FindName("LeftFlyout");
-      if (flyout == null)
-      {
-        return;
-      }
+      if (flyout == null) return;
+      
       flyout.Header = "Preferences";
       var w = new PreferencesDialog(new PreferencesModel(_keyHookManager.HotKeyConfig), p =>
       {

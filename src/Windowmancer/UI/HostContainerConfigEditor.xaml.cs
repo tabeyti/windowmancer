@@ -38,7 +38,7 @@ namespace Windowmancer.UI
     {
       this.HostContainerEditorConfigEditorViewModel = new HostContainerEditorViewModel
       {
-        ActiveHostContainerConfig = containerConfig,
+        ActiveHostContainerConfig = (HostContainerConfig)containerConfig.Clone(),
         SizeInfo = sizeInfo
       };
       PreInitialize();

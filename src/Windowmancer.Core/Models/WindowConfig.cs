@@ -69,8 +69,18 @@ namespace Windowmancer.Core.Models
       RegisterProperty(nameof(this.Name), "");
       RegisterProperty(nameof(this.ApplyOnProcessStart), true);
       RegisterProperty(nameof(this.LayoutType), layoutType);
-      RegisterProperty(nameof(this.MonitorLayoutInfo), new MonitorLayoutInfo());
-      RegisterProperty<HostContainerLayoutInfo>(nameof(this.HostContainerLayoutInfo));
+
+      if (layoutType == WindowConfigLayoutType.Monitor)
+      {
+        RegisterProperty(nameof(this.MonitorLayoutInfo), new MonitorLayoutInfo());
+        RegisterProperty<HostContainerLayoutInfo>(nameof(this.HostContainerLayoutInfo));
+      }
+      else
+      {
+        RegisterProperty<MonitorLayoutInfo>(nameof(this.MonitorLayoutInfo));
+        RegisterProperty(nameof(this.HostContainerLayoutInfo), new HostContainerLayoutInfo());
+      }
+      
       RegisterProperty(nameof(this.MatchCriteria), new WindowMatchCriteria(default(WindowMatchCriteriaType), ""));
       RegisterProperty(nameof(this.StylingInfo), new WindowStylingInfo());
     }
@@ -118,24 +128,30 @@ namespace Windowmancer.Core.Models
       _userData.Save();
     }
 
-    public static WindowConfig FromProcess(Process process, bool monitorLayoutInfo = true)
+    public static WindowConfig FromProcess(Process process, WindowConfigLayoutType layoutType)
     {
       var procRec = Win32.GetProcessWindowRec(process);
-      return new WindowConfig
+      var config = new WindowConfig(layoutType)
       {
         Name = process.MainWindowTitle,
-        LayoutType = monitorLayoutInfo ? WindowConfigLayoutType.Monitor : WindowConfigLayoutType.HostContainer,
-        MonitorLayoutInfo = monitorLayoutInfo ? new MonitorLayoutInfo(
-          procRec.Left,
-          procRec.Top,
-          procRec.Width,
-          procRec.Height) : null,
+        LayoutType = layoutType,
         MatchCriteria = new WindowMatchCriteria { MatchString = process.MainWindowTitle },
         StylingInfo = new WindowStylingInfo
         {
           WindowOpacityPercentage = MonitorWindowManager.GetWindowOpacityPercentage(process)
         }
       };
+
+      // Apply monitor relative size and position if monitor layout given.
+      if (layoutType == WindowConfigLayoutType.Monitor)
+      {
+        config.MonitorLayoutInfo.Update(new MonitorLayoutInfo(procRec.Left,
+          procRec.Top,
+          procRec.Width,
+          procRec.Height));
+      }
+
+      return config;
     }
   }
 
@@ -314,7 +330,6 @@ namespace Windowmancer.Core.Models
 
     public HostContainerLayoutInfo(uint row, uint column, string container)
     {
-      
       RegisterProperty(nameof(this.Row), row);
       RegisterProperty(nameof(this.Column), column);
       RegisterProperty(nameof(this.HostContainerId), container);
@@ -322,12 +337,26 @@ namespace Windowmancer.Core.Models
 
     public override string ToString()
     {
-      return $"Row: {Row} - Column: {Column}";
+      return $"{this.HostContainerId} - {Row},{Column}";
     }
 
     public object Clone()
     {
       return new HostContainerLayoutInfo(this.Row, this.Column, this.HostContainerId);
+    }
+
+    public void Update(uint row, uint column, string hostContainer)
+    {
+      this.Row = row;
+      this.Column = column;
+      this.HostContainerId = hostContainer;
+    }
+
+    public void Update(HostContainerLayoutInfo layoutInfo)
+    {
+      this.Row = layoutInfo.Row;
+      this.Column = layoutInfo.Column;
+      this.HostContainerId = layoutInfo.HostContainerId;
     }
   }
 

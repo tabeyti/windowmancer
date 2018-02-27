@@ -89,7 +89,7 @@ namespace Windowmancer.Core.Models
     }
 
     private UserData _userData;
-    public void UpdateUserData(HostContainerConfig config)
+    public void Update(HostContainerConfig config)
     {
       this.Name = config.Name;
       this.Rows = config.Rows;

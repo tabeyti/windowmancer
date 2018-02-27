@@ -29,12 +29,9 @@ namespace Windowmancer.UI
     private Process _process;
 
 #region Constructors
-    
-    public WindowConfigEditor(
-      WindowConfig windowConfig,
-      Action<WindowConfig> onSave)
+
+    public WindowConfigEditor(WindowConfig windowConfig)
     {
-      this.OnSave = onSave;
       this.WindowConfig = (WindowConfig)windowConfig?.Clone();
       PreInitialization();
       InitializeComponent();

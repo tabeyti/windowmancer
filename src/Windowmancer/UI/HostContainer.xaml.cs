@@ -19,9 +19,10 @@ namespace Windowmancer.UI
   /// </summary>
   public partial class HostContainer : IToastHost
   {
-    public int CurrentRowIndex { get; private set; }
-    public int CurrentColumnIndex { get; private set; }
     public HostContainerConfig HostContainerConfig { get; set; }
+    
+    private int CurrentRowIndex { get; set; }
+    private int CurrentColumnIndex { get; set; }
     private ProfileManager ProfileManager { get; set; }
 
     private static readonly int _titlebarHeight = (int)SystemParameters.WindowCaptionHeight + 10;
@@ -72,10 +73,11 @@ namespace Windowmancer.UI
       {
         throw new Exception($"No more space to put {process.ProcessName} in container {this.HostContainerConfig.Name}");
       }
-      DockProc(process);
-
-      var config = WindowConfig.FromProcess(process, false);
-      config.HostContainerLayoutInfo = new HostContainerLayoutInfo(xy.Item1, xy.Item2, this.HostContainerConfig.Name);
+      
+      var config = WindowConfig.FromProcess(process, Core.Models.WindowConfigLayoutType.HostContainer);
+      config.HostContainerLayoutInfo.Update(xy.Item1, xy.Item2, this.HostContainerConfig.Name);
+      
+      DockProc(process, config);
 
       // The the layout information for the config, then 
       // open the window config editor.
@@ -88,7 +90,8 @@ namespace Windowmancer.UI
     /// index.
     /// </summary>
     /// <param name="process"></param>
-    public void DockProc(Process process)
+    /// <param name="windowConfig"></param>
+    private void DockProc(Process process, WindowConfig windowConfig)
     {
       if (this.CurrentColumnIndex >= this.HostContainerConfig.Columns)
       {
@@ -99,31 +102,23 @@ namespace Windowmancer.UI
         this.CurrentRowIndex++;
         this.CurrentColumnIndex = 0;
       }
-      DockProc(process, this.CurrentRowIndex, this.CurrentColumnIndex++);
-    }
 
-    public void DockProc(Process process, int rowIndex, int columnIndex)
-    {
+      var layoutInfo = windowConfig.HostContainerLayoutInfo;
+      layoutInfo.Row = (uint) this.CurrentRowIndex;
+      layoutInfo.Column = (uint) this.CurrentColumnIndex;
+      
       if (this.HostContainerConfig.DockedWindows.Any(dw => dw.Process.Handle == process.Handle))
       {
         throw new Exception("You are docking the same window twice. Just herpin and derpin, aren't ya?");
       }
 
-      var windowToDock = new DockableWindow(process) { Row = rowIndex, Column = columnIndex };
+      var windowToDock = new DockableWindow(process, windowConfig);
       this.HostContainerConfig.DockedWindows.Add(windowToDock);
       while (process.MainWindowHandle == IntPtr.Zero)
       {
         // We try catch here because some windows (e.g. cmd) 
         // do not support the call WaitForInputIdle.
-        try
-        {
-          // Wait for the window to be ready for input.
-          process.WaitForInputIdle(1000);
-        }
-        catch
-        {
-          // ignore
-        }
+        try { process.WaitForInputIdle(1000); } catch { }
         process.Refresh();
         if (process.HasExited) return;
         process.Exited += (s, e) =>
@@ -154,7 +149,7 @@ namespace Windowmancer.UI
       RefreshDockableWindow(windowToDock);
     }
 
-    public void SetDockableWindowVisibility(bool isVisible)
+    private void SetDockableWindowVisibility(bool isVisible)
     {
       foreach (var dw in this.HostContainerConfig.DockedWindows)
       {
@@ -162,20 +157,24 @@ namespace Windowmancer.UI
       }
     }
 
-    public void HandleWindowConfigEdit(WindowConfig config)
+    private void HandleWindowConfigEdit(WindowConfig config)
     {
       SetDockableWindowVisibility(false);
       var flyout = (Flyout)this.FindName("RightFlyout");
       if (flyout == null) return;
 
-      var wce = new WindowConfigEditor(config, c =>
+      var wce = new WindowConfigEditor(config)
       {
-        ShowItemMessageToast(c.Name, "added to window configuration list.");
-      });
-      wce.OnClose += () =>
-      {
-        flyout.IsOpen = false;
-        SetDockableWindowVisibility(true);
+        OnSave = c =>
+        {
+          config.Update(c);
+          ShowItemMessageToast(config.Name, "added to window configuration list.");
+        },
+        OnClose = () =>
+        {
+          flyout.IsOpen = false;
+          SetDockableWindowVisibility(true);
+        }
       };
 
       flyout.Content = wce;
@@ -186,17 +185,31 @@ namespace Windowmancer.UI
     {
       SetDockableWindowVisibility(false);
 
-      var flyout = this.Flyouts.Items[0] as Flyout;
+      var flyout = (Flyout) this.FindName("RightFlyout");
       if (flyout == null) return;
       var containerConfigEditor = new HostContainerConfigEditor(
-        this.HostContainerConfig, new SizeInfo((int)this.ActualWidth, (int)this.ActualHeight))
+        this.HostContainerConfig, new SizeInfo((int) this.ActualWidth, (int) this.ActualHeight))
       {
-        DisplayContainersSelectable = false
-      };
-      containerConfigEditor.OnSave += (dcs) =>
-      {
-        this.HostContainerConfig.UpdateUserData(dcs);
-        RefreshDisplayContainer();
+        DisplayContainersSelectable = false,
+        OnSave = (dcs) =>
+        {
+          // Update host container info.
+          this.HostContainerConfig.Update(dcs);
+          RefreshDisplayContainer();
+
+          // TODO: Hack to update layout info in original config.
+          foreach (var wc in this.ProfileManager.ActiveProfile.Windows)
+          {
+            foreach (var d in dcs.DockedWindows)
+            {
+              if (d.WindowConfig.Name == wc.Name)
+              {
+                wc.HostContainerLayoutInfo.Update(d.WindowConfig.HostContainerLayoutInfo);
+                wc.Save();
+              }
+            }
+          }
+        }
       };
       containerConfigEditor.OnClose += () =>
       {

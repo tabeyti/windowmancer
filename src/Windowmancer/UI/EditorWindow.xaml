@@ -30,11 +30,13 @@
       <Setter Property="Controls:ControlsHelper.ContentCharacterCasing" Value="Normal"/>
       <Setter Property="SeparatorBrush" Value="{StaticResource MainColorTheme}" />
     </Style>
+    <!--    View for displaying a list of window configs with monitor layout target-->
     <CollectionViewSource x:Key="MonitorWindowConfigCollectionView" 
                           Source="{Binding ProfileManager.ActiveProfile.Windows}"
                           Filter="MonitorWindowConfigList_OnFilter">
       
     </CollectionViewSource>
+    <!--    View for displaying a list of window configs with host container layout target-->
     <CollectionViewSource x:Key="ContainerWindowConfigCollectionView" 
                           Source="{Binding ProfileManager.ActiveProfile.Windows}"
                           Filter="ContainerWindowConfigCollectionView_OnFilter">

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace Windowmancer.Core.Models
 {
@@ -10,14 +11,27 @@ namespace Windowmancer.Core.Models
 
     public EventHandler OnProcessExited { get; set; }
 
-    public int Row { get; set; }
-    public int Column { get; set; }
+    public int Row
+    {
+      get => (int) this.WindowConfig.HostContainerLayoutInfo.Row;
+      set { this.WindowConfig.HostContainerLayoutInfo.Row = (uint) value; }
+    }
+    
+    public int Column 
+    {
+      get => (int) this.WindowConfig.HostContainerLayoutInfo.Column;
+      set { this.WindowConfig.HostContainerLayoutInfo.Column = (uint) value; }
+    }
 
+    public WindowConfig WindowConfig { get; set; }
+    
     public DockableWindow() { }
-    public DockableWindow(Process process)
+    
+    public DockableWindow(Process process, WindowConfig config)
     {
       this.Process = process;
       process.EnableRaisingEvents = true;
+      this.WindowConfig = config;
     }
 
     public object Clone()
@@ -26,9 +40,8 @@ namespace Windowmancer.Core.Models
       {
         Process = this.Process,
         ParentHandle = this.ParentHandle,
-        Row = this.Row,
-        Column = this.Column,
-        OnProcessExited = this.OnProcessExited
+        OnProcessExited = this.OnProcessExited,
+        WindowConfig = (WindowConfig)this.WindowConfig.Clone()
       };
     }
   }

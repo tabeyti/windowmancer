@@ -142,7 +142,7 @@ namespace Windowmancer.Core.Services
       }
       if (this.ActiveProfile.Windows.Any(c => c.Name.ToLower().Trim() == config.Name))
       {
-        throw new Exception($"{nameof(WindowConfig)} of name {config.Name} already exists. You born in a barn or something that doesn't make sense. I'm sorry.");
+        throw new Exception($"{nameof(WindowConfig)} of name {config.Name} already exists. You born in a barn or something? That doesn't make sense. I'm sorry.");
       }
       this.ActiveProfile.Windows.Add(config);
       _userData.Save();
