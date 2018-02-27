@@ -14,13 +14,13 @@ namespace Windowmancer.Core.Models
     public int Row
     {
       get => (int) this.WindowConfig.HostContainerLayoutInfo.Row;
-      set { this.WindowConfig.HostContainerLayoutInfo.Row = (uint) value; }
+      set => this.WindowConfig.HostContainerLayoutInfo.Row = (uint) value;
     }
     
     public int Column 
     {
       get => (int) this.WindowConfig.HostContainerLayoutInfo.Column;
-      set { this.WindowConfig.HostContainerLayoutInfo.Column = (uint) value; }
+      set => this.WindowConfig.HostContainerLayoutInfo.Column = (uint) value;
     }
 
     public WindowConfig WindowConfig { get; set; }

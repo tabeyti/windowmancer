@@ -59,7 +59,7 @@ namespace Windowmancer.Core.Models
       RegisterProperty(nameof(this.ApplyOnProcessStart), true);
       RegisterProperty(nameof(this.LayoutType), WindowConfigLayoutType.Monitor);
       RegisterProperty(nameof(this.MonitorLayoutInfo), new MonitorLayoutInfo());
-      RegisterProperty<HostContainerLayoutInfo>(nameof(this.HostContainerLayoutInfo));
+      RegisterProperty(nameof(this.HostContainerLayoutInfo), new HostContainerLayoutInfo());
       RegisterProperty(nameof(this.MatchCriteria), new WindowMatchCriteria(default(WindowMatchCriteriaType), ""));
       RegisterProperty(nameof(this.StylingInfo), new WindowStylingInfo());
     }
@@ -323,9 +323,9 @@ namespace Windowmancer.Core.Models
 
     public HostContainerLayoutInfo()
     {
-      RegisterProperty<uint>(nameof(this.Row));
-      RegisterProperty<uint>(nameof(this.Column));
-      RegisterProperty<string>(nameof(this.HostContainerId));
+      RegisterProperty<uint>(nameof(this.Row), 0);
+      RegisterProperty<uint>(nameof(this.Column), 0);
+      RegisterProperty<string>(nameof(this.HostContainerId), string.Empty);
     }
 
     public HostContainerLayoutInfo(uint row, uint column, string container)

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Interop;
 using MahApps.Metro.Controls;
+using Microsoft.Practices.ObjectBuilder2;
 using Microsoft.Practices.Unity;
 using Windowmancer.Core.Extensions;
 using Windowmancer.Core.Models;
@@ -191,20 +192,21 @@ namespace Windowmancer.UI
         this.HostContainerConfig, new SizeInfo((int) this.ActualWidth, (int) this.ActualHeight))
       {
         DisplayContainersSelectable = false,
-        OnSave = (dcs) =>
+        OnSave = (config) =>
         {
           // Update host container info.
-          this.HostContainerConfig.Update(dcs);
+          this.HostContainerConfig.Update(config);
           RefreshDisplayContainer();
 
           // TODO: Hack to update layout info in original config.
           foreach (var wc in this.ProfileManager.ActiveProfile.Windows)
           {
-            foreach (var d in dcs.DockedWindows)
+            foreach (var d in config.DockedWindows)
             {
               if (d.WindowConfig.Name == wc.Name)
               {
-                wc.HostContainerLayoutInfo.Update(d.WindowConfig.HostContainerLayoutInfo);
+                var li = d.WindowConfig.HostContainerLayoutInfo;
+                wc.HostContainerLayoutInfo = new HostContainerLayoutInfo(li.Row, li.Column, li.HostContainerId);
                 wc.Save();
               }
             }
@@ -261,10 +263,7 @@ namespace Windowmancer.UI
 
     public void ShowMessageToast(string message)
     {
-      if (message == null)
-      {
-        return;
-      }
+      if (message == null) return;
 
       var flyout = (Flyout)this.FindName("ToastFlyout");
       if (null == flyout)
