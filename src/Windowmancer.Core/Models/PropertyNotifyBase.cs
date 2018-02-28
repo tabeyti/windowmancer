@@ -28,7 +28,7 @@ namespace Windowmancer.Core.Models
       
       // Check if this is an object with PropertyNotifyBase, and if 
       // so, attach to it's PropertyChanged event.
-      if (typeof(PropertyNotifyBase).IsAssignableFrom(typeof(T)))
+      if (typeof(PropertyNotifyBase).IsAssignableFrom(typeof(T)) && null != value)
       {
         ((PropertyNotifyBase) ((object)value)).PropertyChanged += (sender, args) =>
         {
@@ -55,14 +55,14 @@ namespace Windowmancer.Core.Models
         // TODO: warn or error?
         return;
       }
-      if (null == value || value.Equals((T) _props[memberName])) return;
+      if (null != value && value.Equals((T) _props[memberName])) return;
       
       // Add to the properties dictionary.
       _props[memberName] = value;
         
       // Check if this is an object with PropertyNotifyBase, and if 
       // so, attach to it's PropertyChanged event.
-      if (typeof(PropertyNotifyBase).IsAssignableFrom(typeof(T)))
+      if (typeof(PropertyNotifyBase).IsAssignableFrom(typeof(T)) && null != value)
       {
         ((PropertyNotifyBase) _props[memberName]).PropertyChanged += (sender, args) =>
         {
@@ -78,11 +78,6 @@ namespace Windowmancer.Core.Models
     protected void OnPointPropertyChanged(string prop)
     {
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-    }
-
-    protected void UpdatePropertyBindings()
-    {
-      
     }
   }
 }

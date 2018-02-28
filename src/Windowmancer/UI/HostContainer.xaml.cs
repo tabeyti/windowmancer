@@ -196,8 +196,7 @@ namespace Windowmancer.UI
         {
           // Update host container info.
           this.HostContainerConfig.Update(config);
-          RefreshDisplayContainer();
-
+          
           // TODO: Hack to update layout info in original config.
           foreach (var wc in this.ProfileManager.ActiveProfile.Windows)
           {
@@ -206,11 +205,13 @@ namespace Windowmancer.UI
               if (d.WindowConfig.Name == wc.Name)
               {
                 var li = d.WindowConfig.HostContainerLayoutInfo;
-                wc.HostContainerLayoutInfo = new HostContainerLayoutInfo(li.Row, li.Column, li.HostContainerId);
+                wc.HostContainerLayoutInfo.Update(li); 
                 wc.Save();
               }
             }
           }
+          
+          RefreshDisplayContainer(config);
         }
       };
       containerConfigEditor.OnClose += () =>
@@ -226,6 +227,14 @@ namespace Windowmancer.UI
     private void RefreshDisplayContainer()
     {
       foreach (var d in this.HostContainerConfig.DockedWindows)
+      {
+        RefreshDockableWindow(d);
+      }
+    }
+
+    private void RefreshDisplayContainer(HostContainerConfig config)
+    {
+      foreach (var d in config.DockedWindows)
       {
         RefreshDockableWindow(d);
       }

@@ -29,8 +29,8 @@ namespace Windowmancer.UI
     public Action<HostContainerConfig> OnSave { get; set; }
     public bool DisplayContainersSelectable { get; set; }
     public HostContainerEditorViewModel HostContainerEditorConfigEditorViewModel { get; set; }
-    public CanvasViewModel CanvasViewModel { get; set; }
-
+    
+    private CanvasViewModel CanvasViewModel { get; set; }
     private readonly SolidColorBrush _defaultBrush = Brushes.Turquoise;
     private DisplayAspectRatio _screenAspectRatio;
 
@@ -38,7 +38,7 @@ namespace Windowmancer.UI
     {
       this.HostContainerEditorConfigEditorViewModel = new HostContainerEditorViewModel
       {
-        ActiveHostContainerConfig = (HostContainerConfig)containerConfig.Clone(),
+        HostContainerConfig = (HostContainerConfig)containerConfig.Clone(),
         SizeInfo = sizeInfo
       };
       PreInitialize();
@@ -66,11 +66,11 @@ namespace Windowmancer.UI
       this.CanvasViewModel.Reset();
 
       // Create.
-      this.CanvasViewModel.Rows = this.HostContainerEditorConfigEditorViewModel.ActiveHostContainerConfig.Rows;
-      this.CanvasViewModel.Columns = this.HostContainerEditorConfigEditorViewModel.ActiveHostContainerConfig.Columns;
+      this.CanvasViewModel.Rows = this.HostContainerEditorConfigEditorViewModel.HostContainerConfig.Rows;
+      this.CanvasViewModel.Columns = this.HostContainerEditorConfigEditorViewModel.HostContainerConfig.Columns;
       this.CanvasViewModel.Canvas = new Canvas { Background = _defaultBrush };
 
-      var dockableWindows = this.HostContainerEditorConfigEditorViewModel.ActiveHostContainerConfig.DockedWindows;
+      var dockableWindows = this.HostContainerEditorConfigEditorViewModel.HostContainerConfig.DockedWindows;
       Enumerable.Range(0, rows).ForEach(r =>
         Enumerable.Range(0, cols).ForEach(c =>
         {
@@ -154,9 +154,9 @@ namespace Windowmancer.UI
       window.KeyDown += HostContainerConfigEditor_HandleKeyPress;
 
       RecreateDisplaySectionControl(
-        this.HostContainerEditorConfigEditorViewModel.ActiveHostContainerConfig.Rows,
-        this.HostContainerEditorConfigEditorViewModel.ActiveHostContainerConfig.Columns);
-  }
+        this.HostContainerEditorConfigEditorViewModel.HostContainerConfig.Rows,
+        this.HostContainerEditorConfigEditorViewModel.HostContainerConfig.Columns);
+    }
     
     private void DisplayListBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
@@ -175,7 +175,7 @@ namespace Windowmancer.UI
       {
         var currentNumSections = this.RowSpinner.Value * this.ColumnSpinner.Value;
         if (currentNumSections <
-            this.HostContainerEditorConfigEditorViewModel.ActiveHostContainerConfig.DockedWindows.Count)
+            this.HostContainerEditorConfigEditorViewModel.HostContainerConfig.DockedWindows.Count)
         {
           var spinner = (IntegerUpDown)sender;
           spinner.Value = (int)e.OldValue;
@@ -194,8 +194,8 @@ namespace Windowmancer.UI
       }
 
       RecreateDisplaySectionControl(
-        this.HostContainerEditorConfigEditorViewModel.ActiveHostContainerConfig.Rows,
-        this.HostContainerEditorConfigEditorViewModel.ActiveHostContainerConfig.Columns);
+        this.HostContainerEditorConfigEditorViewModel.HostContainerConfig.Rows,
+        this.HostContainerEditorConfigEditorViewModel.HostContainerConfig.Columns);
     }
 
     private void CancelButton_OnClick(object sender, RoutedEventArgs e)
@@ -205,7 +205,7 @@ namespace Windowmancer.UI
 
     private void SaveButton_OnClick(object sender, RoutedEventArgs e)
     {
-      OnSave?.Invoke(this.HostContainerEditorConfigEditorViewModel.ActiveHostContainerConfig);
+      OnSave?.Invoke(this.HostContainerEditorConfigEditorViewModel.HostContainerConfig);
       Close();
     }
     private void LabelTextBox_OnGotFocus(object sender, RoutedEventArgs e)
@@ -218,7 +218,7 @@ namespace Windowmancer.UI
 
   public class HostContainerEditorViewModel : PropertyNotifyBase
   {
-    public HostContainerConfig ActiveHostContainerConfig
+    public HostContainerConfig HostContainerConfig
     {
       get 
       {
@@ -254,7 +254,7 @@ namespace Windowmancer.UI
     public HostContainerEditorViewModel()
     {
       RegisterProperty<DockableWindow>(nameof(this.ActiveDockableWindow), null);
-      RegisterProperty<HostContainerConfig>(nameof(this.ActiveHostContainerConfig), null);
+      RegisterProperty<HostContainerConfig>(nameof(this.HostContainerConfig), null);
       RegisterProperty<DisplayAspectRatio>(nameof(this.DisplayAspectRatio), null);
       RegisterProperty<SizeInfo>(nameof(this.SizeInfo), null);
     }
