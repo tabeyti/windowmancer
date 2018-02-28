@@ -2,12 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Runtime.Remoting.Channels;
 
 namespace Windowmancer.Core.Models
 {
   public class PropertyNotifyBase : INotifyPropertyChanged
   {
-    private Dictionary<string, object> _props = new Dictionary<string, object>();
+    private readonly Dictionary<string, object> _props = new Dictionary<string, object>();
 
     protected void RegisterProperty<T>(string propertyName)
     {
@@ -24,6 +25,17 @@ namespace Windowmancer.Core.Models
       {
         throw new Exception($"PropertyNotifyBase - Already registered property {propertyName}");
       }
+      
+      // Check if this is an object with PropertyNotifyBase, and if 
+      // so, attach to it's PropertyChanged event.
+      if (typeof(PropertyNotifyBase).IsAssignableFrom(typeof(T)))
+      {
+        ((PropertyNotifyBase) ((object)value)).PropertyChanged += (sender, args) =>
+        {
+          OnPointPropertyChanged(propertyName);
+        };          
+      }
+      
       _props.Add(propertyName, value);
     }
 
@@ -36,26 +48,41 @@ namespace Windowmancer.Core.Models
       return (T)_props[memberName];
     }
 
-    protected void SetProperty(object value, [CallerMemberName]string memberName="")
+    protected void SetProperty<T>(T value, [CallerMemberName] string memberName = "")
     {
       if (!_props.ContainsKey(memberName))
       {
         // TODO: warn or error?
         return;
       }
-
-      if (value != _props[memberName])
+      if (null == value || value.Equals((T) _props[memberName])) return;
+      
+      // Add to the properties dictionary.
+      _props[memberName] = value;
+        
+      // Check if this is an object with PropertyNotifyBase, and if 
+      // so, attach to it's PropertyChanged event.
+      if (typeof(PropertyNotifyBase).IsAssignableFrom(typeof(T)))
       {
-        _props[memberName] = value;
-        OnPointPropertyChanged(memberName);
+        ((PropertyNotifyBase) _props[memberName]).PropertyChanged += (sender, args) =>
+        {
+          OnPointPropertyChanged(memberName);
+        };          
       }
+      OnPointPropertyChanged(memberName);
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
 
+    // ReSharper disable once MemberCanBePrivate.Global
     protected void OnPointPropertyChanged(string prop)
     {
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+    }
+
+    protected void UpdatePropertyBindings()
+    {
+      
     }
   }
 }
