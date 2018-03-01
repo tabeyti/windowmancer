@@ -18,7 +18,7 @@ namespace Windowmancer.UI
   /// <summary>
   /// Interaction logic for HostContainer.xaml
   /// </summary>
-  public partial class HostContainer : IToastHost
+  public partial class HostContainer : IToastHost, IHostContainerWindow
   {
     public HostContainerConfig HostContainerConfig { get; set; }
     
@@ -66,6 +66,11 @@ namespace Windowmancer.UI
         columnIndex = 0;
       }
       return Tuple.Create((uint)rowIndex, (uint)columnIndex);
+    }
+
+    public void ActivateWindow()
+    {
+      this.Activate();
     }
 
     public void DockNewProc(Process process)

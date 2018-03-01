@@ -17,11 +17,15 @@ namespace Windowmancer.Core.Services
 
     private ManagementEventWatcher _startWatch;
     private ManagementEventWatcher _stopWatch;
-    private readonly MonitorWindowManager _monitorWindowManager;
+    private readonly WindowConfigManager _windowConfigManager;
+    private readonly ProfileManager _profileManager;
 
-    public ProcessMonitor(MonitorWindowManager monitorWindowManager)
+    public ProcessMonitor(
+      WindowConfigManager windowConfigManager,
+      ProfileManager profileManager)
     {
-      _monitorWindowManager = monitorWindowManager;
+      _windowConfigManager = windowConfigManager;
+      _profileManager = profileManager;
       this.ActiveWindowProcs = new ObservableCollection<MonitoredProcess>();
     }
 
@@ -29,7 +33,7 @@ namespace Windowmancer.Core.Services
     {
       GetAllActiveWindowProcesses();
 
-      var computerName = "localhost";
+      const string computerName = "localhost";
       var scope = new ManagementScope($"\\\\{computerName}\\root\\CIMV2", null);
       scope.Connect();
 
@@ -74,8 +78,13 @@ namespace Windowmancer.Core.Services
       {
         return;
       }
+
+      // If this a legit process, let's add it to the list.
       AddToActiveWindows(proc);
-      _monitorWindowManager.ApplyWindowConfig(proc, true);
+
+      
+      
+      _windowConfigManager.ApplyWindowConfig(proc, true);
     }
 
     private void StopWatch_EventArrived(object sender, EventArrivedEventArgs e)

@@ -24,29 +24,29 @@ namespace Windowmancer.Core.Services
     }
 
     /// <summary>
-    /// Applies an existing window info object to the provided process 
-    /// window. If no window info exists for the passed process window,
+    /// Applies an existing window config object to the provided process 
+    /// window. If no window config exists for the passed process window,
     /// nothing is done.
     /// </summary>
     /// <param name="process"></param>
     /// <param name="newProcess"></param>
     public void ApplyWindowConfig(Process process, bool newProcess = false)
     {
-      var windowInfo = ActiveProfile?.Windows.Find(p => p.IsMatch(process));
-      if (windowInfo == null) return;
-      if (!newProcess || windowInfo.ApplyOnProcessStart)
+      var windowConfig = ActiveProfile?.Windows.Find(p => p.IsMatch(process));
+      if (windowConfig == null) return;
+      if (!newProcess || windowConfig.ApplyOnProcessStart)
       {
-        ApplyWindowConfig(windowInfo, process);
+        ApplyWindowConfig(windowConfig, process);
       }
     }
 
     /// <summary>
     /// Applies the given layout info, held in the provided
-    /// window info object, to the targeted process window.
+    /// window config object, to the targeted process window.
     /// </summary>
-    /// <param name="windowInfo"></param>
+    /// <param name="windowConfig"></param>
     /// <param name="process"></param>
-    public void ApplyWindowConfig(WindowConfig windowInfo, Process process)
+    public void ApplyWindowConfig(WindowConfig windowConfig, Process process)
     {
       var handle = process.MainWindowHandle;
       if (handle == IntPtr.Zero)
@@ -55,15 +55,15 @@ namespace Windowmancer.Core.Services
       }
       
       // Set layout values.
-      var x = (int)windowInfo.MonitorLayoutInfo.PositionInfo.X;
-      var y = (int)windowInfo.MonitorLayoutInfo.PositionInfo.Y;
-      var width = windowInfo.MonitorLayoutInfo.SizeInfo.Width;
-      var height = windowInfo.MonitorLayoutInfo.SizeInfo.Height;
+      var x = (int)windowConfig.MonitorLayoutInfo.PositionInfo.X;
+      var y = (int)windowConfig.MonitorLayoutInfo.PositionInfo.Y;
+      var width = windowConfig.MonitorLayoutInfo.SizeInfo.Width;
+      var height = windowConfig.MonitorLayoutInfo.SizeInfo.Height;
       ShowWindowNormal(process);
       Win32.MoveWindow(handle, x, y, width, height, true);
 
       // Set styling values.
-      SetWindowOpacityPercentage(process, windowInfo.StylingInfo.WindowOpacityPercentage);
+      SetWindowOpacityPercentage(process, windowConfig.StylingInfo.WindowOpacityPercentage);
     }
 
 
@@ -80,9 +80,9 @@ namespace Windowmancer.Core.Services
         {
           continue;
         }
-        var windowInfo = this.ActiveProfile.Windows.Find(pr => pr.IsMatch(p));
-        if (null == windowInfo) continue;
-        ApplyWindowConfig(windowInfo, p);
+        var windowConfig = this.ActiveProfile.Windows.Find(pr => pr.IsMatch(p));
+        if (null == windowConfig) continue;
+        ApplyWindowConfig(windowConfig, p);
       }
     }
 
@@ -90,19 +90,19 @@ namespace Windowmancer.Core.Services
 
     /// <summary>
     /// Attempts to retrieve the running process for the given
-    /// window info.
+    /// window config.
     /// </summary>
-    /// <param name="windowInfo"></param>
+    /// <param name="windowConfig"></param>
     /// <returns></returns>
-    public static Process GetProcess(WindowConfig windowInfo)
+    public static Process GetProcess(WindowConfig windowConfig)
     {
-      if (null == windowInfo)
+      if (null == windowConfig)
       {
         return null;
       }
 
       var allProcceses = System.Diagnostics.Process.GetProcesses();
-      return allProcceses.ToList().Find(windowInfo.IsMatch);
+      return allProcceses.ToList().Find(windowConfig.IsMatch);
     }
 
     /// <summary>

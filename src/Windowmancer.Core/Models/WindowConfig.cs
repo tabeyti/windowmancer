@@ -323,9 +323,9 @@ namespace Windowmancer.Core.Models
 
     public HostContainerLayoutInfo()
     {
-      RegisterProperty<uint>(nameof(this.Row), 0);
-      RegisterProperty<uint>(nameof(this.Column), 0);
-      RegisterProperty<string>(nameof(this.HostContainerId), string.Empty);
+      RegisterProperty(nameof(this.Row), 0u);
+      RegisterProperty(nameof(this.Column), 0u);
+      RegisterProperty(nameof(this.HostContainerId), string.Empty);
     }
 
     public HostContainerLayoutInfo(uint row, uint column, string container)

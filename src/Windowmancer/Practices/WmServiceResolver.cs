@@ -7,6 +7,7 @@ using Windowmancer.Core.Configuration;
 using Windowmancer.Core.Models;
 using Windowmancer.Core.Practices;
 using Windowmancer.Core.Services;
+using Windowmancer.Core.Services.Base;
 using Windowmancer.Services;
 
 namespace Windowmancer.Practices
@@ -47,9 +48,10 @@ namespace Windowmancer.Practices
       userData.SetUserConfig(userConfig);
       container.RegisterInstance(userData, new ContainerControlledLifetimeManager());
       container.RegisterType<ProcessMonitor>(new ContainerControlledLifetimeManager());
-      container.RegisterType<MonitorWindowManager>(new ContainerControlledLifetimeManager());
       container.RegisterType<ProfileManager>(new ContainerControlledLifetimeManager());
-      container.RegisterType<HostContainerManager>(new ContainerControlledLifetimeManager());
+      container.RegisterType<MonitorWindowManager>(new ContainerControlledLifetimeManager());
+      container.RegisterType<HostContainerManagerBase, HostContainerManager>(new ContainerControlledLifetimeManager());
+      container.RegisterType<WindowConfigManager>(new ContainerControlledLifetimeManager());
       container.RegisterType<KeyHookManager>(new ContainerControlledLifetimeManager());
     }
     

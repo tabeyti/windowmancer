@@ -41,9 +41,7 @@ namespace Windowmancer
     private KeyHookManager _keyHookManager;
     private ProfileManager _profileManager;
     private MonitorWindowManager _monitorWindowManager;
-    private HostContainerManager _hostContainerManager;
     private ProcessMonitor _procMonitor;
-    private UserData _userData;
 
     private NotifyIcon _trayIcon;
     private ContextMenuStrip _trayContextMenu;
@@ -60,10 +58,8 @@ namespace Windowmancer
       // Set our application's dispatcher within Helper.
       Helper.Dispatcher = new WmDispatcher(this.Dispatcher);
 
-      _userData = ServiceResolver.Resolve<UserData>();
       _profileManager = ServiceResolver.Resolve<ProfileManager>();
       _monitorWindowManager = ServiceResolver.Resolve<MonitorWindowManager>();
-      _hostContainerManager = ServiceResolver.Resolve<HostContainerManager>();
       _keyHookManager = ServiceResolver.Resolve<KeyHookManager>();
       _procMonitor = ServiceResolver.Resolve<ProcessMonitor>();
 
