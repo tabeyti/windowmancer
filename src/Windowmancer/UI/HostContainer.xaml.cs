@@ -30,10 +30,11 @@ namespace Windowmancer.UI
     private static readonly string _defaultContainerName = "My Container";
     private readonly bool _stupidFlag = false;
 
-    public HostContainer(HostContainerConfig hostContiner, bool enableEditorOnLoad = false)
+    public HostContainer(HostContainerConfig hostContainer, bool enableEditorOnLoad = false)
     {
       _stupidFlag = enableEditorOnLoad;
-      this.HostContainerConfig = hostContiner;
+      hostContainer.IsActive = true;
+      this.HostContainerConfig = hostContainer;
       InitializeComponent();
       Initialize();
     }
@@ -291,6 +292,7 @@ namespace Windowmancer.UI
     {
       var hcm = App.ServiceResolver.Resolve<HostContainerManager>();
       hcm.RemoveHostContainer(this);
+      this.HostContainerConfig.IsActive = false;
     }
   }
 }

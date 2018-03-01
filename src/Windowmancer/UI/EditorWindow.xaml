@@ -253,8 +253,14 @@
                       <Grid Margin="3,3">
                         <Grid.ColumnDefinitions>
                           <ColumnDefinition Width="*" />
+                          <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding Name}" />
+                        <TextBlock Grid.Column="0"
+                                   Text="{Binding Name}" />
+                        <CheckBox Grid.Column="1" 
+                                  IsChecked="{Binding IsActive}"
+                                  IsEnabled="False"/> 
+                                               
                       </Grid>
                     </DataTemplate>
                   </ListBox.ItemTemplate>
