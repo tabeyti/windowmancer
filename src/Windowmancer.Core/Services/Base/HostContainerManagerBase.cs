@@ -1,7 +1,13 @@
-﻿using System;
+﻿/*
+ * Show a box in ActiveWindowsDataGrid that has a list of processes
+ * that the regexes of each window config is catching.
+ */
+
+using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows.Forms;
 using Windowmancer.Core.Extensions;
 using Windowmancer.Core.Models;
 
@@ -31,14 +37,14 @@ namespace Windowmancer.Core.Services.Base
     /// </summary>
     /// <param name="windowConfig"></param>
     /// <param name="proces"></param>
-    public void ApplyWindowConfig(WindowConfig windowConfig, Process proces)
+    public void ApplyWindowConfig(WindowConfig windowConfig, Process process)
     {
       var config = this.HostContainerConfigs.Find(hc =>
         hc.Name == windowConfig.HostContainerLayoutInfo.HostContainerId);
 
       if (null == config) return;
 
-      ActivateHostContainer(config, false);
+      ActivateHostContainer(config, windowConfig, process);
     }
     
     /// <summary>
@@ -48,37 +54,61 @@ namespace Windowmancer.Core.Services.Base
     /// <param name="enableEditor"></param>
     public void ActivateHostContainer(HostContainerConfig config, bool enableEditor)
     {
-      var hcw = IsHostContainerActive(config) ?
-        GetHostContainerWindow(config) :
-        CreateNewHostContainerWindow(config, enableEditor);
+      var hcw = GetOrCreateHostContainerWindow(config);
       hcw.ActivateWindow();
       hcw.Show();
-      this.HostContainerWindows.Add(hcw);
     }
 
     /// <summary>
     /// Activates (creates) the window for the provided host container config,
-    /// adding the passed process to the host container.
+    /// adding the passed process and window config to the host container.
     /// </summary>
     /// <param name="config"></param>
+    /// <param name="windowConfig"></param>
     /// <param name="process"></param>
-    public void ActivateHostContainer(HostContainerConfig config, Process process)
+    public void ActivateHostContainer(HostContainerConfig config, WindowConfig windowConfig, Process process)
     {
-      var hcw = IsHostContainerActive(config) ?
-        GetHostContainerWindow(config) :
-        CreateNewHostContainerWindow(config);
+      var hcw = GetOrCreateHostContainerWindow(config);
       hcw.Show();
       hcw.ActivateWindow();
-      hcw.DockNewProc(process);
-      this.HostContainerWindows.Add(hcw);
+      hcw.DockProc(process, windowConfig);
     }
 
+    /// <summary>
+    /// Checks if the <see cref="HostContainerConfig"/> associated
+    /// host container window exists.
+    /// </summary>
+    /// <param name="config"></param>
+    /// <returns></returns>
+    public bool HostContainerWindowExists(HostContainerConfig config)
+    {
+      return this.HostContainerWindows.Any(hcw => hcw.HostContainerConfig.Name == config.Name);
+    }
+
+    public IHostContainerWindow GetOrCreateHostContainerWindow(HostContainerConfig config)
+    {
+      return HostContainerWindowExists(config)
+        ? GetHostContainerWindow(config)
+        : CreateNewHostContainerWindow(config);
+    }
+    
+    /// <summary>
+    /// Attempts to retrieve the <see cref="HostContainerConfig"/> associated
+    /// host container window.
+    /// </summary>
+    /// <param name="config"></param>
+    /// <returns>The associated host container window. If none, then returns null.</returns>
     public IHostContainerWindow GetHostContainerWindow(HostContainerConfig config)
     {
       return this.HostContainerWindows.Find(c => c.HostContainerConfig.Name == config.Name);
     }
 
-    public bool IsHostContainerActive(HostContainerConfig config)
+    /// <summary>
+    /// Validates there is an existing host container window instance.
+    /// </summary>
+    /// <param name="config"></param>
+    /// <returns>True if active. False if not.</returns>
+    public bool IsHostContainerWindowActive(HostContainerConfig config)
     {
       return this.HostContainerWindows.Any(c => c.HostContainerConfig.Name == config.Name);
     }

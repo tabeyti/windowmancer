@@ -415,9 +415,7 @@ namespace Windowmancer.UI
       var process = ((MonitoredProcess)this.ActiveWindowsDataGrid.SelectedItem).GetProcess();
       var hostContainerConfig = (HostContainerConfig)((MenuItem)e.Source).Tag; 
 
-      // Add the process to the host container. The host container will
-      // manage the window config.
-      _hostContainerManager.ActivateHostContainer(hostContainerConfig, process);
+      //_hostContainerManager.ActivateHostContainer(hostContainerConfig, process);
 
 
       /////////////////////////////////////////////////////////////////////////
@@ -462,7 +460,17 @@ namespace Windowmancer.UI
     private void EditorWindow_OnLoaded(object sender, RoutedEventArgs e)
     {
       // TODO: Debug
-      Process.Start("notepad.exe");
+      var index = 1;
+      var psi = new ProcessStartInfo
+      {
+        FileName = "D:/temp/WindowTitle.exe",
+        Arguments = $"TestWindow0{index++}",
+      };
+      Process.Start(psi);
+      psi.Arguments = $"TestWindow0{index++}";
+      Process.Start(psi);
+      psi.Arguments = $"TestWindow0{index++}";
+      Process.Start(psi);
     }
 
     private void MonitorWindowConfigDataGrid_OnAutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)

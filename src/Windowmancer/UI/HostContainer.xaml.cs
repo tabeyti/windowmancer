@@ -4,7 +4,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Interop;
 using MahApps.Metro.Controls;
-using Microsoft.Practices.ObjectBuilder2;
 using Microsoft.Practices.Unity;
 using Windowmancer.Core.Extensions;
 using Windowmancer.Core.Models;
@@ -15,9 +14,7 @@ using Windowmancer.Services;
 
 namespace Windowmancer.UI
 {
-  /// <summary>
-  /// Interaction logic for HostContainer.xaml
-  /// </summary>
+  /// <inheritdoc cref="IHostContainerWindow" />
   public partial class HostContainer : IToastHost, IHostContainerWindow
   {
     public HostContainerConfig HostContainerConfig { get; set; }
@@ -51,6 +48,7 @@ namespace Windowmancer.UI
       };
     }
 
+    /// <inheritdoc />
     public Tuple<uint, uint> NextDockProcRowColumn()
     {
       var rowIndex = this.CurrentRowIndex;
@@ -68,37 +66,26 @@ namespace Windowmancer.UI
       return Tuple.Create((uint)rowIndex, (uint)columnIndex);
     }
 
+    /// <inheritdoc />
     public void ActivateWindow()
     {
-      this.Activate();
+      Helper.Dispatcher.Invoke(() => this.Activate());
     }
 
-    public void DockNewProc(Process process)
+    /// <inheritdoc />
+    public void DockNewProc(Process process, WindowConfig windowConfig)
     {
-      var xy = NextDockProcRowColumn();
-      if (null == xy)
-      {
-        throw new Exception($"No more space to put {process.ProcessName} in container {this.HostContainerConfig.Name}");
-      }
-      
-      var config = WindowConfig.FromProcess(process, Core.Models.WindowConfigLayoutType.HostContainer);
-      config.HostContainerLayoutInfo.Update(xy.Item1, xy.Item2, this.HostContainerConfig.Name);
-      
-      DockProc(process, config);
-
-      // The the layout information for the config, then 
-      // open the window config editor.
-      this.ProfileManager.AddToActiveProfile(config);
-      HandleWindowConfigEdit(config);
+      Helper.Dispatcher.Invoke(() => DockNewProcInternal(process, windowConfig));
     }
 
-    /// <summary>
-    /// Docks the passed process window on the next available row/column
-    /// index.
-    /// </summary>
-    /// <param name="process"></param>
-    /// <param name="windowConfig"></param>
-    private void DockProc(Process process, WindowConfig windowConfig)
+    /// <inhertidoc />
+    public void DockProc(Process process, WindowConfig windowConfig)
+    {
+      Helper.Dispatcher.Invoke(() => DockProcInternal(process, windowConfig));
+    }
+
+    /// <inheritdoc />
+    private void DockNewProcInternal(Process process, WindowConfig windowConfig)
     {
       if (this.CurrentColumnIndex >= this.HostContainerConfig.Columns)
       {
@@ -111,12 +98,22 @@ namespace Windowmancer.UI
       }
 
       var layoutInfo = windowConfig.HostContainerLayoutInfo;
-      layoutInfo.Row = (uint) this.CurrentRowIndex;
-      layoutInfo.Column = (uint) this.CurrentColumnIndex;
-      
+      layoutInfo.Row = (uint)this.CurrentRowIndex;
+      layoutInfo.Column = (uint)this.CurrentColumnIndex;
+
+      DockProc(process, windowConfig);
+    }
+
+    private void DockProcInternal(Process process, WindowConfig windowConfig)
+    {
       if (this.HostContainerConfig.DockedWindows.Any(dw => dw.Process.Handle == process.Handle))
       {
-        throw new Exception("You are docking the same window twice. Just herpin and derpin, aren't ya?");
+        throw new Exception("You are docking the same process twice. Just herpin and derpin, aren't ya?");
+      }
+
+      if (this.HostContainerConfig.DockedWindows.Any(dw => dw.WindowConfig.Equals(windowConfig)))
+      {
+        throw new Exception("You are docking the same window configtwice. For cryin' out loud?");
       }
 
       var windowToDock = new DockableWindow(process, windowConfig);
@@ -230,14 +227,6 @@ namespace Windowmancer.UI
       flyout.IsOpen = true;
     }
 
-    private void RefreshDisplayContainer()
-    {
-      foreach (var d in this.HostContainerConfig.DockedWindows)
-      {
-        RefreshDockableWindow(d);
-      }
-    }
-
     private void RefreshDisplayContainer(HostContainerConfig config)
     {
       foreach (var d in config.DockedWindows)
@@ -298,6 +287,11 @@ namespace Windowmancer.UI
       var hcm = App.ServiceResolver.Resolve<HostContainerManager>();
       hcm.RemoveHostContainer(this);
       this.HostContainerConfig.IsActive = false;
+    }
+
+    public new void Show()
+    {
+      Helper.Dispatcher.Invoke(() => base.Show());
     }
   }
 }

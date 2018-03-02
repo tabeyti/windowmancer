@@ -60,41 +60,45 @@ namespace Windowmancer.Core.Services
         {
           continue;
         }
-        AddToActiveWindows(p);
+        AddToActiveWindowProcs(p);
       }
     }
 
+    private readonly object _watchLock = new object();
     private void StartWatch_EventArrived(object sender, EventArrivedEventArgs e)
     {
-      var obj = ((ManagementBaseObject) e.NewEvent.Properties["TargetInstance"].Value);
-      var procId = Convert.ToInt32(obj["ProcessId"]);
-      Process proc;
-      try
+        var obj = ((ManagementBaseObject) e.NewEvent.Properties["TargetInstance"].Value);
+        var procId = Convert.ToInt32(obj["ProcessId"]);
+        Process proc;
+        try
+        {
+          proc = Process.GetProcessById(procId);
+          if (proc.MainWindowTitle == string.Empty) { return; }
+        }
+        catch (Exception)
+        {
+          return;
+        }
+  
+        // If this a legit window process, let's add it to the list.
+      lock (_watchLock)
       {
-        proc = Process.GetProcessById(procId);
-        if (proc.MainWindowTitle == string.Empty) { return; }
+        AddToActiveWindowProcs(proc);
+        _windowConfigManager.ApplyWindowConfig(proc, true);
       }
-      catch (Exception)
-      {
-        return;
-      }
-
-      // If this a legit process, let's add it to the list.
-      AddToActiveWindows(proc);
-
-      
-      
-      _windowConfigManager.ApplyWindowConfig(proc, true);
     }
 
     private void StopWatch_EventArrived(object sender, EventArrivedEventArgs e)
     {
       var obj = ((ManagementBaseObject) e.NewEvent.Properties["TargetInstance"].Value);
       var procId = Convert.ToInt32(obj["ProcessId"]);
-      RemoveActiveProcess(procId);
+      lock (_watchLock)
+      {
+        RemoveActiveProcess(procId);
+      }
     }
 
-    private void AddToActiveWindows(Process process)
+    private void AddToActiveWindowProcs(Process process)
     {
       if (this.ActiveWindowProcs.Any(p => p.Id == process.Id)) { return; }
       try
