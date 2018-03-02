@@ -286,6 +286,7 @@ namespace Windowmancer.UI
     {
       var hcm = App.ServiceResolver.Resolve<HostContainerManager>();
       hcm.RemoveHostContainer(this);
+      this.HostContainerConfig.DockedWindows.Clear();
       this.HostContainerConfig.IsActive = false;
     }
 

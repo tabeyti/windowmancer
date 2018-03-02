@@ -45,7 +45,6 @@ namespace Windowmancer
     private NotifyIcon _trayIcon;
     private ContextMenuStrip _trayContextMenu;
     private EditorWindow _editor;
-
     
     private void App_OnExit(object sender, ExitEventArgs e)
     {
