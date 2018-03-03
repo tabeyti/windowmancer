@@ -5,11 +5,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8E76A458-599F-4A80-8099-B6B41A641912}</ProjectGuid>
+    <ProjectGuid>{C74C40C6-9F18-4911-A636-38C72FDE754C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Windowmancer.Tests</RootNamespace>
-    <AssemblyName>Windowmancer.Tests</AssemblyName>
+    <RootNamespace>Windowmancer.WPF.Tests</RootNamespace>
+    <AssemblyName>Windowmancer.WPF.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
@@ -56,6 +56,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MahApps.Metro, Version=1.5.0.23, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f" />
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
@@ -74,8 +75,14 @@
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.2.2\lib\net45\NLog.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\MahApps.Metro.1.5.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -98,6 +105,9 @@
     <Reference Include="xunit.NLog, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\xunit.NLog.1.1.1\lib\net\xunit.NLog.dll</HintPath>
     </Reference>
+    <Reference Include="Xunit.StaFact, Version=0.2.0.0, Culture=neutral, PublicKeyToken=593f35978b459a4b, processorArchitecture=MSIL">
+      <HintPath>..\packages\Xunit.StaFact.0.2.9\lib\net452\Xunit.StaFact.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\TestProcessWrapper.cs" />
@@ -107,12 +117,12 @@
     <Compile Include="Tests\Base\TestClassBase.cs" />
     <Compile Include="Tests\ProcessMonitorTests.cs" />
     <Compile Include="Tests\ProfileManagerTests.cs" />
-    <Compile Include="Tests\MonitorWindowManagerTests.cs" />
+    <Compile Include="Tests\HostContainerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="Windowmancer.Tests.json">
+    <None Include="Windowmancer.WPF.Tests.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -128,6 +138,10 @@
     <ProjectReference Include="..\Windowmancer.Core\Windowmancer.Core.csproj">
       <Project>{d321fe4f-cacd-4e27-aea2-d29a59b116ca}</Project>
       <Name>Windowmancer.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Windowmancer\Windowmancer.csproj">
+      <Project>{0c2ec22f-a025-4c17-8d89-6818045127dc}</Project>
+      <Name>Windowmancer</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -459,18 +459,21 @@ namespace Windowmancer.UI
 
     private void EditorWindow_OnLoaded(object sender, RoutedEventArgs e)
     {
-      // TODO: Debug
-      var index = 1;
-      var psi = new ProcessStartInfo
-      {
-        FileName = "D:/temp/WindowTitle.exe",
-        Arguments = $"TestWindow0{index++}",
-      };
-      Process.Start(psi);
-      psi.Arguments = $"TestWindow0{index++}";
-      Process.Start(psi);
-      psi.Arguments = $"TestWindow0{index++}";
-      Process.Start(psi);
+      //// TODO: Debug
+      //var index = 0;
+      //var psi = new ProcessStartInfo
+      //{
+      //  FileName = "D:/temp/WindowTitle.exe",
+      //};
+
+      //psi.Arguments = $"TestWindow0{index++}";
+      //Process.Start(psi);
+      //psi.Arguments = $"TestWindow0{index++}";
+      //Process.Start(psi);
+      //psi.Arguments = $"TestWindow0{index++}";
+      //Process.Start(psi);
+      //psi.Arguments = $"TestWindow0{index++}";
+      //Process.Start(psi);
     }
 
     private void MonitorWindowConfigDataGrid_OnAutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)

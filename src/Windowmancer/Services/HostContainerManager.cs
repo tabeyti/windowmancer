@@ -29,11 +29,7 @@ namespace Windowmancer.Services
         this.HostContainerWindows.Add(hc);
       });
 
-      while (hc == null)
-      {
-        Thread.Sleep(10);
-      }
-
+      while (hc == null) { Thread.Sleep(10); }
       return hc;
     }
   }

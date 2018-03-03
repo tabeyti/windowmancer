@@ -1,17 +1,15 @@
-using Microsoft.Practices.Unity;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.IO;
 using System.Reflection;
-using Newtonsoft.Json.Linq;
+using Microsoft.Practices.Unity;
+using Newtonsoft.Json;
+using NLog;
 using Windowmancer.Core.Configuration;
 using Windowmancer.Core.Models;
 using Windowmancer.Core.Practices;
 using Windowmancer.Core.Services;
-using Windowmancer.Core.Services.Base;
-using Windowmancer.Services;
 
-namespace Windowmancer.Practices
+namespace Windowmancer.WPF.Tests.Practices
 {
   public static class WmServiceResolver
   {
@@ -21,13 +19,16 @@ namespace Windowmancer.Practices
     private static IUnityContainer CreateResolver()
     {
       var container = new UnityContainer();
-      JObject config = Helper.GetConfig("Windowmancer.json");
+      var config = GetAssembly();
 
       // Set Helper instance of our service resolver.
       Helper.ServiceResolver = container;
 
       // Register configs.
-      RegisterConfig<UserConfig>(container, config["AppSettings"]);
+      RegisterConfig<UserConfig>(container, config.AppSettings);
+
+      // Register our logger.
+      RegisterLogger(container);
 
       // Register all services.
       RegisterServices(container);
@@ -35,27 +36,34 @@ namespace Windowmancer.Practices
       return container;
     }
 
+    private static void RegisterLogger(IUnityContainer container)
+    {
+      var logger = LogManager.GetCurrentClassLogger();
+      container.RegisterInstance<ILogger>(logger, new ContainerControlledLifetimeManager());
+    }
+
     private static void RegisterServices(IUnityContainer container)
     {
       var userConfig = container.Resolve<UserConfig>();
-      // If our user data file doesn't exist yet, create one based on 
-      // an instance of UserData with no config passed in.
       if (!File.Exists(userConfig.UserDataPath))
       {
         File.WriteAllText(userConfig.UserDataPath, JsonConvert.SerializeObject(new UserData(null)));
-      }          
+      }
       var text = File.ReadAllText(userConfig.UserDataPath);
       var userData = JsonConvert.DeserializeObject<UserData>(text);
       userData.SetUserConfig(userConfig);
       container.RegisterInstance(userData, new ContainerControlledLifetimeManager());
       container.RegisterType<ProcessMonitor>(new ContainerControlledLifetimeManager());
-      container.RegisterType<ProfileManager>(new ContainerControlledLifetimeManager());
       container.RegisterType<MonitorWindowManager>(new ContainerControlledLifetimeManager());
-      container.RegisterType<HostContainerManagerBase, HostContainerManager>(new ContainerControlledLifetimeManager());
-      container.RegisterType<WindowConfigManager>(new ContainerControlledLifetimeManager());
+      container.RegisterType<ProfileManager>(new ContainerControlledLifetimeManager());
       container.RegisterType<KeyHookManager>(new ContainerControlledLifetimeManager());
     }
-    
+
+    public static dynamic GetAssembly()
+    {
+      return JsonConvert.DeserializeObject(File.ReadAllText($"{System.Reflection.Assembly.GetCallingAssembly().GetName().Name}.json"));
+    }
+
     private static void RegisterConfig<T>(IUnityContainer container, dynamic appSettings)
     {
       T instance = RegisterConfig<T>(appSettings);
