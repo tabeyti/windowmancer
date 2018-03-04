@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
 using MahApps.Metro.Controls;
@@ -43,7 +45,10 @@ namespace Windowmancer.UI
       {
         foreach (var dw in this.HostContainerConfig.DockedWindows)
         {
-          dw.Process?.Kill();
+          if (!dw.Process.HasExited)
+          {
+            dw.Process?.Kill();
+          }
         }
       };
     }

@@ -14,6 +14,8 @@ using Windowmancer.UI.Base;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Data;
 using MenuItem = System.Windows.Controls.MenuItem;
 using Windowmancer.Core.Services.Base;
@@ -459,21 +461,6 @@ namespace Windowmancer.UI
 
     private void EditorWindow_OnLoaded(object sender, RoutedEventArgs e)
     {
-      //// TODO: Debug
-      //var index = 0;
-      //var psi = new ProcessStartInfo
-      //{
-      //  FileName = "D:/temp/WindowTitle.exe",
-      //};
-
-      //psi.Arguments = $"TestWindow0{index++}";
-      //Process.Start(psi);
-      //psi.Arguments = $"TestWindow0{index++}";
-      //Process.Start(psi);
-      //psi.Arguments = $"TestWindow0{index++}";
-      //Process.Start(psi);
-      //psi.Arguments = $"TestWindow0{index++}";
-      //Process.Start(psi);
     }
 
     private void MonitorWindowConfigDataGrid_OnAutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
