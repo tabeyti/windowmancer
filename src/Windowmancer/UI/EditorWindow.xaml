@@ -257,10 +257,14 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0"
                                    Text="{Binding Name}" />
-                        <CheckBox Grid.Column="1" 
+                        <CheckBox Grid.Column="1"
                                   IsChecked="{Binding IsActive}"
-                                  IsEnabled="False"/> 
-                                               
+                                  IsEnabled="False">
+                          <CheckBox.Style>
+                            <StaticResource ResourceKey="CircleCheckbox" />
+                          </CheckBox.Style>
+                        </CheckBox>
+
                       </Grid>
                     </DataTemplate>
                   </ListBox.ItemTemplate>

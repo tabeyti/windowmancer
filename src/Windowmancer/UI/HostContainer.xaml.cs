@@ -351,7 +351,11 @@ namespace Windowmancer.UI
 
     public new void Show()
     {
-      Helper.Dispatcher.Invoke(() => base.Show());
+      Helper.Dispatcher.Invoke(() =>
+      {
+        this.WindowState = WindowState.Normal;
+        base.Show();
+      });
     }
   }
 }

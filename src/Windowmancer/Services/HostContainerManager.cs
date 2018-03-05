@@ -1,4 +1,5 @@
-﻿using Windowmancer.Core.Models;
+﻿using System.Windows;
+using Windowmancer.Core.Models;
 using Windowmancer.Core.Practices;
 using Windowmancer.Core.Services;
 using Windowmancer.UI;

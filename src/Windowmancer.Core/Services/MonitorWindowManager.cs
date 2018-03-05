@@ -9,15 +9,18 @@ namespace Windowmancer.Core.Services
 {
   public class MonitorWindowManager : IDisposable
   {
-    public Profile ActiveProfile { get; set; }
+    public Profile ActiveProfile => _profileManager.ActiveProfile;
 
-    #region Constructors
+    private readonly ProfileManager _profileManager;
 
-    public MonitorWindowManager()
+#region Constructors
+
+    public MonitorWindowManager(ProfileManager profileManager)
     {
+      _profileManager = profileManager;
     }
 
-    #endregion Constructors
+#endregion Constructors
 
     public void Dispose()
     {

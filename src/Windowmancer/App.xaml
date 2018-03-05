@@ -27,6 +27,7 @@
         <ResourceDictionary Source="pack://application:,,,/UI/Controls/Controls.GroupBox.xaml" />
         <ResourceDictionary Source="pack://application:,,,/UI/Controls/Controls.Expander.xaml" />
         <ResourceDictionary Source="pack://application:,,,/UI/Controls/Controls.MyFlipView.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/UI/Controls/Controls.CheckBox.xaml" />
       </ResourceDictionary.MergedDictionaries>
 
       <!--Color themes-->

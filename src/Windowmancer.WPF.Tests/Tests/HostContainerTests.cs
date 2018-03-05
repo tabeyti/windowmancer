@@ -32,6 +32,8 @@ namespace Windowmancer.WPF.Tests.Tests
 
       var proc = TestHelper.CreateWindowmancer();
 
+      Task.Delay(5000).Wait();
+
       await Task.Delay(10000).ConfigureAwait(false);
 
       CreateTestWindows(10, 1);
