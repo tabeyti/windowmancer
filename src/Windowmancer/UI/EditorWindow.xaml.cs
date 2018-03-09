@@ -185,15 +185,13 @@ namespace Windowmancer.UI
 
     private void HandleHostContainerConfigEdit(HostContainerConfig config = null)
     {
-      //// If this is an edit, then check if the container is active.
-      //if (null != config)
-      //{
-      //  // If it's not active, activate it with the config editor already open.
-      //  if (!_hostContainerManager.IsHostContainerActive(config))
-      //  {
-      //    _hostContainerManager.ActivateHostContainer(config, true);
-      //  }
-      //  else
+      // If this is an edit, then check if the container is active.
+      if (null != config)
+      {
+        // If it's not active, activate it with the config editor already open.
+        _hostContainerManager.ActivateHostContainer(config, true);
+      }
+      
       //  {
       //    // If it's already active, bring the window to the fore,
       //    // and manually trigger the config editor to open.
@@ -202,14 +200,14 @@ namespace Windowmancer.UI
       //    hcw.HandleHostConfigEdit();
       //  }
 
-      //  return;
-      //}
+          //  return;
+          //}
 
-      //// If this is a new container, use the manager to create a new
-      //// container, and add it to the active profile.
-      //var container = _hostContainerManager.CreateNewHostContainer();
-      //this.ProfileManager.AddToActiveProfile(container.HostContainerConfig);
-    }
+          //// If this is a new container, use the manager to create a new
+          //// container, and add it to the active profile.
+          //var container = _hostContainerManager.CreateNewHostContainer();
+          //this.ProfileManager.AddToActiveProfile(container.HostContainerConfig);
+      }
 
     private void HandleWindowConfigEdit()
     {

@@ -53,6 +53,11 @@ namespace Windowmancer.UI
       };
     }
 
+    public void OpenEditor()
+    {
+      Helper.Dispatcher.Invoke(HandleHostConfigEdit);
+    }
+
     /// <inheritdoc />
     public Tuple<uint, uint> NextDockProcRowColumn()
     {

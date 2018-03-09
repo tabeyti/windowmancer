@@ -33,6 +33,11 @@ namespace Windowmancer.Core.Services.Base
     void DockNewProc(Process process, WindowConfig windowConfig);
 
     /// <summary>
+    /// Opens the host configuration editor of this container.
+    /// </summary>
+    void OpenEditor();
+
+    /// <summary>
     /// Adds the process and associated window config to the container. 
     /// Implementation must be on or dispatched to the STA thread.
     /// </summary>

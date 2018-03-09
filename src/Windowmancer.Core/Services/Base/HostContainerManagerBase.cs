@@ -57,6 +57,11 @@ namespace Windowmancer.Core.Services.Base
       var hcw = GetOrCreateHostContainerWindow(config);
       hcw.ActivateWindow();
       hcw.Show();
+
+      if (enableEditor)
+      {
+        hcw.OpenEditor();
+      }
     }
 
     /// <summary>
