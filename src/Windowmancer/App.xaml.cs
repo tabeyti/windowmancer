@@ -53,6 +53,11 @@ namespace Windowmancer
 
     private void App_OnStartup(object sender, StartupEventArgs e)
     {
+      Start();
+    }
+
+    public void Start()
+    {
       // Set our application's dispatcher within Helper.
       Helper.Dispatcher = new WmDispatcher(this.Dispatcher);
 

@@ -11,11 +11,8 @@ using Windowmancer.Core.Models;
 using Windowmancer.Core.Practices;
 using Windowmancer.Core.Services;
 using Windowmancer.UI.Base;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Data;
 using MenuItem = System.Windows.Controls.MenuItem;
 using Windowmancer.Core.Services.Base;
@@ -65,7 +62,39 @@ namespace Windowmancer.UI
       this.ProcMonitor.Start();
     }
 
-#region Toast Methods
+    private void BuildActiveWindowsContextMenu()
+    {
+      // Create context menu items for Active Windows datagrid.
+      var addItem = new MenuItem { Header = "Add Window Configuration" };
+      addItem.Click += ActiveWindowsDataGrid_MenuItemClick;
+
+      var highlightItem = new MenuItem { Header = "Highlight" };
+      highlightItem.Click += ActiveWindowsDataGrid_HighlightClick;
+
+      // Add a submenu for each container.
+      var containerizeItem = new MenuItem { Header = "Add to Container" };
+      containerizeItem.Click += ActiveWindowsDataGrid_ContainerizeClick;
+      foreach (var c in this.ProfileManager.ActiveProfile.HostContainers)
+      {
+        containerizeItem.Items.Add(new MenuItem { Header = c.Name, Tag = c });
+      }
+
+      var quickLayoutItem = new MenuItem {Header = "Quick Layout"};
+      quickLayoutItem.Click += ActiveWindowsDataGrid_OnQuickLayouEdit;
+
+      // Set the source.
+      this.ActiveWindowsContextMenuItems = new ObservableCollection<FrameworkElement>
+      {
+        addItem,
+        containerizeItem,
+        new Separator(),
+        highlightItem,
+        new Separator(),
+        quickLayoutItem
+      };
+    }
+
+    #region Toast Methods
 
     public void ShowItemMessageToast(string itemName, string message = null)
     {
@@ -208,6 +237,7 @@ namespace Windowmancer.UI
       var flyout = (Flyout)this.FindName("RightFlyout");
       if (flyout == null || item == null) return;
 
+      flyout.TitleVisibility = Visibility.Collapsed;
       var wce = new WindowConfigEditor(item)
       {
         OnSave = (w) =>
@@ -278,33 +308,6 @@ namespace Windowmancer.UI
 
 #endregion
 
-    private void BuildActiveWindowsContextMenu()
-    {
-      // Create context menu items for Active Windows datagrid.
-      var addItem = new MenuItem { Header = "Add Window Configuration" };
-      addItem.Click += ActiveWindowsDataGrid_MenuItemClick;
-
-      var highlightItem = new MenuItem { Header = "Highlight" };
-      highlightItem.Click += ActiveWindowsDataGrid_HighlightClick;
-
-      // Add a submenu for each container.
-      var containerizeItem = new MenuItem { Header = "Add to Container" };
-      containerizeItem.Click += ActiveWindowsDataGrid_ContainerizeClick;
-      foreach (var c in this.ProfileManager.ActiveProfile.HostContainers)
-      {
-        containerizeItem.Items.Add(new MenuItem { Header = c.Name, Tag = c });
-      }
-      
-      // Set the source.
-      this.ActiveWindowsContextMenuItems = new ObservableCollection<FrameworkElement>
-      {
-        addItem,
-        containerizeItem,
-        new Separator(),
-        highlightItem,
-      };
-    }
-
     private void MonitorWindowConfigDataGrid_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
     {
       if (this.MonitorWindowConfigDataGrid.SelectedItem == null) return;
@@ -331,7 +334,13 @@ namespace Windowmancer.UI
           break;
       }
     }
-    
+
+    private void MonitorWindowConfigDataGrid_OnAutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+    {
+      if (((PropertyDescriptor)e.PropertyDescriptor).IsBrowsable == false)
+        e.Cancel = true;
+    }
+
     private void ProfileListContextMenu_MenuItemClick(object sender, RoutedEventArgs e)
     {
       var menuItem = (MenuItem) sender;
@@ -422,8 +431,6 @@ namespace Windowmancer.UI
 
       /////////////////////////////////////////////////////////////////////////
 
-
-
       //// TODO:
       //// Check to see if the host container targeted has enough room to hold the 
       //// process window.
@@ -444,12 +451,18 @@ namespace Windowmancer.UI
       //// With the unique name, skip over window config editor, 
       //// and add it to the active profile.
       //this.ProfileManager.AddToActiveProfile(windowConfig);
-
     }
 
     private void ActiveWindowsDataGrid_OnContextMenuOpening(object sender, ContextMenuEventArgs e)
     {
       BuildActiveWindowsContextMenu();
+    }
+
+    private void ActiveWindowsDataGrid_OnQuickLayouEdit(object sender, RoutedEventArgs e)
+    {
+      if (this.ActiveWindowsDataGrid.SelectedItem == null) return;
+      var item = ((MonitoredProcess)this.ActiveWindowsDataGrid.SelectedItem).GetProcess();
+      HandleQuickLayoutEdit(item);
     }
 
     private void ActiveWindowsGrid_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -463,50 +476,19 @@ namespace Windowmancer.UI
     {
     }
 
-    private void MonitorWindowConfigDataGrid_OnAutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
-    { 
-      if (((PropertyDescriptor)e.PropertyDescriptor).IsBrowsable == false)
-        e.Cancel = true;
-    }
-
-    private void HostContainersListBox_MenuItemClick(object sender, RoutedEventArgs e)
-    {
-      var menuItem = (MenuItem)sender;
-      switch (menuItem.Header as string)
-      {
-        case "Add":
-          HandleHostContainerConfigEdit();
-          break;
-        case "Edit":
-          var item = (HostContainerConfig)this.HostContainersListBox.SelectedItem;
-          HandleHostContainerConfigEdit(item);
-          break;
-        case "Delete":
-          item = (HostContainerConfig)HostContainersListBox.SelectedItem;
-          ProfileManager.RemoveFromActiveProfile(item);
-          ShowItemMessageToast(this.ProfileManager.ActiveProfile.Name, "container deleted.");
-          break;
-      }
-    }
-
     private void HostContainerWindowConfig_MenuItemClick(object sender, RoutedEventArgs e)
     {
-      //WindowConfig item = null;
-      //switch ((string)((MenuItem)sender).Header)
-      //{
-      //  case "Add":
-      //    HandleWindowConfigEdit();
-      //    break;
-      //  case "Edit":
-      //    item = (WindowConfig)HostContainerWindowConfigDataGrid.SelectedItem;
-      //    HandleWindowConfigEdit(item);
-      //    break;
-      //  case "Delete":
-      //    item = (WindowConfig)HostContainerWindowConfigDataGrid.SelectedItem;
-      //    ProfileManager.RemoveFromActiveProfile(item);
-      //    ShowItemMessageToast(item.Name, "window configuration deleted.");
-      //    break;
-      //}
+      WindowConfig item = null;
+      switch ((string)((MenuItem)sender).Header)
+      {
+        case "Edit":
+          break;
+        case "Delete":
+          item = (WindowConfig)HostContainerWindowConfigDataGrid.SelectedItem;
+          ProfileManager.RemoveFromActiveProfile(item);
+          ShowItemMessageToast(item.Name, "window configuration deleted.");
+          break;
+      }
     }
 
     private void MonitorWindowConfigList_OnFilter(object sender, FilterEventArgs e)
@@ -543,6 +525,26 @@ namespace Windowmancer.UI
     {
       var item = (HostContainerConfig)this.HostContainersListBox.SelectedItem;
       _hostContainerManager.ActivateHostContainer(item, false);
+    }
+
+    private void HostContainersListBox_MenuItemClick(object sender, RoutedEventArgs e)
+    {
+      var menuItem = (MenuItem)sender;
+      switch (menuItem.Header as string)
+      {
+        case "Add":
+          HandleHostContainerConfigEdit();
+          break;
+        case "Edit":
+          var item = (HostContainerConfig)this.HostContainersListBox.SelectedItem;
+          HandleHostContainerConfigEdit(item);
+          break;
+        case "Delete":
+          item = (HostContainerConfig)HostContainersListBox.SelectedItem;
+          ProfileManager.RemoveFromActiveProfile(item);
+          ShowItemMessageToast(this.ProfileManager.ActiveProfile.Name, "container deleted.");
+          break;
+      }
     }
   }
 }

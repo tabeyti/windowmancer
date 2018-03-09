@@ -12,6 +12,7 @@
     </Grid.ColumnDefinitions>
     <TextBlock Grid.Column="0" 
                Height="28" 
+               FontSize="12"
                Margin="0,10,10,0"
                VerticalAlignment="Center"
                Text="{Binding Label}"/>

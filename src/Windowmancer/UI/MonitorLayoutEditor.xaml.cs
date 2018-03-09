@@ -199,7 +199,7 @@ namespace Windowmancer.UI
       this.MonitorLayoutInfo.SizeInfo.Height = (int)this.HeightSpinner.Value;
     }
 
-    private void Close()
+    public void Close()
     {
       _windowHighlight?.Close();
       OnClose?.Invoke();

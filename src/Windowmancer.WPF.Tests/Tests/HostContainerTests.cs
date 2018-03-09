@@ -1,6 +1,8 @@
-﻿using Windowmancer.Core.Models;
+﻿using System;
+using System.Threading.Tasks;
+using Windowmancer.Core.Models;
 using Windowmancer.Core.Practices;
-using Windowmancer.UI;
+using Windowmancer.Core.Services.Base;
 using Windowmancer.WPF.Tests.Tests.Base;
 using Xunit;
 using Xunit.Abstractions;
@@ -17,14 +19,13 @@ namespace Windowmancer.WPF.Tests.Tests
       Helper.Dispatcher = new TestDispatcher();
     }
 
-    [StaFact]
+    [Fact]
     [Trait("Priority", "1")]
-    public void HostContainerTests_CreateClose()
+    public async void HostContainerTests_CreateClose()
     {
-      var hcc = CreateHostContainerConfig();
-      
-      var window = new HostContainer(hcc);
-      window.Show();
+      var thing = new App();
+      thing.Start();
+      await Task.Delay(10000).ConfigureAwait(false);
 
       //// Create process window.
       //var proc = AddResource(TestHelper.CreateWindowProcess());
@@ -40,9 +41,10 @@ namespace Windowmancer.WPF.Tests.Tests
       //Assert.Equal((uint) opacity, alter);
     }
 
-#region Helper Methods
+    #region Helper Methods
 
     private readonly uint _containerCounter = 1;
+
     private HostContainerConfig CreateHostContainerConfig()
     {
       return new HostContainerConfig
@@ -54,7 +56,16 @@ namespace Windowmancer.WPF.Tests.Tests
         IsActive = false,
       };
     }
-#endregion
 
+    public class TestDispatcher : IDispatcher
+    {
+      public void Invoke(Action callback)
+      {
+        callback();
+      }
+
+      #endregion
+
+    }
   }
 }

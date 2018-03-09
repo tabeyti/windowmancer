@@ -279,13 +279,13 @@
                           ItemsSource="{Binding Source={StaticResource ContainerWindowConfigCollectionView}}">
                   <DataGrid.Resources>
                     <ContextMenu x:Key="RowMenu">
-                      <MenuItem Header="Edit" />
-                      <MenuItem Header="Delete" />
+                      <MenuItem Header="Edit" Click="HostContainerWindowConfig_MenuItemClick"/>
+                      <MenuItem Header="Delete" Click="HostContainerWindowConfig_MenuItemClick"/>
                     </ContextMenu>
                   </DataGrid.Resources>
                   <DataGrid.ContextMenu>
                     <ContextMenu>
-                      <MenuItem Header="Add" Click="HostContainerWindowConfig_MenuItemClick"/>
+                      <!--<MenuItem Header="Add" Click="HostContainerWindowConfig_MenuItemClick"/>-->
                     </ContextMenu>
                   </DataGrid.ContextMenu>
                   <DataGrid.RowStyle>

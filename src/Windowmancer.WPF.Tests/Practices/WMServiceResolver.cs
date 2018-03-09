@@ -21,17 +21,17 @@ namespace Windowmancer.WPF.Tests.Practices
       var container = new UnityContainer();
       var config = GetAssembly();
 
-      // Set Helper instance of our service resolver.
-      Helper.ServiceResolver = container;
+      //// Set Helper instance of our service resolver.
+      //Helper.ServiceResolver = container;
 
-      // Register configs.
-      RegisterConfig<UserConfig>(container, config.AppSettings);
+      //// Register configs.
+      //RegisterConfig<UserConfig>(container, config.AppSettings);
 
       // Register our logger.
       RegisterLogger(container);
 
       // Register all services.
-      RegisterServices(container);
+      //RegisterServices(container);
 
       return container;
     }

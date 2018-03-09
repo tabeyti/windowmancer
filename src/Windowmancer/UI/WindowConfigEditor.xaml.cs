@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using MahApps.Metro.Controls;
 using Microsoft.Practices.Unity;
 using Windowmancer.Core.Extensions;
 using Windowmancer.Core.Models;
@@ -25,6 +27,8 @@ namespace Windowmancer.UI
     public MonitorLayoutInfo OriginalLayoutInfo { get; set; }
     public uint OriginalOpacity { get; set; }
     public ProfileManager ProfileManager { get; set; }
+
+    private MonitorLayoutEditor _monitorLayoutEditor;
 
     private Process _process;
 
@@ -56,13 +60,13 @@ namespace Windowmancer.UI
       // Set up layout manager.
       if (this.WindowConfig.LayoutType == Core.Models.WindowConfigLayoutType.Monitor)
       {
-        var layoutEditor = new MonitorLayoutEditor(this.WindowConfig.MonitorLayoutInfo);
-        layoutEditor.OnSave += c =>
+        _monitorLayoutEditor = new MonitorLayoutEditor(this.WindowConfig.MonitorLayoutInfo);
+        _monitorLayoutEditor.OnSave += c =>
         {
           this.WindowConfig.MonitorLayoutInfo = c;
         };
-        layoutEditor.OnClose += () => { this.FlipView.SelectedIndex = 0; };
-        this.FlipView.Items.Add(layoutEditor);
+        _monitorLayoutEditor.OnClose += () => { this.FlipView.SelectedIndex = 0; };
+        this.FlipView.Items.Add(_monitorLayoutEditor);
       }
     }
 
@@ -83,9 +87,10 @@ namespace Windowmancer.UI
     {
       // Uncheck previews, restoring old window values.
       this.WindowStylingPreviewCheckBox.IsChecked = false;
+      _monitorLayoutEditor?.Close();
 
       var window = Window.GetWindow(this);
-      if (window == null)
+      if (null == window)
       {
         throw new Exception("WindowConfigEditor - Could locate active window to unbind the KeyDown listener.");
       }
@@ -162,13 +167,28 @@ namespace Windowmancer.UI
       }
       else
       {
-        (_process != null).RunIfTrue(() => MonitorWindowManager.SetWindowOpacityPercentage(_process, this.OriginalOpacity));
+        (_process != null).RunIfTrue(
+          () => MonitorWindowManager.SetWindowOpacityPercentage(_process, this.OriginalOpacity));
       }
     }
 
     private void LabelTextBox_OnGotFocus(object sender, RoutedEventArgs e)
     {
       (sender as LabelTextBox)?.BaseTextBox.SelectAll();
+    }
+
+    private void FlipView_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+      var flipview = ((FlipView)sender);
+      switch (flipview.SelectedIndex)
+      {
+        case 0:
+          flipview.BannerText = "General";
+          break;
+        case 1:
+          flipview.BannerText = "Monitor Layout";
+          break;
+      }
     }
   }
 

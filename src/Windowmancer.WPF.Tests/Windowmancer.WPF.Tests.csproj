@@ -115,8 +115,6 @@
     <Compile Include="Practices\WMServiceResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tests\Base\TestClassBase.cs" />
-    <Compile Include="Tests\ProcessMonitorTests.cs" />
-    <Compile Include="Tests\ProfileManagerTests.cs" />
     <Compile Include="Tests\HostContainerTests.cs" />
   </ItemGroup>
   <ItemGroup>
