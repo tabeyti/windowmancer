@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading;
-using Windowmancer.Core.Models;
+﻿using Windowmancer.Core.Models;
 using Windowmancer.Core.Practices;
 using Windowmancer.Core.Services;
 using Windowmancer.UI;

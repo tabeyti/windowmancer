@@ -13,6 +13,7 @@ using Windowmancer.Core.Services;
 using Windowmancer.UI.Base;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows.Data;
 using MenuItem = System.Windows.Controls.MenuItem;
 using Windowmancer.Core.Services.Base;
@@ -472,6 +473,20 @@ namespace Windowmancer.UI
 
     private void EditorWindow_OnLoaded(object sender, RoutedEventArgs e)
     {
+      Task.Factory.StartNew(() =>
+      {
+        Task.Delay(2000).Wait();
+        Process.Start(new ProcessStartInfo
+        {
+          FileName = "D:/temp/WindowTitle.exe",
+          Arguments = "TestWindow01"
+        });
+        Process.Start(new ProcessStartInfo
+        {
+          FileName = "D:/temp/WindowTitle.exe",
+          Arguments = "TestWindow02"
+        });
+      });
     }
 
     private void HostContainerWindowConfig_MenuItemClick(object sender, RoutedEventArgs e)

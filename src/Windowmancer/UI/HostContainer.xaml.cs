@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
 using MahApps.Metro.Controls;
@@ -41,6 +39,15 @@ namespace Windowmancer.UI
     private void Initialize()
     {
       this.ProfileManager = Helper.ServiceResolver.Resolve<ProfileManager>();
+
+      // Resolve all window configurations pertaining to
+      // this host container and add dockable windows for them.
+      //var wcm = Helper.ServiceResolver.Resolve<WindowConfigManager>();
+      //foreach (var w in wcm.GetWindowConfigs(this.HostContainerConfig))
+      //{
+      //  DockProcInternal(null, w);
+      //}
+
       this.Closing += (o, e) =>
       {
         foreach (var dw in this.HostContainerConfig.DockedWindows)
@@ -116,6 +123,11 @@ namespace Windowmancer.UI
 
     private void DockProcInternal(Process process, WindowConfig windowConfig)
     {
+      if (null == process)
+      {
+        this.HostContainerConfig.DockedWindows.Add(new DockableWindow(windowConfig));
+      }
+
       if (this.HostContainerConfig.DockedWindows.Any(dw => dw.Process.Handle == process.Handle))
       {
         throw new Exception("You are docking the same process twice. Just herpin and derpin, aren't ya?");
@@ -123,7 +135,7 @@ namespace Windowmancer.UI
 
       if (this.HostContainerConfig.DockedWindows.Any(dw => dw.WindowConfig.Equals(windowConfig)))
       {
-        throw new Exception("You are docking the same window configtwice. For cryin' out loud?");
+        throw new Exception("You are docking the same window config twice. For cryin' out loud?");
       }
 
       var windowToDock = new DockableWindow(process, windowConfig);
@@ -224,7 +236,7 @@ namespace Windowmancer.UI
             }
           }
           
-          RefreshDisplayContainer(config);
+          RefreshHostContainer(config);
         }
       };
       containerConfigEditor.OnClose += () =>
@@ -237,7 +249,7 @@ namespace Windowmancer.UI
       flyout.IsOpen = true;
     }
 
-    private void RefreshDisplayContainer(HostContainerConfig config)
+    private void RefreshHostContainer(HostContainerConfig config)
     {
       foreach (var d in config.DockedWindows)
       {
@@ -247,6 +259,8 @@ namespace Windowmancer.UI
 
     private void RefreshDockableWindow(DockableWindow dockableWindow)
     {
+      if (null == dockableWindow.Process) return;
+
       var screenWidth = this.ActualWidth;
       var screenHeight = this.ActualHeight;
 

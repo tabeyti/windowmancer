@@ -1,13 +1,11 @@
-﻿/*
+﻿/* TODO:
  * Show a box in ActiveWindowsDataGrid that has a list of processes
  * that the regexes of each window config is catching.
  */
 
-using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Windows.Forms;
 using Windowmancer.Core.Extensions;
 using Windowmancer.Core.Models;
 

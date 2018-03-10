@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Windowmancer.Core.Extensions;
 using Windowmancer.Core.Models;
 using Windowmancer.Core.Services.Base;
@@ -48,6 +50,14 @@ namespace Windowmancer.Core.Services
         default:
           return;
       }
+    }
+
+    public IReadOnlyList<WindowConfig> GetWindowConfigs(HostContainerConfig hostContainerConfig)
+    {
+      return this.ProfileManager.ActiveProfile.Windows
+        .Where(w => w.LayoutType == WindowConfigLayoutType.HostContainer)
+        .Where(w => w.HostContainerLayoutInfo.HostContainerId == hostContainerConfig.Name)
+        .ToList();
     }
   }
 }

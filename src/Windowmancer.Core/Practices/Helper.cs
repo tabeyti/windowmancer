@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -95,8 +96,32 @@ namespace Windowmancer.Core.Practices
       return ico;
     }
 
+    public static ImageSource GetBlankScreenShot()
+    {
+      return BitmapImage.Create(
+        2,
+        2,
+        96,
+        96,
+        PixelFormats.Indexed1,
+        new BitmapPalette(new List<System.Windows.Media.Color> { Colors.Transparent }),
+        new byte[] { 0, 0, 0, 0 },
+        1);
+    }
+
+    /// <summary>
+    /// Takes a screen shot of the process window and
+    /// returns it converted to an image source.
+    /// </summary>
+    /// <param name="proc"></param>
+    /// <returns></returns>
     public static ImageSource ScreenShotProcessWindow(Process proc)
     {
+      if (null == proc)
+      {
+        throw new Exception($"{nameof(ScreenShotProcessWindow)} - Process null.");
+      }
+
       var rec = new Win32.Win32_Rect();
       Win32.GetWindowRect(proc.MainWindowHandle, ref rec);
 
@@ -109,22 +134,16 @@ namespace Windowmancer.Core.Practices
       gfxBmp.ReleaseHdc(hdcBitmap);
       gfxBmp.Dispose();
 
-
-      //var rect = new Win32.Win32_Rect();
-      //Win32.GetWindowRect(proc.MainWindowHandle, ref rect);
-
-      //var width = rect.Width;
-      //var height = rect.Height;
-
-      //var bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-      //var graphics = Graphics.FromImage(bmp);
-      //graphics.CopyFromScreen(rect.X, rect.Y, 0, 0, new System.Drawing.Size(width, height), CopyPixelOperation.SourceCopy);
-
       return ImageSourceForBitmap(bmp);
     }
 
     public static Icon GetSmallIcon(Icon icon)
     {
+      if (null == icon)
+      {
+        throw new Exception($"{nameof(GetSmallIcon)} - Icon null.");
+      }
+
       var iconSize = SystemInformation.SmallIconSize;
       var bitmap = new Bitmap(iconSize.Width, iconSize.Height);
 
@@ -139,6 +158,11 @@ namespace Windowmancer.Core.Practices
 
     public static ImageSource GetSmallIconAsBitmap(Icon icon)
     {
+      if (null == icon)
+      {
+        throw new Exception($"{nameof(GetSmallIconAsBitmap)} - Icon null.");
+      }
+
       var iconSize = SystemInformation.SmallIconSize;
       var bitmap = new Bitmap(iconSize.Width, iconSize.Height);
 

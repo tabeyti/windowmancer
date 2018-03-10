@@ -27,11 +27,16 @@ namespace Windowmancer.Core.Models
     
     public DockableWindow() { }
     
-    public DockableWindow(Process process, WindowConfig config)
+    public DockableWindow(Process process, WindowConfig windowConfig)
     {
       this.Process = process;
       process.EnableRaisingEvents = true;
-      this.WindowConfig = config;
+      this.WindowConfig = windowConfig;
+    }
+
+    public DockableWindow(WindowConfig windowConfig)
+    {
+      this.WindowConfig = windowConfig;
     }
 
     public object Clone()

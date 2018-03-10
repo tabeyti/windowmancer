@@ -95,11 +95,19 @@ namespace Windowmancer.UI
             d.Column = ds.Column;
           }
 
-          var image = new Image
-          {
-            Source = Helper.ScreenShotProcessWindow(d.Process),
-            ToolTip = $"{d.Process.MainWindowTitle}"
-          };
+          // If there is no process tagging along with this window config,
+          // create a blank image.
+          var image = (null == d.Process) ? 
+            new Image
+            {
+              Source =  Helper.GetBlankScreenShot(),
+              ToolTip = d.WindowConfig.Name
+            } : 
+            new Image
+            {
+              Source = Helper.ScreenShotProcessWindow(d.Process),
+              ToolTip = $"{d.Process.MainWindowTitle}"
+            };
           this.CanvasViewModel.AddImage(image, d);
         }));
 

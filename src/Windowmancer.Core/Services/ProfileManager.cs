@@ -28,8 +28,7 @@ namespace Windowmancer.Core.Services
     private readonly UserData _userData;
 
     public ProfileManager(
-      UserData userData, 
-      MonitorWindowManager monitorWindowManager)
+      UserData userData)
     {
       RegisterProperty<Profile>("ActiveProfile");
       _userData = userData;
@@ -170,8 +169,14 @@ namespace Windowmancer.Core.Services
       {
         return;
       }
+
+      foreach (var w in this.ActiveProfile.Windows)
+      {
+        
+      }
+
       this.ActiveProfile.HostContainers.Remove(config);
-      _userData.Save();
+      //_userData.Save();
     }
     public bool IsInActiveProfile(WindowConfig config)
     {
@@ -194,7 +199,6 @@ namespace Windowmancer.Core.Services
       {
         name = $"{prefix} {i++}";
       }
-
       return name;
     }
 
