@@ -110,7 +110,7 @@
                   <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                   </Grid.ColumnDefinitions>
-                  <TextBlock Text="{Binding Process.MainWindowTitle}" />
+                  <TextBlock Text="{Binding WindowConfig.Name}" />
                 </Grid>
               </DataTemplate>
             </ListBox.ItemTemplate>

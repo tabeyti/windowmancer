@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Windows;
@@ -13,7 +14,9 @@ using System.Windows.Media.Imaging;
 using Microsoft.Practices.Unity;
 using Newtonsoft.Json;
 using Windowmancer.Core.Services.Base;
+using Color = System.Windows.Media.Color;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
+using Point = System.Windows.Point;
 
 namespace Windowmancer.Core.Practices
 {
@@ -96,15 +99,53 @@ namespace Windowmancer.Core.Practices
       return ico;
     }
 
+    public static ImageSource GetBlankScreenShot(string text)
+    {
+      var source = GetBlankScreenShot();
+
+      var imageRect = new Rect(0, 0, 440, 240);
+      var centerPoint = new Point(imageRect.Width/2, imageRect.Height/2);
+
+      var formattedText = new FormattedText(
+        text, 
+        CultureInfo.InvariantCulture, 
+        System.Windows.FlowDirection.LeftToRight,
+        new Typeface("Consolas"), 
+        24, 
+        System.Windows.Media.Brushes.Black);
+
+      var visual = new DrawingVisual();
+      using (var dc = visual.RenderOpen())
+      {
+        dc.DrawImage(source, imageRect);
+        dc.DrawText(formattedText, new System.Windows.Point(centerPoint.X - formattedText.WidthIncludingTrailingWhitespace / 2, centerPoint.Y - formattedText.Height));
+      }
+      return new DrawingImage(visual.Drawing);
+    }
+
+    /// <summary>
+    /// Returns a blank image source, filled with a default solid color.
+    /// </summary>
+    /// <returns></returns>
     public static ImageSource GetBlankScreenShot()
     {
-      return BitmapImage.Create(
+      return GetBlankScreenShot(Colors.Coral);
+    }
+
+    /// <summary>
+    /// Returns a blank image source, filled with a provided solid color.
+    /// </summary>
+    /// <param name="color"></param>
+    /// <returns></returns>
+    public static ImageSource GetBlankScreenShot(Color color)
+    {
+      return BitmapSource.Create(
         2,
         2,
         96,
         96,
         PixelFormats.Indexed1,
-        new BitmapPalette(new List<System.Windows.Media.Color> { Colors.Transparent }),
+        new BitmapPalette(new List<Color> { color }),
         new byte[] { 0, 0, 0, 0 },
         1);
     }

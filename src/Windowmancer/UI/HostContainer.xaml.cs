@@ -42,19 +42,21 @@ namespace Windowmancer.UI
 
       // Resolve all window configurations pertaining to
       // this host container and add dockable windows for them.
-      //var wcm = Helper.ServiceResolver.Resolve<WindowConfigManager>();
-      //foreach (var w in wcm.GetWindowConfigs(this.HostContainerConfig))
-      //{
-      //  DockProcInternal(null, w);
-      //}
+      var wcm = Helper.ServiceResolver.Resolve<WindowConfigManager>();
+      foreach (var w in wcm.GetWindowConfigs(this.HostContainerConfig))
+      {
+        DockProcInternal(null, w);
+      }
 
       this.Closing += (o, e) =>
       {
         foreach (var dw in this.HostContainerConfig.DockedWindows)
         {
+          if (dw.Process == null) continue;
+
           if (!dw.Process.HasExited)
           {
-            dw.Process?.Kill();
+            dw.Process.Kill();
           }
         }
       };
@@ -123,23 +125,39 @@ namespace Windowmancer.UI
 
     private void DockProcInternal(Process process, WindowConfig windowConfig)
     {
+      // We are passing an process-empty DockedWindow container. Add it.
       if (null == process)
       {
         this.HostContainerConfig.DockedWindows.Add(new DockableWindow(windowConfig));
+        return;
       }
 
-      if (this.HostContainerConfig.DockedWindows.Any(dw => dw.Process.Handle == process.Handle))
+      // Check if we are adding the same process twice.
+      if (this.HostContainerConfig.DockedWindows.Any(dw => dw.Process?.Handle == process.Handle))
       {
         throw new Exception("You are docking the same process twice. Just herpin and derpin, aren't ya?");
       }
 
-      if (this.HostContainerConfig.DockedWindows.Any(dw => dw.WindowConfig.Equals(windowConfig)))
-      {
-        throw new Exception("You are docking the same window config twice. For cryin' out loud?");
-      }
+      DockableWindow dockableWindow;
 
-      var windowToDock = new DockableWindow(process, windowConfig);
-      this.HostContainerConfig.DockedWindows.Add(windowToDock);
+      // If there is already an existing docked window object for this window config, use it.
+      var existingDw = this.HostContainerConfig.DockedWindows.Find(dw => dw.WindowConfig.Equals(windowConfig));
+      if (existingDw != null)
+      {
+        // If this dockable window already has a process tied to it, they are trying to add the same thing twice.
+        if (existingDw.Process != null)
+        {
+          throw new Exception("You are docking the same window config twice. For cryin' out loud!");
+        }
+        existingDw.Process = process;
+        dockableWindow = existingDw;
+      }
+      else
+      {
+        dockableWindow = new DockableWindow(process, windowConfig);
+        this.HostContainerConfig.DockedWindows.Add(dockableWindow);
+      }
+      
       while (process.MainWindowHandle == IntPtr.Zero)
       {
         // We try catch here because some windows (e.g. cmd) 
@@ -164,15 +182,15 @@ namespace Windowmancer.UI
         throw new Exception($"{this}.RefreshDockableWindow - Could not retrieve the host container window.");
       }
       var wih = new WindowInteropHelper(window);
-      windowToDock.ParentHandle = Win32.SetParent(windowToDock.Process.MainWindowHandle, wih.Handle);
+      dockableWindow.ParentHandle = Win32.SetParent(dockableWindow.Process.MainWindowHandle, wih.Handle);
 
       void Resize(object s, SizeChangedEventArgs ev)
       {
-        RefreshDockableWindow(windowToDock);
+        RefreshDockableWindow(dockableWindow);
       }
 
       this.SizeChanged += Resize;
-      RefreshDockableWindow(windowToDock);
+      RefreshDockableWindow(dockableWindow);
     }
 
     private void SetDockableWindowVisibility(bool isVisible)

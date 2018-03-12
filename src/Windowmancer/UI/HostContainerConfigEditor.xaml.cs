@@ -100,7 +100,7 @@ namespace Windowmancer.UI
           var image = (null == d.Process) ? 
             new Image
             {
-              Source =  Helper.GetBlankScreenShot(),
+              Source =  Helper.GetBlankScreenShot(d.WindowConfig.Name),
               ToolTip = d.WindowConfig.Name
             } : 
             new Image
