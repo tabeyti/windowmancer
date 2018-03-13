@@ -56,8 +56,13 @@ namespace Windowmancer.Core.Services
     {
       return this.ProfileManager.ActiveProfile.Windows
         .Where(w => w.LayoutType == WindowConfigLayoutType.HostContainer)
-        .Where(w => w.HostContainerLayoutInfo.HostContainerId == hostContainerConfig.Name)
+        .Where(w => IsHostContainerMatch(w, hostContainerConfig))
         .ToList();
+    }
+
+    public static bool IsHostContainerMatch(WindowConfig windowConfig, HostContainerConfig hostContainerConfig)
+    {
+      return windowConfig.HostContainerLayoutInfo.HostContainerId == hostContainerConfig.Name;
     }
   }
 }

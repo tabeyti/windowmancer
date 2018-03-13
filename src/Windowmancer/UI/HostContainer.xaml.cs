@@ -92,13 +92,13 @@ namespace Windowmancer.UI
     }
 
     /// <inheritdoc />
-    public void DockNewProc(Process process, WindowConfig windowConfig)
+    public void DockNew(Process process, WindowConfig windowConfig)
     {
       Helper.Dispatcher.Invoke(() => DockNewProcInternal(process, windowConfig));
     }
 
     /// <inhertidoc />
-    public void DockProc(Process process, WindowConfig windowConfig)
+    public void Dock(Process process, WindowConfig windowConfig)
     {
       Helper.Dispatcher.Invoke(() => DockProcInternal(process, windowConfig));
     }
@@ -120,7 +120,7 @@ namespace Windowmancer.UI
       layoutInfo.Row = (uint)this.CurrentRowIndex;
       layoutInfo.Column = (uint)this.CurrentColumnIndex;
 
-      DockProc(process, windowConfig);
+      Dock(process, windowConfig);
     }
 
     private void DockProcInternal(Process process, WindowConfig windowConfig)
@@ -191,6 +191,23 @@ namespace Windowmancer.UI
 
       this.SizeChanged += Resize;
       RefreshDockableWindow(dockableWindow);
+    }
+
+    /// <inheritdoc />
+    public void UnDock(WindowConfig windowConfig)
+    {
+      var dockableWindow = this.HostContainerConfig.DockedWindows.Find(dw => dw.WindowConfig == windowConfig);
+      if (null == dockableWindow) return;
+
+      // If there is a tied process to this window config, just kill it and 
+      // cleanup will happen naturally.
+      if (dockableWindow.Process != null)
+      {
+        dockableWindow.Process.Kill();
+        return;
+      }
+
+      this.HostContainerConfig.DockedWindows.Remove(dockableWindow);
     }
 
     private void SetDockableWindowVisibility(bool isVisible)

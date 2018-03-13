@@ -13,8 +13,10 @@ using Windowmancer.Core.Services;
 using Windowmancer.UI.Base;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using Windowmancer.Core.Extensions;
 using MenuItem = System.Windows.Controls.MenuItem;
 using Windowmancer.Core.Services.Base;
 using Windowmancer.Services;
@@ -498,6 +500,7 @@ namespace Windowmancer.UI
           break;
         case "Delete":
           item = (WindowConfig)HostContainerWindowConfigDataGrid.SelectedItem;
+          _hostContainerManager.RemoveFromHostContainerWindow(item);
           ProfileManager.RemoveFromActiveProfile(item);
           ShowItemMessageToast(item.Name, "window configuration deleted.");
           break;

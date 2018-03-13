@@ -25,26 +25,35 @@ namespace Windowmancer.Core.Services.Base
     Tuple<uint, uint> NextDockProcRowColumn();
 
     /// <summary>
-    /// Adds the process and associated window config to the container's
-    /// next row/column, updating the window config's layout information
-    /// accordingly.
-    /// Implementation must be on or dispatched to the STA thread.
-    /// </summary>
-    void DockNewProc(Process process, WindowConfig windowConfig);
-
-    /// <summary>
     /// Opens the host configuration editor of this container.
     /// </summary>
     void OpenEditor();
 
     /// <summary>
-    /// Adds the process and associated window config to the container. 
+    /// Adds the provided window config to the container.
     /// Implementation must be on or dispatched to the STA thread.
     /// </summary>
     /// <param name="process"></param>
     /// <param name="windowConfig"></param>
-    void DockProc(Process process, WindowConfig windowConfig);
+    void Dock(Process process, WindowConfig windowConfig);
 
+    /// <summary>
+    /// Adds the process and associated window config to the container's
+    /// next row/column, updating the window config's layout information
+    /// accordingly.
+    /// Implementation must be on or dispatched to the STA thread.
+    /// </summary>
+    void DockNew(Process process, WindowConfig windowConfig);
+
+    /// <summary>
+    /// Removes (if possible) the window config (and associated process)
+    /// from the container's dockable windows.
+    /// </summary>
+    void UnDock(WindowConfig windowConfig);
+
+    /// <summary>
+    /// The config for this host container window.
+    /// </summary>
     HostContainerConfig HostContainerConfig { get; set; }
   }
 }

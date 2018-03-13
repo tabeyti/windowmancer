@@ -14,17 +14,14 @@ namespace Windowmancer.Core.Services.Base
   public abstract class HostContainerManagerBase
   {
     public ObservableCollection<IHostContainerWindow> HostContainerWindows { get; set; }
-
     public ObservableCollection<HostContainerConfig> HostContainerConfigs => _profileManager.ActiveProfile.HostContainers;
 
-    private readonly UserData _userData;
     private readonly ProfileManager _profileManager;
 
     protected HostContainerManagerBase(
       UserData userData,
       ProfileManager profileManager)
     {
-      _userData = userData;
       _profileManager = profileManager;
       Initialize();
     }
@@ -74,7 +71,7 @@ namespace Windowmancer.Core.Services.Base
       var hcw = GetOrCreateHostContainerWindow(config);
       hcw.Show();
       hcw.ActivateWindow();
-      hcw.DockProc(process, windowConfig);
+      hcw.Dock(process, windowConfig);
     }
 
     /// <summary>
@@ -96,14 +93,25 @@ namespace Windowmancer.Core.Services.Base
     }
     
     /// <summary>
-    /// Attempts to retrieve the <see cref="HostContainerConfig"/> associated
-    /// host container window.
+    /// Attempts to retrieve the host container for the associated
+    /// <see cref="HostContainerConfig"/>.
     /// </summary>
     /// <param name="config"></param>
     /// <returns>The associated host container window. If none, then returns null.</returns>
     public IHostContainerWindow GetHostContainerWindow(HostContainerConfig config)
     {
       return this.HostContainerWindows.Find(c => c.HostContainerConfig.Name == config.Name);
+    }
+
+    /// <summary>
+    /// Removes the provided window config from any active host container window.
+    /// </summary>
+    /// <param name="windowConfig"></param>
+    public void RemoveFromHostContainerWindow(WindowConfig windowConfig)
+    {
+      var container = this.HostContainerWindows.Find(hcw => 
+        WindowConfigManager.IsHostContainerMatch(windowConfig, hcw.HostContainerConfig));
+      container?.UnDock(windowConfig);
     }
 
     /// <summary>
@@ -114,6 +122,15 @@ namespace Windowmancer.Core.Services.Base
     public bool IsHostContainerWindowActive(HostContainerConfig config)
     {
       return this.HostContainerWindows.Any(c => c.HostContainerConfig.Name == config.Name);
+    }
+
+    /// <summary>
+    /// Removes the provided host container window from the active list.
+    /// </summary>
+    /// <param name="hostContainer"></param>
+    public void RemoveHostContainerWindow(IHostContainerWindow hostContainer)
+    {
+      this.HostContainerWindows.Remove(hostContainer);
     }
 
     private void Initialize()

@@ -170,10 +170,12 @@ namespace Windowmancer.Core.Services
         return;
       }
 
-      foreach (var w in this.ActiveProfile.Windows)
-      {
+      // TODO: Think about whether we want to delete all associated window
+      // TODO: configuration tied to this container, or keep them available.
+      //foreach (var w in this.ActiveProfile.Windows)
+      //{
         
-      }
+      //}
 
       this.ActiveProfile.HostContainers.Remove(config);
       //_userData.Save();
