@@ -59,7 +59,7 @@ namespace Windowmancer.UI
       SizeDisplayHelperBox();
     }
     
-    private void RecreateDisplaySectionControl(int rows, int cols)
+    private void RecreateDisplaySectionControl()
     {
       // Reset.
       this.DisplayPanelGrid.Children.Clear();
@@ -70,48 +70,37 @@ namespace Windowmancer.UI
       this.CanvasViewModel.Columns = this.HostContainerEditorConfigEditorViewModel.HostContainerConfig.Columns;
       this.CanvasViewModel.Canvas = new Canvas { Background = _defaultBrush };
 
+      // Fill.
       var dockableWindows = this.HostContainerEditorConfigEditorViewModel.HostContainerConfig.DockedWindows;
-      Enumerable.Range(0, rows).ForEach(r =>
-        Enumerable.Range(0, cols).ForEach(c =>
+      foreach (var d in dockableWindows)
+      {
+        // Get the next available canvas section to place this dude.
+        var ds = this.CanvasViewModel.GetNextAvailableSection(d.Row, d.Column);
+        if (null == ds)
         {
-          var i = (cols * r) + c;
-          if (i >= dockableWindows.Count)
+          throw new Exception(
+            $"RecreateDisplaySectionControl - Could not find another available section on the canvas to place process {d.Process.MainWindowTitle}");
+        }
+        d.Row = ds.Row;
+        d.Column = ds.Column;
+
+        // If there is no process tagging along with this window config,
+        // create a blank image.
+        var image = (null == d.Process) ?
+          new Image
           {
-            return;
-          }
-          var d = dockableWindows[i];
-
-          // If row/col doesn't fit into grid, place dockable window in next 
-          // available slot.
-          if (d.Row >= this.CanvasViewModel.Rows || d.Column >= this.CanvasViewModel.Columns)
+            Source = Helper.GetBlankScreenShot(d.WindowConfig.Name),
+            ToolTip = d.WindowConfig.Name
+          } :
+          new Image
           {
-            var ds = this.CanvasViewModel.GetNextAvailableSection();
-            if (null == ds)
-            {
-              throw new Exception(
-                $"RecreateDisplaySectionControl - Could not find another available section on the canvas to place process {d.Process.MainWindowTitle}");
-            }
-            d.Row = ds.Row;
-            d.Column = ds.Column;
-          }
-
-          // If there is no process tagging along with this window config,
-          // create a blank image.
-          var image = (null == d.Process) ? 
-            new Image
-            {
-              Source =  Helper.GetBlankScreenShot(d.WindowConfig.Name),
-              ToolTip = d.WindowConfig.Name
-            } : 
-            new Image
-            {
-              Source = Helper.ScreenShotProcessWindow(d.Process),
-              ToolTip = $"{d.Process.MainWindowTitle}"
-            };
-          this.CanvasViewModel.AddImage(image, d);
-        }));
-
-      // Add.
+            Source = Helper.ScreenShotProcessWindow(d.Process),
+            ToolTip = $"{d.Process.MainWindowTitle}"
+          };
+        this.CanvasViewModel.AddImage(image, d);
+      }
+      
+      // Add. And that's how you make cabbage soup.
       this.DisplayPanelGrid.Children.Add(this.CanvasViewModel.Canvas);
     }
     
@@ -160,10 +149,7 @@ namespace Windowmancer.UI
         throw new Exception("WindowConfig - Could locate active window to bind the KeyDown listener.");
       }
       window.KeyDown += HostContainerConfigEditor_HandleKeyPress;
-
-      RecreateDisplaySectionControl(
-        this.HostContainerEditorConfigEditorViewModel.HostContainerConfig.Rows,
-        this.HostContainerEditorConfigEditorViewModel.HostContainerConfig.Columns);
+      RecreateDisplaySectionControl();
     }
     
     private void DisplayListBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -201,9 +187,7 @@ namespace Windowmancer.UI
         }
       }
 
-      RecreateDisplaySectionControl(
-        this.HostContainerEditorConfigEditorViewModel.HostContainerConfig.Rows,
-        this.HostContainerEditorConfigEditorViewModel.HostContainerConfig.Columns);
+      RecreateDisplaySectionControl();
     }
 
     private void CancelButton_OnClick(object sender, RoutedEventArgs e)
@@ -362,32 +346,6 @@ namespace Windowmancer.UI
       Canvas.SetLeft(image, x);
       Canvas.SetTop(image, y);
     }
-    
-    private void UpdateHighlightSection(CanvasSection canvasSection)
-    {
-      // Our image is over a new section, so let's update the row/col indices
-      // and create a new highlight section if none.
-      this.HighlightSection.Row = canvasSection.Row;
-      this.HighlightSection.Column = canvasSection.Column;
-      if (this.HighlightSection.Rectangle == null)
-      {
-        this.HighlightSection.Rectangle = new Rectangle
-        {
-          Width = canvasSection.Width,
-          Height = canvasSection.Height,
-          Fill = new SolidColorBrush {Color = Color.FromRgb(0, 122, 204)}
-        };
-        this.Canvas.Children.Add(this.HighlightSection.Rectangle);
-      }
-      // Ensure our highlight section is in the background, and not covering
-      // an image.
-      this.HighlightSection.Rectangle.Visibility = Visibility.Visible;
-      this.HighlightSection.Rectangle.MoveToBack();
-
-      // Move our highlight section to the cooresponding section.
-      Canvas.SetLeft(this.HighlightSection.Rectangle, canvasSection.X);
-      Canvas.SetTop(this.HighlightSection.Rectangle, canvasSection.Y);
-    }
 
     /// <summary>
     /// Retrieves a canvas section object associated with the 
@@ -437,6 +395,32 @@ namespace Windowmancer.UI
     public void AddImage(Image image, DockableWindow dockableWindow)
     {
       this.DockableWindowImageDict.Add(dockableWindow, image);
+    }
+
+    private void UpdateHighlightSection(CanvasSection canvasSection)
+    {
+      // Our image is over a new section, so let's update the row/col indices
+      // and create a new highlight section if none.
+      this.HighlightSection.Row = canvasSection.Row;
+      this.HighlightSection.Column = canvasSection.Column;
+      if (this.HighlightSection.Rectangle == null)
+      {
+        this.HighlightSection.Rectangle = new Rectangle
+        {
+          Width = canvasSection.Width,
+          Height = canvasSection.Height,
+          Fill = new SolidColorBrush { Color = Color.FromRgb(0, 122, 204) }
+        };
+        this.Canvas.Children.Add(this.HighlightSection.Rectangle);
+      }
+      // Ensure our highlight section is in the background, and not covering
+      // an image.
+      this.HighlightSection.Rectangle.Visibility = Visibility.Visible;
+      this.HighlightSection.Rectangle.MoveToBack();
+
+      // Move our highlight section to the cooresponding section.
+      Canvas.SetLeft(this.HighlightSection.Rectangle, canvasSection.X);
+      Canvas.SetTop(this.HighlightSection.Rectangle, canvasSection.Y);
     }
 
     /// <summary>
@@ -615,11 +599,14 @@ namespace Windowmancer.UI
 
     /// <summary>
     /// Retrieves an available canvas section for usage, meaning a 
-    /// canvas section currently not occupied by an image.
+    /// canvas section currently not occupied by an image and within
+    /// the row/column boundaries.
     /// </summary>
     /// <returns></returns>
-    public CanvasSection GetNextAvailableSection()
+    public CanvasSection GetNextAvailableSection(int targetRow, int targetColumn)
     {
+      if (targetRow >= this.Rows && targetColumn >= this.Columns) return null;
+
       for (var row = 0; row < this.Rows; ++row)
       {
         for (var column = 0; column < this.Columns; ++column)

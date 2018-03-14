@@ -25,7 +25,7 @@
       <Grid Grid.Column="0">
         <Grid.RowDefinitions>
           <RowDefinition Height="250"/>
-          <RowDefinition Height="200"/>
+          <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <GroupBox Name="GeneralSettingsGroupBox"
                   Grid.Row="0"
@@ -97,13 +97,17 @@
         <GroupBox Header="Docked Windows"
                   Grid.Row="1"
                   Margin="20"
-                  IsEnabled="False"
                   Style="{StaticResource MyGroupBoxStyle}">
           <ListBox Name="DockedWindowsListBox"
                    Style="{StaticResource MyListBox}"
-                   ItemContainerStyle="{StaticResource MyListBoxItem}"
+                   
                    SelectedItem="{Binding HostContainerEditorConfigEditorViewModel.ActiveDockableWindow}"
                    ItemsSource="{Binding HostContainerEditorConfigEditorViewModel.HostContainerConfig.DockedWindows}">
+            <ListBox.ItemContainerStyle>
+              <Style TargetType="{x:Type ListBoxItem}">
+                <Setter Property="Focusable" Value="False"/>
+              </Style>
+            </ListBox.ItemContainerStyle>
             <ListBox.ItemTemplate>
               <DataTemplate>
                 <Grid Margin="3,3">
