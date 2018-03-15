@@ -1,0 +1,390 @@
+﻿{
+  "Profiles": [
+    {
+      "Name": "My Profile",
+      "IsActive": true,
+      "Id": "8b201dd9-1a86-4fe7-88ba-a5ff95478f6a",
+      "Windows": [
+        {
+          "Name": "TestWindow01",
+          "LayoutType": 1,
+          "MonitorLayoutInfo": null,
+          "HostContainerLayoutInfo": {
+            "Row": 0,
+            "Column": 0,
+            "HostContainerId": "MrPickles"
+          },
+          "MatchCriteria": {
+            "MatchType": 0,
+            "MatchString": "TestWindow01"
+          },
+          "ApplyOnProcessStart": true,
+          "StylingInfo": {
+            "WindowOpacityPercentage": 100
+          }
+        },
+        {
+          "Name": "TestWindow02",
+          "LayoutType": 1,
+          "MonitorLayoutInfo": null,
+          "HostContainerLayoutInfo": {
+            "Row": 0,
+            "Column": 1,
+            "HostContainerId": "MrPickles"
+          },
+          "MatchCriteria": {
+            "MatchType": 0,
+            "MatchString": "TestWindow02"
+          },
+          "ApplyOnProcessStart": true,
+          "StylingInfo": {
+            "WindowOpacityPercentage": 100
+          }
+        },
+        {
+          "Name": "TestWindow03",
+          "LayoutType": 1,
+          "MonitorLayoutInfo": null,
+          "HostContainerLayoutInfo": {
+            "Row": 0,
+            "Column": 2,
+            "HostContainerId": "MrPickles"
+          },
+          "MatchCriteria": {
+            "MatchType": 0,
+            "MatchString": "TestWindow03"
+          },
+          "ApplyOnProcessStart": true,
+          "StylingInfo": {
+            "WindowOpacityPercentage": 100
+          }
+        },
+        {
+          "Name": "TestWindow04",
+          "LayoutType": 1,
+          "MonitorLayoutInfo": null,
+          "HostContainerLayoutInfo": {
+            "Row": 0,
+            "Column": 3,
+            "HostContainerId": "MrPickles"
+          },
+          "MatchCriteria": {
+            "MatchType": 0,
+            "MatchString": "TestWindow04"
+          },
+          "ApplyOnProcessStart": true,
+          "StylingInfo": {
+            "WindowOpacityPercentage": 100
+          }
+        },
+        {
+          "Name": "TestWindow05",
+          "LayoutType": 1,
+          "MonitorLayoutInfo": null,
+          "HostContainerLayoutInfo": {
+            "Row": 0,
+            "Column": 4,
+            "HostContainerId": "MrPickles"
+          },
+          "MatchCriteria": {
+            "MatchType": 0,
+            "MatchString": "TestWindow05"
+          },
+          "ApplyOnProcessStart": true,
+          "StylingInfo": {
+            "WindowOpacityPercentage": 100
+          }
+        },
+
+        {
+          "Name": "TestWindow06",
+          "LayoutType": 1,
+          "MonitorLayoutInfo": null,
+          "HostContainerLayoutInfo": {
+            "Row": 1,
+            "Column": 0,
+            "HostContainerId": "MrPickles"
+          },
+          "MatchCriteria": {
+            "MatchType": 0,
+            "MatchString": "TestWindow06"
+          },
+          "ApplyOnProcessStart": true,
+          "StylingInfo": {
+            "WindowOpacityPercentage": 100
+          }
+        },
+        {
+          "Name": "TestWindow02",
+          "LayoutType": 1,
+          "MonitorLayoutInfo": null,
+          "HostContainerLayoutInfo": {
+            "Row": 1,
+            "Column": 1,
+            "HostContainerId": "MrPickles"
+          },
+          "MatchCriteria": {
+            "MatchType": 0,
+            "MatchString": "TestWindow07"
+          },
+          "ApplyOnProcessStart": true,
+          "StylingInfo": {
+            "WindowOpacityPercentage": 100
+          }
+        },
+        {
+          "Name": "TestWindow08",
+          "LayoutType": 1,
+          "MonitorLayoutInfo": null,
+          "HostContainerLayoutInfo": {
+            "Row": 1,
+            "Column": 2,
+            "HostContainerId": "MrPickles"
+          },
+          "MatchCriteria": {
+            "MatchType": 0,
+            "MatchString": "TestWindow08"
+          },
+          "ApplyOnProcessStart": true,
+          "StylingInfo": {
+            "WindowOpacityPercentage": 100
+          }
+        },
+        {
+          "Name": "TestWindow09",
+          "LayoutType": 1,
+          "MonitorLayoutInfo": null,
+          "HostContainerLayoutInfo": {
+            "Row": 1,
+            "Column": 3,
+            "HostContainerId": "MrPickles"
+          },
+          "MatchCriteria": {
+            "MatchType": 0,
+            "MatchString": "TestWindow09"
+          },
+          "ApplyOnProcessStart": true,
+          "StylingInfo": {
+            "WindowOpacityPercentage": 100
+          }
+        },
+        {
+          "Name": "TestWindow10",
+          "LayoutType": 1,
+          "MonitorLayoutInfo": null,
+          "HostContainerLayoutInfo": {
+            "Row": 1,
+            "Column": 4,
+            "HostContainerId": "MrPickles"
+          },
+          "MatchCriteria": {
+            "MatchType": 0,
+            "MatchString": "TestWindow10"
+          },
+          "ApplyOnProcessStart": true,
+          "StylingInfo": {
+            "WindowOpacityPercentage": 100
+          }
+        },
+
+        {
+          "Name": "TestWindow11",
+          "LayoutType": 1,
+          "MonitorLayoutInfo": null,
+          "HostContainerLayoutInfo": {
+            "Row": 2,
+            "Column": 0,
+            "HostContainerId": "MrPickles"
+          },
+          "MatchCriteria": {
+            "MatchType": 0,
+            "MatchString": "TestWindow11"
+          },
+          "ApplyOnProcessStart": true,
+          "StylingInfo": {
+            "WindowOpacityPercentage": 100
+          }
+        },
+        {
+          "Name": "TestWindow12",
+          "LayoutType": 1,
+          "MonitorLayoutInfo": null,
+          "HostContainerLayoutInfo": {
+            "Row": 2,
+            "Column": 1,
+            "HostContainerId": "MrPickles"
+          },
+          "MatchCriteria": {
+            "MatchType": 0,
+            "MatchString": "TestWindow12"
+          },
+          "ApplyOnProcessStart": true,
+          "StylingInfo": {
+            "WindowOpacityPercentage": 100
+          }
+        },
+        {
+          "Name": "TestWindow13",
+          "LayoutType": 1,
+          "MonitorLayoutInfo": null,
+          "HostContainerLayoutInfo": {
+            "Row": 2,
+            "Column": 2,
+            "HostContainerId": "MrPickles"
+          },
+          "MatchCriteria": {
+            "MatchType": 0,
+            "MatchString": "TestWindow13"
+          },
+          "ApplyOnProcessStart": true,
+          "StylingInfo": {
+            "WindowOpacityPercentage": 100
+          }
+        },
+        {
+          "Name": "TestWindow14",
+          "LayoutType": 1,
+          "MonitorLayoutInfo": null,
+          "HostContainerLayoutInfo": {
+            "Row": 2,
+            "Column": 3,
+            "HostContainerId": "MrPickles"
+          },
+          "MatchCriteria": {
+            "MatchType": 0,
+            "MatchString": "TestWindow14"
+          },
+          "ApplyOnProcessStart": true,
+          "StylingInfo": {
+            "WindowOpacityPercentage": 100
+          }
+        },
+        {
+          "Name": "TestWindow15",
+          "LayoutType": 1,
+          "MonitorLayoutInfo": null,
+          "HostContainerLayoutInfo": {
+            "Row": 2,
+            "Column": 4,
+            "HostContainerId": "MrPickles"
+          },
+          "MatchCriteria": {
+            "MatchType": 0,
+            "MatchString": "TestWindow15"
+          },
+          "ApplyOnProcessStart": true,
+          "StylingInfo": {
+            "WindowOpacityPercentage": 100
+          }
+        },
+        {
+          "Name": "TestWindow16",
+          "LayoutType": 1,
+          "MonitorLayoutInfo": null,
+          "HostContainerLayoutInfo": {
+            "Row": 3,
+            "Column": 0,
+            "HostContainerId": "MrPickles"
+          },
+          "MatchCriteria": {
+            "MatchType": 0,
+            "MatchString": "TestWindow16"
+          },
+          "ApplyOnProcessStart": true,
+          "StylingInfo": {
+            "WindowOpacityPercentage": 100
+          }
+        },
+        {
+          "Name": "TestWindow17",
+          "LayoutType": 1,
+          "MonitorLayoutInfo": null,
+          "HostContainerLayoutInfo": {
+            "Row": 3,
+            "Column": 1,
+            "HostContainerId": "MrPickles"
+          },
+          "MatchCriteria": {
+            "MatchType": 0,
+            "MatchString": "TestWindow17"
+          },
+          "ApplyOnProcessStart": true,
+          "StylingInfo": {
+            "WindowOpacityPercentage": 100
+          }
+        },
+        {
+          "Name": "TestWindow18",
+          "LayoutType": 1,
+          "MonitorLayoutInfo": null,
+          "HostContainerLayoutInfo": {
+            "Row": 3,
+            "Column": 2,
+            "HostContainerId": "MrPickles"
+          },
+          "MatchCriteria": {
+            "MatchType": 0,
+            "MatchString": "TestWindow18"
+          },
+          "ApplyOnProcessStart": true,
+          "StylingInfo": {
+            "WindowOpacityPercentage": 100
+          }
+        },
+        {
+          "Name": "TestWindow19",
+          "LayoutType": 1,
+          "MonitorLayoutInfo": null,
+          "HostContainerLayoutInfo": {
+            "Row": 3,
+            "Column": 3,
+            "HostContainerId": "MrPickles"
+          },
+          "MatchCriteria": {
+            "MatchType": 0,
+            "MatchString": "TestWindow19"
+          },
+          "ApplyOnProcessStart": true,
+          "StylingInfo": {
+            "WindowOpacityPercentage": 100
+          }
+        },
+        {
+          "Name": "TestWindow20",
+          "LayoutType": 1,
+          "MonitorLayoutInfo": null,
+          "HostContainerLayoutInfo": {
+            "Row": 3,
+            "Column": 4,
+            "HostContainerId": "MrPickles"
+          },
+          "MatchCriteria": {
+            "MatchType": 0,
+            "MatchString": "TestWindow20"
+          },
+          "ApplyOnProcessStart": true,
+          "StylingInfo": {
+            "WindowOpacityPercentage": 100
+          }
+        }
+
+      ],
+      "HostContainers": [
+        {
+          "Id": "6133c2e9-abba-46a8-995c-11ed7d005c33",
+          "Name": "MrPickles",
+          "Rows": 5,
+          "Columns": 5
+        }
+      ]
+    }
+  ],
+  "ActiveProfile": "8b201dd9-1a86-4fe7-88ba-a5ff95478f6a",
+  "HotKeyConfig": {
+    "ModifierKeys": [
+      2,
+      4
+    ],
+    "PrimaryKey": 66
+  }
+}

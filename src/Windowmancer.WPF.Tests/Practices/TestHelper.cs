@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Windowmancer.Core.Models;
@@ -12,9 +13,25 @@ namespace Windowmancer.WPF.Tests.Practices
 {
   public static class TestHelper
   {
+    private static readonly string _dataRoot = "Data";
+
     public static string TestHelperProcess => $"{AppDomain.CurrentDomain.BaseDirectory}\\Resources\\WindowTitle.exe";
 
-    public static TestProcessWrapper CreateWindowProcess(string title = null)
+    public static void OverwriteUserData(string targetedUserData)
+    {
+      var content = File.ReadAllText($"{_dataRoot}/{targetedUserData}");
+      File.WriteAllText($"{_dataRoot}/user.json", content);
+    }
+
+    public static TestProcessWrapper CreateWindowmancer()
+    {
+      return new TestProcessWrapper(Process.Start(new ProcessStartInfo
+      {
+        FileName = "Windowmancer.exe",
+      }));
+    }
+
+    public static TestProcessWrapper CreateTestWindowProcess(string title = null)
     {
       title = title ?? CreateWindowTitle();
 
@@ -42,7 +59,7 @@ namespace Windowmancer.WPF.Tests.Practices
       Win32.WaitForProcessWindow(process);
       Task.Delay(500).Wait();
 
-      // Return and updated process (with window title in it)
+      // Return an updated process (with window title in it)
       return GetUpdatedWindowProcess(new TestProcessWrapper(process));
     }
 

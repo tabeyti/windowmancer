@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Windowmancer.Core.Models;
 using Windowmancer.Core.Practices;
 using Windowmancer.Core.Services.Base;
+using Windowmancer.WPF.Tests.Models;
+using Windowmancer.WPF.Tests.Practices;
 using Windowmancer.WPF.Tests.Tests.Base;
 using Xunit;
 using Xunit.Abstractions;
@@ -19,32 +23,42 @@ namespace Windowmancer.WPF.Tests.Tests
       Helper.Dispatcher = new TestDispatcher();
     }
 
-    [Fact]
+    [Theory]
     [Trait("Priority", "1")]
-    public async void HostContainerTests_CreateClose()
+    [InlineData("hc_mass.json")]
+    public async Task HostContainerTests_CreateClose(string userDataFile)
     {
-      var thing = new App();
-      thing.Start();
+      TestHelper.OverwriteUserData(userDataFile);
+
+      var proc = TestHelper.CreateWindowmancer();
+
       await Task.Delay(10000).ConfigureAwait(false);
 
-      //// Create process window.
-      //var proc = AddResource(TestHelper.CreateWindowProcess());
-      //await Task.Delay(1000).ConfigureAwait(false);
+      CreateTestWindows(10, 1);
 
-      //// Retrieve the current opacity of the window and verify it's at max.
-      //var origOpacity = MonitorWindowManager.GetWindowOpacityPercentage(proc.Process);
-      //Assert.Equal((uint) 100, origOpacity);
-
-      //// Set the desired opacity and validate.
-      //MonitorWindowManager.SetWindowOpacityPercentage(proc.Process, opacity);
-      //var alter = MonitorWindowManager.GetWindowOpacityPercentage(proc.Process);
-      //Assert.Equal((uint) opacity, alter);
+      await Task.Delay(20000).ConfigureAwait(false);
+      proc.Kill();
     }
 
     #region Helper Methods
 
-    private readonly uint _containerCounter = 1;
+    private List<TestProcessWrapper> CreateTestWindows(int num, int startingIndex)
+    {
+      var list = new List<TestProcessWrapper>();
+      for (int i = startingIndex; i < num + startingIndex; ++i)
+      {
+        list.Add(TestHelper.CreateTestWindowProcess($"TestWindow{i:00}"));
+      }
+      return list;
+    }
 
+    private bool IsWindowActive(TestProcessWrapper proc)
+    {
+      var allProcceses = System.Diagnostics.Process.GetProcesses();
+      return allProcceses.Any(p => p.MainWindowTitle == proc.MainWindowTitle);
+    }
+
+    private readonly uint _containerCounter = 1;
     private HostContainerConfig CreateHostContainerConfig()
     {
       return new HostContainerConfig
