@@ -191,18 +191,12 @@ namespace Windowmancer.UI
       // If this is an edit, then check if the container is active.
       if (null != config)
       {
-        // If it's not active, activate it with the config editor already open.
+        // Activate container with editor opened.
         _hostContainerManager.ActivateHostContainer(config, true);
+        return;
       }
       
-      //  {
-      //    // If it's already active, bring the window to the fore,
-      //    // and manually trigger the config editor to open.
-      //    var hcw = _hostContainerManager.GetHostContainerWindow(config);
-      //    hcw.ActivateWindow();
-      //    hcw.HandleHostConfigEdit();
-      //  }
-
+      //var container = _hostContainerManager.
           //  return;
           //}
 

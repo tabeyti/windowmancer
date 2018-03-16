@@ -10,8 +10,7 @@ namespace Windowmancer.Services
   public class HostContainerManager : HostContainerManagerBase
   {
     public HostContainerManager(
-      UserData userData,
-      ProfileManager profileManager) : base(userData, profileManager)
+      ProfileManager profileManager) : base(profileManager)
     {
     }
 

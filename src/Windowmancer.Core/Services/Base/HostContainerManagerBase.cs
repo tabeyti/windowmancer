@@ -18,9 +18,7 @@ namespace Windowmancer.Core.Services.Base
 
     private readonly ProfileManager _profileManager;
 
-    protected HostContainerManagerBase(
-      UserData userData,
-      ProfileManager profileManager)
+    protected HostContainerManagerBase(ProfileManager profileManager)
     {
       _profileManager = profileManager;
       Initialize();
@@ -31,7 +29,7 @@ namespace Windowmancer.Core.Services.Base
     /// host container.
     /// </summary>
     /// <param name="windowConfig"></param>
-    /// <param name="proces"></param>
+    /// <param name="process"></param>
     public void ApplyWindowConfig(WindowConfig windowConfig, Process process)
     {
       var config = this.HostContainerConfigs.Find(hc =>
@@ -136,6 +134,16 @@ namespace Windowmancer.Core.Services.Base
     private void Initialize()
     {
       this.HostContainerWindows = new ObservableCollection<IHostContainerWindow>();
+
+      // Ensure that when the user switches to a new profile,
+      // that all active host containers are destroyed.
+      _profileManager.OnActiveProfileChanged += (sender, args) =>
+      {
+        foreach (var w in this.HostContainerWindows)
+        {
+          w.Close();
+        }
+      };
     }
     
     protected abstract IHostContainerWindow CreateNewHostContainerWindow(

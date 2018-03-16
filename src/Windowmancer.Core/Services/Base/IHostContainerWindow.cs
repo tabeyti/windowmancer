@@ -52,6 +52,11 @@ namespace Windowmancer.Core.Services.Base
     void UnDock(WindowConfig windowConfig);
 
     /// <summary>
+    /// Closes the host container window.
+    /// </summary>
+    void Close();
+
+    /// <summary>
     /// The config for this host container window.
     /// </summary>
     HostContainerConfig HostContainerConfig { get; set; }

@@ -18,14 +18,10 @@ namespace Windowmancer.Core.Services
     private ManagementEventWatcher _startWatch;
     private ManagementEventWatcher _stopWatch;
     private readonly WindowConfigManager _windowConfigManager;
-    private readonly ProfileManager _profileManager;
 
-    public ProcessMonitor(
-      WindowConfigManager windowConfigManager,
-      ProfileManager profileManager)
+    public ProcessMonitor(WindowConfigManager windowConfigManager)
     {
       _windowConfigManager = windowConfigManager;
-      _profileManager = profileManager;
       this.ActiveWindowProcs = new ObservableCollection<MonitoredProcess>();
     }
 

@@ -341,12 +341,19 @@ namespace Windowmancer.UI
     {
     }
 
+    /// <inheritdoc />
+    void IHostContainerWindow.Close()
+    {
+      this.Close();
+    }
+
     private void HostContainer_OnClosed(object sender, EventArgs e)
     {
-      var hcm = App.ServiceResolver.Resolve<HostContainerManager>();
-      hcm.RemoveHostContainer(this);
       this.HostContainerConfig.DockedWindows.Clear();
       this.HostContainerConfig.IsActive = false;
+
+      var hcm = App.ServiceResolver.Resolve<HostContainerManager>();
+      hcm.RemoveHostContainer(this);
     }
 
     public new void Show()

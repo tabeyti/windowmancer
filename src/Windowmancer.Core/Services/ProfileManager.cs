@@ -9,19 +9,18 @@ namespace Windowmancer.Core.Services
   public class ProfileManager : PropertyNotifyBase, IDisposable
   {
     public event EventHandler OnActiveProfileUpdate;
+    public event EventHandler OnActiveProfileChanged;
     public ObservableCollection<Profile> Profiles => _userData.Profiles;
     public Profile ActiveProfile
     {
       get => GetProperty<Profile>();
       set
       {
-        if (value == null)
-        {
-          return;
-        }
+        if (value == null) return;
         value.IsActive = true;
         _userData.ActiveProfile = value.Id;
         SetProperty(value);
+        OnActiveProfileChanged?.Invoke(this, new EventArgs());
       }
     }
 
@@ -31,6 +30,7 @@ namespace Windowmancer.Core.Services
       UserData userData)
     {
       RegisterProperty<Profile>("ActiveProfile");
+
       _userData = userData;
       Initialize();
     }
