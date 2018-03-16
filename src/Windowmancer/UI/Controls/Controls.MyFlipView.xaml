@@ -20,7 +20,9 @@
                 Opacity="0.85">
             <Label x:Name="PART_BannerLabel"
                    FontFamily="{TemplateBinding FontFamily}"
-                   FontSize="18"
+                   FontSize="22"
+                   Margin="0,-5,0,0"
+                   FontWeight="Regular"
                    Foreground="White"
                    Background="{StaticResource GrayBrush9}" />
           </Grid>

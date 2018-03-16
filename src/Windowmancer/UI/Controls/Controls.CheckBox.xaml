@@ -8,24 +8,14 @@
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type CheckBox}">
           <Grid>
-            <Ellipse x:Name="outerEllipse">
-              <Ellipse.Fill>
-                <RadialGradientBrush>
-                  <GradientStop Offset="0" Color="Red"/>
-                  <GradientStop Offset="0.88" Color="LightCoral"/>
-                  <GradientStop Offset="1" Color="DarkRed"/>
-                </RadialGradientBrush>
-              </Ellipse.Fill>
-            </Ellipse>
-            <Ellipse Margin="10" x:Name="highlightCircle" >
-              <Ellipse.Fill >
-                <LinearGradientBrush >
-                  <GradientStop Offset="0" Color="Green"/>
-                  <GradientStop Offset="0.5" Color="LightGreen"/>
-                  <GradientStop Offset="1" Color="DarkGreen"/>
-                </LinearGradientBrush>
-              </Ellipse.Fill>
-            </Ellipse>
+            <Ellipse x:Name="outerEllipse" 
+                     Width="10"
+                     Height="10"
+                     Fill="LightCoral"/>
+            <Ellipse Width="10"
+                     Height="10"
+                     Fill="Green"
+              x:Name="highlightCircle" />
             <ContentPresenter x:Name="content" HorizontalAlignment="Center" VerticalAlignment="Center"/>
           </Grid>
           <ControlTemplate.Triggers>
@@ -33,18 +23,14 @@
               <Setter TargetName="highlightCircle" Property="Fill">
                 <Setter.Value>
                   <LinearGradientBrush StartPoint="0.3,0" EndPoint="0.7,1">
-                    <GradientStop Offset="0" Color="Green"/>
-                    <GradientStop Offset="0.5" Color="LightGreen"/>
-                    <GradientStop Offset="1" Color="DarkGreen"/>
+                    <GradientStop Offset="0" Color="LightGreen"/>
                   </LinearGradientBrush>
                 </Setter.Value>
               </Setter>
               <Setter TargetName="outerEllipse" Property="Fill">
                 <Setter.Value>
                   <RadialGradientBrush>
-                    <GradientStop Offset="0" Color="Green"/>
-                    <GradientStop Offset="0.88" Color="LightGreen"/>
-                    <GradientStop Offset="1" Color="DarkGreen"/>
+                    <GradientStop Offset="0" Color="LightGreen"/>
                   </RadialGradientBrush>
                 </Setter.Value>
               </Setter>
@@ -53,9 +39,7 @@
               <Setter TargetName="highlightCircle" Property="Fill">
                 <Setter.Value>
                   <LinearGradientBrush StartPoint="0.3,0" EndPoint="0.7,1">
-                    <GradientStop Offset="0" Color="Red"/>
-                    <GradientStop Offset="0.5" Color="LightCoral"/>
-                    <GradientStop Offset="1" Color="DarkRed"/>
+                    <GradientStop Offset="0" Color="LightCoral"/>
                   </LinearGradientBrush>
                 </Setter.Value>
               </Setter>

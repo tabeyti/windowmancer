@@ -13,10 +13,7 @@ using Windowmancer.Core.Services;
 using Windowmancer.UI.Base;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Data;
-using Windowmancer.Core.Extensions;
 using MenuItem = System.Windows.Controls.MenuItem;
 using Windowmancer.Core.Services.Base;
 using Windowmancer.Services;
@@ -63,6 +60,8 @@ namespace Windowmancer.UI
 
       // Start process monitor.
       this.ProcMonitor.Start();
+
+      //this.HostContainerWindowConfigDataGrid.Columns
     }
 
     private void BuildActiveWindowsContextMenu()
@@ -330,7 +329,7 @@ namespace Windowmancer.UI
       }
     }
 
-    private void MonitorWindowConfigDataGrid_OnAutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+    private void WindowConfigDataGrid_OnAutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
     {
       if (((PropertyDescriptor)e.PropertyDescriptor).IsBrowsable == false)
         e.Cancel = true;

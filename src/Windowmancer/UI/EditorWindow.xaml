@@ -194,7 +194,7 @@
                       Background="{StaticResource AccentViewBackgroundColorBrush}"
                       ColumnHeaderStyle="{StaticResource MyColumnHeader}"
                       ItemsSource="{Binding Source={StaticResource MonitorWindowConfigCollectionView}}"
-                      AutoGeneratingColumn="MonitorWindowConfigDataGrid_OnAutoGeneratingColumn"
+                      AutoGeneratingColumn="WindowConfigDataGrid_OnAutoGeneratingColumn"
                       MouseDoubleClick="MonitorWindowConfigDataGrid_OnMouseDoubleClick">
               <DataGrid.Resources>
                 <ContextMenu x:Key="RowMenu">
@@ -280,6 +280,7 @@
                           SelectionUnit="FullRow"
                           Background="{StaticResource AccentViewBackgroundColorBrush}"
                           ColumnHeaderStyle="{StaticResource MyColumnHeader}"
+                          AutoGeneratingColumn="WindowConfigDataGrid_OnAutoGeneratingColumn"
                           ItemsSource="{Binding Source={StaticResource ContainerWindowConfigCollectionView}}">
                   <DataGrid.Resources>
                     <ContextMenu x:Key="RowMenu">

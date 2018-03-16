@@ -11,7 +11,6 @@
              HorizontalAlignment="Stretch"
              Loaded="WindowConfigEditor_OnLoaded"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
-
   <Grid>
     <Grid.RowDefinitions>
       <RowDefinition Height="*"/>

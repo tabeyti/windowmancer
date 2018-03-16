@@ -1,6 +1,8 @@
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using Microsoft.Practices.Unity;
+using Newtonsoft.Json;
 using Windowmancer.Core.Practices;
 using Windowmancer.Core.Services;
 
@@ -14,23 +16,35 @@ namespace Windowmancer.Core.Models
       set => SetProperty(value);
     }
 
+    [Browsable(false)]
     public WindowConfigLayoutType LayoutType
     {
       get => GetProperty<WindowConfigLayoutType>();
       set => SetProperty(value);
     }
 
+    [Browsable(false)]
     public MonitorLayoutInfo MonitorLayoutInfo
     {
       get => GetProperty<MonitorLayoutInfo>();
       set => SetProperty(value);
     }
 
+    [Browsable(false)]
     public HostContainerLayoutInfo HostContainerLayoutInfo
     {
       get => GetProperty<HostContainerLayoutInfo>();
       set => SetProperty(value);
     }
+
+    /// <summary>
+    /// Visual-only property for displaying a string
+    /// represenation of this config's layout for data grids.
+    /// </summary>
+    [JsonIgnore]
+    public string Layout => (this.LayoutType == WindowConfigLayoutType.Monitor)
+      ? this.MonitorLayoutInfo.ToString()
+      : this.HostContainerLayoutInfo.ToString();
 
     public WindowMatchCriteria MatchCriteria
     {
@@ -38,15 +52,15 @@ namespace Windowmancer.Core.Models
       set => SetProperty(value);
     }
 
-    public bool ApplyOnProcessStart
-    {
-      get => GetProperty<bool>();
-      set => SetProperty(value);
-    }
-
     public WindowStylingInfo StylingInfo
     {
       get => GetProperty<WindowStylingInfo>();
+      set => SetProperty(value);
+    }
+
+    public bool ApplyOnProcessStart
+    {
+      get => GetProperty<bool>();
       set => SetProperty(value);
     }
 

@@ -9,7 +9,7 @@ namespace Windowmancer.Core.Services
   public class ProfileManager : PropertyNotifyBase, IDisposable
   {
     public event EventHandler OnActiveProfileUpdate;
-    public event EventHandler OnActiveProfileChanged;
+    public event EventHandler OnActiveProfileChanging;
     public ObservableCollection<Profile> Profiles => _userData.Profiles;
     public Profile ActiveProfile
     {
@@ -17,10 +17,16 @@ namespace Windowmancer.Core.Services
       set
       {
         if (value == null) return;
+
+        // TODO: Bug where host container windows being disposed by this
+        // TODO: call are being modified while disposing is happening
+        // Update others that we are changing the profile.
+        //OnActiveProfileChanging?.Invoke(this, new EventArgs());
+
         value.IsActive = true;
         _userData.ActiveProfile = value.Id;
         SetProperty(value);
-        OnActiveProfileChanged?.Invoke(this, new EventArgs());
+        OnActiveProfileUpdate?.Invoke(this, new EventArgs());
       }
     }
 
