@@ -1,5 +1,4 @@
-﻿using System.Windows;
-using Windowmancer.Core.Models;
+﻿using Windowmancer.Core.Models;
 using Windowmancer.Core.Practices;
 using Windowmancer.Core.Services;
 using Windowmancer.UI;
@@ -22,9 +21,9 @@ namespace Windowmancer.Services
         hc = new HostContainer(config, enableEditor);
         hc.Closed += (sender, args) =>
         {
-          this.HostContainerWindows.Remove(hc);
+          this.RemoveHostContainerWindow(hc);
         };
-        this.HostContainerWindows.Add(hc);
+        this.AddHostContainerWindow(hc);
       });
       return hc;
     }

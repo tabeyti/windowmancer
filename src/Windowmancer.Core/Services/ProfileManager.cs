@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Microsoft.Practices.ObjectBuilder2;
 using Windowmancer.Core.Extensions;
 using Windowmancer.Core.Models;
 
@@ -8,7 +9,7 @@ namespace Windowmancer.Core.Services
 {
   public class ProfileManager : PropertyNotifyBase, IDisposable
   {
-    public event EventHandler OnActiveProfileUpdate;
+    public event EventHandler OnActiveProfileUpdated;
     public event EventHandler OnActiveProfileChanging;
     public ObservableCollection<Profile> Profiles => _userData.Profiles;
     public Profile ActiveProfile
@@ -21,12 +22,12 @@ namespace Windowmancer.Core.Services
         // TODO: Bug where host container windows being disposed by this
         // TODO: call are being modified while disposing is happening
         // Update others that we are changing the profile.
-        //OnActiveProfileChanging?.Invoke(this, new EventArgs());
+        this.OnActiveProfileChanging?.Invoke(value, new EventArgs());
 
         value.IsActive = true;
-        _userData.ActiveProfile = value.Id;
         SetProperty(value);
-        OnActiveProfileUpdate?.Invoke(this, new EventArgs());
+
+        this.OnActiveProfileUpdated?.Invoke(value, new EventArgs());
       }
     }
 
@@ -43,18 +44,19 @@ namespace Windowmancer.Core.Services
 
     private void Initialize()
     {
-      var profile = Profiles.Find(p => p.Id == _userData.ActiveProfile);
+      // Set the active profile.
+      var profile = Profiles.Find(p => p.IsActive);
       this.ActiveProfile = profile ?? Profiles.FirstOrDefault();
+
     }
     
     public void UpdateActiveProfile(Profile newProfile)
     {
       var id = newProfile.Id;
-      var profile = this.Profiles.Find(p => p.Id == id);
+      var profile = this.Profiles.Find(p => p.Name == newProfile.Name);
       DeselectActiveProfile();
       this.ActiveProfile = profile ?? throw new ExceptionBox($"{this} - Could not find profile from id {id}.");
       _userData.Save();
-      OnActiveProfileUpdate?.Invoke(this, new EventArgs());
     }
 
     /// <summary>
@@ -72,7 +74,6 @@ namespace Windowmancer.Core.Services
       this.Profiles.Add(profile);
       this.ActiveProfile = profile;
       _userData.Save();
-      OnActiveProfileUpdate?.Invoke(this, new EventArgs());
       return true;
     }
 
@@ -101,8 +102,6 @@ namespace Windowmancer.Core.Services
       
       this.Profiles.Remove(this.ActiveProfile);
       this.ActiveProfile = this.Profiles[index];
-      this.ActiveProfile.IsActive = true;
-      OnActiveProfileUpdate?.Invoke(this, new EventArgs());
       _userData.Save();
       return index;
     }

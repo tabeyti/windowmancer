@@ -94,7 +94,7 @@ namespace Windowmancer
       // Hook into active profile updates to display proper
       // tooltip text for the tray icon.
       _trayIcon.Text = TrayIconTooltipText();
-      _profileManager.OnActiveProfileUpdate += (s, e) => { _trayIcon.Text = TrayIconTooltipText(); };
+      _profileManager.OnActiveProfileUpdated += (s, e) => { _trayIcon.Text = TrayIconTooltipText(); };
     }
 
     private string TrayIconTooltipText()

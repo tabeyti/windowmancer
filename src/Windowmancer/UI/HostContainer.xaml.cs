@@ -353,7 +353,7 @@ namespace Windowmancer.UI
       this.HostContainerConfig.IsActive = false;
 
       var hcm = App.ServiceResolver.Resolve<HostContainerManager>();
-      hcm.RemoveHostContainer(this);
+      hcm.RemoveHostContainerWindow(this);
     }
 
     public new void Show()

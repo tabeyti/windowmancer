@@ -3,9 +3,11 @@
  * that the regexes of each window config is catching.
  */
 
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using Microsoft.Practices.ObjectBuilder2;
 using Windowmancer.Core.Extensions;
 using Windowmancer.Core.Models;
 
@@ -13,10 +15,12 @@ namespace Windowmancer.Core.Services.Base
 {
   public abstract class HostContainerManagerBase
   {
-    public ObservableCollection<IHostContainerWindow> HostContainerWindows { get; set; }
+    private ObservableCollection<IHostContainerWindow> HostContainerWindows { get; set; }
     public ObservableCollection<HostContainerConfig> HostContainerConfigs => _profileManager.ActiveProfile.HostContainers;
 
     private readonly ProfileManager _profileManager;
+
+    private object _lock = new object();
 
     protected HostContainerManagerBase(ProfileManager profileManager)
     {
@@ -80,7 +84,10 @@ namespace Windowmancer.Core.Services.Base
     /// <returns></returns>
     public bool HostContainerWindowExists(HostContainerConfig config)
     {
-      return this.HostContainerWindows.Any(hcw => hcw.HostContainerConfig.Name == config.Name);
+      lock (_lock)
+      {
+        return this.HostContainerWindows.Any(hcw => hcw.HostContainerConfig.Name == config.Name);
+      }
     }
 
     public IHostContainerWindow GetOrCreateHostContainerWindow(HostContainerConfig config)
@@ -98,7 +105,10 @@ namespace Windowmancer.Core.Services.Base
     /// <returns>The associated host container window. If none, then returns null.</returns>
     public IHostContainerWindow GetHostContainerWindow(HostContainerConfig config)
     {
-      return this.HostContainerWindows.Find(c => c.HostContainerConfig.Name == config.Name);
+      lock (_lock)
+      {
+        return this.HostContainerWindows.Find(c => c.HostContainerConfig.Name == config.Name);
+      }
     }
 
     /// <summary>
@@ -119,7 +129,10 @@ namespace Windowmancer.Core.Services.Base
     /// <returns>True if active. False if not.</returns>
     public bool IsHostContainerWindowActive(HostContainerConfig config)
     {
-      return this.HostContainerWindows.Any(c => c.HostContainerConfig.Name == config.Name);
+      lock (_lock)
+      {
+        return this.HostContainerWindows.Any(c => c.HostContainerConfig.Name == config.Name);
+      }
     }
 
     /// <summary>
@@ -128,31 +141,58 @@ namespace Windowmancer.Core.Services.Base
     /// <param name="hostContainer"></param>
     public void RemoveHostContainerWindow(IHostContainerWindow hostContainer)
     {
-      this.HostContainerWindows.Remove(hostContainer);
+      lock (_lock)
+      {
+        this.HostContainerWindows.Remove(hostContainer);
+      }
+    }
+
+    /// <summary>
+    /// Adds the passed host container window instance to the list of
+    /// active host container windows.
+    /// </summary>
+    /// <param name="hostContainer"></param>
+    public void AddHostContainerWindow(IHostContainerWindow hostContainer)
+    {
+      lock (_lock)
+      {
+        this.HostContainerWindows.Add(hostContainer);
+      }
     }
 
     private void Initialize()
     {
-      this.HostContainerWindows = new ObservableCollection<IHostContainerWindow>();
+      lock (_lock)
+      {
+        this.HostContainerWindows = new ObservableCollection<IHostContainerWindow>();
+      }
 
       // Ensure that when the user switches to a new profile,
       // that all active host containers are destroyed.
-      _profileManager.OnActiveProfileChanged += (sender, args) =>
+      _profileManager.OnActiveProfileChanging += (sender, args) =>
       {
-        foreach (var w in this.HostContainerWindows)
+        lock (_lock)
         {
-          w.Close();
+          // TODO: HACKITY HACK! There is a asynchronous issue of closing
+          // TODO: windows after a profile is changed from the system tray
+          // TODO: (and maybe other places). Copying to a temp list prior
+          // TODO: to iterating and closing seems to fix it. Don't hate me.
+          var copy = new List<IHostContainerWindow>();
+          this.HostContainerWindows.ForEach(h => copy.Add(h));
+          copy.ForEach(hwc => hwc.Close());
         }
       };
     }
     
+    /// <summary>
+    /// Creates a new host container window object using the passed
+    /// config.
+    /// </summary>
+    /// <param name="config"></param>
+    /// <param name="enableEditor"></param>
+    /// <returns></returns>
     protected abstract IHostContainerWindow CreateNewHostContainerWindow(
       HostContainerConfig config, 
       bool enableEditor = false);
-
-    public void RemoveHostContainer(IHostContainerWindow hostContainer)
-    {
-      this.HostContainerWindows.Remove(hostContainer);
-    }
   }
 }
