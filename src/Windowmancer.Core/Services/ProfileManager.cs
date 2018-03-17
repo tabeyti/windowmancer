@@ -1,7 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Microsoft.Practices.ObjectBuilder2;
 using Windowmancer.Core.Extensions;
 using Windowmancer.Core.Models;
 
@@ -24,9 +23,10 @@ namespace Windowmancer.Core.Services
         // Update others that we are changing the profile.
         this.OnActiveProfileChanging?.Invoke(value, new EventArgs());
 
+        DeselectActiveProfile();
         value.IsActive = true;
         SetProperty(value);
-
+        _userData.Save();
         this.OnActiveProfileUpdated?.Invoke(value, new EventArgs());
       }
     }
@@ -37,7 +37,6 @@ namespace Windowmancer.Core.Services
       UserData userData)
     {
       RegisterProperty<Profile>("ActiveProfile");
-
       _userData = userData;
       Initialize();
     }
@@ -56,7 +55,6 @@ namespace Windowmancer.Core.Services
       var profile = this.Profiles.Find(p => p.Name == newProfile.Name);
       DeselectActiveProfile();
       this.ActiveProfile = profile ?? throw new ExceptionBox($"{this} - Could not find profile from id {id}.");
-      _userData.Save();
     }
 
     /// <summary>
@@ -73,7 +71,6 @@ namespace Windowmancer.Core.Services
       DeselectActiveProfile();
       this.Profiles.Add(profile);
       this.ActiveProfile = profile;
-      _userData.Save();
       return true;
     }
 
@@ -102,7 +99,6 @@ namespace Windowmancer.Core.Services
       
       this.Profiles.Remove(this.ActiveProfile);
       this.ActiveProfile = this.Profiles[index];
-      _userData.Save();
       return index;
     }
 
@@ -183,7 +179,7 @@ namespace Windowmancer.Core.Services
       //}
 
       this.ActiveProfile.HostContainers.Remove(config);
-      //_userData.Save();
+      _userData.Save();
     }
     public bool IsInActiveProfile(WindowConfig config)
     {
