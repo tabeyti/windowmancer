@@ -24,7 +24,6 @@ namespace Windowmancer.UI
     private ProfileManager ProfileManager { get; set; }
 
     private static readonly int _titlebarHeight = (int)SystemParameters.WindowCaptionHeight + 10;
-    private static readonly string _defaultContainerName = "My Container";
     private readonly bool _stupidFlag = false;
 
     public HostContainer(HostContainerConfig hostContainer, bool enableEditorOnLoad = false)

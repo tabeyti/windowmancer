@@ -194,15 +194,11 @@ namespace Windowmancer.UI
         _hostContainerManager.ActivateHostContainer(config, true);
         return;
       }
-      
-      //var container = _hostContainerManager.
-          //  return;
-          //}
 
-          //// If this is a new container, use the manager to create a new
-          //// container, and add it to the active profile.
-          //var container = _hostContainerManager.CreateNewHostContainer();
-          //this.ProfileManager.AddToActiveProfile(container.HostContainerConfig);
+      // TODO: Handle creation of new host container.
+      //config = new HostContainerConfig(_hostContainerManager.GetDefaultHostContainerName());
+      //this.ProfileManager.AddToActiveProfile(config);
+      //_hostContainerManager.ActivateHostContainer(config, true);
     }
 
     private void HandleWindowConfigEdit()

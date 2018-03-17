@@ -20,14 +20,14 @@ namespace Windowmancer.Core.Models
 
     public WindowMatchCriteria()
     {
-      RegisterProperty("MatchType", WindowMatchCriteriaType.WindowTitle);
-      RegisterProperty("MatchString", "");
+      RegisterProperty(nameof(this.MatchType), WindowMatchCriteriaType.WindowTitle);
+      RegisterProperty(nameof(this.MatchString), "");
     }
 
     public WindowMatchCriteria(WindowMatchCriteriaType type, string matchString)
     {
-      RegisterProperty("MatchType", type);
-      RegisterProperty("MatchString", matchString);
+      RegisterProperty(nameof(this.MatchType), type);
+      RegisterProperty(nameof(this.MatchString), matchString);
     }
 
     public override string ToString()

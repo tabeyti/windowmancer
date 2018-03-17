@@ -301,14 +301,12 @@ namespace Windowmancer.UI
     public CanvasViewModel(HostContainerEditorViewModel hcEditorViewModel)
     {
       _hcEditorViewModel = hcEditorViewModel;
-      RegisterProperty<int>("CanvasX");
-      RegisterProperty<int>("CanvasY");
-      RegisterProperty<int>("Rows");
-      RegisterProperty<int>("Columns");
-      RegisterProperty<Canvas>("Canvas", null);
-      RegisterProperty<Image>("DraggedImage", null);
-      RegisterProperty("HighlightSection", new HighlightSection());
-      RegisterProperty("MousePosition", new Point());
+      RegisterProperty<int>(nameof(this.Rows));
+      RegisterProperty<int>(nameof(this.Columns));
+      RegisterProperty<Canvas>(nameof(this.Canvas), null);
+      RegisterProperty<Image>(nameof(this.DraggedImage), null);
+      RegisterProperty(nameof(this.HighlightSection), new HighlightSection());
+      RegisterProperty(nameof(this.MousePosition), new Point());
       this.DockableWindowImageDict = new Dictionary<DockableWindow, Image>();
     }
 

@@ -9,30 +9,45 @@ namespace Windowmancer.Core.Models
 {
   public class HostContainerConfig : PropertyNotifyBase, ICloneable
   {
+    /// <summary>
+    /// The ID of the container.
+    /// </summary>
     public string Id
     {
       get => GetProperty<string>();
       set => SetProperty(value);
     }
 
+    /// <summary>
+    /// The name of the host container.
+    /// </summary>
     public string Name
     {
       get => GetProperty<string>();
       set => SetProperty(value);
     }
     
+    /// <summary>
+    /// The number of rows.
+    /// </summary>
     public int Rows
     {
       get => GetProperty<int>();
       set => SetProperty(value);
     }
 
+    /// <summary>
+    /// The number of columns.
+    /// </summary>
     public int Columns
     {
       get => GetProperty<int>();
       set => SetProperty(value);
     }
 
+    /// <summary>
+    /// Indicates whether the container is active.
+    /// </summary>
     [JsonIgnore]
     public bool IsActive
     {
@@ -40,6 +55,9 @@ namespace Windowmancer.Core.Models
       set => SetProperty(value);
     }
 
+    /// <summary>
+    /// List of docked windows for the container.
+    /// </summary>
     [JsonIgnore]
     // Used specifically for HostContainer.xaml.cs.
     public ObservableCollection<DockableWindow> DockedWindows

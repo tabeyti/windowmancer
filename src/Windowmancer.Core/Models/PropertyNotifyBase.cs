@@ -19,6 +19,14 @@ namespace Windowmancer.Core.Models
       _props.Add(propertyName, default(T));
     }
 
+    /// <summary>
+    /// Registers the property name passed (MUST MATCH THE ACTUAL NAME OF THE
+    /// PROPERTY LOUD NOISES!!) for property notify events, assinging the value
+    /// provided.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="propertyName"></param>
+    /// <param name="value"></param>
     protected void RegisterProperty<T>(string propertyName, T value)
     {
       if (_props.ContainsKey(propertyName))

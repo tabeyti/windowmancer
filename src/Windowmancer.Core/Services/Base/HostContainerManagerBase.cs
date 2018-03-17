@@ -160,6 +160,20 @@ namespace Windowmancer.Core.Services.Base
       }
     }
 
+
+    public string GetDefaultHostContainerName()
+    {
+      var prefix = "Container";
+      var i = 1;
+      var label = $"{prefix}{i}";
+      while (this.HostContainerConfigs.All(hc => hc.Name != label))
+      {
+        label = $"{prefix}{i++}";
+      }
+
+      return label;
+    }
+
     private void Initialize()
     {
       lock (_lock)

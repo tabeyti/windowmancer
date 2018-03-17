@@ -17,7 +17,7 @@ namespace Windowmancer.Core.Models
     public EditorViewModel()
     {
       _profileManager = Helper.ServiceResolver.Resolve<ProfileManager>();
-      RegisterProperty<string>("WindowTitle");
+      RegisterProperty<string>(nameof(this.WindowTitle));
       Update();
     }
 

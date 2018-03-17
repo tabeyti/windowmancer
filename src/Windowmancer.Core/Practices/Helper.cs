@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
@@ -99,6 +98,13 @@ namespace Windowmancer.Core.Practices
       return ico;
     }
 
+
+    /// <summary>
+    /// Returns a blank image source, filled with a default solid color,
+    /// with the passed text transposed on the image.
+    /// </summary>
+    /// <param name="text"></param>
+    /// <returns></returns>
     public static ImageSource GetBlankScreenShot(string text)
     {
       var source = GetBlankScreenShot();
@@ -214,11 +220,10 @@ namespace Windowmancer.Core.Practices
       }
 
       var hBitmap = bitmap.GetHbitmap();
-      ImageSource retval;
 
       try
       {
-        retval = Imaging.CreateBitmapSourceFromHBitmap(
+        ImageSource retval = Imaging.CreateBitmapSourceFromHBitmap(
           hBitmap,
           IntPtr.Zero,
           new Int32Rect(0, 0, bitmap.Width, bitmap.Height),
@@ -249,10 +254,6 @@ namespace Windowmancer.Core.Practices
         content = reader.ReadToEnd();
       }
       return JsonConvert.DeserializeObject(content);
-    }
-
-    public static void DispatcherInvoke(Action callback)
-    {
     }
 
     public static int GetGreatestCommonDivisor(int a, int b)
