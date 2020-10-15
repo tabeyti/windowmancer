@@ -6,6 +6,8 @@ using System.Management;
 using System.Windows.Media;
 using Windowmancer.Core.Practices;
 using Windowmancer.Core.Extensions;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace Windowmancer.Core.Services
 {
@@ -60,27 +62,50 @@ namespace Windowmancer.Core.Services
       }
     }
 
-    private readonly object _watchLock = new object();
+
+    private readonly object _enterLock = new object();
+    private readonly List<int> _enterCache = new List<int>();
+
     private void StartWatch_EventArrived(object sender, EventArrivedEventArgs e)
     {
-        var obj = ((ManagementBaseObject) e.NewEvent.Properties["TargetInstance"].Value);
-        var procId = Convert.ToInt32(obj["ProcessId"]);
-        Process proc;
-        try
-        {
-          proc = Process.GetProcessById(procId);
-          if (proc.MainWindowTitle == string.Empty) { return; }
-        }
-        catch (Exception)
-        {
-          return;
-        }
-  
-        // If this a legit window process, let's add it to the list.
-      lock (_watchLock)
+      var obj = ((ManagementBaseObject) e.NewEvent.Properties["TargetInstance"].Value);
+      var procId = Convert.ToInt32(obj["ProcessId"]);
+      Process proc;
+      try
       {
+        proc = Process.GetProcessById(procId);
+        if (proc.MainWindowTitle == string.Empty) { return; }
+      }
+      catch (Exception)
+      {
+        return;
+      }
+  
+      // If this a legit window process, let's add it to the list.
+      // We lock here because sometimes duplicate PID entries come in
+      // if processes are started rapidly, so we keep a cache of the last
+      // 1 second of PIDs and if dup is found, we return.
+      lock (_enterLock)
+      {
+        if (_enterCache.Contains(proc.Id)) 
+        {
+          Console.WriteLine($"StartWatch - Duplicate PID {proc.Id} - {proc.MainWindowTitle}. Skipping...");
+          _enterCache.ForEach(c => Console.WriteLine($"\t- {c}"));
+          return;  
+        }
+        Console.WriteLine($"StartWatch - Adding {proc.Id} - {proc.MainWindowTitle}");
+        _enterCache.Add(proc.Id);
+        Console.WriteLine($"Process Monitor - {proc.Id} - Adding to active window!");
         AddToActiveWindowProcs(proc);
         _windowConfigManager.ApplyWindowConfig(proc, true);
+
+        // Remove the PID from the cache after X amount of time
+        Func<int, Task> removeFromEnterCache = async (int pid) =>
+        {
+          await Task.Delay(TimeSpan.FromSeconds(1)).ConfigureAwait(false);
+          _enterCache.Remove(pid);
+        };
+        removeFromEnterCache(proc.Id);
       }
     }
 
@@ -88,7 +113,7 @@ namespace Windowmancer.Core.Services
     {
       var obj = ((ManagementBaseObject) e.NewEvent.Properties["TargetInstance"].Value);
       var procId = Convert.ToInt32(obj["ProcessId"]);
-      lock (_watchLock)
+      lock (_enterCache)
       {
         RemoveActiveProcess(procId);
       }
@@ -131,11 +156,13 @@ namespace Windowmancer.Core.Services
   {
     public ImageSource Icon { get; }
     public int Id => _process.Id;
-    public string Name => _process.ProcessName;
+
+    public string Name => _process.HasExited ? "" : _process.ProcessName;
+
     public string WindowTitle => _process.MainWindowTitle;
 
     private readonly Process _process;
-
+    
     public MonitoredProcess(Process process)
     {
       _process = process;
