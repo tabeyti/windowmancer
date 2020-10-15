@@ -245,7 +245,7 @@
                   </ListBox.ItemContainerStyle>
                   <ListBox.ContextMenu>
                     <ContextMenu>
-                      <MenuItem Header="Add" Click="HostContainersListBox_MenuItemClick"></MenuItem>
+                      <MenuItem x:Name="Add_Container" Header="Add" Click="HostContainersListBox_MenuItemClick"></MenuItem>
                     </ContextMenu>
                   </ListBox.ContextMenu>
                   <ListBox.ItemTemplate>

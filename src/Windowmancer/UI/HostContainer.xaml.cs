@@ -124,6 +124,10 @@ namespace Windowmancer.UI
 
     private void DockProcInternal(Process process, WindowConfig windowConfig)
     {
+      DockableWindow dockableWindow;
+
+      
+      Console.WriteLine($"DockProcInternal - {new StackTrace().GetFrame(1).GetMethod().Name} - Eval {windowConfig.Name} - proc id: {process?.Id}");
       // We are passing an process-empty DockedWindow container. Add it.
       if (null == process)
       {
@@ -136,8 +140,6 @@ namespace Windowmancer.UI
       {
         throw new Exception("You are docking the same process twice. Just herpin and derpin, aren't ya?");
       }
-
-      DockableWindow dockableWindow;
 
       // If there is already an existing docked window object for this window config, use it.
       var existingDw = this.HostContainerConfig.DockedWindows.Find(dw => dw.WindowConfig.Equals(windowConfig));
@@ -155,7 +157,7 @@ namespace Windowmancer.UI
       {
         dockableWindow = new DockableWindow(process, windowConfig);
         this.HostContainerConfig.DockedWindows.Add(dockableWindow);
-      }
+      }      
       
       while (process.MainWindowHandle == IntPtr.Zero)
       {
