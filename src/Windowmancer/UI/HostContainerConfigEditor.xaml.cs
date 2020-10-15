@@ -81,8 +81,12 @@ namespace Windowmancer.UI
           throw new Exception(
             $"RecreateDisplaySectionControl - Could not find another available section on the canvas to place process {d.Process.MainWindowTitle}");
         }
-        d.Row = ds.Row;
-        d.Column = ds.Column;
+
+        if (d.WindowConfig == null)
+        {
+          d.Row = ds.Row;
+          d.Column = ds.Column;
+        }        
 
         // If there is no process tagging along with this window config,
         // create a blank image.
