@@ -11,7 +11,7 @@
             <Ellipse x:Name="outerEllipse" 
                      Width="10"
                      Height="10"
-                     Fill="LightCoral"/>
+                     Fill="Transparent"/>
             <Ellipse Width="10"
                      Height="10"
                      Fill="Green"
@@ -39,7 +39,7 @@
               <Setter TargetName="highlightCircle" Property="Fill">
                 <Setter.Value>
                   <LinearGradientBrush StartPoint="0.3,0" EndPoint="0.7,1">
-                    <GradientStop Offset="0" Color="LightCoral"/>
+                    <GradientStop Offset="0" Color="Transparent"/>
                   </LinearGradientBrush>
                 </Setter.Value>
               </Setter>

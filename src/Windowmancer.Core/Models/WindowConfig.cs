@@ -334,11 +334,11 @@ namespace Windowmancer.Core.Models
       set => SetProperty(value);
     }
 
-    public HostContainerLayoutInfo()
+    public HostContainerLayoutInfo(string container = null)
     {
       RegisterProperty(nameof(this.Row), 0u);
       RegisterProperty(nameof(this.Column), 0u);
-      RegisterProperty(nameof(this.HostContainerId), string.Empty);
+      RegisterProperty(nameof(this.HostContainerId), container ?? string.Empty);
     }
 
     public HostContainerLayoutInfo(uint row, uint column, string container)

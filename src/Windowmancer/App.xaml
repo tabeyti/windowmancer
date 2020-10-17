@@ -12,11 +12,11 @@
 
       <ResourceDictionary.MergedDictionaries>
         <!-- MahApps.Metro resource dictionaries. Make sure that all file names are Case Sensitive! -->
-        <ResourceDictionary Source="/MahApps.Metro;component/Styles/Controls.xaml" />
-        <ResourceDictionary Source="/MahApps.Metro;component/Styles/Fonts.xaml" />
-        <ResourceDictionary Source="/MahApps.Metro;component/Styles/Colors.xaml" />
-        <ResourceDictionary Source="/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />
-        <ResourceDictionary Source="/MahApps.Metro;component/Styles/FlatSlider.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedTabControl.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/FlatSlider.xaml" />
 
         <!-- Accent and AppTheme setting -->
         <!--<ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Steel.xaml" />-->

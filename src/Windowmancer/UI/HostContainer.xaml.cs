@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Interop;
 using MahApps.Metro.Controls;
+using Microsoft.Practices.ObjectBuilder2;
 using Microsoft.Practices.Unity;
 using Windowmancer.Core.Extensions;
 using Windowmancer.Core.Models;
@@ -25,6 +26,8 @@ namespace Windowmancer.UI
 
     private static readonly int _titlebarHeight = (int)SystemParameters.WindowCaptionHeight + 10;
     private readonly bool _stupidFlag = false;
+
+    private readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
     public HostContainer(HostContainerConfig hostContainer, bool enableEditorOnLoad = false)
     {
@@ -53,10 +56,7 @@ namespace Windowmancer.UI
         {
           if (dw.Process == null) continue;
 
-          if (!dw.Process.HasExited)
-          {
-            dw.Process.Kill();
-          }
+          if (!dw.Process.HasExited) { dw.Process.Kill(); }
         }
       };
     }
@@ -126,8 +126,7 @@ namespace Windowmancer.UI
     {
       DockableWindow dockableWindow;
 
-      
-      Console.WriteLine($"DockProcInternal - {new StackTrace().GetFrame(1).GetMethod().Name} - Eval {windowConfig.Name} - proc id: {process?.Id}");
+      _logger.Trace($"{new StackTrace().GetFrame(1).GetMethod().Name} - Eval {windowConfig.Name} - proc id: {process?.Id}");
       // We are passing an process-empty DockedWindow container. Add it.
       if (null == process)
       {
@@ -249,6 +248,9 @@ namespace Windowmancer.UI
 
       var flyout = (Flyout) this.FindName("RightFlyout");
       if (flyout == null) return;
+
+      var originalHostContainerName = this.HostContainerConfig.Name;
+
       var containerConfigEditor = new HostContainerConfigEditor(
         this.HostContainerConfig, new SizeInfo((int) this.ActualWidth, (int) this.ActualHeight))
       {
@@ -257,15 +259,17 @@ namespace Windowmancer.UI
         {
           // Update host container info.
           this.HostContainerConfig.Update(config);
-          
+
           // TODO: Hack to update layout info in original config.
           foreach (var wc in this.ProfileManager.ActiveProfile.Windows)
           {
-            foreach (var d in config.DockedWindows)
+            foreach (var dw in config.DockedWindows)
             {
-              if (d.WindowConfig.Name == wc.Name)
+              if (dw.WindowConfig.Name == wc.Name)
               {
-                var li = d.WindowConfig.HostContainerLayoutInfo;
+                var li = dw.WindowConfig.HostContainerLayoutInfo;
+                // Ensure any HostContainer name changes are updated on the layout info of each docked window.
+                li.HostContainerId = config.Name;
                 wc.HostContainerLayoutInfo.Update(li); 
                 wc.Save();
               }

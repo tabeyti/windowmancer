@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Media;
-using Microsoft.Practices.ObjectBuilder2;
 using Windowmancer.Core.Models;
 using Windowmancer.Core.Practices;
 using UserControl = System.Windows.Controls.UserControl;

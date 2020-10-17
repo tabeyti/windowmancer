@@ -166,7 +166,7 @@ namespace Windowmancer.Core.Services.Base
       var prefix = "Container";
       var i = 1;
       var label = $"{prefix}{i}";
-      while (this.HostContainerConfigs.All(hc => hc.Name != label))
+      while (this.HostContainerConfigs.All(hc => hc.Name == label))
       {
         label = $"{prefix}{i++}";
       }

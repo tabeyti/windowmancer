@@ -34,7 +34,7 @@
     <CollectionViewSource x:Key="MonitorWindowConfigCollectionView" 
                           Source="{Binding ProfileManager.ActiveProfile.Windows}"
                           Filter="MonitorWindowConfigList_OnFilter">
-      
+
     </CollectionViewSource>
     <!--    View for displaying a list of window configs with host container layout target-->
     <CollectionViewSource x:Key="ContainerWindowConfigCollectionView" 
@@ -196,23 +196,23 @@
                       ItemsSource="{Binding Source={StaticResource MonitorWindowConfigCollectionView}}"
                       AutoGeneratingColumn="WindowConfigDataGrid_OnAutoGeneratingColumn"
                       MouseDoubleClick="MonitorWindowConfigDataGrid_OnMouseDoubleClick">
-              <DataGrid.Resources>
-                <ContextMenu x:Key="RowMenu">
-                  <MenuItem Header="Edit" Click="MonitorWindowConfigDataGrid_MenuItemClick"/>
-                  <MenuItem Header="Delete" Click="MonitorWindowConfigDataGrid_MenuItemClick"/>
-                </ContextMenu>
-              </DataGrid.Resources>
-              <DataGrid.ContextMenu>
-                <ContextMenu>
-                  <MenuItem Header="Add" Click="MonitorWindowConfigDataGrid_MenuItemClick"/>
-                </ContextMenu>
-              </DataGrid.ContextMenu>
-              <DataGrid.RowStyle>
-                <Style TargetType="DataGridRow" BasedOn="{StaticResource MetroDataGridRow}">
-                  <Setter Property="ContextMenu" Value="{StaticResource RowMenu}"/>
-                </Style>
-              </DataGrid.RowStyle>
-            </DataGrid>
+                <DataGrid.Resources>
+                  <ContextMenu x:Key="RowMenu">
+                    <MenuItem Header="Edit" Click="MonitorWindowConfigDataGrid_MenuItemClick"/>
+                    <MenuItem Header="Delete" Click="MonitorWindowConfigDataGrid_MenuItemClick"/>
+                  </ContextMenu>
+                </DataGrid.Resources>
+                <DataGrid.ContextMenu>
+                  <ContextMenu>
+                    <MenuItem Header="Add" Click="MonitorWindowConfigDataGrid_MenuItemClick"/>
+                  </ContextMenu>
+                </DataGrid.ContextMenu>
+                <DataGrid.RowStyle>
+                  <Style TargetType="DataGridRow" BasedOn="{StaticResource MetroDataGridRow}">
+                    <Setter Property="ContextMenu" Value="{StaticResource RowMenu}"/>
+                  </Style>
+                </DataGrid.RowStyle>
+              </DataGrid>
             </GroupBox>
           </TabItem>
           <TabItem Header="Container"
@@ -229,6 +229,8 @@
                 <ListBox Name="HostContainersListBox"
                          Margin="5"
                          Style="{StaticResource MyListBox}"
+                         SelectionChanged="HostContainersListBox_SelectionChanged"
+                         SelectedIndex="0"
                          ItemsSource="{Binding ProfileManager.ActiveProfile.HostContainers}">
                   <ListBox.Resources>
                     <ContextMenu x:Key="RowMenu">
@@ -275,7 +277,7 @@
                         Style="{StaticResource MyGroupBoxStyle}">
                 <DataGrid Name="HostContainerWindowConfigDataGrid"
                           GridLinesVisibility="None" 
-                          IsReadOnly="True" 
+                          IsReadOnly="True"
                           SelectionMode="Single" 
                           SelectionUnit="FullRow"
                           Background="{StaticResource AccentViewBackgroundColorBrush}"
@@ -349,18 +351,3 @@
   </Grid>
 
 </Controls:MetroWindow>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

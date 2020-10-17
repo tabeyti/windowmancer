@@ -195,10 +195,9 @@ namespace Windowmancer.UI
         return;
       }
 
-      // TODO: Handle creation of new host container.
-      //config = new HostContainerConfig(_hostContainerManager.GetDefaultHostContainerName());
-      //this.ProfileManager.AddToActiveProfile(config);
-      //_hostContainerManager.ActivateHostContainer(config, true);
+      config = new HostContainerConfig(_hostContainerManager.GetDefaultHostContainerName());
+      this.ProfileManager.AddToActiveProfile(config);
+      _hostContainerManager.ActivateHostContainer(config, true);
     }
 
     private void HandleWindowConfigEdit()
@@ -414,33 +413,30 @@ namespace Windowmancer.UI
       if (this.ActiveWindowsDataGrid.SelectedItem == null) return;
 
       var process = ((MonitoredProcess)this.ActiveWindowsDataGrid.SelectedItem).GetProcess();
-      var hostContainerConfig = (HostContainerConfig)((MenuItem)e.Source).Tag; 
-
-      //_hostContainerManager.ActivateHostContainer(hostContainerConfig, process);
-
+      var hostContainerConfig = (HostContainerConfig)((MenuItem)e.Source).Tag;
 
       /////////////////////////////////////////////////////////////////////////
-
       //// TODO:
       //// Check to see if the host container targeted has enough room to hold the 
       //// process window.
-      
+      ////////////////////////////////////////////////////////////////////////////
 
-      //// First check if there would already be a window config of the same name.
-      //// If there would be a name clash, then append a unique index to the name.
-      //var windowConfig = WindowConfig.FromProcess(process, false);
-      //windowConfig.HostContainerLayoutInfo = new HostContainerLayoutInfo();
-      //if (this.ProfileManager.IsInActiveProfile(windowConfig))
-      //{
-      //  windowConfig.Name = this.ProfileManager.DefaultWindowConfigName(windowConfig.Name);
-      //}
 
-      //// Dock the process window the host container.
-      //_hostContainerManager.ActivateHostContainer(hostContainerConfig, process);
+      // First check if there would already be a window config of the same name.
+      // If there would be a name clash, then append a unique index to the name.
+      var windowConfig = WindowConfig.FromProcess(process, Core.Models.WindowConfigLayoutType.HostContainer);
+      windowConfig.HostContainerLayoutInfo = new HostContainerLayoutInfo(hostContainerConfig.Name);
+      if (this.ProfileManager.IsInActiveProfile(windowConfig))
+      {
+        windowConfig.Name = this.ProfileManager.DefaultWindowConfigName(windowConfig.Name);
+      }
 
-      //// With the unique name, skip over window config editor, 
-      //// and add it to the active profile.
-      //this.ProfileManager.AddToActiveProfile(windowConfig);
+      // Dock the process window to the host container.
+      _hostContainerManager.ActivateHostContainer(hostContainerConfig, windowConfig, process);
+
+      // With the unique name, skip over window config editor,
+      // and add it to the active profile.
+      this.ProfileManager.AddToActiveProfile(windowConfig);
     }
 
     private void ActiveWindowsDataGrid_OnContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -468,13 +464,12 @@ namespace Windowmancer.UI
 
     private void HostContainerWindowConfig_MenuItemClick(object sender, RoutedEventArgs e)
     {
-      WindowConfig item = null;
       switch ((string)((MenuItem)sender).Header)
       {
         case "Edit":
           break;
         case "Delete":
-          item = (WindowConfig)HostContainerWindowConfigDataGrid.SelectedItem;
+          var item = (WindowConfig)HostContainerWindowConfigDataGrid.SelectedItem;
           _hostContainerManager.RemoveFromHostContainerWindow(item);
           ProfileManager.RemoveFromActiveProfile(item);
           ShowItemMessageToast(item.Name, "window configuration deleted.");
@@ -491,7 +486,14 @@ namespace Windowmancer.UI
     private void ContainerWindowConfigCollectionView_OnFilter(object sender, FilterEventArgs e)
     {
       var item = (WindowConfig)e.Item;
-      e.Accepted = item.MonitorLayoutInfo == null;
+
+      e.Accepted = false;
+
+      if (item.MonitorLayoutInfo != null) { return; }
+      if (item.HostContainerLayoutInfo == null) { return; }
+      var hostContainerConfig = this.HostContainersListBox.SelectedItem as HostContainerConfig;
+
+      e.Accepted = item.HostContainerLayoutInfo.HostContainerId == hostContainerConfig?.Name;
     }
 
     private void AboutBox_Click(object sender, RoutedEventArgs e)
@@ -501,6 +503,7 @@ namespace Windowmancer.UI
       {
         this.HideMetroDialogAsync(dialog);
       });
+
       var settings = new MetroDialogSettings
       {
         AffirmativeButtonText = "Okay",
@@ -536,6 +539,12 @@ namespace Windowmancer.UI
           ShowItemMessageToast(this.ProfileManager.ActiveProfile.Name, "container deleted.");
           break;
       }
+    }
+
+    private void HostContainersListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+      if (null == this.HostContainerWindowConfigDataGrid) { return; }
+      CollectionViewSource.GetDefaultView(this.HostContainerWindowConfigDataGrid.ItemsSource).Refresh();
     }
   }
 }
