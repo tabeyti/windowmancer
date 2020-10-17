@@ -20,6 +20,7 @@ namespace Windowmancer.Core.Services
     private ManagementEventWatcher _startWatch;
     private ManagementEventWatcher _stopWatch;
     private readonly WindowConfigManager _windowConfigManager;
+    private readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
     public ProcessMonitor(WindowConfigManager windowConfigManager)
     {
@@ -89,13 +90,12 @@ namespace Windowmancer.Core.Services
       {
         if (_enterCache.Contains(proc.Id)) 
         {
-          Console.WriteLine($"StartWatch - Duplicate PID {proc.Id} - {proc.MainWindowTitle}. Skipping...");
+          _logger.Debug($"Duplicate PID {proc.Id} - {proc.MainWindowTitle}. Skipping...");
           _enterCache.ForEach(c => Console.WriteLine($"\t- {c}"));
           return;  
         }
-        Console.WriteLine($"StartWatch - Adding {proc.Id} - {proc.MainWindowTitle}");
+        _logger.Debug($"Adding {proc.Id} - {proc.MainWindowTitle}");
         _enterCache.Add(proc.Id);
-        Console.WriteLine($"Process Monitor - {proc.Id} - Adding to active window!");
         AddToActiveWindowProcs(proc);
         _windowConfigManager.ApplyWindowConfig(proc, true);
 
