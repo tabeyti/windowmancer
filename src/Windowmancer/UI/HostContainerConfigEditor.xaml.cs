@@ -168,17 +168,23 @@ namespace Windowmancer.UI
     private void RowColSpinners_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
     {
       if (!_rowColSpinnerEnabled) return;
+
+      // If we are shrinking, let's do some out-of-bounds checks for the docked windows
       if ((int) e.NewValue < (int) e.OldValue)
       {
+        var rowIndex = this.RowSpinner.Value - 1;
+        var colIndex = this.ColumnSpinner.Value - 1;
+        var dockedWindows = this.HostContainerEditorConfigEditorViewModel.HostContainerConfig.DockedWindows;
         var currentNumSections = this.RowSpinner.Value * this.ColumnSpinner.Value;
-        if (currentNumSections <
-            this.HostContainerEditorConfigEditorViewModel.HostContainerConfig.DockedWindows.Count)
+
+        // Verify we aren't making the number of grid sections lower than the number of docked windows
+        var dockedWindowsOutsideBounds = dockedWindows.Where(dw => dw.Row > rowIndex || dw.Column > colIndex).ToList();
+        if (currentNumSections < dockedWindows.Count || dockedWindowsOutsideBounds.Any())
         {
           var spinner = (IntegerUpDown)sender;
           spinner.Value = (int)e.OldValue;
 
-          var message =
-            "WARNING: Can't change grid size to a section count lesser than the amount of docked windows.";
+          var message = "WARNING: Docked windows will be out of bounds. Can't shrink grid until you re-arrange";
           var parentWindow = (IToastHost)Window.GetWindow(this);
           if (null == parentWindow)
           {
