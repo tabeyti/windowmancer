@@ -55,10 +55,7 @@ namespace Windowmancer.Core.Services
       var allProcceses = System.Diagnostics.Process.GetProcesses();
       foreach (var p in allProcceses)
       {
-        if (p.MainWindowTitle == string.Empty)
-        {
-          continue;
-        }
+        if (p.MainWindowTitle == string.Empty) { continue; }
         AddToActiveWindowProcs(p);
       }
     }
@@ -81,32 +78,34 @@ namespace Windowmancer.Core.Services
       {
         return;
       }
-  
+
       // If this a legit window process, let's add it to the list.
       // We lock here because sometimes duplicate PID entries come in
       // if processes are started rapidly, so we keep a cache of the last
-      // 1 second of PIDs and if dup is found, we return.
+      // 1 second of PIDs and if a dup is found, we ignore it.
       lock (_enterLock)
       {
-        if (_enterCache.Contains(proc.Id)) 
+        if (_enterCache.Contains(proc.Id))
         {
           _logger.Debug($"Duplicate PID {proc.Id} - {proc.MainWindowTitle}. Skipping...");
           _enterCache.ForEach(c => Console.WriteLine($"\t- {c}"));
-          return;  
+          return;
         }
+      
         _logger.Debug($"Adding {proc.Id} - {proc.MainWindowTitle}");
         _enterCache.Add(proc.Id);
-        AddToActiveWindowProcs(proc);
-        _windowConfigManager.ApplyWindowConfig(proc, true);
-
-        // Remove the PID from the cache after X amount of time
-        Func<int, Task> removeFromEnterCache = async (int pid) =>
-        {
-          await Task.Delay(TimeSpan.FromSeconds(1)).ConfigureAwait(false);
-          _enterCache.Remove(pid);
-        };
-        removeFromEnterCache(proc.Id);
       }
+
+      AddToActiveWindowProcs(proc);
+      _windowConfigManager.ApplyWindowConfig(proc, true);
+
+      // Remove the PID from the cache after X amount of time
+      Func<int, Task> removeFromEnterCache = async (int pid) =>
+      {
+        await Task.Delay(TimeSpan.FromSeconds(1)).ConfigureAwait(false);
+        lock (_enterLock) { _enterCache.Remove(pid); }
+      };
+      removeFromEnterCache(proc.Id);      
     }
 
     private void StopWatch_EventArrived(object sender, EventArrivedEventArgs e)
