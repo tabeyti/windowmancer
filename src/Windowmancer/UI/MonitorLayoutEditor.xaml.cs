@@ -264,13 +264,13 @@ namespace Windowmancer.UI
 
     private bool _rowColSpinnerEnabled = true;
 
-    private void RowColSpinners_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+    private void RowColSpinners_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
     {
       if (!_rowColSpinnerEnabled) return;
 
       var rows = this.RowSpinner?.Value ?? 1;
       var cols = this.ColumnSpinner?.Value ?? 1;
-      RecreateDisplaySectionControl(rows, cols);
+      RecreateDisplaySectionControl((int)rows, (int)cols);
     }
 
     private void DisplaysComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)

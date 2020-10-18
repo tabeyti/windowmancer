@@ -165,7 +165,7 @@ namespace Windowmancer.UI
     }
     
     private bool _rowColSpinnerEnabled = true;
-    private void RowColSpinners_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+    private void RowColSpinners_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
     {
       if (!_rowColSpinnerEnabled) return;
 
@@ -181,7 +181,7 @@ namespace Windowmancer.UI
         var dockedWindowsOutsideBounds = dockedWindows.Where(dw => dw.Row > rowIndex || dw.Column > colIndex).ToList();
         if (currentNumSections < dockedWindows.Count || dockedWindowsOutsideBounds.Any())
         {
-          var spinner = (IntegerUpDown)sender;
+          var spinner = (MahApps.Metro.Controls.NumericUpDown)sender;
           spinner.Value = (int)e.OldValue;
 
           var message = "WARNING: Docked windows will be out of bounds. Can't shrink grid until you re-arrange";

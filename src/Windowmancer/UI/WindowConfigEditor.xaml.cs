@@ -150,7 +150,7 @@ namespace Windowmancer.UI
       }
     }
 
-    private void WindowOpacityValueTextBox_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+    private void WindowOpacityValueTextBox_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
     {
       if (this.WindowStylingPreview && null != _process)
       {
@@ -189,6 +189,11 @@ namespace Windowmancer.UI
           flipview.BannerText = "Monitor Layout";
           break;
       }
+    }
+
+    private void WindowOpacityValueTextBox_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
+    {
+
     }
   }
 
