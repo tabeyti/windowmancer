@@ -635,7 +635,8 @@ namespace Windowmancer.UI
     {
       // Grab image and current (relative) canvas mouse position.
       var image = e.Source as Image;
-      if (image == null || !this.Canvas.CaptureMouse()) return;
+      if (image == null || GetDockableWindowForImage(image) == null || !this.Canvas.CaptureMouse()) { return; }
+
       this.MousePosition = e.GetPosition(this.Canvas);
       this.ShowHighlightSection(true);
       this.DraggedImage = image;
