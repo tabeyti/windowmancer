@@ -15,7 +15,7 @@ namespace Windowmancer.WPF.Tests.Practices
   {
     private static readonly string _dataRoot = "Data";
 
-    public static string TestHelperProcess => $"{AppDomain.CurrentDomain.BaseDirectory}\\Resources\\WindowTitle.exe";
+    public static string TestHelperProcess => $"{AppDomain.CurrentDomain.BaseDirectory}\\Resources\\MakeTitledWindow.exe";
 
     public static void OverwriteUserData(string targetedUserData)
     {

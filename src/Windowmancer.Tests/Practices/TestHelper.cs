@@ -12,7 +12,7 @@ namespace Windowmancer.Tests.Practices
 {
   public static class TestHelper
   {
-    public static string TestHelperProcess => $"{AppDomain.CurrentDomain.BaseDirectory}\\Resources\\WindowTitle.exe";
+    public static string TestHelperProcess => $"{AppDomain.CurrentDomain.BaseDirectory}\\Resources\\MakeTitledWindow.exe";
 
     public static TestProcessWrapper CreateWindowProcess(string title = null)
     {

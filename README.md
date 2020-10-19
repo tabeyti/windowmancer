@@ -2,13 +2,11 @@
 
 # Windowmancer
 
-Windowmancer is process-window management tool. 
+Windowmancer is process-window management tool.
 
 The application makes it easy for to locate a process-window on your desktop, set a custom size and location, and be able to invoke that configuration, for that window, on command.
 
 Tired of the manual process of painstakingly re-positioning/re-sizing a common set of process-windows? Wish there was an easy way to easily gridify a collection of windows through the art Windomancy?! Windomancer is the solution!
-
-[![Build Status](http://tabeyti.hopto.org:8080/buildStatus/icon?job=CI_Windowmancer)](http://tabeyti.hopto.org:8080/buildStatus/icon?job=CI_Windowmancer)
 
 ## Use
 
@@ -43,7 +41,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 ## Acknowledgments
 
 A big shout-out to all the open-source developers and their delicious libraries:
-- [Costura.Fody](https://github.com/Fody/Costura) 
+- [Costura.Fody](https://github.com/Fody/Costura)
 - [MahApps.Metro](https://github.com/MahApps/MahApps.Metro)
 - [XUnit](https://github.com/xunit/xunit)
 - [Xunit.NLog (Thomas Dupont)](https://github.com/tdupont750/xunit.NLog)
