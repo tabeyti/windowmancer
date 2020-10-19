@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.Practices.Unity;
 using Newtonsoft.Json;
+using Windowmancer.Core.Extensions;
 using Windowmancer.Core.Services.Base;
 using Color = System.Windows.Media.Color;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
@@ -72,9 +73,8 @@ namespace Windowmancer.Core.Practices
     {
       System.Drawing.Icon ico = null;
       try
-      {
-        ico = System.Drawing.Icon.ExtractAssociatedIcon(process.MainModule.FileName);
-        ico = GetSmallIcon(ico);
+      { 
+        ico = GetSmallIcon(process.GetIcon());
       }
       catch
       {
@@ -88,8 +88,7 @@ namespace Windowmancer.Core.Practices
       ImageSource ico = null;
       try
       {
-        var original = System.Drawing.Icon.ExtractAssociatedIcon(process.MainModule.FileName);
-        ico = GetSmallIconAsBitmap(original);
+        ico = GetSmallIconAsBitmap(process.GetIcon());
       }
       catch
       {

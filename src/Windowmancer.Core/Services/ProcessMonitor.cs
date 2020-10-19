@@ -8,6 +8,7 @@ using Windowmancer.Core.Practices;
 using Windowmancer.Core.Extensions;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using NLog;
 
 namespace Windowmancer.Core.Services
 {
@@ -88,7 +89,7 @@ namespace Windowmancer.Core.Services
         if (_enterCache.Contains(proc.Id))
         {
           _logger.Debug($"Duplicate PID {proc.Id} - {proc.MainWindowTitle}. Skipping...");
-          _enterCache.ForEach(c => Console.WriteLine($"\t- {c}"));
+          _enterCache.ForEach(c => _logger.Debug($"\t- {c}"));
           return;
         }
       
@@ -156,7 +157,7 @@ namespace Windowmancer.Core.Services
     public ImageSource Icon { get; }
     public int Id => _process.Id;
 
-    public string Name => _process.HasExited ? "" : _process.ProcessName;
+    public string Name => _process.ProcessName;
 
     public string WindowTitle => _process.MainWindowTitle;
 
