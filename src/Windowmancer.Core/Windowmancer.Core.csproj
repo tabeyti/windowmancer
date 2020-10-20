@@ -104,6 +104,7 @@
     <Compile Include="Extensions\BoolExtensions.cs" />
     <Compile Include="Extensions\CollectionExtensions.cs" />
     <Compile Include="Extensions\ObservableCollectionExtensions.cs" />
+    <Compile Include="Extensions\ProcessExtensions.cs" />
     <Compile Include="Models\Base\DisplaySectionBase.cs" />
     <Compile Include="Models\HostContainerConfig.cs" />
     <Compile Include="Models\DockableWindow.cs" />
