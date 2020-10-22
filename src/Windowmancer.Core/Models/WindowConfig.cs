@@ -151,7 +151,7 @@ namespace Windowmancer.Core.Models
         MatchCriteria = new WindowMatchCriteria { MatchString = System.Text.RegularExpressions.Regex.Escape(process.MainWindowTitle).Replace("\\ ", " ")},
         StylingInfo = new WindowStylingInfo
         {
-          WindowOpacityPercentage = MonitorWindowManager.GetWindowOpacityPercentage(process)
+          WindowOpacityPercentage = Helper.GetWindowOpacityPercentage(process)
         }
       };
 

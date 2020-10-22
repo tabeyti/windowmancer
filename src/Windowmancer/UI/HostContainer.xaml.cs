@@ -214,7 +214,7 @@ namespace Windowmancer.UI
     {
       foreach (var dw in this.HostContainerConfig.DockedWindows)
       {
-        MonitorWindowManager.SetWindowOpacityPercentage(dw.Process, (uint)(isVisible ? 100 : 0));
+        Helper.SetWindowOpacityPercentage(dw.Process, (uint)(isVisible ? 100 : 0));
       }
     }
 

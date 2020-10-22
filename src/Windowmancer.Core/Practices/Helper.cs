@@ -69,20 +69,6 @@ namespace Windowmancer.Core.Practices
       return Imaging.CreateBitmapSourceFromHIcon(icon.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
     }
 
-    public static Icon GetProcessIcon(Process process)
-    {
-      System.Drawing.Icon ico = null;
-      try
-      { 
-        ico = GetSmallIcon(process.GetIcon());
-      }
-      catch
-      {
-        // ignore.
-      }
-      return ico;
-    }
-
     public static ImageSource GetProcessIconImageSource(Process process)
     {
       ImageSource ico = null;
@@ -239,6 +225,57 @@ namespace Windowmancer.Core.Practices
       }
 
       return null;
+    }
+
+    /// <summary>
+    /// Set's the opacity percentage of the provided process window.
+    /// A value of a 100 means the window is completely visible where a value
+    /// of 0 means the window is completely transparent.
+    /// </summary>
+    /// <param name="process"></param>
+    /// <param name="opacityPercentage"></param>
+    public static void SetWindowOpacityPercentage(Process process, uint opacityPercentage)
+    {
+      if (opacityPercentage > 100)
+      {
+        throw new Exception($"MonitorWindowManager.SetWindowOpacityPercentage - Opacity percentage cannot be above 100. Value given: {opacityPercentage}");
+      }
+
+      if (null == process) return;
+
+      var handle = process.MainWindowHandle;
+
+      // Only set the layered window attribute if it hasn't already been set for this
+      // window process handle.
+      uint crKey = 0;
+      byte bAlpha = 0;
+      uint dwFlags = 0;
+      Win32.GetLayeredWindowAttributes(process.MainWindowHandle, out crKey, out bAlpha, out dwFlags);
+
+      if (dwFlags == 0)
+      {
+        Win32.SetWindowLong(handle, Win32.GWL_EXSTYLE, Win32.GetWindowLong(handle, Win32.GWL_EXSTYLE) ^ Win32.WS_EX_LAYERED);
+      }
+
+      opacityPercentage = opacityPercentage > 100 ? 100 : opacityPercentage;
+      bAlpha = (byte)Math.Round(255 * ((double)opacityPercentage / 100));
+      Win32.SetLayeredWindowAttributes(handle, 0, bAlpha, Win32.LWA_ALPHA);
+    }
+
+    /// <summary>
+    /// Gets the targeted process window's opacity percentage. 
+    /// A value of a 100 means the window is completely visible where a value
+    /// of 0 means the window is completely transparent.
+    /// </summary>
+    /// <param name="process"></param>
+    /// <returns></returns>
+    public static uint GetWindowOpacityPercentage(Process process)
+    {
+      uint crKey = 0;
+      byte bAlpha = 0;
+      uint dwFlags = 0;
+      Win32.GetLayeredWindowAttributes(process.MainWindowHandle, out crKey, out bAlpha, out dwFlags);
+      return bAlpha == 0 ? 100 : (uint)Math.Round(100 * ((double)bAlpha / 255));
     }
 
     public static dynamic GetConfig(string configFileName)

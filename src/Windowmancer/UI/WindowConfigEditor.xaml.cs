@@ -7,6 +7,7 @@ using MahApps.Metro.Controls;
 using Microsoft.Practices.Unity;
 using Windowmancer.Core.Extensions;
 using Windowmancer.Core.Models;
+using Windowmancer.Core.Practices;
 using Windowmancer.Core.Services;
 
 namespace Windowmancer.UI
@@ -154,7 +155,7 @@ namespace Windowmancer.UI
     {
       if (this.WindowStylingPreview && null != _process)
       {
-        MonitorWindowManager.SetWindowOpacityPercentage(_process, (uint)WindowOpacitySlider.Value);
+        Helper.SetWindowOpacityPercentage(_process, (uint)WindowOpacitySlider.Value);
       }
     }
 
@@ -162,13 +163,13 @@ namespace Windowmancer.UI
     {
       if (this.WindowStylingPreview)
       {
-        (_process != null).RunIfTrue(() => this.OriginalOpacity = MonitorWindowManager.GetWindowOpacityPercentage(_process));
-        MonitorWindowManager.SetWindowOpacityPercentage(_process, (uint)WindowOpacitySlider.Value);
+        (_process != null).RunIfTrue(() => this.OriginalOpacity = Helper.GetWindowOpacityPercentage(_process));
+        Helper.SetWindowOpacityPercentage(_process, (uint)WindowOpacitySlider.Value);
       }
       else
       {
         (_process != null).RunIfTrue(
-          () => MonitorWindowManager.SetWindowOpacityPercentage(_process, this.OriginalOpacity));
+          () => Helper.SetWindowOpacityPercentage(_process, this.OriginalOpacity));
       }
     }
 

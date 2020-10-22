@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Practices.Unity;
 using Windowmancer.Core.Models;
+using Windowmancer.Core.Practices;
 using Windowmancer.Core.Services;
 using Windowmancer.Tests.Models;
 using Windowmancer.Tests.Practices;
@@ -33,12 +34,12 @@ namespace Windowmancer.Tests.Tests
       await Task.Delay(1000).ConfigureAwait(false);
 
       // Retrieve the current opacity of the window and verify it's at max.
-      var origOpacity = MonitorWindowManager.GetWindowOpacityPercentage(proc.Process);
+      var origOpacity = Helper.GetWindowOpacityPercentage(proc.Process);
       Assert.Equal((uint)100, origOpacity);
 
       // Set the desired opacity and validate.
-      MonitorWindowManager.SetWindowOpacityPercentage(proc.Process, opacity);
-      var alter = MonitorWindowManager.GetWindowOpacityPercentage(proc.Process);
+      Helper.SetWindowOpacityPercentage(proc.Process, opacity);
+      var alter = Helper.GetWindowOpacityPercentage(proc.Process);
       Assert.Equal((uint)opacity, alter);
     }
 
@@ -251,7 +252,7 @@ namespace Windowmancer.Tests.Tests
       {
         var proc = kv.Key;
         var windowConfig = kv.Value;
-        var currentOpacity = MonitorWindowManager.GetWindowOpacityPercentage(proc.Process);
+        var currentOpacity = Helper.GetWindowOpacityPercentage(proc.Process);
         Assert.Equal(windowConfig.StylingInfo.WindowOpacityPercentage, currentOpacity);
       }
     }

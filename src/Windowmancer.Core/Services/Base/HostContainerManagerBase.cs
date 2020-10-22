@@ -74,6 +74,9 @@ namespace Windowmancer.Core.Services.Base
       hcw.Show();
       hcw.ActivateWindow();
       hcw.Dock(process, windowConfig);
+
+      // Set styling values.
+      Helper.SetWindowOpacityPercentage(process, windowConfig.StylingInfo.WindowOpacityPercentage);
     }
 
     /// <summary>
