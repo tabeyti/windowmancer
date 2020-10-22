@@ -4,7 +4,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Interop;
 using MahApps.Metro.Controls;
-using Microsoft.Practices.ObjectBuilder2;
 using Microsoft.Practices.Unity;
 using Windowmancer.Core.Extensions;
 using Windowmancer.Core.Models;
@@ -19,9 +18,6 @@ namespace Windowmancer.UI
   public partial class HostContainer : IToastHost, IHostContainerWindow
   {
     public HostContainerConfig HostContainerConfig { get; set; }
-    
-    private int CurrentRowIndex { get; set; }
-    private int CurrentColumnIndex { get; set; }
     private ProfileManager ProfileManager { get; set; }
 
     private static readonly int _titlebarHeight = (int)SystemParameters.WindowCaptionHeight + 10;
@@ -54,7 +50,7 @@ namespace Windowmancer.UI
       {
         foreach (var dw in this.HostContainerConfig.DockedWindows)
         {
-          if (dw.Process == null) continue;
+          if (dw.Process == null) { continue; }
 
           if (!dw.Process.HasExited) { dw.Process.Kill(); }
         }
@@ -69,19 +65,17 @@ namespace Windowmancer.UI
     /// <inheritdoc />
     public Tuple<uint, uint> NextDockProcRowColumn()
     {
-      var rowIndex = this.CurrentRowIndex;
-      var columnIndex = this.CurrentColumnIndex;
-
-      if (columnIndex >= this.HostContainerConfig.Columns)
+      for (int row = 0; row < this.HostContainerConfig.Rows; row++)
       {
-        if (rowIndex >= this.HostContainerConfig.Rows)
+        for (int col = 0; col < this.HostContainerConfig.Columns; col++)
         {
-          return null;
+          if (!this.HostContainerConfig.DockedWindows.Any(dw => (dw.Column == col && dw.Row == row)))
+          {
+            return Tuple.Create((uint)row, (uint)col);
+          }
         }
-        rowIndex++;
-        columnIndex = 0;
       }
-      return Tuple.Create((uint)rowIndex, (uint)columnIndex);
+      throw new Exception("Could not locate an available row/col index for the container.");
     }
 
     /// <inheritdoc />
@@ -90,10 +84,21 @@ namespace Windowmancer.UI
       Helper.Dispatcher.Invoke(() => this.Activate());
     }
 
-    /// <inheritdoc />
-    public void DockNew(Process process, WindowConfig windowConfig)
+    public bool CanFitNewWindowConfig()
     {
+      return this.HostContainerConfig.DockedWindows.Count < (this.HostContainerConfig.Rows * this.HostContainerConfig.Columns);
+    }
+
+    /// <inheritdoc />
+    public bool DockNew(Process process, WindowConfig windowConfig)
+    {
+      if (!CanFitNewWindowConfig()) 
+      {
+        ShowMessageToast($"{process.MainWindowTitle}: Could not be added. Please increase your grid size to fit it.");
+        return false;  
+      }
       Helper.Dispatcher.Invoke(() => DockNewProcInternal(process, windowConfig));
+      return true;
     }
 
     /// <inhertidoc />
@@ -105,19 +110,11 @@ namespace Windowmancer.UI
     /// <inheritdoc />
     private void DockNewProcInternal(Process process, WindowConfig windowConfig)
     {
-      if (this.CurrentColumnIndex >= this.HostContainerConfig.Columns)
-      {
-        if (this.CurrentRowIndex >= this.HostContainerConfig.Rows)
-        {
-          return;
-        }
-        this.CurrentRowIndex++;
-        this.CurrentColumnIndex = 0;
-      }
+      var rowCol = NextDockProcRowColumn();
 
       var layoutInfo = windowConfig.HostContainerLayoutInfo;
-      layoutInfo.Row = (uint)this.CurrentRowIndex;
-      layoutInfo.Column = (uint)this.CurrentColumnIndex;
+      layoutInfo.Row = rowCol.Item1;
+      layoutInfo.Column = rowCol.Item2;
 
       Dock(process, windowConfig);
     }
@@ -274,8 +271,7 @@ namespace Windowmancer.UI
                 wc.Save();
               }
             }
-          }
-          
+          }          
           RefreshHostContainer(config);
         }
       };

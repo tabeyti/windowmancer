@@ -15,6 +15,7 @@ using Microsoft.Practices.Unity;
 using Windowmancer.Core.Models;
 using Windowmancer.Core.Practices;
 using Windowmancer.Core.Services;
+using Windowmancer.Services;
 using Windowmancer.UI;
 using Application = System.Windows.Application;
 using Control = System.Windows.Controls.Control;
@@ -40,6 +41,7 @@ namespace Windowmancer
     private KeyHookManager _keyHookManager;
     private ProfileManager _profileManager;
     private MonitorWindowManager _monitorWindowManager;
+    private HostContainerManager _hostContainerManager;
     private ProcessMonitor _procMonitor;
 
     private NotifyIcon _trayIcon;
@@ -63,6 +65,7 @@ namespace Windowmancer
 
       _profileManager = ServiceResolver.Resolve<ProfileManager>();
       _monitorWindowManager = ServiceResolver.Resolve<MonitorWindowManager>();
+      _hostContainerManager = ServiceResolver.Resolve<HostContainerManager>();
       _keyHookManager = ServiceResolver.Resolve<KeyHookManager>();
       _procMonitor = ServiceResolver.Resolve<ProcessMonitor>();
 
@@ -116,7 +119,11 @@ namespace Windowmancer
       rescanMenuItem.MouseLeave += TrayContextMenuItem_MouseLeave;
       rescanMenuItem.Dock = DockStyle.Fill;
       rescanMenuItem.Font = new Font(rescanMenuItem.Font, System.Drawing.FontStyle.Bold);
-      rescanMenuItem.Click += (s, e) => { _monitorWindowManager.RefreshProfile(); };
+      rescanMenuItem.Click += (s, e) => 
+      { 
+        _monitorWindowManager.RunProfile();
+        _hostContainerManager.RunProfile();
+      };
       rescanMenuItem.Image = wmIcon;
       menuItems.Add(rescanMenuItem);
       menuItems.Add(new ToolStripSeparator());
@@ -189,7 +196,7 @@ namespace Windowmancer
 
     private void OnKeyCombinationSuccess()
     {
-      _monitorWindowManager.RefreshProfile();
+      _monitorWindowManager.RunProfile();
     }
 
     private void UncheckCheckedMenuItem()

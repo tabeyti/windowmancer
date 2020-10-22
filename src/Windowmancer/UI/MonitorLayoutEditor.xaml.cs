@@ -57,13 +57,14 @@ namespace Windowmancer.UI
       Initialize();
     }
 
-    public MonitorLayoutEditor(Process process)
+    public MonitorLayoutEditor(Process process, bool openLayoutEditor = false)
     {
       this.MonitorLayoutInfo = MonitorWindowManager.GetLayout(process);
 
       PreInitialization();
       InitializeComponent();
       Initialize();
+      this.LayoutHelperExpander.IsExpanded = openLayoutEditor;
     }
 
 #endregion

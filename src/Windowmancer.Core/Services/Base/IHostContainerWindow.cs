@@ -43,7 +43,7 @@ namespace Windowmancer.Core.Services.Base
     /// accordingly.
     /// Implementation must be on or dispatched to the STA thread.
     /// </summary>
-    void DockNew(Process process, WindowConfig windowConfig);
+    bool DockNew(Process process, WindowConfig windowConfig);
 
     /// <summary>
     /// Removes (if possible) the window config (and associated process)

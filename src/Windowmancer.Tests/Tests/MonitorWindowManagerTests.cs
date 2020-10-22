@@ -195,7 +195,7 @@ namespace Windowmancer.Tests.Tests
         TestHelper.ModifyLayoutInfoPosition(w.MonitorLayoutInfo);
       });
       
-      windowManager.RefreshProfile();
+      windowManager.RunProfile();
 
       // Retrieve new process information for each window info and validate.
       foreach (var kv in procDict)
@@ -243,7 +243,7 @@ namespace Windowmancer.Tests.Tests
 
       // Modify window styling values for each and refresh the profile.
       windowConfigList.ForEach(w => TestHelper.ModifyStylingInfoOpacity(w.StylingInfo));
-      windowManager.RefreshProfile();
+      windowManager.RunProfile();
 
       await Task.Delay(500).ConfigureAwait(false);
 

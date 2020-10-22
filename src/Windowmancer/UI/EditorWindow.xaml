@@ -283,10 +283,11 @@
                           Background="{StaticResource AccentViewBackgroundColorBrush}"
                           ColumnHeaderStyle="{StaticResource MyColumnHeader}"
                           AutoGeneratingColumn="WindowConfigDataGrid_OnAutoGeneratingColumn"
+                          MouseDoubleClick="HostContainerWindowConfigDataGrid_OnMouseDoubleClick"
                           ItemsSource="{Binding Source={StaticResource ContainerWindowConfigCollectionView}}">
                   <DataGrid.Resources>
                     <ContextMenu x:Key="RowMenu">
-                      <MenuItem Header="Edit" Click="HostContainerWindowConfig_MenuItemClick"/>
+                      <MenuItem Header="Edit" Click="HostContainerWindowConfig_MenuItemClick" />
                       <MenuItem Header="Delete" Click="HostContainerWindowConfig_MenuItemClick"/>
                     </ContextMenu>
                   </DataGrid.Resources>
@@ -316,7 +317,7 @@
                 GridLinesVisibility="None"               
                 AutoGenerateColumns="False"
                 IsReadOnly="True" 
-                SelectionMode="Single" 
+                SelectionMode="Extended" 
                 SelectionUnit="FullRow"
                 CanUserResizeColumns="False"
                 Background="{StaticResource AccentViewBackgroundColorBrush}"

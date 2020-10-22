@@ -46,8 +46,6 @@ namespace Windowmancer.UI
 
       this.EditorViewModel = new EditorViewModel();
 
-      BuildActiveWindowsContextMenu();
-
       InitializeComponent();
       Initialize();
     }
@@ -66,8 +64,14 @@ namespace Windowmancer.UI
 
     private void BuildActiveWindowsContextMenu()
     {
+      if (this.ActiveWindowsContextMenuItems == null)
+      {
+        this.ActiveWindowsContextMenuItems = new ObservableCollection<FrameworkElement>();
+      }
+      this.ActiveWindowsContextMenuItems.Clear();
+
       // Create context menu items for Active Windows datagrid.
-      var addItem = new MenuItem { Header = "Add Window Configuration" };
+      var addItem = new MenuItem { Header = "Add to Monitor Layout" };
       addItem.Click += ActiveWindowsDataGrid_MenuItemClick;
 
       var highlightItem = new MenuItem { Header = "Highlight" };
@@ -80,20 +84,26 @@ namespace Windowmancer.UI
       {
         containerizeItem.Items.Add(new MenuItem { Header = c.Name, Tag = c });
       }
+      containerizeItem.Items.Add(new Separator());
+      containerizeItem.Items.Add(new MenuItem { FontWeight = FontWeights.Bold,   Header = "New", Tag = null });
 
       var quickLayoutItem = new MenuItem {Header = "Quick Layout"};
       quickLayoutItem.Click += ActiveWindowsDataGrid_OnQuickLayouEdit;
 
-      // Set the source.
-      this.ActiveWindowsContextMenuItems = new ObservableCollection<FrameworkElement>
+      // If we are doing a batch, only provide the add to container menu
+      if (this.ActiveWindowsDataGrid?.SelectedItems?.Count > 1)
       {
-        addItem,
-        containerizeItem,
-        new Separator(),
-        highlightItem,
-        new Separator(),
-        quickLayoutItem
-      };
+        this.ActiveWindowsContextMenuItems.Add(containerizeItem);
+      }
+      else
+      {
+        this.ActiveWindowsContextMenuItems.Add(addItem);
+        this.ActiveWindowsContextMenuItems.Add(containerizeItem);
+        this.ActiveWindowsContextMenuItems.Add(new Separator());
+        this.ActiveWindowsContextMenuItems.Add(highlightItem);
+        this.ActiveWindowsContextMenuItems.Add(new Separator());
+        this.ActiveWindowsContextMenuItems.Add(quickLayoutItem);
+      }      
     }
 
     #region Toast Methods
@@ -285,7 +295,7 @@ namespace Windowmancer.UI
       if (flyout == null) return;
 
       flyout.Header = "Monitor Layout Editor";
-      var layoutEditor = new MonitorLayoutEditor(process)
+      var layoutEditor = new MonitorLayoutEditor(process, true)
       {
         OnSave = l => { MonitorWindowManager.ApplyLayout(l, process); },
         OnClose = () => { flyout.IsOpen = false; }
@@ -363,7 +373,8 @@ namespace Windowmancer.UI
 
     private void RunProfileButton_OnClick(object sender, RoutedEventArgs e)
     {
-      _monitorWindowManager.RefreshProfile();
+      _monitorWindowManager.RunProfile();
+      _hostContainerManager.RunProfile();
     }
 
     private void Preferences_Click(object sender, RoutedEventArgs e)
@@ -410,33 +421,44 @@ namespace Windowmancer.UI
 
     private void ActiveWindowsDataGrid_ContainerizeClick(object sender, RoutedEventArgs e)
     {
-      if (this.ActiveWindowsDataGrid.SelectedItem == null) return;
+      if (this.ActiveWindowsDataGrid.SelectedItem == null) { return; }
 
-      var process = ((MonitoredProcess)this.ActiveWindowsDataGrid.SelectedItem).GetProcess();
       var hostContainerConfig = (HostContainerConfig)((MenuItem)e.Source).Tag;
 
-      /////////////////////////////////////////////////////////////////////////
-      //// TODO:
-      //// Check to see if the host container targeted has enough room to hold the 
-      //// process window.
-      ////////////////////////////////////////////////////////////////////////////
-
-
-      // First check if there would already be a window config of the same name.
-      // If there would be a name clash, then append a unique index to the name.
-      var windowConfig = WindowConfig.FromProcess(process, Core.Models.WindowConfigLayoutType.HostContainer);
-      windowConfig.HostContainerLayoutInfo = new HostContainerLayoutInfo(hostContainerConfig.Name);
-      if (this.ProfileManager.IsInActiveProfile(windowConfig))
+      // If this is a new container, make a config for it and adjust row/col to accomodate
+      // all process windows
+      if (hostContainerConfig == null)
       {
-        windowConfig.Name = this.ProfileManager.DefaultWindowConfigName(windowConfig.Name);
+        hostContainerConfig = new HostContainerConfig(_hostContainerManager.GetDefaultHostContainerName());
+        int rowsCols = 1;
+        for (rowsCols = 1; rowsCols * rowsCols < this.ActiveWindowsDataGrid.SelectedItems.Count; rowsCols++) {}
+        hostContainerConfig.Rows = rowsCols;
+        hostContainerConfig.Columns = rowsCols;
+        this.ProfileManager.AddToActiveProfile(hostContainerConfig);
       }
 
-      // Dock the process window to the host container.
-      _hostContainerManager.ActivateHostContainer(hostContainerConfig, windowConfig, process);
+      foreach (var item in this.ActiveWindowsDataGrid.SelectedItems)
+      {
+        var process = ((MonitoredProcess)item).GetProcess();        
 
-      // With the unique name, skip over window config editor,
-      // and add it to the active profile.
-      this.ProfileManager.AddToActiveProfile(windowConfig);
+        // TODO:
+        // First check if there would already be a window config of the same name.
+        // If there would be a name clash, then append a unique index to the name.
+        //var windowConfig = WindowConfig.FromProcess(process, Core.Models.WindowConfigLayoutType.HostContainer);
+        //windowConfig.HostContainerLayoutInfo = new HostContainerLayoutInfo(hostContainerConfig.Name);
+        //if (this.ProfileManager.IsInActiveProfile(windowConfig))
+        //{
+        //  windowConfig.Name = this.ProfileManager.DefaultWindowConfigName(windowConfig.Name);
+        //}
+
+        // Dock the process window to the host container.
+        var windowConfig = _hostContainerManager.ActivateHostContainer(hostContainerConfig, process);
+        if (windowConfig == null) { return; }
+
+        // With the unique name, skip over window config editor,
+        // and add it to the active profile.
+        this.ProfileManager.AddToActiveProfile(windowConfig);
+      }      
     }
 
     private void ActiveWindowsDataGrid_OnContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -464,12 +486,14 @@ namespace Windowmancer.UI
 
     private void HostContainerWindowConfig_MenuItemClick(object sender, RoutedEventArgs e)
     {
+      var item = (WindowConfig)HostContainerWindowConfigDataGrid.SelectedItem;
       switch ((string)((MenuItem)sender).Header)
       {
-        case "Edit":
+        case "Edit":          
+          HandleWindowConfigEdit(item);
           break;
         case "Delete":
-          var item = (WindowConfig)HostContainerWindowConfigDataGrid.SelectedItem;
+          //var item = (WindowConfig)HostContainerWindowConfigDataGrid.SelectedItem;
           _hostContainerManager.RemoveFromHostContainerWindow(item);
           ProfileManager.RemoveFromActiveProfile(item);
           ShowItemMessageToast(item.Name, "window configuration deleted.");
@@ -536,7 +560,7 @@ namespace Windowmancer.UI
         case "Delete":
           item = (HostContainerConfig)HostContainersListBox.SelectedItem;
           ProfileManager.RemoveFromActiveProfile(item);
-          ShowItemMessageToast(this.ProfileManager.ActiveProfile.Name, "container deleted.");
+          ShowItemMessageToast(item.Name, "container deleted.");
           break;
       }
     }
@@ -545,6 +569,13 @@ namespace Windowmancer.UI
     {
       if (null == this.HostContainerWindowConfigDataGrid) { return; }
       CollectionViewSource.GetDefaultView(this.HostContainerWindowConfigDataGrid.ItemsSource).Refresh();
+    }
+
+    private void HostContainerWindowConfigDataGrid_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+    {
+      if (this.HostContainerWindowConfigDataGrid.SelectedItem == null) return;
+      var item = (WindowConfig)this.HostContainerWindowConfigDataGrid.SelectedItem;
+      HandleWindowConfigEdit(item);
     }
   }
 }

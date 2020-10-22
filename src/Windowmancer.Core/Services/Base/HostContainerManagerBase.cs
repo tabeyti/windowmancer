@@ -10,6 +10,7 @@ using System.Linq;
 using Microsoft.Practices.ObjectBuilder2;
 using Windowmancer.Core.Extensions;
 using Windowmancer.Core.Models;
+using Windowmancer.Core.Practices;
 
 namespace Windowmancer.Core.Services.Base
 {
@@ -17,6 +18,7 @@ namespace Windowmancer.Core.Services.Base
   {
     private ObservableCollection<IHostContainerWindow> HostContainerWindows { get; set; }
     public ObservableCollection<HostContainerConfig> HostContainerConfigs => _profileManager.ActiveProfile.HostContainers;
+    public Profile ActiveProfile => _profileManager.ActiveProfile;
 
     private readonly ProfileManager _profileManager;
 
@@ -80,6 +82,40 @@ namespace Windowmancer.Core.Services.Base
     }
 
     /// <summary>
+    /// Activates (creates) the window for the provided host container config,
+    /// adding the passed process and window config to the host container.
+    /// </summary>
+    /// <param name="config"></param>
+    /// <param name="process"></param>
+    public WindowConfig ActivateHostContainer(HostContainerConfig config, Process process)
+    {
+      var windowConfig = WindowConfig.FromProcess(process, Core.Models.WindowConfigLayoutType.HostContainer);
+      windowConfig.HostContainerLayoutInfo = new HostContainerLayoutInfo(config.Name);
+
+      var hcw = GetOrCreateHostContainerWindow(config);
+      hcw.Show();
+      hcw.ActivateWindow();
+      if (!hcw.DockNew(process, windowConfig)) { return null; }
+      return windowConfig;
+    }
+
+    /// <summary>
+    /// Re-scans our active profile, applying the window config to applicable
+    /// process windows found.
+    /// </summary>
+    public void RunProfile()
+    {
+      var allProcceses = System.Diagnostics.Process.GetProcesses();
+      foreach (var p in allProcceses)
+      {
+        if (p.MainWindowTitle == string.Empty) { continue; }
+        var windowConfig = this.ActiveProfile.Windows.Find(pr => pr.IsMatch(p));
+        if (null == windowConfig) continue;
+        ApplyWindowConfig(windowConfig, p);
+      }
+    }
+
+    /// <summary>
     /// Checks if the <see cref="HostContainerConfig"/> associated
     /// host container window exists.
     /// </summary>
@@ -93,6 +129,11 @@ namespace Windowmancer.Core.Services.Base
       }
     }
 
+    /// <summary>
+    /// Gets or creates a host container window related to the passed config.
+    /// </summary>
+    /// <param name="config"></param>
+    /// <returns></returns>
     public IHostContainerWindow GetOrCreateHostContainerWindow(HostContainerConfig config)
     {
       return HostContainerWindowExists(config)
@@ -169,7 +210,7 @@ namespace Windowmancer.Core.Services.Base
       var prefix = "Container";
       var i = 1;
       var label = $"{prefix}{i}";
-      while (this.HostContainerConfigs.All(hc => hc.Name == label))
+      while (this.HostContainerConfigs.Any(hc => hc.Name == label))
       {
         label = $"{prefix}{i++}";
       }
