@@ -69,7 +69,7 @@ namespace Windowmancer.Core.Models
     public WindowConfig()
     {
       RegisterProperty(nameof(this.Name), "");
-      RegisterProperty(nameof(this.ApplyOnProcessStart), true);
+      RegisterProperty(nameof(this.ApplyOnProcessStart), false);
       RegisterProperty(nameof(this.LayoutType), WindowConfigLayoutType.Monitor);
       RegisterProperty(nameof(this.MonitorLayoutInfo), new MonitorLayoutInfo());
       RegisterProperty(nameof(this.HostContainerLayoutInfo), new HostContainerLayoutInfo());
@@ -80,7 +80,7 @@ namespace Windowmancer.Core.Models
     public WindowConfig(WindowConfigLayoutType layoutType)
     {
       RegisterProperty(nameof(this.Name), "");
-      RegisterProperty(nameof(this.ApplyOnProcessStart), true);
+      RegisterProperty(nameof(this.ApplyOnProcessStart), false);
       RegisterProperty(nameof(this.LayoutType), layoutType);
 
       if (layoutType == WindowConfigLayoutType.Monitor)
