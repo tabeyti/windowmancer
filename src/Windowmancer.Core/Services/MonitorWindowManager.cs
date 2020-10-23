@@ -52,7 +52,7 @@ namespace Windowmancer.Core.Services
     public void ApplyWindowConfig(WindowConfig windowConfig, Process process)
     {
       var handle = process.MainWindowHandle;
-      if (handle == IntPtr.Zero || windowConfig.LayoutType != WindowConfigLayoutType.HostContainer)
+      if (handle == IntPtr.Zero || windowConfig.LayoutType == WindowConfigLayoutType.HostContainer)
       {
         return;
       }
