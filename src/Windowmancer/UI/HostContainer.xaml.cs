@@ -215,30 +215,6 @@ namespace Windowmancer.UI
       }
     }
 
-    private void HandleWindowConfigEdit(WindowConfig config)
-    {
-      SetDockableWindowVisibility(false);
-      var flyout = (Flyout)this.FindName("RightFlyout");
-      if (flyout == null) return;
-
-      var wce = new WindowConfigEditor(config)
-      {
-        OnSave = c =>
-        {
-          config.Update(c);
-          ShowItemMessageToast(config.Name, "added to window configuration list.");
-        },
-        OnClose = () =>
-        {
-          flyout.IsOpen = false;
-          SetDockableWindowVisibility(true);
-        }
-      };
-
-      flyout.Content = wce;
-      flyout.IsOpen = true;
-    }
-
     public void HandleHostConfigEdit()
     {
       SetDockableWindowVisibility(false);
@@ -298,7 +274,7 @@ namespace Windowmancer.UI
       if (null == dockableWindow.Process) return;
 
       var screenWidth = this.ActualWidth;
-      var screenHeight = this.ActualHeight;
+      var screenHeight = this.ActualHeight - _titlebarHeight;
 
       var totalRows = this.HostContainerConfig.Rows;
       var totalCols = this.HostContainerConfig.Columns;
