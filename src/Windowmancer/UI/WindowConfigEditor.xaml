@@ -16,27 +16,27 @@
       <RowDefinition Height="50"/>
     </Grid.RowDefinitions>
     <controls:FlipView Name="FlipView"
-                       MouseHoverBorderEnabled = "false"
-                       SelectionChanged="FlipView_OnSelectionChanged">
+                       MouseHoverBorderEnabled = "False"
+                       SelectionChanged="FlipView_OnSelectionChanged"
+                       NavigationButtonsPosition="Inside">
       <controls:FlipView.Items>
-        <!--<ScrollViewer>-->
-          <StackPanel >
-            <GroupBox Name="GeneralSettingsGroupBox"
+        <StackPanel >
+          <GroupBox Name="GeneralSettingsGroupBox"
                       Header="General Settings"
                       Style="{StaticResource MyGroupBoxStyle}"
                       Margin="20">
-              <Grid>
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Grid Name="LeftPaneGrid" Grid.Column="0" Width="Auto">
-                  <Grid.RowDefinitions>
-                    <RowDefinition Height="60" />
-                    <RowDefinition Height="140" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                  </Grid.RowDefinitions>
-                  <local:LabelTextBox Grid.Row="0"
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <Grid Name="LeftPaneGrid" Grid.Column="0" Width="Auto">
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="60" />
+                  <RowDefinition Height="140" />
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <local:LabelTextBox Grid.Row="0"
                                       Label="Name" 
                                       x:Name="NameTextBox"
                                       HorizontalAlignment="Stretch"
@@ -45,7 +45,7 @@
                                       Height="Auto"
                                       GotFocus="LabelTextBox_OnGotFocus"
                                       Text="{Binding WindowConfig.Name}"/>
-                  <GroupBox Grid.Row="1"
+                <GroupBox Grid.Row="1"
                             x:Name="MatchGroupBox"
                             Header="Matching Rules" 
                             HorizontalAlignment="Stretch"
@@ -53,11 +53,11 @@
                             VerticalAlignment="Top" 
                             Height="Auto"
                             Style="{StaticResource MyGroupBoxStyle}">
-                    <StackPanel>
-                      <StackPanel.Resources>
-                        <converters:EnumBooleanConverter x:Key="EnumBooleanConverter" />
-                      </StackPanel.Resources>
-                      <local:LabelTextBox Label="Regex Match String"
+                  <StackPanel>
+                    <StackPanel.Resources>
+                      <converters:EnumBooleanConverter x:Key="EnumBooleanConverter" />
+                    </StackPanel.Resources>
+                    <local:LabelTextBox Label="Regex Match String"
                                           x:Name="RegexMatchStringTextBox"
                                           HorizontalAlignment="Stretch" 
                                           Margin="4,-6,10,0" 
@@ -65,8 +65,8 @@
                                           Width="Auto"
                                           GotFocus="LabelTextBox_OnGotFocus"
                                           Text="{Binding Mode=TwoWay, Path=WindowConfig.MatchCriteria.MatchString}"/>
-                      <StackPanel Orientation="Horizontal">
-                        <RadioButton  Name="MatchByWindowTitleRadioButton" 
+                    <StackPanel Orientation="Horizontal">
+                      <RadioButton  Name="MatchByWindowTitleRadioButton" 
                                       Content="Match by Window Title" 
                                       GroupName="MatchOptions" 
                                       Margin="5,0,5,5"
@@ -78,43 +78,43 @@
                                       IsChecked="{Binding Path=WindowConfig.MatchCriteria.MatchType, Converter={StaticResource EnumBooleanConverter}, ConverterParameter=ProcessName}"/>
                     </StackPanel>
                   </StackPanel>
-                  </GroupBox>
-                  <CheckBox Name="ApplyOnProcessStartCheckbox" Grid.Row="2"
+                </GroupBox>
+                <CheckBox Name="ApplyOnProcessStartCheckbox" Grid.Row="2"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
                             Content="Apply when process starts" 
                             Margin="10" 
                             IsChecked="{Binding WindowConfig.ApplyOnProcessStart}"/>
-                </Grid>
               </Grid>
-            </GroupBox>
-            <GroupBox x:Name="StylingGroupBox"  Grid.Row="3"
+            </Grid>
+          </GroupBox>
+          <GroupBox x:Name="StylingGroupBox"  Grid.Row="3"
                       Header="Styling"
                       HorizontalAlignment="Stretch"
                       Margin="20" 
                       VerticalAlignment="Top" 
                       Height="Auto"
                       Style="{StaticResource MyGroupBoxStyle}">
-              <StackPanel Orientation="Vertical">
-                <Grid VerticalAlignment="Center" Margin="10">
-                  <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="75"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="100"/>
-                  </Grid.ColumnDefinitions>
-                  <TextBlock Grid.Column="0"
+            <StackPanel Orientation="Vertical">
+              <Grid VerticalAlignment="Center" Margin="10">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="75"/>
+                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="100"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0"
                              Height="28" 
                              Margin="0,10,10,0"
                              FontSize="12"
                              VerticalAlignment="Center"
                              Text="Opacity"/>
-                  <Slider x:Name="WindowOpacitySlider"
+                <Slider x:Name="WindowOpacitySlider"
                           Grid.Column="1"
                           TickFrequency="1"
                           Minimum="0"
                           Maximum="100"
                           Margin="10"
-                          Style="{DynamicResource FlatSlider}"
+                          LargeChange="10"
                           TickPlacement="BottomRight"
                           HorizontalAlignment="Stretch"
                           VerticalAlignment="Center"
@@ -130,8 +130,9 @@
                                         Minimum="0"
                                         Maximum="100"
                                         Value="{Binding Mode=TwoWay, Path=WindowConfig.StylingInfo.WindowOpacityPercentage}" 
-                                        ValueChanged="WindowOpacityValueTextBox_OnValueChanged"/>              </Grid>
-                <CheckBox x:Name="WindowStylingPreviewCheckBox"
+                                        ValueChanged="WindowOpacityValueTextBox_OnValueChanged"/>
+              </Grid>
+              <CheckBox x:Name="WindowStylingPreviewCheckBox"
                           HorizontalAlignment="Left"
                           VerticalAlignment="Center"
                           Content="Preview"
@@ -139,10 +140,9 @@
                           IsChecked="{Binding WindowStylingPreview}"
                           Checked="WindowStylingPreviewCheckBox_OnChecked"
                           Unchecked="WindowStylingPreviewCheckBox_OnChecked"/>
-              </StackPanel>
-            </GroupBox>
-          </StackPanel>
-        <!--</ScrollViewer>-->
+            </StackPanel>
+          </GroupBox>
+        </StackPanel>
       </controls:FlipView.Items>
     </controls:FlipView>
     

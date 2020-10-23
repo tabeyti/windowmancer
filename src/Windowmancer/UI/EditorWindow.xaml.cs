@@ -17,6 +17,7 @@ using System.Windows.Data;
 using MenuItem = System.Windows.Controls.MenuItem;
 using Windowmancer.Core.Services.Base;
 using Windowmancer.Services;
+using ControlzEx.Theming;
 
 namespace Windowmancer.UI
 {
@@ -46,6 +47,7 @@ namespace Windowmancer.UI
 
       this.EditorViewModel = new EditorViewModel();
 
+      ThemeManager.Current.ChangeTheme(Application.Current, ThemeManager.Current.AddTheme(RuntimeThemeGenerator.Current.GenerateRuntimeTheme("Dark", System.Windows.Media.Color.FromRgb(47, 79, 79))));
       InitializeComponent();
       Initialize();
     }

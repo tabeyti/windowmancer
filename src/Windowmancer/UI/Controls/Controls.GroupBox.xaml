@@ -3,10 +3,10 @@
                     xmlns:markup="http://schemas.microsoft.com/winfx/2006/xaml">
   <!--Control styles-->
   <Style x:Key="MyGroupBoxStyle" 
-         BasedOn="{StaticResource MetroGroupBox}" 
+         BasedOn="{StaticResource MahApps.Styles.GroupBox}" 
          TargetType="{markup:Type GroupBox}">
-    <Setter Property="Background" Value="{StaticResource GrayBrush9}"/>
-    <Setter Property="BorderBrush" Value="{StaticResource GrayBrush9}"/>
+    <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.ThemeBackground}"/>
+    <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}"/>    
   </Style>
   
 </ResourceDictionary>

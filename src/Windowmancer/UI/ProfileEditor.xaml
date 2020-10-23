@@ -25,14 +25,12 @@
       <ColumnDefinition Width="100"/>
       <ColumnDefinition Width="100"/>
     </Grid.ColumnDefinitions>
-    <Button Name="CancelButton"
-              Style="{StaticResource SquareButtonStyle}"
+    <Button Name="CancelButton"              
               Content="Cancel" 
               Grid.Column="0"
               Width="75"
               IsDefault="False" Click="CancelButton_Click"/>
-    <Button Name="OkayButton"
-              Style="{StaticResource SquareButtonStyle}"
+    <Button Name="OkayButton"              
               Content="Okay" 
               Grid.Column="1"
               Width="75"

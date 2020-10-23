@@ -123,7 +123,6 @@ namespace Windowmancer.UI
             Content = ((r * cols) + c).ToString(),
             Background = _defaultBrush,
             Foreground = Brushes.Black,
-            Style = (Style)FindResource("SquareButtonStyle"),
             IsEnabled = true
           };
           button.Click += DisplaySection_OnClick;
