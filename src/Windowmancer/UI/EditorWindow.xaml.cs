@@ -32,6 +32,7 @@ namespace Windowmancer.UI
     private readonly MonitorWindowManager _monitorWindowManager;
     private readonly HostContainerManager _hostContainerManager;
     private readonly KeyHookManager _keyHookManager;
+    private readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
     public ObservableCollection<FrameworkElement> ActiveWindowsContextMenuItems { get; set; }
 
@@ -47,7 +48,11 @@ namespace Windowmancer.UI
 
       this.EditorViewModel = new EditorViewModel();
 
-      ThemeManager.Current.ChangeTheme(Application.Current, ThemeManager.Current.AddTheme(RuntimeThemeGenerator.Current.GenerateRuntimeTheme("Dark", System.Windows.Media.Color.FromRgb(47, 79, 79))));
+      ThemeManager.Current.ChangeTheme(Application.Current, 
+        ThemeManager.Current.AddTheme(
+          RuntimeThemeGenerator.Current.GenerateRuntimeTheme("Dark", System.Windows.Media.Color.FromRgb(47, 79, 79))
+        )
+      );
       InitializeComponent();
       Initialize();
     }
@@ -60,8 +65,6 @@ namespace Windowmancer.UI
 
       // Start process monitor.
       this.ProcMonitor.Start();
-
-      //this.HostContainerWindowConfigDataGrid.Columns
     }
 
     private void BuildActiveWindowsContextMenu()
@@ -375,8 +378,15 @@ namespace Windowmancer.UI
 
     private void RunProfileButton_OnClick(object sender, RoutedEventArgs e)
     {
-      _monitorWindowManager.RunProfile();
-      _hostContainerManager.RunProfile();
+      var processes = System.Diagnostics.Process.GetProcesses();
+      var sw = new Stopwatch();
+      sw.Start();
+      _monitorWindowManager.RunProfile(processes);
+      _logger.Debug($"Monitor Profile Refresh: {sw.Elapsed.TotalSeconds}");
+      sw.Reset();
+      sw.Start();
+      _hostContainerManager.RunProfile(processes);
+      _logger.Debug($"Container Refresh: {sw.Elapsed.TotalSeconds}");
     }
 
     private void Preferences_Click(object sender, RoutedEventArgs e)

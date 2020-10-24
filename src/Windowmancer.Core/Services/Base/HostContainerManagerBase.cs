@@ -103,10 +103,14 @@ namespace Windowmancer.Core.Services.Base
     /// Re-scans our active profile, applying the window config to applicable
     /// process windows found.
     /// </summary>
-    public void RunProfile()
+    public void RunProfile(Process[] processes = null)
     {
-      var allProcceses = System.Diagnostics.Process.GetProcesses();
-      foreach (var p in allProcceses)
+      if (processes == null)
+      {
+        processes = System.Diagnostics.Process.GetProcesses();
+      }      
+
+      foreach (var p in processes)
       {
         if (p.MainWindowTitle == string.Empty) { continue; }
         var windowConfig = this.ActiveProfile.Windows.Find(pr => pr.IsMatch(p));
@@ -209,7 +213,7 @@ namespace Windowmancer.Core.Services.Base
     {
       var prefix = "Container";
       var i = 1;
-      var label = $"{prefix}{i}";
+      var label = $"{prefix}{i.ToString("D2")}";
       while (this.HostContainerConfigs.Any(hc => hc.Name == label))
       {
         label = $"{prefix}{i++}";
