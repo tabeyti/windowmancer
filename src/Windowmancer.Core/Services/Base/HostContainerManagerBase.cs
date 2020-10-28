@@ -105,16 +105,12 @@ namespace Windowmancer.Core.Services.Base
     /// </summary>
     public void RunProfile(Process[] processes = null)
     {
-      if (processes == null)
-      {
-        processes = System.Diagnostics.Process.GetProcesses();
-      }      
-
+      processes = processes ?? System.Diagnostics.Process.GetProcesses();
       foreach (var p in processes)
       {
         if (p.MainWindowTitle == string.Empty) { continue; }
         var windowConfig = this.ActiveProfile.Windows.Find(pr => pr.IsMatch(p));
-        if (null == windowConfig) continue;
+        if (null == windowConfig || WindowConfigLayoutType.HostContainer != windowConfig.LayoutType) continue;
         ApplyWindowConfig(windowConfig, p);
       }
     }
@@ -208,7 +204,6 @@ namespace Windowmancer.Core.Services.Base
       }
     }
 
-
     public string GetDefaultHostContainerName()
     {
       var prefix = "Container";
@@ -216,9 +211,9 @@ namespace Windowmancer.Core.Services.Base
       var label = $"{prefix}{i.ToString("D2")}";
       while (this.HostContainerConfigs.Any(hc => hc.Name == label))
       {
-        label = $"{prefix}{i++}";
+        i++;
+        label = $"{prefix}{i.ToString("D2")}";
       }
-
       return label;
     }
 
