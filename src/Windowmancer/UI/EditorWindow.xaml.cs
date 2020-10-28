@@ -18,6 +18,7 @@ using MenuItem = System.Windows.Controls.MenuItem;
 using Windowmancer.Core.Services.Base;
 using Windowmancer.Services;
 using ControlzEx.Theming;
+using System.Linq;
 
 namespace Windowmancer.UI
 {
@@ -37,7 +38,7 @@ namespace Windowmancer.UI
     public ObservableCollection<FrameworkElement> ActiveWindowsContextMenuItems { get; set; }
 
     public EditorViewModel EditorViewModel { get; set; }
-    
+
     public EditorWindow()
     {
       this.ProfileManager = App.ServiceResolver.Resolve<ProfileManager>();
@@ -48,7 +49,7 @@ namespace Windowmancer.UI
 
       this.EditorViewModel = new EditorViewModel();
 
-      ThemeManager.Current.ChangeTheme(Application.Current, 
+      ThemeManager.Current.ChangeTheme(Application.Current,
         ThemeManager.Current.AddTheme(
           RuntimeThemeGenerator.Current.GenerateRuntimeTheme("Dark", System.Windows.Media.Color.FromRgb(47, 79, 79))
         )
@@ -90,15 +91,19 @@ namespace Windowmancer.UI
         containerizeItem.Items.Add(new MenuItem { Header = c.Name, Tag = c });
       }
       containerizeItem.Items.Add(new Separator());
-      containerizeItem.Items.Add(new MenuItem { FontWeight = FontWeights.Bold,   Header = "New", Tag = null });
+      containerizeItem.Items.Add(new MenuItem { FontWeight = FontWeights.Bold, Header = "New", Tag = null });
 
-      var quickLayoutItem = new MenuItem {Header = "Quick Layout"};
-      quickLayoutItem.Click += ActiveWindowsDataGrid_OnQuickLayouEdit;
+      var quickCustomLayout = new MenuItem { Header = "Quick Custom Layout" };
+      quickCustomLayout.Click += ActiveWindowsDataGrid_OnQuickCustomLayouEdit;
 
-      // If we are doing a batch, only provide the add to container menu
+      var quickGridLayoutItem = new MenuItem { Header = "Quick Grid Layout" };
+      quickGridLayoutItem.Click += ActiveWindowsDataGrid_OnQuickGridLayouEdit;
+
+      // If we are doing a batch, only provide the "add to container" menu item
       if (this.ActiveWindowsDataGrid?.SelectedItems?.Count > 1)
       {
         this.ActiveWindowsContextMenuItems.Add(containerizeItem);
+        this.ActiveWindowsContextMenuItems.Add(quickGridLayoutItem);
       }
       else
       {
@@ -107,8 +112,8 @@ namespace Windowmancer.UI
         this.ActiveWindowsContextMenuItems.Add(new Separator());
         this.ActiveWindowsContextMenuItems.Add(highlightItem);
         this.ActiveWindowsContextMenuItems.Add(new Separator());
-        this.ActiveWindowsContextMenuItems.Add(quickLayoutItem);
-      }      
+        this.ActiveWindowsContextMenuItems.Add(quickCustomLayout);
+      }
     }
 
     #region Toast Methods
@@ -156,7 +161,7 @@ namespace Windowmancer.UI
 
     #endregion
 
-#region Handle Config Edit Methods
+    #region Handle Config Edit Methods
 
     private void HandleProfileEdit(Profile profile = null)
     {
@@ -165,12 +170,12 @@ namespace Windowmancer.UI
       {
         throw new Exception("Could not locate flyout LeftFlyout.");
       }
-      
+
       ProfileEditor content;
       if (null == profile)
       {
         flyout.Header = "Add Profile";
-        content = new ProfileEditor((p) => 
+        content = new ProfileEditor((p) =>
         {
           try
           {
@@ -229,9 +234,9 @@ namespace Windowmancer.UI
           ShowItemMessageToast(w.Name, "window configuration added.");
         }
       };
-      
+
       wce.OnClose += () => { flyout.IsOpen = false; };
-      
+
       flyout.Content = wce;
       flyout.IsOpen = true;
     }
@@ -281,11 +286,11 @@ namespace Windowmancer.UI
     {
       var flyout = (Flyout)this.FindName("LeftFlyout");
       if (flyout == null) return;
-      
+
       flyout.Header = "Preferences";
       var w = new PreferencesDialog(new PreferencesModel(_keyHookManager.HotKeyConfig), p =>
       {
-        var prefs = (PreferencesModel) p;
+        var prefs = (PreferencesModel)p;
         _keyHookManager.UpdateHotKeyConfig(prefs.HotKeyConfig);
         ShowItemMessageToast("Preferences", "updated.");
       });
@@ -294,7 +299,7 @@ namespace Windowmancer.UI
       flyout.IsOpen = true;
     }
 
-    private void HandleQuickLayoutEdit(Process process)
+    private void HandleQuickCustomLayoutEdit(Process process)
     {
       var flyout = (Flyout)this.FindName("RightFlyout");
       if (flyout == null) return;
@@ -310,7 +315,64 @@ namespace Windowmancer.UI
       flyout.IsOpen = true;
     }
 
-#endregion
+    private void HandleQuickGridLayoutEdit(Process[] processes)
+    {
+
+      var flyout = (Flyout)this.FindName("RightFlyout");
+      if (flyout == null) return;
+
+      flyout.Header = "Quick Grid Layout";
+
+      // Create empty container config with rows/cols to accomodate the processes
+      var emptyConfig = new HostContainerConfig();
+      int rowsCols = 1;
+      for (rowsCols = 1; rowsCols * rowsCols < this.ActiveWindowsDataGrid.SelectedItems.Count; rowsCols++) { }
+      emptyConfig.Rows = rowsCols;
+      emptyConfig.Columns = rowsCols;
+
+      // Slot each proc into a row/col
+      int index = 0;
+      for (int row = 0; row < rowsCols; row++)
+      {
+        for (int col = 0; col < rowsCols; col++)
+        {
+          if (index >= processes.Length) { break; }
+          var proc = processes[index++];
+          var windowConfig = new WindowConfig()
+          {
+            Name = proc.MainWindowTitle,
+            LayoutType = Windowmancer.Core.Models.WindowConfigLayoutType.HostContainer,
+            HostContainerLayoutInfo = new HostContainerLayoutInfo((uint)row, (uint)col, ""),
+          };
+          emptyConfig.DockedWindows.Add(new DockableWindow(proc, windowConfig));
+        }
+      }
+
+      var containerConfigEditor = new HostContainerConfigEditor(emptyConfig, new SizeInfo((int)this.ActualWidth, (int)this.ActualHeight))
+      {
+        DisplayContainersSelectable = false,
+        OnSave = (config) =>
+        {
+          var targetScreen = "\\\\.\\DISPLAY";
+
+          foreach (var dw in config.DockedWindows)
+          {
+            MonitorWindowManager.ApplyToGridLayout(dw.Process,
+              targetScreen,
+              config.Rows,
+              config.Columns,
+              dw.Row,
+              dw.Column);
+          }
+        },
+        OnClose = () => { flyout.IsOpen = false; }
+      };
+
+      flyout.Content = containerConfigEditor;
+      flyout.IsOpen = true;
+    }   
+
+    #endregion
 
     private void MonitorWindowConfigDataGrid_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
     {
@@ -379,14 +441,8 @@ namespace Windowmancer.UI
     private void RunProfileButton_OnClick(object sender, RoutedEventArgs e)
     {
       var processes = System.Diagnostics.Process.GetProcesses();
-      var sw = new Stopwatch();
-      sw.Start();
       _monitorWindowManager.RunProfile(processes);
-      _logger.Debug($"Monitor Profile Refresh: {sw.Elapsed.TotalSeconds}");
-      sw.Reset();
-      sw.Start();
       _hostContainerManager.RunProfile(processes);
-      _logger.Debug($"Container Refresh: {sw.Elapsed.TotalSeconds}");
     }
 
     private void Preferences_Click(object sender, RoutedEventArgs e)
@@ -413,7 +469,7 @@ namespace Windowmancer.UI
 
       // Restore window (if minimized) and bring to fore-ground
       MonitorWindowManager.ShowWindowNormal(process);
-      var procRec = MonitorWindowManager.GetWindowRectCurrent(process);
+      var procRec = Helper.GetWindowRectCurrent(process);
 
       // Highlight the window temporarily.
       var windowHighlight = new WindowHighlight();
@@ -478,11 +534,21 @@ namespace Windowmancer.UI
       BuildActiveWindowsContextMenu();
     }
 
-    private void ActiveWindowsDataGrid_OnQuickLayouEdit(object sender, RoutedEventArgs e)
+    private void ActiveWindowsDataGrid_OnQuickCustomLayouEdit(object sender, RoutedEventArgs e)
     {
       if (this.ActiveWindowsDataGrid.SelectedItem == null) return;
       var item = ((MonitoredProcess)this.ActiveWindowsDataGrid.SelectedItem).GetProcess();
-      HandleQuickLayoutEdit(item);
+      HandleQuickCustomLayoutEdit(item);
+    }
+
+    private void ActiveWindowsDataGrid_OnQuickGridLayouEdit(object sender, RoutedEventArgs e)
+    {
+      if (this.ActiveWindowsDataGrid.SelectedItems.Count <= 1) { return; }
+
+      var selectedProcesses = this.ActiveWindowsDataGrid.SelectedItems.Cast<MonitoredProcess>().Select(mp => mp.GetProcess()).ToArray();
+
+      //var item = ((MonitoredProcess)this.ActiveWindowsDataGrid.SelectedItem).GetProcess();
+      HandleQuickGridLayoutEdit(selectedProcesses);
     }
 
     private void ActiveWindowsGrid_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)

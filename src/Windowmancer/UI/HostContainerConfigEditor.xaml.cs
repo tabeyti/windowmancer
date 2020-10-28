@@ -27,7 +27,7 @@ namespace Windowmancer.UI
     public Action OnClose { get; set; }
     public Action<HostContainerConfig> OnSave { get; set; }
     public bool DisplayContainersSelectable { get; set; }
-    public HostContainerEditorViewModel HostContainerEditorConfigEditorViewModel { get; set; }
+    public HostContainerEditorViewModel HostContainerEditorViewModel { get; set; }
     
     private CanvasViewModel CanvasViewModel { get; set; }
     private readonly SolidColorBrush _defaultBrush = Brushes.Turquoise;
@@ -35,7 +35,7 @@ namespace Windowmancer.UI
 
     public HostContainerConfigEditor(HostContainerConfig containerConfig, SizeInfo sizeInfo)
     {
-      this.HostContainerEditorConfigEditorViewModel = new HostContainerEditorViewModel
+      this.HostContainerEditorViewModel = new HostContainerEditorViewModel
       {
         HostContainerConfig = (HostContainerConfig)containerConfig.Clone(),
         SizeInfo = sizeInfo
@@ -48,7 +48,7 @@ namespace Windowmancer.UI
     private void PreInitialize()
     {
       this.DisplayContainersSelectable = true;
-      this.CanvasViewModel = new CanvasViewModel(this.HostContainerEditorConfigEditorViewModel);
+      this.CanvasViewModel = new CanvasViewModel(this.HostContainerEditorViewModel);
     }
 
     private void PostInitialize()
@@ -65,12 +65,12 @@ namespace Windowmancer.UI
       this.CanvasViewModel.Reset();
 
       // Create.
-      this.CanvasViewModel.Rows = this.HostContainerEditorConfigEditorViewModel.HostContainerConfig.Rows;
-      this.CanvasViewModel.Columns = this.HostContainerEditorConfigEditorViewModel.HostContainerConfig.Columns;
+      this.CanvasViewModel.Rows = this.HostContainerEditorViewModel.HostContainerConfig.Rows;
+      this.CanvasViewModel.Columns = this.HostContainerEditorViewModel.HostContainerConfig.Columns;
       this.CanvasViewModel.Canvas = new Canvas { Background = _defaultBrush };
 
       // Fill.
-      var dockableWindows = this.HostContainerEditorConfigEditorViewModel.HostContainerConfig.DockedWindows;
+      var dockableWindows = this.HostContainerEditorViewModel.HostContainerConfig.DockedWindows;
       foreach (var d in dockableWindows)
       {
         // Get the next available canvas section to place this dude.
@@ -89,7 +89,7 @@ namespace Windowmancer.UI
 
         // If there is no process tagging along with this window config,
         // create a blank image.
-        var image = (null == d.Process) ?
+        var image = (null == d.Process || d.Process.HasExited) ?
           new Image
           {
             Source = Helper.GetBlankScreenShot(d.WindowConfig.Name),
@@ -109,16 +109,26 @@ namespace Windowmancer.UI
     
     private void SizeDisplayHelperBox()
     {
-      _screenAspectRatio = new DisplayAspectRatio(1152, 648);
-      if (this.HostContainerEditorConfigEditorViewModel.SizeInfo.Height > this.HostContainerEditorConfigEditorViewModel.SizeInfo.Width)
+      var displayHelperWidth = (this.ActualWidth == 0 ? this.HostContainerEditorViewModel.SizeInfo.Width : this.ActualWidth) - 350;
+      var displayHelperHeight = (this.ActualHeight == 0 ? this.HostContainerEditorViewModel.SizeInfo.Height : this.ActualHeight) - 150;
+
+
+      _screenAspectRatio = new DisplayAspectRatio(16, 9);
+      if (displayHelperHeight > displayHelperWidth)
       {
-        this.DisplayPanel.Height = this.DisplayPanel.MaxHeight;
-        this.DisplayPanel.Width = this.DisplayPanel.MaxHeight * (_screenAspectRatio.XRatio / _screenAspectRatio.YRatio);
+        // if portrait monitor
+        //this.DisplayPanel.Height = this.DisplayPanel.MaxHeight;
+        //this.DisplayPanel.Width = this.DisplayPanel.MaxHeight * (_screenAspectRatio.XRatio / _screenAspectRatio.YRatio);
+        this.DisplayPanel.Height = displayHelperWidth * (_screenAspectRatio.XRatio / _screenAspectRatio.YRatio);
+        this.DisplayPanel.Width = displayHelperWidth;
       }
       else
       {
-        this.DisplayPanel.Width = this.DisplayPanel.MaxWidth;
-        this.DisplayPanel.Height = this.DisplayPanel.MaxWidth * (_screenAspectRatio.YRatio / _screenAspectRatio.XRatio);
+        // if profile monitor
+        //this.DisplayPanel.Width = this.DisplayPanel.MaxWidth;
+        //this.DisplayPanel.Height = this.DisplayPanel.MaxWidth * (_screenAspectRatio.YRatio / _screenAspectRatio.XRatio);
+        this.DisplayPanel.Width = displayHelperWidth;
+        this.DisplayPanel.Height = displayHelperWidth * (_screenAspectRatio.YRatio / _screenAspectRatio.XRatio);
       }
     }
 
@@ -152,7 +162,7 @@ namespace Windowmancer.UI
         throw new Exception("WindowConfig - Could locate active window to bind the KeyDown listener.");
       }
       window.KeyDown += HostContainerConfigEditor_HandleKeyPress;
-      RecreateDisplaySectionControl();
+      //RecreateDisplaySectionControl();
     }
     
     private void DisplayListBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -174,13 +184,14 @@ namespace Windowmancer.UI
       {
         var rowIndex = this.RowSpinner.Value - 1;
         var colIndex = this.ColumnSpinner.Value - 1;
-        var dockedWindows = this.HostContainerEditorConfigEditorViewModel.HostContainerConfig.DockedWindows;
+        var dockedWindows = this.HostContainerEditorViewModel.HostContainerConfig.DockedWindows;
         var currentNumSections = this.RowSpinner.Value * this.ColumnSpinner.Value;
 
         // Verify we aren't making the number of grid sections lower than the number of docked windows
         var dockedWindowsOutsideBounds = dockedWindows.Where(dw => dw.Row > rowIndex || dw.Column > colIndex).ToList();
         if (currentNumSections < dockedWindows.Count || dockedWindowsOutsideBounds.Any())
         {
+          // Set value back to original
           var spinner = (MahApps.Metro.Controls.NumericUpDown)sender;
           spinner.Value = (int)e.OldValue;
 
@@ -206,7 +217,7 @@ namespace Windowmancer.UI
 
     private void SaveButton_OnClick(object sender, RoutedEventArgs e)
     {
-      OnSave?.Invoke(this.HostContainerEditorConfigEditorViewModel.HostContainerConfig);
+      OnSave?.Invoke(this.HostContainerEditorViewModel.HostContainerConfig);
       Close();
     }
     private void LabelTextBox_OnGotFocus(object sender, RoutedEventArgs e)
@@ -215,6 +226,13 @@ namespace Windowmancer.UI
     }
 
     #endregion Event Methods
+
+    private void HostContainerConfigEditor_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+      SizeDisplayHelperBox();
+      RecreateDisplaySectionControl();
+      int ham = 0;
+    }
   }
 
   public class HostContainerEditorViewModel : PropertyNotifyBase
@@ -406,6 +424,8 @@ namespace Windowmancer.UI
 
     private void UpdateHighlightSection(CanvasSection canvasSection)
     {
+      if (null == canvasSection) { return; }
+
       // Our image is over a new section, so let's update the row/col indices
       // and create a new highlight section if none.
       this.HighlightSection.Row = canvasSection.Row;
@@ -543,7 +563,7 @@ namespace Windowmancer.UI
       var lines = new Image();
       lines.SetValue(Panel.ZIndexProperty, 0);
 
-      //Draw the grid
+      // Draw the grid
       var gridLinesVisual = new DrawingVisual();
       var dct = gridLinesVisual.RenderOpen();
       var lightPen = new Pen(new SolidColorBrush(Colors.White), 1);
@@ -561,7 +581,7 @@ namespace Windowmancer.UI
         alternate = yOffset == 5 ? yOffset : 1,
         j = 0;
 
-      //Draw the horizontal lines
+      // Draw the horizontal lines
       var xPoint = new Point(0, 1);
       var yPoint = new Point(canvasWidth, 1);
 
@@ -572,7 +592,7 @@ namespace Windowmancer.UI
         yPoint.Offset(0, yOffset);
       }
 
-      //Draw the vertical lines
+      // Draw the vertical lines
       xPoint = new Point(1, 0);
       yPoint = new Point(1, canvasHeight);
 

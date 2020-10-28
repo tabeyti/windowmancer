@@ -76,37 +76,17 @@ namespace Windowmancer.Core.Services
     /// </summary>
     public void RunProfile(Process[] processes = null)
     {
-      if (null == processes) 
-      {
-        processes = System.Diagnostics.Process.GetProcesses();
-      }
+      processes = processes ?? System.Diagnostics.Process.GetProcesses();
       foreach (var p in processes)
       {
         if (p.MainWindowTitle == string.Empty) { continue; }
         var windowConfig = this.ActiveProfile.Windows.Find(pr => pr.IsMatch(p));
-        if (null == windowConfig) continue;
+        if (null == windowConfig || WindowConfigLayoutType.Monitor != windowConfig.LayoutType) continue;
         ApplyWindowConfig(windowConfig, p);
       }
     }
 
     #region Static Methods
-
-    /// <summary>
-    /// Attempts to retrieve the running process for the given
-    /// window config.
-    /// </summary>
-    /// <param name="windowConfig"></param>
-    /// <returns></returns>
-    public static Process GetProcess(WindowConfig windowConfig)
-    {
-      if (null == windowConfig)
-      {
-        return null;
-      }
-
-      var allProcceses = System.Diagnostics.Process.GetProcesses();
-      return allProcceses.ToList().Find(windowConfig.IsMatch);
-    }
 
     /// <summary>
     /// Applies the given layout info to the targeted process window.
@@ -115,16 +95,9 @@ namespace Windowmancer.Core.Services
     /// <param name="process"></param>
     public static void ApplyLayout(MonitorLayoutInfo layoutInfo, Process process)
     {
-      if (null == layoutInfo || null == process)
-      {
-        return;
-      }
-
+      if (null == layoutInfo || null == process) { return; }
       var handle = process.MainWindowHandle;
-      if (handle == IntPtr.Zero)
-      {
-        return;
-      }
+      if (handle == IntPtr.Zero) { return; }
 
       // Set layout values.
       var x = layoutInfo.PositionInfo.X;
@@ -142,12 +115,34 @@ namespace Windowmancer.Core.Services
     /// <returns></returns>
     public static MonitorLayoutInfo GetLayout(Process process)
     {
-      var rect = GetWindowRectCurrent(process);
+      var rect = Helper.GetWindowRectCurrent(process);
       return new MonitorLayoutInfo(
         rect.X,
         rect.Y,
         rect.Width,
         rect.Height);
+    }
+
+    public static void ApplyToGridLayout(
+      Process process,
+      string displayName,
+      int totalRows,
+      int totalCols,
+      int row, int col)
+    {
+      var screen = Helper.GetScreen(displayName);
+
+      var screenWidth = screen.Bounds.Width;
+      var screenHeight = screen.Bounds.Height;
+
+      var x = (screenWidth / totalCols) * col + screen.Bounds.X;
+      var y = (screenHeight / totalRows) * row + screen.Bounds.Y;
+
+      var width = (screenWidth / totalCols);
+      var height = (screenHeight / totalRows);
+
+      var layoutInfo = new MonitorLayoutInfo(x, y, width, height);
+      ApplyLayout(layoutInfo, process);
     }
 
     /// <summary>
@@ -185,18 +180,6 @@ namespace Windowmancer.Core.Services
       var handle = process.MainWindowHandle;
       var win32State = (Win32.ShowWindowCommands) state;
       Win32.ShowWindow(handle, win32State);
-    }
-
-    /// <summary>
-    /// Retrieves the process window's rectangle as currently is.
-    /// </summary>
-    /// <param name="process"></param>
-    /// <returns></returns>
-    public static Win32.Win32_Rect GetWindowRectCurrent(Process process)
-    {
-      var rec = new Win32.Win32_Rect();
-      Win32.GetWindowRect(process.MainWindowHandle, ref rec);
-      return rec;
     }
 
     private static ProcessWindowState ProcWinStateFromWin32(int win32WindowState)

@@ -32,8 +32,9 @@ namespace Windowmancer.UI
     private MonitorLayoutEditor _monitorLayoutEditor;
 
     private Process _process;
+    private readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
-#region Constructors
+    #region Constructors
 
     public WindowConfigEditor(WindowConfig windowConfig)
     {
@@ -53,7 +54,7 @@ namespace Windowmancer.UI
     {
       this.ProfileManager = App.ServiceResolver.Resolve<ProfileManager>();
       this.WindowConfig = this.WindowConfig ?? new WindowConfig();
-      _process = MonitorWindowManager.GetProcess(this.WindowConfig);
+      _process = Helper.GetProcess(this.WindowConfig.IsMatch);
     }
 
     private void Initialize()

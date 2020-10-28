@@ -7,7 +7,6 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
 using System.Windows.Media;
-using Windowmancer.Core.Extensions;
 using Windowmancer.Core.Models;
 using Windowmancer.Core.Services;
 using Windowmancer.UI.Base;
@@ -230,24 +229,6 @@ namespace Windowmancer.UI
       this.MonitorLayoutInfo.SizeInfo.Height = height;
       this.MonitorLayoutInfo.PositionInfo.X = x;
       this.MonitorLayoutInfo.PositionInfo.Y = y;
-    }
-
-    private void OpenLayoutHelper()
-    {
-      (_process != null).RunIfTrue(() =>
-      {
-        this.OriginalLayoutInfo = WindowConfig.FromProcess(_process, Core.Models.WindowConfigLayoutType.Monitor).MonitorLayoutInfo;
-      });
-      UpdateScreenHighlight();
-    }
-
-    private void CloseLayoutHelper()
-    {
-      (_process != null).RunIfTrue(() =>
-      {
-        MonitorWindowManager.ApplyLayout(this.OriginalLayoutInfo, _process);
-      });
-      DisableScreenHighlight();
     }
 
     private void DisplaySection_OnClick(object sender, EventArgs e)

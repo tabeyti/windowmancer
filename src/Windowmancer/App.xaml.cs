@@ -114,7 +114,7 @@ namespace Windowmancer
       var menuItems = new List<ToolStripItem>();
 
       // Create fresh button as first item.
-      var rescanMenuItem = new ToolStripButton("Rescan Container");
+      var rescanMenuItem = new ToolStripButton("Rescan Profile");
       rescanMenuItem.MouseEnter += TrayContextMenuItem_MouseEnter;
       rescanMenuItem.MouseLeave += TrayContextMenuItem_MouseLeave;
       rescanMenuItem.Dock = DockStyle.Fill;

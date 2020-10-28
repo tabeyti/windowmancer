@@ -3,10 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:ui="clr-namespace:Windowmancer.UI"
              mc:Ignorable="d"
+             SizeChanged="HostContainerConfigEditor_SizeChanged"
              Loaded="DisplayHelper_OnLoaded"
              HorizontalAlignment="Stretch"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
@@ -20,7 +20,7 @@
           Grid.Row="0"
           x:Name="LayoutHelperGridControl">
       <Grid.ColumnDefinitions>
-        <ColumnDefinition MaxWidth="500"/>
+        <ColumnDefinition MaxWidth="300"/>
         <ColumnDefinition Width="*"/>
       </Grid.ColumnDefinitions>
       <Grid Grid.Column="0">
@@ -35,12 +35,14 @@
                   Margin="20">
           <StackPanel Orientation="Vertical">
             <ui:LabelTextBox Label="Name" 
-                              HorizontalAlignment="Stretch" 
-                              Margin="0,10,10,10"
-                              VerticalAlignment="Top" 
-                              Height="Auto"
-                              GotFocus="LabelTextBox_OnGotFocus"
-                              Text="{Binding HostContainerEditorConfigEditorViewModel.HostContainerConfig.Name}"/>      
+                             HorizontalAlignment="Stretch" 
+                             Margin="0,10,10,10"
+                             VerticalAlignment="Top" 
+                             Height="Auto"
+                             GotFocus="LabelTextBox_OnGotFocus"
+                             Visibility="{Binding HostContainerEditorViewModel.HostContainerConfig.IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                             Text="{Binding HostContainerEditorViewModel.HostContainerConfig.Name}">              
+            </ui:LabelTextBox>
             <Grid HorizontalAlignment="Stretch"
                   VerticalAlignment="Top">
               <Grid.ColumnDefinitions>
@@ -63,7 +65,7 @@
               <controls:NumericUpDown Name="RowSpinner" 
                                     Grid.Row="0" Grid.Column="1" 
                                     Foreground="White"
-                                    Value="{Binding HostContainerEditorConfigEditorViewModel.HostContainerConfig.Rows}"
+                                    Value="{Binding HostContainerEditorViewModel.HostContainerConfig.Rows}"
                                     VerticalAlignment="Center"
                                     HorizontalAlignment="Left"
                                     Width="75"
@@ -79,7 +81,7 @@
                                     VerticalAlignment="Center"
                                     HorizontalAlignment="Left"
                                     Width="75"
-                                    Value="{Binding HostContainerEditorConfigEditorViewModel.HostContainerConfig.Columns}"
+                                    Value="{Binding HostContainerEditorViewModel.HostContainerConfig.Columns}"
                                     Minimum="1"
                                     Maximum="10"/>
               <Button Name="SetDisplayHelperLayoutButton" 
@@ -92,17 +94,14 @@
             </Grid>
           </StackPanel>
         </GroupBox>
-          
-        
         <GroupBox Header="Docked Windows"
                   Grid.Row="1"
                   Margin="20"
                   Style="{StaticResource MyGroupBoxStyle}">
           <ListBox Name="DockedWindowsListBox"
-                   Style="{StaticResource MyListBox}"
-                   
-                   SelectedItem="{Binding HostContainerEditorConfigEditorViewModel.ActiveDockableWindow}"
-                   ItemsSource="{Binding HostContainerEditorConfigEditorViewModel.HostContainerConfig.DockedWindows}">
+                   Style="{StaticResource MyListBox}"                   
+                   SelectedItem="{Binding HostContainerEditorViewModel.ActiveDockableWindow}"
+                   ItemsSource="{Binding HostContainerEditorViewModel.HostContainerConfig.DockedWindows}">
             <ListBox.ItemContainerStyle>
               <Style TargetType="{x:Type ListBoxItem}">
                 <Setter Property="Focusable" Value="False"/>
@@ -127,12 +126,13 @@
         <!--#region Display panel -->
         <Grid Name="DisplayHelperControl" 
               VerticalAlignment="Top"
-              Margin="10,10, 10,10">
+              Margin="10,10, 10,10"
+              HorizontalAlignment="Stretch">
           <Border Margin="5"
-                  MaxWidth="900" MaxHeight="1600"
+                  MaxHeight="{Binding ActualHeight, ElementName=DisplayHelperControl}"
                   x:Name="DisplayPanel"
                   BorderBrush="Gray"
-                  BorderThickness="10" 
+                  BorderThickness="10"
                   CornerRadius="2">
             <Grid x:Name="DisplayPanelGrid"/>
           </Border>

@@ -56,6 +56,15 @@ namespace Windowmancer.Core.Models
     }
 
     /// <summary>
+    /// Indicates whether this field should be visible.
+    /// </summary>
+    [JsonIgnore]
+    public bool IsVisible
+    {
+      get => (this.Name != null && this.Name != "");
+    }
+
+    /// <summary>
     /// List of docked windows for the container.
     /// </summary>
     [JsonIgnore]

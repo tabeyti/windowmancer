@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
@@ -276,6 +277,42 @@ namespace Windowmancer.Core.Practices
       uint dwFlags = 0;
       Win32.GetLayeredWindowAttributes(process.MainWindowHandle, out crKey, out bAlpha, out dwFlags);
       return bAlpha == 0 ? 100 : (uint)Math.Round(100 * ((double)bAlpha / 255));
+    }
+
+    /// <summary>
+    /// Retrieves the process window's rectangle as currently is.
+    /// </summary>
+    /// <param name="process"></param>
+    /// <returns></returns>
+    public static Win32.Win32_Rect GetWindowRectCurrent(Process process)
+    {
+      var rec = new Win32.Win32_Rect();
+      Win32.GetWindowRect(process.MainWindowHandle, ref rec);
+      return rec;
+    }
+
+    /// <summary>
+    /// Attempts to retrieve the running process for the given
+    /// window config.
+    /// </summary>
+    /// <param name="windowConfig"></param>
+    /// <returns></returns>
+    public static Process GetProcess(Predicate<Process> isMatch)
+    {
+      var allProcceses = System.Diagnostics.Process.GetProcesses();
+      return allProcceses.ToList().Find(isMatch);
+    }
+
+    /// <summary>
+    /// Retrieves the screen associated with the given display name.
+    /// Will return primary if not found.
+    /// </summary>
+    /// <param name="displayName"></param>
+    /// <returns></returns>
+    public static Screen GetScreen(string displayName)
+    {      
+      var screen = Screen.AllScreens.ToList().Find(s => s.DeviceName == displayName);
+      return screen ?? Screen.PrimaryScreen;     
     }
 
     public static dynamic GetConfig(string configFileName)
