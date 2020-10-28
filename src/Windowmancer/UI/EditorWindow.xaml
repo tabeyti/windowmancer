@@ -166,7 +166,6 @@
           <ListBox.ItemContainerStyle>
             <Style TargetType="ListBoxItem" BasedOn="{StaticResource MyListBoxItem}">
               <Setter Property="ContextMenu" Value="{StaticResource RowMenu}"/>
-              <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
               <EventSetter Event="MouseDoubleClick" Handler="HostContainersListBox_ItemDoubleClick"/>
             </Style>
           </ListBox.ItemContainerStyle>
@@ -245,7 +244,6 @@
                   <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem" BasedOn="{StaticResource MyListBoxItem}">
                       <Setter Property="ContextMenu" Value="{StaticResource RowMenu}"/>
-                      <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
                       <EventSetter Event="MouseDoubleClick" Handler="HostContainersListBox_ItemDoubleClick"/>
                     </Style>
                   </ListBox.ItemContainerStyle>
